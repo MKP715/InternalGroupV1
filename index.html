@@ -559,7 +559,7 @@
                         </div>
                         <div class="form-group">
                             <label for="log-chairperson">Chairperson's Name</label>
-                            <input type="text" id="log-chairperson" placeholder="Enter name">
+                            <select id="log-chairperson"></select>
                         </div>
                         <div class="form-group">
                             <label for="log-headcount">Head Count</label>
@@ -769,11 +769,11 @@
                 </div>
                 <div class="form-group">
                     <label for="event-speaker">Speaker</label>
-                    <input type="text" id="event-speaker" placeholder="Name of speaker" />
+                    <select id="event-speaker"></select>
                 </div>
                 <div class="form-group">
                     <label for="event-chair">Chairperson</label>
-                    <input type="text" id="event-chair" placeholder="Name of chair" />
+                    <select id="event-chair"></select>
                 </div>
                 <div class="form-group">
                     <label for="event-description">Description</label>
@@ -1691,8 +1691,9 @@
         <div class="box" style="width: 90%; max-width: 1200px; max-height: 90vh; overflow-y: auto; background: #2c3e50; color: #ecf0f1; border: 1px solid #3498db;">
             <span class="modal-close" onclick="closeRosterModal()">&times;</span>
             <h2 style="color: #3498db;">Full Member Roster</h2>
-            <div class="form-group">
-                <input type="text" id="roster-search" onkeyup="renderRosterTable()" placeholder="Search by name, email, phone..." />
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <input type="text" id="roster-search" onkeyup="renderRosterTable()" placeholder="Search by name, email, phone..." style="flex-grow: 1;" />
+                <button class="btn" onclick="openMemberFormFromModal()">Add New Member</button>
             </div>
             <div style="overflow-x: auto;">
                 <table id="roster-table">
@@ -1727,6 +1728,11 @@ function goToSection(sectionId) {
     if (section) section.classList.add('active');
     const navItem = document.querySelector('nav li[data-section="' + sectionId + '"]');
     if (navItem) navItem.classList.add('active');
+
+    // If navigating to the schedule, render the calendar
+    if (sectionId === 'schedule-section') {
+        renderCalendar();
+    }
 }
 // Toggle form visibility
 function toggleEventForm() {
@@ -2137,6 +2143,7 @@ function updateMember() {
     updateBirthdaysTable();
     updateHome();
     populateAttendeeDropdown();
+    populateMemberDropdowns();
 }
 
 // Add member
@@ -2167,6 +2174,7 @@ function addMember() {
     updateBirthdaysTable();
     updateHome();
     populateAttendeeDropdown();
+    populateMemberDropdowns();
 }
 // Delete member
 function deleteMember(id) {
@@ -2178,6 +2186,7 @@ function deleteMember(id) {
     updateBirthdaysTable();
     updateHome();
     populateAttendeeDropdown();
+    populateMemberDropdowns();
 }
 
 // Helper to find all anniversaries within a given date window
@@ -3488,6 +3497,14 @@ function deleteMemberAndRefreshRoster(id) {
     renderRosterTable();
 }
 
+function openMemberFormFromModal() {
+    closeRosterModal();
+    const form = document.getElementById('add-member-form');
+    form.style.display = 'block';
+    goToSection('birthdays-section');
+    form.scrollIntoView({ behavior: 'smooth' });
+}
+
 function populateAttendeeDropdown() {
     const select = document.getElementById('gc-attendees');
     if (!select) return;
@@ -3505,6 +3522,44 @@ function populateAttendeeDropdown() {
             option.selected = true;
         }
         select.appendChild(option);
+    });
+}
+
+function populateMemberDropdowns() {
+    const members = storage.getMembers().sort((a, b) => a.name.localeCompare(b.name));
+    const dropdowns = [
+        { id: 'log-chairperson', placeholder: 'Select Chairperson' },
+        { id: 'event-speaker', placeholder: 'Select Speaker (optional)', optional: true },
+        { id: 'event-chair', placeholder: 'Select Chairperson (optional)', optional: true }
+    ];
+
+    dropdowns.forEach(dd_info => {
+        const select = document.getElementById(dd_info.id);
+        if (!select) return;
+
+        const currentValue = select.value;
+        select.innerHTML = '';
+
+        const placeholderOption = document.createElement('option');
+        placeholderOption.value = '';
+        placeholderOption.textContent = dd_info.placeholder;
+        select.appendChild(placeholderOption);
+
+        if (dd_info.optional) {
+            const noneOption = document.createElement('option');
+            noneOption.value = 'None';
+            noneOption.textContent = 'None';
+            select.appendChild(noneOption);
+        }
+
+        members.forEach(member => {
+            const option = document.createElement('option');
+            option.value = member.name;
+            option.textContent = member.name;
+            select.appendChild(option);
+        });
+
+        select.value = currentValue;
     });
 }
 
@@ -3599,6 +3654,7 @@ function init() {
     updateGCLogTable();
     updateChairpersonAnnouncements();
     populateAttendeeDropdown();
+    populateMemberDropdowns();
     setupAudioRecorder();
 
     // Back to Top button logic
