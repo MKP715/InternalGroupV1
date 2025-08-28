@@ -2098,128 +2098,168 @@ function initNav() {
     });
 }
 // Meeting Companion: format data and display logic
-const meetingFormats = {
-    'open-discussion': `
-        <h3>Open Discussion Meeting</h3>
-        <p><strong>Chairperson opens the meeting:</strong> "Welcome to the Rowlett Group of Alcoholics Anonymous. My name is ___, and I am an alcoholic."</p>
-        <p>Moment of silence, followed by the Serenity Prayer.</p>
-        <p>Read "How It Works" from Chapter 5 of the Big Book.</p>
-        <p>Acknowledge newcomers and visitors.</p>
-        <p>Introduce the topic for discussion. (e.g., a Step, a Tradition, a reading from AA literature, or a general topic related to recovery).</p>
-        <p>Facilitate sharing, ensuring everyone who wants to share has the opportunity.</p>
-        <p>Close with the Lord's Prayer or the Responsibility Declaration.</p>
-    `,
-    'closed-discussion': `
-        <h3>Closed Discussion Meeting (for alcoholics only)</h3>
-        <p><strong>Chairperson opens the meeting:</strong> "Welcome to the Rowlett Group of Alcoholics Anonymous. This is a closed meeting, for alcoholics or those who have a desire to stop drinking. My name is ___, and I am an alcoholic."</p>
-        <p>Moment of silence, followed by the Serenity Prayer.</p>
-        <p>Read "How It Works" and the Twelve Traditions.</p>
-        <p>Acknowledge newcomers.</p>
-        <p>Introduce the topic, often focusing on more in-depth aspects of the Steps, Traditions, or personal recovery challenges.</p>
-        <p>Facilitate sharing in a safe, closed environment.</p>
-        <p>Close with the Lord's Prayer or the Responsibility Declaration.</p>
-    `,
-    'big-book': `
-        <h3>Big Book Study</h3>
-        <p><strong>Chairperson opens the meeting:</strong> "Welcome to the Big Book study of the Rowlett Group. My name is ___, and I am an alcoholic."</p>
-        <p>Moment of silence, followed by the Serenity Prayer.</p>
-        <p>Read a chapter or section from the book "Alcoholics Anonymous."</p>
-        <p>The reader or chairperson may pause to allow for comments or questions, or discussion may follow the reading.</p>
-        <p>Focus is on understanding the text and applying it to personal recovery.</p>
-        <p>Close with the Lord's Prayer or the Responsibility Declaration.</p>
-    `,
-    '12x12': `
-        <h3>12 Steps and 12 Traditions Study</h3>
-        <p><strong>Chairperson opens the meeting:</strong> "Welcome to the 12 & 12 study of the Rowlett Group. My name is ___, and I am an alcoholic."</p>
-        <p>Moment of silence, followed by the Serenity Prayer.</p>
-        <p>Read a Step or Tradition from the book "Twelve Steps and Twelve Traditions."</p>
-        <p>Discussion focuses on the selected Step or Tradition, its meaning, and its application in members' lives.</p>
-        <p>Close with the Lord's Prayer or the Responsibility Declaration.</p>
-    `,
-    'personal-story': `
-        <h3>Personal Story Speaker Meeting</h3>
-        <p><strong>Chairperson opens the meeting:</strong> "Welcome to the Rowlett Group of Alcoholics Anonymous. My name is ___, and I am an alcoholic."</p>
-        <p>Moment of silence and Serenity Prayer.</p>
-        <p>Read "How It Works."</p>
-        <p>Introduce the speaker. The speaker shares their experience, strength, and hope: what it was like, what happened, and what it's like now.</p>
-        <p>Sharing is typically for a set amount of time (e.g., 20-30 minutes).</p>
-        <p>After the speaker, the meeting may open for brief sharing or proceed to closing.</p>
-        <p>Close with the Lord's Prayer or the Responsibility Declaration.</p>
-    `,
-    'foundations': `
-        <h3>Foundations Speaker Meeting</h3>
-        <p><strong>Chairperson opens the meeting:</strong> "Welcome to the Foundations meeting of the Rowlett Group. My name is ___, and I am an alcoholic."</p>
-        <p>Moment of silence and Serenity Prayer.</p>
-        <p>Introduce the speaker, who will share on a foundational aspect of AA recovery (e.g., Sponsorship, Service, Home Group, a specific Step).</p>
-        <p>The speaker's share is the main focus of the meeting.</p>
-        <p>Close with the Lord's Prayer or the Responsibility Declaration.</p>
-    `,
-    'birthday': `
-        <h3>Birthday Night Meeting</h3>
-        <p><strong>Chairperson opens the meeting:</strong> "Welcome to the Birthday Night celebration of the Rowlett Group. My name is ___, and I am an alcoholic."</p>
-        <p>Moment of silence and Serenity Prayer.</p>
-        <p>Acknowledge members celebrating a sobriety anniversary this month.</p>
-        <p>Invite each person up to receive a chip. They may share briefly on their recovery.</p>
-        <p>The group celebrates their milestones.</p>
-        <p>Close with the Serenity Prayer, often holding hands in a circle.</p>
-    `,
-    'how-it-works': `
-        <h3>How It Works</h3>
-        <p>RARELY HAVE we seen a person fail who has thoroughly followed our path. Those who do not recover are people who cannot or will not completely give themselves to this simple program, usually men and women who are constitutionally incapable of being honest with themselves. There are such unfortunates. They are not at fault; they seem to have been born that way. They are naturally incapable of grasping and developing a manner of living which demands rigorous honesty. Their chances are less than average. There are those, too, who suffer from grave emotional and mental disorders, but many of them do recover if they have the capacity to be honest.</p>
-        <p>Our stories disclose in a general way what we used to be like, what happened, and what we are like now. If you have decided you want what we have and are willing to go to any length to get it-then you are ready to take certain steps.</p>
-        <p>At some of these we balked. We thought we could find an easier, softer way. But we could not. With all the earnestness at our command, we beg of you to be fearless and thorough from the very start. Some of us have tried to hold on to our old ideas and the result was nil until we let go absolutely.</p>
-        <p>Remember that we deal with alcohol - cunning, baffling, powerful! Without help it is too much for us. But there is One who has all power-that One is God. May you find Him now!</p>
-        <p>Half measures availed us nothing. We stood at the turning point. We asked His protection and care with complete abandon.</p>
-        <p>Here are the steps we took, which are suggested as a program of recovery:</p>
-        <ol style="list-style-position: inside;">
-            <li>We admitted we were powerless over alcohol - that our lives had become unmanageable.</li>
-            <li>Came to believe that a Power greater than ourselves could restore us to sanity.</li>
-            <li>Made a decision to turn our will and our lives over to the care of God as we understood Him.</li>
-            <li>Made a searching and fearless moral inventory of ourselves.</li>
-            <li>Admitted to God, to ourselves and to another human being the exact nature of our wrongs.</li>
-            <li>Were entirely ready to have God remove all these defects of character.</li>
-            <li>Humbly asked Him to remove our shortcomings.</li>
-            <li>Made a list of all persons we had harmed, and became willing to make amends to them all.</li>
-            <li>Made direct amends to such people wherever possible, except when to do so would injure them or others.</li>
-            <li>Continued to take personal inventory and when we were wrong promptly admitted it.</li>
-            <li>Sought through prayer and meditation to improve our conscious contact with God as we understood Him, praying only for knowledge of His will for us and the power to carry that out.</li>
-            <li>Having had a spiritual awakening as the result of these steps, we tried to carry this message to alcoholics and to practice these principles in all our affairs.</li>
-        </ol>
-        <p>Many of us exclaimed, "What an order! I can't go through with it." Do not be discouraged. No one among us has been able to maintain anything like perfect adherence to these principles. We are not saints. The point is, that we are willing to grow along spiritual lines. The principles we have set down are guides to progress. We claim spiritual progress rather than spiritual perfection.</p>
-        <p>Our description of the alcoholic, the chapter to the agnostic, and our personal adventures before and after make clear three pertinent ideas:</p>
-        <ul style="list-style-position: inside;">
-            <li>a. That we were alcoholic and could not manage our own lives.</li>
-            <li>b. That probably no human power could have relieved our alcoholism.</li>
-            <li>c. That God could and would if He were sought.</li>
-        </ul>
-    `,
-    'traditions': `
-        <h3>The Twelve Traditions</h3>
-        <ol style="list-style-position: inside;">
-            <li>Our common welfare should come first; personal recovery depends upon A.A. unity.</li>
-            <li>For our group purpose there is but one ultimate authority — a loving God as He may express Himself in our group conscience. Our leaders are but trusted servants; they do not govern.</li>
-            <li>The only requirement for A.A. membership is a desire to stop drinking.</li>
-            <li>Each group should be autonomous except in matters affecting other groups or A.A. as a whole.</li>
-            <li>Each group has but one primary purpose — to carry its message to the alcoholic who still suffers.</li>
-            <li>An A.A. group ought never endorse, finance, or lend the A.A. name to any related facility or outside enterprise, lest problems of money, property, and prestige divert us from our primary purpose.</li>
-            <li>Every A.A. group ought to be fully self-supporting, declining outside contributions.</li>
-            <li>Alcoholics Anonymous should remain forever non-professional, but our service centers may employ special workers.</li>
-            <li>A.A., as such, ought never be organized; but we may create service boards or committees directly responsible to those they serve.</li>
-            <li>Alcoholics Anonymous has no opinion on outside issues; hence the A.A. name ought never be drawn into public controversy.</li>
-            <li>Our public relations policy is based on attraction rather than promotion; we need always maintain personal anonymity at the level of press, radio, and films.</li>
-            <li>Anonymity is the spiritual foundation of all our traditions, ever reminding us to place principles before personalities.</li>
-        </ol>
-    `,
-    'promises': `
-        <h3>The 9th Step Promises</h3>
-        <p>If we are painstaking about this phase of our development, we will be amazed before we are halfway through. We are going to know a new freedom and a new happiness. We will not regret the past nor wish to shut the door on it. We will comprehend the word serenity and we will know peace. No matter how far down the scale we have gone, we will see how our experience can benefit others. That feeling of uselessness and self pity will disappear. We will lose interest in selfish things and gain interest in our fellows. Self seeking will slip away. Our whole attitude and outlook upon life will change. Fear of people and of economic insecurity will leave us. We will intuitively know how to handle situations which used to baffle us. We will suddenly realize that God is doing for us what we could not do for ourselves.</p>
-        <p>Are these extravagant promises? We think not! They are being fulfilled among us – Sometimes quickly, sometimes slowly. They will always materialize if we work for them.</p>
-    `
+const contentData = {
+    'open-discussion': {
+        title: 'Open Discussion Meeting',
+        content: [
+            { type: 'p', text: '<strong>Chairperson opens the meeting:</strong> "Welcome to the Rowlett Group of Alcoholics Anonymous. My name is ___, and I am an alcoholic."' },
+            { type: 'p', text: 'Moment of silence, followed by the Serenity Prayer.' },
+            { type: 'p', text: 'Read "How It Works" from Chapter 5 of the Big Book.' },
+            { type: 'p', text: 'Acknowledge newcomers and visitors.' },
+            { type: 'p', text: 'Introduce the topic for discussion. (e.g., a Step, a Tradition, a reading from AA literature, or a general topic related to recovery).' },
+            { type: 'p', text: 'Facilitate sharing, ensuring everyone who wants to share has the opportunity.' },
+            { type: 'p', text: 'Close with the Lord\'s Prayer or the Responsibility Declaration.' }
+        ]
+    },
+    'closed-discussion': {
+        title: 'Closed Discussion Meeting (for alcoholics only)',
+        content: [
+            { type: 'p', text: '<strong>Chairperson opens the meeting:</strong> "Welcome to the Rowlett Group of Alcoholics Anonymous. This is a closed meeting, for alcoholics or those who have a desire to stop drinking. My name is ___, and I am an alcoholic."' },
+            { type: 'p', text: 'Moment of silence, followed by the Serenity Prayer.' },
+            { type: 'p', text: 'Read "How It Works" and the Twelve Traditions.' },
+            { type: 'p', text: 'Acknowledge newcomers.' },
+            { type: 'p', text: 'Introduce the topic, often focusing on more in-depth aspects of the Steps, Traditions, or personal recovery challenges.' },
+            { type: 'p', text: 'Facilitate sharing in a safe, closed environment.' },
+            { type: 'p', text: 'Close with the Lord\'s Prayer or the Responsibility Declaration.' }
+        ]
+    },
+    'big-book': {
+        title: 'Big Book Study',
+        content: [
+            { type: 'p', text: '<strong>Chairperson opens the meeting:</strong> "Welcome to the Big Book study of the Rowlett Group. My name is ___, and I am an alcoholic."' },
+            { type: 'p', text: 'Moment of silence, followed by the Serenity Prayer.' },
+            { type: 'p', text: 'Read a chapter or section from the book "Alcoholics Anonymous."' },
+            { type: 'p', text: 'The reader or chairperson may pause to allow for comments or questions, or discussion may follow the reading.' },
+            { type: 'p', text: 'Focus is on understanding the text and applying it to personal recovery.' },
+            { type: 'p', text: 'Close with the Lord\'s Prayer or the Responsibility Declaration.' }
+        ]
+    },
+    '12x12': {
+        title: '12 Steps and 12 Traditions Study',
+        content: [
+            { type: 'p', text: '<strong>Chairperson opens the meeting:</strong> "Welcome to the 12 & 12 study of the Rowlett Group. My name is ___, and I am an alcoholic."' },
+            { type: 'p', text: 'Moment of silence, followed by the Serenity Prayer.' },
+            { type: 'p', text: 'Read a Step or Tradition from the book "Twelve Steps and Twelve Traditions."' },
+            { type: 'p', text: 'Discussion focuses on the selected Step or Tradition, its meaning, and its application in members\' lives.' },
+            { type: 'p', text: 'Close with the Lord\'s Prayer or the Responsibility Declaration.' }
+        ]
+    },
+    'personal-story': {
+        title: 'Personal Story Speaker Meeting',
+        content: [
+            { type: 'p', text: '<strong>Chairperson opens the meeting:</strong> "Welcome to the Rowlett Group of Alcoholics Anonymous. My name is ___, and I am an alcoholic."' },
+            { type: 'p', text: 'Moment of silence and Serenity Prayer.' },
+            { type: 'p', text: 'Read "How It Works."' },
+            { type: 'p', text: 'Introduce the speaker. The speaker shares their experience, strength, and hope: what it was like, what happened, and what it\'s like now.' },
+            { type: 'p', text: 'Sharing is typically for a set amount of time (e.g., 20-30 minutes).' },
+            { type: 'p', text: 'After the speaker, the meeting may open for brief sharing or proceed to closing.' },
+            { type: 'p', text: 'Close with the Lord\'s Prayer or the Responsibility Declaration.' }
+        ]
+    },
+    'foundations': {
+        title: 'Foundations Speaker Meeting',
+        content: [
+            { type: 'p', text: '<strong>Chairperson opens the meeting:</strong> "Welcome to the Foundations meeting of the Rowlett Group. My name is ___, and I am an alcoholic."' },
+            { type: 'p', text: 'Moment of silence and Serenity Prayer.' },
+            { type: 'p', text: 'Introduce the speaker, who will share on a foundational aspect of AA recovery (e.g., Sponsorship, Service, Home Group, a specific Step).' },
+            { type: 'p', text: 'The speaker\'s share is the main focus of the meeting.' },
+            { type: 'p', text: 'Close with the Lord\'s Prayer or the Responsibility Declaration.' }
+        ]
+    },
+    'birthday': {
+        title: 'Birthday Night Meeting',
+        content: [
+            { type: 'p', text: '<strong>Chairperson opens the meeting:</strong> "Welcome to the Birthday Night celebration of the Rowlett Group. My name is ___, and I am an alcoholic."' },
+            { type: 'p', text: 'Moment of silence and Serenity Prayer.' },
+            { type: 'p', text: 'Acknowledge members celebrating a sobriety anniversary this month.' },
+            { type: 'p', text: 'Invite each person up to receive a chip. They may share briefly on their recovery.' },
+            { type: 'p', text: 'The group celebrates their milestones.' },
+            { type: 'p', text: 'Close with the Serenity Prayer, often holding hands in a circle.' }
+        ]
+    },
+    'how-it-works': {
+        title: 'How It Works',
+        content: [
+            { type: 'p', text: 'RARELY HAVE we seen a person fail who has thoroughly followed our path. Those who do not recover are people who cannot or will not completely give themselves to this simple program, usually men and women who are constitutionally incapable of being honest with themselves. There are such unfortunates. They are not at fault; they seem to have been born that way. They are naturally incapable of grasping and developing a manner of living which demands rigorous honesty. Their chances are less than average. There are those, too, who suffer from grave emotional and mental disorders, but many of them do recover if they have the capacity to be honest.' },
+            { type: 'p', text: 'Our stories disclose in a general way what we used to be like, what happened, and what we are like now. If you have decided you want what we have and are willing to go to any length to get it-then you are ready to take certain steps.' },
+            { type: 'p', text: 'At some of these we balked. We thought we could find an easier, softer way. But we could not. With all the earnestness at our command, we beg of you to be fearless and thorough from the very start. Some of us have tried to hold on to our old ideas and the result was nil until we let go absolutely.' },
+            { type: 'p', text: 'Remember that we deal with alcohol - cunning, baffling, powerful! Without help it is too much for us. But there is One who has all power-that One is God. May you find Him now!' },
+            { type: 'p', text: 'Half measures availed us nothing. We stood at the turning point. We asked His protection and care with complete abandon.' },
+            { type: 'p', text: 'Here are the steps we took, which are suggested as a program of recovery:' },
+            { type: 'ol', items: [
+                'We admitted we were powerless over alcohol - that our lives had become unmanageable.',
+                'Came to believe that a Power greater than ourselves could restore us to sanity.',
+                'Made a decision to turn our will and our lives over to the care of God as we understood Him.',
+                'Made a searching and fearless moral inventory of ourselves.',
+                'Admitted to God, to ourselves and to another human being the exact nature of our wrongs.',
+                'Were entirely ready to have God remove all these defects of character.',
+                'Humbly asked Him to remove our shortcomings.',
+                'Made a list of all persons we had harmed, and became willing to make amends to them all.',
+                'Made direct amends to such people wherever possible, except when to do so would injure them or others.',
+                'Continued to take personal inventory and when we were wrong promptly admitted it.',
+                'Sought through prayer and meditation to improve our conscious contact with God as we understood Him, praying only for knowledge of His will for us and the power to carry that out.',
+                'Having had a spiritual awakening as the result of these steps, we tried to carry this message to alcoholics and to practice these principles in all our affairs.'
+            ]},
+            { type: 'p', text: 'Many of us exclaimed, "What an order! I can\'t go through with it." Do not be discouraged. No one among us has been able to maintain anything like perfect adherence to these principles. We are not saints. The point is, that we are willing to grow along spiritual lines. The principles we have set down are guides to progress. We claim spiritual progress rather than spiritual perfection.' },
+            { type: 'p', text: 'Our description of the alcoholic, the chapter to the agnostic, and our personal adventures before and after make clear three pertinent ideas:' },
+            { type: 'ul', items: [
+                'a. That we were alcoholic and could not manage our own lives.',
+                'b. That probably no human power could have relieved our alcoholism.',
+                'c. That God could and would if He were sought.'
+            ]}
+        ]
+    },
+    'traditions': {
+        title: 'The Twelve Traditions',
+        content: [
+            { type: 'ol', items: [
+                'Our common welfare should come first; personal recovery depends upon A.A. unity.',
+                'For our group purpose there is but one ultimate authority — a loving God as He may express Himself in our group conscience. Our leaders are but trusted servants; they do not govern.',
+                'The only requirement for A.A. membership is a desire to stop drinking.',
+                'Each group should be autonomous except in matters affecting other groups or A.A. as a whole.',
+                'Each group has but one primary purpose — to carry its message to the alcoholic who still suffers.',
+                'An A.A. group ought never endorse, finance, or lend the A.A. name to any related facility or outside enterprise, lest problems of money, property, and prestige divert us from our primary purpose.',
+                'Every A.A. group ought to be fully self-supporting, declining outside contributions.',
+                'Alcoholics Anonymous should remain forever non-professional, but our service centers may employ special workers.',
+                'A.A., as such, ought never be organized; but we may create service boards or committees directly responsible to those they serve.',
+                'Alcoholics Anonymous has no opinion on outside issues; hence the A.A. name ought never be drawn into public controversy.',
+                'Our public relations policy is based on attraction rather than promotion; we need always maintain personal anonymity at the level of press, radio, and films.',
+                'Anonymity is the spiritual foundation of all our traditions, ever reminding us to place principles before personalities.'
+            ]}
+        ]
+    },
+    'promises': {
+        title: 'The 9th Step Promises',
+        content: [
+            { type: 'p', text: 'If we are painstaking about this phase of our development, we will be amazed before we are halfway through. We are going to know a new freedom and a new happiness. We will not regret the past nor wish to shut the door on it. We will comprehend the word serenity and we will know peace. No matter how far down the scale we have gone, we will see how our experience can benefit others. That feeling of uselessness and self pity will disappear. We will lose interest in selfish things and gain interest in our fellows. Self seeking will slip away. Our whole attitude and outlook upon life will change. Fear of a Meda and of economic insecurity will leave us. We will intuitively know how to handle situations which used to baffle us. We will suddenly realize that God is doing for us what we could not do for ourselves.' },
+            { type: 'p', text: 'Are these extravagant promises? We think not! They are being fulfilled among us – Sometimes quickly, sometimes slowly. They will always materialize if we work for them.' }
+        ]
+    }
 };
+
+function renderMeetingFormat(data) {
+    if (!data) return '';
+    let html = `<h3>${data.title}</h3>`;
+    data.content.forEach(item => {
+        if (item.type === 'p') {
+            html += `<p>${item.text}</p>`;
+        } else if (item.type === 'ol' || item.type === 'ul') {
+            const listTag = item.type;
+            html += `<${listTag} style="list-style-position: inside;">`;
+            item.items.forEach(li => {
+                html += `<li>${li}</li>`;
+            });
+            html += `</${listTag}>`;
+        }
+    });
+    return html;
+}
+
 function showMeetingFormat(format) {
     const display = document.getElementById('meeting-format-display');
-    if (meetingFormats[format]) {
-        display.innerHTML = meetingFormats[format];
+    const data = contentData[format];
+    if (data) {
+        display.innerHTML = renderMeetingFormat(data);
         display.style.display = 'block';
     }
 }
