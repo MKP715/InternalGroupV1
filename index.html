@@ -748,6 +748,16 @@
                 <button class="btn" onclick="showMeetingFormat('traditions')">The 12 Traditions</button>
                 <button class="btn" onclick="showMeetingFormat('promises')">The 9th Step Promises</button>
             </div>
+
+            <h3 class="mt-4">Dictionary</h3>
+            <div class="box mt-4">
+                <div class="form-group" style="display: flex; gap: 0.5rem;">
+                    <input type="text" id="dictionary-search-word" placeholder="Enter a word..." style="flex-grow: 1;">
+                    <button id="dictionary-search-btn" class="btn">Search</button>
+                </div>
+                <div id="dictionary-results" class="mt-4"></div>
+            </div>
+
             <div id="meeting-format-display" class="box mt-4" style="display: none;">
                 <!-- Meeting format will be injected here -->
             </div>
@@ -3437,6 +3447,21 @@ function initNav() {
         });
     });
 }
+
+function initDictionary() {
+    const searchBtn = document.getElementById('dictionary-search-btn');
+    const searchInput = document.getElementById('dictionary-search-word');
+    if (searchBtn) {
+        searchBtn.addEventListener('click', searchDictionary);
+    }
+    if (searchInput) {
+        searchInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                searchDictionary();
+            }
+        });
+    }
+}
 // Meeting Companion: format data and display logic
 const contentData = {
     'open-discussion': {
@@ -3603,6 +3628,69 @@ function showMeetingFormat(format) {
         display.style.display = 'block';
     }
 }
+
+// Dictionary functions
+async function searchDictionary() {
+    const word = document.getElementById('dictionary-search-word').value.trim();
+    const resultsContainer = document.getElementById('dictionary-results');
+    if (!word) {
+        showToast('Please enter a word to search.', 'error');
+        return;
+    }
+    resultsContainer.innerHTML = '<p>Searching...</p>';
+    try {
+        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+        if (!response.ok) {
+            throw new Error('Word not found. Please check your spelling.');
+        }
+        const data = await response.json();
+        displayDictionaryResults(data);
+    } catch (error) {
+        resultsContainer.innerHTML = `<p style="color: #e74c3c;">${error.message}</p>`;
+        showToast(error.message, 'error');
+    }
+}
+
+function displayDictionaryResults(data) {
+    const resultsContainer = document.getElementById('dictionary-results');
+    resultsContainer.innerHTML = ''; // Clear previous results or "Searching..." text
+
+    if (!data || data.length === 0) {
+        resultsContainer.innerHTML = '<p>No definitions found.</p>';
+        return;
+    }
+
+    const entry = data[0]; // Displaying the first entry found
+    let html = `<h3>${entry.word} <span style="font-size: 1rem; color: #bdc3c7;">${entry.phonetic || ''}</span></h3>`;
+
+    entry.meanings.forEach(meaning => {
+        html += `<h4 style="color: #3498db; margin-top: 1rem;">${meaning.partOfSpeech}</h4>`;
+        html += '<ul style="list-style-type: disc; padding-left: 20px;">';
+        meaning.definitions.forEach(def => {
+            html += `<li>${def.definition}`;
+            if (def.example) {
+                html += `<br><em style="color: #95a5a6;">Example: "${def.example}"</em>`;
+            }
+            html += '</li>';
+        });
+        html += '</ul>';
+    });
+
+    // Add audio for pronunciation if available
+    const phoneticWithAudio = entry.phonetics.find(p => p.audio);
+    if (phoneticWithAudio && phoneticWithAudio.audio) {
+        html += `<div style="margin-top: 1rem;">
+                    <p>Pronunciation:</p>
+                    <audio controls src="${phoneticWithAudio.audio}" style="width: 100%;">
+                        Your browser does not support the audio element.
+                    </audio>
+                 </div>`;
+    }
+
+    resultsContainer.innerHTML = html;
+}
+
+
 // Chairperson's Corner Roster Modal Logic
 let rosterSortColumn = 'name';
 let rosterSortDirection = 'asc';
@@ -3894,6 +3982,7 @@ function setupAudioRecorder() {
 function init() {
     initDefaults();
     initNav();
+    initDictionary();
     initCalendarNav();
     updateEventsTable();
     updateBirthdaysTable();
