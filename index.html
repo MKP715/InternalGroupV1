@@ -3807,14 +3807,11 @@ function setupAudioRecorder() {
 
     const descriptionP = recordBtn.parentElement.previousElementSibling;
 
-    // Feature detection and security checks
-    if (!window.isSecureContext) {
+    // Allow audio recording when served from file:// or a secure context.
+    if (!window.isSecureContext && location.protocol !== 'file:') {
         showToast('Audio recording requires a secure connection (HTTPS or localhost).', 'error');
         recordBtn.disabled = true;
-        if (descriptionP && descriptionP.tagName === 'P') {
-            descriptionP.innerHTML = '<b>Audio recording is disabled.</b> This feature requires a secure connection (HTTPS or localhost). If you are developing locally, please use a local web server instead of opening the file directly.';
-            descriptionP.style.opacity = 1;
-        }
+        descriptionP.innerHTML = '<b>Audio recording is disabled.</b> This feature requires a secure connection (HTTPS or localhost). If you are developing locally, please serve the page via a local web server.';
         return;
     }
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
