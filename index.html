@@ -8,6 +8,9 @@
     <!-- Include Tailwind CSS for utility classes and Font Awesome for icons -->
     <script type="text/javascript" nonce="6a1ecf93e9ea40d69745a521409" src="//local.adguard.org?ts=1756309701836&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile-FWN5RSYCJYXFxtPJuZcVXR%26ts%3D487864%26p%3Dfs%26cid%3D1%26sig%3D7ff30eeb1ec578f48096db98306ce9016bf2e3d0dab442c691f75906ada342cb&amp;app=chrome.exe&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1"></script><script type="text/javascript" nonce="6a1ecf93e9ea40d69745a521409" src="//local.adguard.org?ts=1756309701836&amp;name=AdGuard%20Extra&amp;name=AdGuard%20Popup%20Blocker&amp;type=user-script"></script><script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- PDF Generation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <!-- Link to the custom favicon logo -->
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <style>
@@ -385,10 +388,94 @@
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
+            position: relative; /* For tooltip positioning */
+            cursor: help;
+        }
+        /* Tooltip styles */
+        .calendar-event .tooltip {
+            visibility: hidden;
+            width: 220px;
+            background-color: #34495e;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 10;
+            bottom: 110%;
+            left: 50%;
+            margin-left: -110px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: normal;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .calendar-event:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        .calendar-event .tooltip strong {
+            color: #3498db; /* Metallic Blue */
+        }
+        /* Toast Notification styles */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+        .toast {
+            background-color: #34495e; /* Wet Asphalt */
+            color: #ecf0f1; /* Silver */
+            padding: 15px 20px;
+            border-radius: 6px;
+            border-left: 5px solid #3498db; /* Default: info */
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.4s ease;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast.success { border-left-color: #2ecc71; /* Green */ }
+        .toast.error { border-left-color: #e74c3c; /* Red */ }
+
+        /* Back to Top Button */
+        #back-to-top-btn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            z-index: 99;
+            font-size: 18px;
+            border: none;
+            outline: none;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            line-height: 18px;
+            text-align: center;
+        }
+        #back-to-top-btn:hover {
+            background-color: #2980b9;
         }
     </style>
 </head>
 <body>
+    <div id="toast-container"></div>
+    <button id="back-to-top-btn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
     <nav>
         <div class="logo">
             <!-- Inline SVG to display the logo in the nav -->
@@ -406,6 +493,8 @@
             <li data-section="announcements-section">Announcements</li>
             <li data-section="gallery-section">Gallery</li>
             <li data-section="history-section">History</li>
+            <li data-section="chairperson-section">Chairperson's Corner</li>
+            <li data-section="settings-section">Settings</li>
         </ul>
     </nav>
 
@@ -438,6 +527,66 @@
                     <h3>Latest Photos</h3>
                     <div id="home-latest-photos" style="display:flex; gap:0.5rem; overflow-x: auto;"></div>
                     <button class="btn" onclick="goToSection('gallery-section')">Browse Gallery</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chairperson's Corner Section -->
+        <section id="chairperson-section">
+            <h2>Chairperson's Corner</h2>
+            <p class="mb-4">Track meeting attendance and contributions. All data is stored locally.</p>
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <!-- Left column for form and table -->
+                <div>
+                    <div class="box">
+                        <h3 id="chairperson-form-title">Log New Entry</h3>
+                        <div class="form-group">
+                            <label for="log-date">Meeting Date</label>
+                            <input type="date" id="log-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="log-headcount">Head Count</label>
+                            <input type="number" id="log-headcount" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="log-7th-tradition">7th Tradition ($)</label>
+                            <input type="number" id="log-7th-tradition" step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="log-orange-can">Orange Can ($)</label>
+                            <input type="number" id="log-orange-can" step="0.01" placeholder="0.00">
+                        </div>
+                        <input type="hidden" id="log-edit-id">
+                        <button id="log-form-btn" class="btn" onclick="handleChairpersonLogSubmit()">Add Log Entry</button>
+                        <button id="log-form-cancel-btn" class="btn secondary" onclick="cancelLogEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
+                    </div>
+
+                    <h3 class="mt-4">Contribution Log</h3>
+                    <button class="btn" onclick="exportChairpersonLogToPDF()" style="margin-bottom: 1rem;">Export Log to PDF</button>
+                    <table id="chairperson-log-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Head Count</th>
+                                <th>7th Tradition</th>
+                                <th>Orange Can</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="chairperson-log-body"></tbody>
+                    </table>
+                </div>
+
+                <!-- Right column for QR Code -->
+                <div class="box" style="text-align: center;">
+                    <h3>7th Tradition QR Code</h3>
+                    <p class="mb-2">Update the link in the settings to change the QR code.</p>
+                    <img id="qr-code-img" src="https://via.placeholder.com/250" alt="QR Code Placeholder" style="width: 250px; height: 250px; margin: auto; border-radius: 8px;">
+                    <div class="form-group mt-4">
+                        <label for="qr-code-link">QR Code Image Link</label>
+                        <input type="text" id="qr-code-link" placeholder="Paste image URL here...">
+                    </div>
+                    <button class="btn" onclick="updateQRCode()">Update QR Code</button>
                 </div>
             </div>
         </section>
@@ -478,63 +627,67 @@
                 <button class="btn secondary" id="next-month-btn">Next &gt;</button>
             </div>
             <div id="calendar-grid"></div>
-            <div class="form-group">
-                <label for="event-title">Title</label>
-                <input type="text" id="event-title" placeholder="e.g. Big Book Study" />
+
+            <button class="btn" onclick="toggleEventForm()" style="margin-top: 1rem;">Add New Event</button>
+            <div id="add-event-form" class="box" style="display:none; margin-top: 1rem;">
+                <div class="form-group">
+                    <label for="event-title">Title</label>
+                    <input type="text" id="event-title" placeholder="e.g. Big Book Study" />
+                </div>
+                <div class="form-group">
+                    <label for="event-date">Date (leave blank for weekly)</label>
+                    <input type="date" id="event-date" />
+                </div>
+                <div class="form-group">
+                    <label for="event-day">Day of Week (for weekly meetings)</label>
+                    <select id="event-day">
+                        <option value="">--Select day--</option>
+                        <option value="0">Sunday</option>
+                        <option value="1">Monday</option>
+                        <option value="2">Tuesday</option>
+                        <option value="3">Wednesday</option>
+                        <option value="4">Thursday</option>
+                        <option value="5">Friday</option>
+                        <option value="6">Saturday</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="event-time">Time</label>
+                    <input type="time" id="event-time" />
+                </div>
+                <div class="form-group">
+                    <label for="event-category">Category</label>
+                    <select id="event-category">
+                        <option value="General">General</option>
+                        <option value="Open Discussion">Open Discussion</option>
+                        <option value="Closed Discussion">Closed Discussion</option>
+                        <option value="Big Book Study">Big Book Study</option>
+                        <option value="12x12 Study">12x12 Study</option>
+                        <option value="Personal Story">Personal Story</option>
+                        <option value="Foundations Speaker">Foundations Speaker</option>
+                        <option value="Birthday Night">Birthday Night</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="event-reading">Reading</label>
+                    <input type="text" id="event-reading" placeholder="e.g. How It Works" />
+                </div>
+                <div class="form-group">
+                    <label for="event-speaker">Speaker</label>
+                    <input type="text" id="event-speaker" placeholder="Name of speaker" />
+                </div>
+                <div class="form-group">
+                    <label for="event-chair">Chairperson</label>
+                    <input type="text" id="event-chair" placeholder="Name of chair" />
+                </div>
+                <div class="form-group">
+                    <label for="event-description">Description</label>
+                    <textarea id="event-description" rows="2" placeholder="Notes or description..."></textarea>
+                </div>
+                <input type="hidden" id="event-edit-id">
+                <button id="event-form-btn" class="btn" onclick="handleEventSubmit()">Add Event</button>
+                <button id="event-form-cancel-btn" class="btn secondary" onclick="cancelEventEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
             </div>
-            <div class="form-group">
-                <label for="event-date">Date (leave blank for weekly)</label>
-                <input type="date" id="event-date" />
-            </div>
-            <div class="form-group">
-                <label for="event-day">Day of Week (for weekly meetings)</label>
-                <select id="event-day">
-                    <option value="">--Select day--</option>
-                    <option value="0">Sunday</option>
-                    <option value="1">Monday</option>
-                    <option value="2">Tuesday</option>
-                    <option value="3">Wednesday</option>
-                    <option value="4">Thursday</option>
-                    <option value="5">Friday</option>
-                    <option value="6">Saturday</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="event-time">Time</label>
-                <input type="time" id="event-time" />
-            </div>
-            <div class="form-group">
-                <label for="event-category">Category</label>
-                <select id="event-category">
-                    <option value="General">General</option>
-                    <option value="Open Discussion">Open Discussion</option>
-                    <option value="Closed Discussion">Closed Discussion</option>
-                    <option value="Big Book Study">Big Book Study</option>
-                    <option value="12x12 Study">12x12 Study</option>
-                    <option value="Personal Story">Personal Story</option>
-                    <option value="Foundations Speaker">Foundations Speaker</option>
-                    <option value="Birthday Night">Birthday Night</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="event-reading">Reading</label>
-                <input type="text" id="event-reading" placeholder="e.g. How It Works" />
-            </div>
-            <div class="form-group">
-                <label for="event-speaker">Speaker</label>
-                <input type="text" id="event-speaker" placeholder="Name of speaker" />
-            </div>
-            <div class="form-group">
-                <label for="event-chair">Chairperson</label>
-                <input type="text" id="event-chair" placeholder="Name of chair" />
-            </div>
-            <div class="form-group">
-                <label for="event-description">Description</label>
-                <textarea id="event-description" rows="2" placeholder="Notes or description..."></textarea>
-            </div>
-            <input type="hidden" id="event-edit-id">
-            <button id="event-form-btn" class="btn" onclick="handleEventSubmit()">Add Event</button>
-            <button id="event-form-cancel-btn" class="btn secondary" onclick="cancelEventEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
 
             <h3 class="mt-4">Upcoming Events (Next 30 Days)</h3>
             <div class="form-group">
@@ -571,17 +724,20 @@
         <section id="birthdays-section">
             <h2>Member Birthdays</h2>
             <p class="mb-2">Add members’ birthdays and see upcoming celebrations.</p>
-            <div class="form-group">
-                <label for="birthday-name">Name</label>
-                <input type="text" id="birthday-name" placeholder="Member's name" />
+            <button class="btn" onclick="toggleBirthdayForm()">Add Birthday</button>
+            <div id="add-birthday-form" class="box" style="display:none; margin-top: 1rem;">
+                <div class="form-group">
+                    <label for="birthday-name">Name</label>
+                    <input type="text" id="birthday-name" placeholder="Member's name" />
+                </div>
+                <div class="form-group">
+                    <label for="birthday-date">Birthday (MM-DD)</label>
+                    <input type="date" id="birthday-date" />
+                </div>
+                <input type="hidden" id="birthday-edit-id">
+                <button id="birthday-form-btn" class="btn" onclick="handleBirthdaySubmit()">Add Birthday</button>
+                <button id="birthday-form-cancel-btn" class="btn secondary" onclick="cancelBirthdayEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
             </div>
-            <div class="form-group">
-                <label for="birthday-date">Birthday (MM-DD)</label>
-                <input type="date" id="birthday-date" />
-            </div>
-            <input type="hidden" id="birthday-edit-id">
-            <button id="birthday-form-btn" class="btn" onclick="handleBirthdaySubmit()">Add Birthday</button>
-            <button id="birthday-form-cancel-btn" class="btn secondary" onclick="cancelBirthdayEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
             
             <h3 class="mt-4">All Birthdays</h3>
             <table id="birthdays-table">
@@ -1370,6 +1526,25 @@
                 </div>
             </div>
         </section>
+
+        <!-- Settings Section -->
+        <section id="settings-section">
+            <h2>Settings & Data Management</h2>
+            <div class="box mb-4">
+                <h3>Export Data</h3>
+                <p class="mb-2">Download your data as a JSON file for backup.</p>
+                <button class="btn" onclick="exportData('all')">Export All Data</button>
+                <button class="btn secondary" onclick="exportData('events')">Export Events Only</button>
+                <button class="btn secondary" onclick="exportData('birthdays')">Export Birthdays Only</button>
+                <button class="btn secondary" onclick="exportData('chairpersonLog')">Export Chairperson Log Only</button>
+            </div>
+            <div class="box">
+                <h3>Import Data</h3>
+                <p class="mb-2">Import data from a previously exported JSON file. <strong>Warning:</strong> This will overwrite existing data of the same type.</p>
+                <input type="file" id="import-file" accept=".json">
+                <button class="btn" onclick="importData()">Import Data</button>
+            </div>
+        </section>
     </main>
 
     <!-- Embed the application script directly into this file -->
@@ -1387,6 +1562,39 @@ function goToSection(sectionId) {
     const navItem = document.querySelector('nav li[data-section="' + sectionId + '"]');
     if (navItem) navItem.classList.add('active');
 }
+// Toggle form visibility
+function toggleEventForm() {
+    const form = document.getElementById('add-event-form');
+    const isVisible = form.style.display === 'block';
+    form.style.display = isVisible ? 'none' : 'block';
+}
+
+function toggleBirthdayForm() {
+    const form = document.getElementById('add-birthday-form');
+    const isVisible = form.style.display === 'block';
+    form.style.display = isVisible ? 'none' : 'block';
+}
+// Toast Notification
+function showToast(message, type = 'info') { // type can be 'info', 'success', or 'error'
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+
+    // Animate in
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 100);
+
+    // Animate out and remove
+    setTimeout(() => {
+        toast.classList.remove('show');
+        toast.addEventListener('transitionend', () => {
+            toast.remove();
+        });
+    }, 3000); // Toast disappears after 3 seconds
+}
 // Storage wrappers using localStorage
 const storage = {
     getEvents() { return JSON.parse(localStorage.getItem('events') || '[]'); },
@@ -1396,7 +1604,11 @@ const storage = {
     getAnnouncements() { return JSON.parse(localStorage.getItem('announcements') || '[]'); },
     saveAnnouncements(a) { localStorage.setItem('announcements', JSON.stringify(a)); },
     getPhotos() { return JSON.parse(localStorage.getItem('photos') || '[]'); },
-    savePhotos(p) { localStorage.setItem('photos', JSON.stringify(p)); }
+    savePhotos(p) { localStorage.setItem('photos', JSON.stringify(p)); },
+    getChairpersonLog() { return JSON.parse(localStorage.getItem('chairpersonLog') || '[]'); },
+    saveChairpersonLog(log) { localStorage.setItem('chairpersonLog', JSON.stringify(log)); },
+    getQRCodeLink() { return localStorage.getItem('qrCodeLink') || 'https://via.placeholder.com/250'; },
+    saveQRCodeLink(link) { localStorage.setItem('qrCodeLink', link); }
 };
 // Initialize default data on first load
 function initDefaults() {
@@ -1430,6 +1642,12 @@ function initDefaults() {
             storage.savePhotos(newPhotos);
         }
     }
+    if (!localStorage.getItem('chairpersonLog')) {
+        storage.saveChairpersonLog([]);
+    }
+    // Load QR code
+    document.getElementById('qr-code-img').src = storage.getQRCodeLink();
+    document.getElementById('qr-code-link').value = storage.getQRCodeLink();
 }
 function handleEventSubmit() {
     const editId = document.getElementById('event-edit-id').value;
@@ -1446,6 +1664,12 @@ function editEvent(id) {
     if (!eventToEdit) {
         console.error('Event not found for editing');
         return;
+    }
+
+    // Show the form
+    const form = document.getElementById('add-event-form');
+    if (form.style.display === 'none') {
+        form.style.display = 'block';
     }
 
     document.getElementById('event-edit-id').value = eventToEdit.id;
@@ -1497,7 +1721,7 @@ function updateEvent() {
     const description = document.getElementById('event-description').value.trim();
 
     if (!title || !time || (!dateVal && dayVal === '')) {
-        alert('Please provide at least a title, time, and either a date or day of week.');
+        showToast('Please provide at least a title, time, and either a date or day of week.', 'error');
         return;
     }
 
@@ -1518,6 +1742,7 @@ function updateEvent() {
             description
         };
         storage.saveEvents(events);
+        showToast('Event updated successfully!', 'success');
     }
 
     cancelEventEdit(); // Resets form and buttons
@@ -1538,7 +1763,7 @@ function addEvent() {
     const chair = document.getElementById('event-chair').value.trim();
     const description = document.getElementById('event-description').value.trim();
     if (!title || !time || (!dateVal && dayVal === '')) {
-        alert('Please provide at least a title, time, and either a date or day of week.');
+        showToast('Please provide at least a title, time, and either a date or day of week.', 'error');
         return;
     }
     const events = storage.getEvents();
@@ -1555,6 +1780,7 @@ function addEvent() {
         description
     });
     storage.saveEvents(events);
+    showToast('Event added successfully!', 'success');
     document.getElementById('event-title').value = '';
     document.getElementById('event-date').value = '';
     document.getElementById('event-day').value = '';
@@ -1573,6 +1799,7 @@ function deleteEvent(id) {
     let events = storage.getEvents();
     events = events.filter(ev => ev.id !== id);
     storage.saveEvents(events);
+    showToast('Event deleted.', 'info');
     updateEventsTable();
     updateHome();
     renderCalendar();
@@ -1645,6 +1872,12 @@ function editBirthday(id) {
         return;
     }
 
+    // Show the form
+    const form = document.getElementById('add-birthday-form');
+    if (form.style.display === 'none') {
+        form.style.display = 'block';
+    }
+
     document.getElementById('birthday-edit-id').value = bdayToEdit.id;
     document.getElementById('birthday-name').value = bdayToEdit.name;
     document.getElementById('birthday-date').value = bdayToEdit.birthday;
@@ -1672,7 +1905,7 @@ function updateBirthday() {
     const bdate = document.getElementById('birthday-date').value;
 
     if (!name || !bdate) {
-        alert('Please provide both name and date.');
+        showToast('Please provide both name and date.', 'error');
         return;
     }
 
@@ -1682,6 +1915,7 @@ function updateBirthday() {
     if (bdayIndex > -1) {
         bdays[bdayIndex] = { id, name, birthday: bdate };
         storage.saveBirthdays(bdays);
+        showToast('Birthday updated successfully!', 'success');
     }
 
     cancelBirthdayEdit(); // Resets form and buttons
@@ -1694,12 +1928,13 @@ function addBirthday() {
     const name = document.getElementById('birthday-name').value.trim();
     const bdate = document.getElementById('birthday-date').value;
     if (!name || !bdate) {
-        alert('Please provide both name and date.');
+        showToast('Please provide both name and date.', 'error');
         return;
     }
     const bdays = storage.getBirthdays();
     bdays.push({ id: genId(), name, birthday: bdate });
     storage.saveBirthdays(bdays);
+    showToast('Birthday added successfully!', 'success');
     document.getElementById('birthday-name').value = '';
     document.getElementById('birthday-date').value = '';
     updateBirthdaysTable();
@@ -1711,6 +1946,7 @@ function deleteBirthday(id) {
     let bdays = storage.getBirthdays();
     bdays = bdays.filter(b => b.id !== id);
     storage.saveBirthdays(bdays);
+    showToast('Birthday deleted.', 'info');
     updateBirthdaysTable();
     updateHome();
 }
@@ -1748,12 +1984,13 @@ function updateBirthdaysTable() {
 function addAnnouncement() {
     const text = document.getElementById('announcement-text').value.trim();
     if (!text) {
-        alert('Enter an announcement.');
+        showToast('Enter an announcement.', 'error');
         return;
     }
     const ann = storage.getAnnouncements();
     ann.unshift({ id: genId(), text, dateCreated: new Date().toISOString() });
     storage.saveAnnouncements(ann);
+    showToast('Announcement added!', 'success');
     document.getElementById('announcement-text').value = '';
     updateAnnouncementsList();
     updateHome();
@@ -1764,6 +2001,7 @@ function deleteAnnouncement(id) {
     let ann = storage.getAnnouncements();
     ann = ann.filter(a => a.id !== id);
     storage.saveAnnouncements(ann);
+    showToast('Announcement deleted.', 'info');
     updateAnnouncementsList();
     updateHome();
 }
@@ -1809,9 +2047,13 @@ function showPreviousPhoto() {
     updateModalContent();
 }
 
-function handleEscKey(event) {
+function handleModalKeys(event) {
     if (event.key === 'Escape') {
         closeModal();
+    } else if (event.key === 'ArrowRight') {
+        showNextPhoto();
+    } else if (event.key === 'ArrowLeft') {
+        showPreviousPhoto();
     }
 }
 
@@ -1826,13 +2068,13 @@ function openModal(index, photos) {
 
     updateModalContent();
 
-    document.addEventListener('keydown', handleEscKey);
+    document.addEventListener('keydown', handleModalKeys);
 }
 
 function closeModal() {
     const modal = document.getElementById('photo-modal');
     modal.style.display = "none";
-    document.removeEventListener('keydown', handleEscKey);
+    document.removeEventListener('keydown', handleModalKeys);
 }
 // Photo uploading
 function uploadPhotos() {
@@ -1840,7 +2082,7 @@ function uploadPhotos() {
     const tagsInput = document.getElementById('photo-tags');
     const files = Array.from(input.files);
     if (!files || files.length === 0) {
-        alert('Select one or more images to upload.');
+        showToast('Select one or more images to upload.', 'error');
         return;
     }
     const tags = tagsInput.value.split(',').map(tag => tag.trim()).filter(tag => tag);
@@ -1853,6 +2095,7 @@ function uploadPhotos() {
             remaining--;
             if (remaining === 0) {
                 storage.savePhotos(photos);
+                showToast(`${files.length} photo(s) uploaded!`, 'success');
                 input.value = '';
                 tagsInput.value = '';
                 updateGallery();
@@ -1868,9 +2111,261 @@ function deletePhoto(index) {
     const photos = storage.getPhotos();
     photos.splice(index, 1);
     storage.savePhotos(photos);
+    showToast('Photo deleted.', 'info');
     updateGallery();
     updateHome();
 }
+
+// Chairperson's Corner functions
+function handleChairpersonLogSubmit() {
+    const editId = document.getElementById('log-edit-id').value;
+    if (editId) {
+        updateChairpersonLog(editId);
+    } else {
+        addChairpersonLog();
+    }
+}
+
+function addChairpersonLog() {
+    const date = document.getElementById('log-date').value;
+    const headcount = document.getElementById('log-headcount').value;
+    const tradition = document.getElementById('log-7th-tradition').value;
+    const orangeCan = document.getElementById('log-orange-can').value;
+
+    if (!date) {
+        showToast('Please select a date.', 'error');
+        return;
+    }
+
+    const log = storage.getChairpersonLog();
+    log.push({
+        id: genId(),
+        date,
+        headcount: parseInt(headcount) || 0,
+        tradition: parseFloat(tradition) || 0,
+        orangeCan: parseFloat(orangeCan) || 0,
+    });
+    storage.saveChairpersonLog(log);
+    showToast('Log entry added.', 'success');
+    updateChairpersonLogTable();
+    document.getElementById('log-date').value = '';
+    document.getElementById('log-headcount').value = '';
+    document.getElementById('log-7th-tradition').value = '';
+    document.getElementById('log-orange-can').value = '';
+}
+
+function updateChairpersonLogTable() {
+    const tbody = document.getElementById('chairperson-log-body');
+    tbody.innerHTML = '';
+    const log = storage.getChairpersonLog().sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    log.forEach(entry => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${new Date(entry.date).toLocaleDateString()}</td>
+            <td>${entry.headcount}</td>
+            <td>$${entry.tradition.toFixed(2)}</td>
+            <td>$${entry.orangeCan.toFixed(2)}</td>
+            <td>
+                <button class="btn" onclick="editChairpersonLog('${entry.id}')" style="margin-right: 5px;">Edit</button>
+                <button class="btn secondary" onclick="deleteChairpersonLog('${entry.id}')">Delete</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function editChairpersonLog(id) {
+    const log = storage.getChairpersonLog();
+    const entry = log.find(e => e.id === id);
+    if (!entry) return;
+
+    document.getElementById('log-edit-id').value = entry.id;
+    document.getElementById('log-date').value = entry.date;
+    document.getElementById('log-headcount').value = entry.headcount;
+    document.getElementById('log-7th-tradition').value = entry.tradition;
+    document.getElementById('log-orange-can').value = entry.orangeCan;
+
+    document.getElementById('chairperson-form-title').textContent = 'Edit Log Entry';
+    document.getElementById('log-form-btn').textContent = 'Save Changes';
+    document.getElementById('log-form-cancel-btn').style.display = 'inline-block';
+}
+
+function updateChairpersonLog(id) {
+    const log = storage.getChairpersonLog();
+    const index = log.findIndex(e => e.id === id);
+    if (index === -1) return;
+
+    const date = document.getElementById('log-date').value;
+    const headcount = document.getElementById('log-headcount').value;
+    const tradition = document.getElementById('log-7th-tradition').value;
+    const orangeCan = document.getElementById('log-orange-can').value;
+
+    if (!date) {
+        showToast('Please select a date.', 'error');
+        return;
+    }
+
+    log[index] = {
+        id,
+        date,
+        headcount: parseInt(headcount) || 0,
+        tradition: parseFloat(tradition) || 0,
+        orangeCan: parseFloat(orangeCan) || 0,
+    };
+
+    storage.saveChairpersonLog(log);
+    showToast('Log entry updated.', 'success');
+    cancelLogEdit();
+    updateChairpersonLogTable();
+}
+
+function cancelLogEdit() {
+    document.getElementById('log-edit-id').value = '';
+    document.getElementById('log-date').value = '';
+    document.getElementById('log-headcount').value = '';
+    document.getElementById('log-7th-tradition').value = '';
+    document.getElementById('log-orange-can').value = '';
+
+    document.getElementById('chairperson-form-title').textContent = 'Log New Entry';
+    document.getElementById('log-form-btn').textContent = 'Add Log Entry';
+    document.getElementById('log-form-cancel-btn').style.display = 'none';
+}
+
+function deleteChairpersonLog(id) {
+    if (!confirm('Delete this log entry?')) return;
+    let log = storage.getChairpersonLog();
+    log = log.filter(e => e.id !== id);
+    storage.saveChairpersonLog(log);
+    showToast('Log entry deleted.', 'info');
+    updateChairpersonLogTable();
+}
+
+function updateQRCode() {
+    const link = document.getElementById('qr-code-link').value.trim();
+    if (link) {
+        storage.saveQRCodeLink(link);
+        document.getElementById('qr-code-img').src = link;
+        showToast('QR Code updated!', 'success');
+    } else {
+        showToast('Please enter a valid image URL.', 'error');
+    }
+}
+
+function exportChairpersonLogToPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const log = storage.getChairpersonLog().sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    if (log.length === 0) {
+        showToast('No log entries to export.', 'error');
+        return;
+    }
+
+    doc.setFontSize(18);
+    doc.text("Chairperson's Contribution Log", 14, 22);
+
+    const tableColumn = ["Date", "Head Count", "7th Tradition ($)", "Orange Can ($)"];
+    const tableRows = [];
+
+    log.forEach(entry => {
+        const logData = [
+            new Date(entry.date).toLocaleDateString(),
+            entry.headcount,
+            entry.tradition.toFixed(2),
+            entry.orangeCan.toFixed(2)
+        ];
+        tableRows.push(logData);
+    });
+
+    doc.autoTable({
+        head: [tableColumn],
+        body: tableRows,
+        startY: 30,
+    });
+
+    doc.save('Chairperson_Log_Report.pdf');
+    showToast('PDF export generated!', 'success');
+}
+
+// Data Management
+function exportData(dataType) {
+    let data;
+    let filename = 'rowlett_group_data.json';
+    const keys = {
+        events: 'events',
+        birthdays: 'birthdays',
+        announcements: 'announcements',
+        photos: 'photos',
+        chairpersonLog: 'chairpersonLog',
+        qrCodeLink: 'qrCodeLink',
+    };
+
+    if (dataType === 'all') {
+        data = {};
+        Object.keys(keys).forEach(key => {
+            data[key] = JSON.parse(localStorage.getItem(keys[key]) || '[]');
+        });
+        // Handle non-JSON items
+        data.qrCodeLink = localStorage.getItem('qrCodeLink') || '';
+
+    } else if (keys[dataType]) {
+        data = { [dataType]: JSON.parse(localStorage.getItem(keys[dataType]) || '[]') };
+        filename = `rowlett_group_${dataType}.json`;
+    } else {
+        showToast('Invalid data type for export.', 'error');
+        return;
+    }
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Data exported successfully!', 'success');
+}
+
+function importData() {
+    const fileInput = document.getElementById('import-file');
+    const file = fileInput.files[0];
+    if (!file) {
+        showToast('Please select a file to import.', 'error');
+        return;
+    }
+
+    if (!confirm('Are you sure you want to import this data? This will overwrite existing data.')) {
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        try {
+            const data = JSON.parse(event.target.result);
+            let imported = false;
+
+            if (data.events) { storage.saveEvents(data.events); imported = true; }
+            if (data.birthdays) { storage.saveBirthdays(data.birthdays); imported = true; }
+            if (data.announcements) { storage.saveAnnouncements(data.announcements); imported = true; }
+            if (data.photos) { storage.savePhotos(data.photos); imported = true; }
+            if (data.chairpersonLog) { storage.saveChairpersonLog(data.chairpersonLog); imported = true; }
+            if (data.qrCodeLink) { storage.saveQRCodeLink(data.qrCodeLink); imported = true; }
+
+            if (imported) {
+                showToast('Data imported successfully! The page will now reload.', 'success');
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                showToast('The selected file does not contain valid data to import.', 'error');
+            }
+        } catch (e) {
+            showToast('Failed to parse JSON file. Ensure it is a valid backup file.', 'error');
+            console.error('Import error:', e);
+        }
+    };
+    reader.readAsText(file);
+}
+
 // Update gallery display
 function updateGallery() {
     const grid = document.getElementById('gallery-grid');
@@ -1890,18 +2385,24 @@ function updateGallery() {
         img.onclick = () => openModal(idx, filteredPhotos);
         wrapper.appendChild(img);
         const delBtn = document.createElement('button');
-        delBtn.textContent = '×';
+        delBtn.innerHTML = '<i class="fas fa-trash"></i>';
         delBtn.style.position = 'absolute';
-        delBtn.style.top = '4px';
-        delBtn.style.right = '4px';
-        delBtn.style.background = 'rgba(0,0,0,0.6)';
-        delBtn.style.color = '#fff';
+        delBtn.style.top = '5px';
+        delBtn.style.right = '5px';
+        delBtn.style.background = 'rgba(0,0,0,0.7)';
+        delBtn.style.color = 'white';
         delBtn.style.border = 'none';
         delBtn.style.borderRadius = '50%';
-        delBtn.style.width = '24px';
-        delBtn.style.height = '24px';
+        delBtn.style.width = '30px';
+        delBtn.style.height = '30px';
+        delBtn.style.lineHeight = '30px';
+        delBtn.style.textAlign = 'center';
         delBtn.style.cursor = 'pointer';
-        delBtn.onclick = () => deletePhoto(originalIndex);
+        delBtn.style.fontSize = '14px';
+        delBtn.onclick = (e) => {
+            e.stopPropagation(); // Prevent modal from opening
+            deletePhoto(originalIndex);
+        };
         wrapper.appendChild(delBtn);
         grid.appendChild(wrapper);
     });
@@ -2052,10 +2553,24 @@ function renderCalendar() {
                 if (date.getDay() === ev.dayOfWeek) occurs = true;
             }
             if (occurs) {
-                const evEl = document.createElement('span');
+                const evEl = document.createElement('div');
                 evEl.className = 'calendar-event';
                 evEl.textContent = ev.title;
                 evEl.style.borderLeftColor = categoryColors[ev.category] || categoryColors['General'];
+
+                const tooltip = document.createElement('div');
+                tooltip.className = 'tooltip';
+                let tooltipContent = `<strong>${ev.title}</strong><br>`;
+                try {
+                    const eventTime = new Date('1970-01-01T' + (ev.time || '00:00'));
+                    tooltipContent += `Time: ${eventTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}<br>`;
+                } catch(e) { /* Ignore invalid time format */ }
+                if (ev.speaker) tooltipContent += `Speaker: ${ev.speaker}<br>`;
+                if (ev.chair) tooltipContent += `Chair: ${ev.chair}<br>`;
+                if (ev.description) tooltipContent += `Description: ${ev.description}`;
+                tooltip.innerHTML = tooltipContent;
+                evEl.appendChild(tooltip);
+
                 cell.appendChild(evEl);
             }
         });
@@ -2275,6 +2790,24 @@ function init() {
     updateHome();
     renderCalendar();
     showHistory('genesis-history');
+    updateChairpersonLogTable();
+
+    // Back to Top button logic
+    const mainEl = document.querySelector('main');
+    const backToTopBtn = document.getElementById('back-to-top-btn');
+
+    mainEl.addEventListener('scroll', () => {
+        const historySection = document.getElementById('history-section');
+        if (historySection.classList.contains('active') && mainEl.scrollTop > 100) {
+            backToTopBtn.style.display = 'block';
+        } else {
+            backToTopBtn.style.display = 'none';
+        }
+    });
+
+    backToTopBtn.addEventListener('click', () => {
+        mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 }
 document.addEventListener('DOMContentLoaded', init);
     </script>
