@@ -19,9 +19,9 @@
         }
 
         body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f8fafc;
-            color: #1f2937;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #2c3e50; /* Dark Slate Gray */
+            color: #ecf0f1; /* Silver */
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -30,6 +30,7 @@
         h1, h2, h3 {
             font-weight: bold;
             margin-bottom: 0.5rem;
+            color: #3498db; /* Metallic Blue */
         }
 
         /* Navigation bar */
@@ -38,9 +39,10 @@
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            background: #0f172a;
-            color: #fff;
+            background: #34495e; /* Wet Asphalt */
+            color: #ecf0f1;
             padding: 0.5rem 1rem;
+            border-bottom: 2px solid #3498db; /* Metallic Blue */
         }
         nav .logo {
             display: flex;
@@ -65,7 +67,8 @@
             transition: background 0.2s;
         }
         nav li:hover, nav li.active {
-            background: #334155;
+            background: #3498db; /* Metallic Blue */
+            color: #ffffff;
         }
 
         /* Main content area */
@@ -93,11 +96,12 @@
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         }
         .box {
-            background: #fff;
-            border: 1px solid #e5e7eb;
+            background: #34495e; /* Wet Asphalt */
+            border: 1px solid #7f8c8d; /* Silver-Gray */
             border-radius: 6px;
             padding: 1rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            color: #ecf0f1; /* Silver */
         }
 
         table {
@@ -107,30 +111,32 @@
         }
         th, td {
             padding: 0.5rem;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid #7f8c8d; /* Silver-Gray */
             text-align: left;
         }
         th {
-            background: #f3f4f6;
+            background: #2c3e50; /* Dark Slate Gray */
+            color: #3498db; /* Metallic Blue */
         }
 
         .btn {
             padding: 0.5rem 1rem;
             border-radius: 4px;
-            background: #0ea5e9;
+            background: #3498db; /* Metallic Blue */
             color: #fff;
-            border: none;
+            border: 1px solid #2980b9; /* Darker Blue */
             cursor: pointer;
             transition: background 0.2s;
         }
         .btn:hover {
-            background: #0284c7;
+            background: #2980b9;
         }
         .btn.secondary {
-            background: #94a3b8;
+            background: #7f8c8d; /* Silver-Gray */
+            border-color: #95a5a6;
         }
         .btn.secondary:hover {
-            background: #64748b;
+            background: #95a5a6;
         }
 
         /* Form styling */
@@ -146,9 +152,10 @@
         .form-group textarea {
             width: 100%;
             padding: 0.5rem;
-            border: 1px solid #cbd5e1;
+            border: 1px solid #7f8c8d; /* Silver-Gray */
             border-radius: 4px;
-            background: #fff;
+            background: #34495e; /* Wet Asphalt */
+            color: #ecf0f1; /* Silver */
         }
 
         /* Gallery */
@@ -173,14 +180,16 @@
         .history-nav button {
             flex: 1;
             padding: 0.5rem;
-            border: none;
+            border: 1px solid #7f8c8d;
             border-radius: 4px;
-            background: #94a3b8;
-            color: #fff;
+            background: #34495e; /* Wet Asphalt */
+            color: #ecf0f1; /* Silver */
             cursor: pointer;
+            transition: background 0.2s;
         }
         .history-nav button.active {
-            background: #0ea5e9;
+            background: #3498db; /* Metallic Blue */
+            border-color: #2980b9;
         }
         /* Timeline styles adapted from the original history pages.  */
         .timeline-container {
@@ -193,7 +202,7 @@
             content: '';
             position: absolute;
             width: 6px;
-            background-color: #94a3b8; /* slate-400 */
+            background-color: #7f8c8d; /* Silver-Gray */
             top: 0;
             bottom: 0;
             left: 50%;
@@ -218,8 +227,8 @@
             width: 25px;
             height: 25px;
             right: -14px;
-            background-color: white;
-            border: 4px solid #06B6D4; /* cyan-500 */
+            background-color: #34495e; /* Wet Asphalt */
+            border: 4px solid #3498db; /* Metallic Blue */
             top: 25px;
             border-radius: 50%;
             z-index: 1;
@@ -231,7 +240,8 @@
         }
         .timeline-content {
             padding: 20px 30px;
-            background-color: white;
+            background-color: #2c3e50; /* Dark Slate Gray */
+            color: #ecf0f1; /* Silver */
             position: relative;
             border-radius: 8px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -253,8 +263,8 @@
             transform: translateX(-50%) scale(0.95);
             width: 90%;
             min-width: 250px;
-            background-color: #2d3748; /* gray-800 */
-            color: white;
+            background-color: #34495e; /* Wet Asphalt */
+            color: #ecf0f1; /* Silver */
             padding: 15px;
             border-radius: 8px;
             z-index: 10;
@@ -279,13 +289,13 @@
         #calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            border: 1px solid #e5e7eb;
+            border: 1px solid #7f8c8d; /* Silver-Gray */
             border-radius: 6px;
             overflow: hidden;
         }
         .calendar-day {
-            border-right: 1px solid #e5e7eb;
-            border-bottom: 1px solid #e5e7eb;
+            border-right: 1px solid #7f8c8d;
+            border-bottom: 1px solid #7f8c8d;
             min-height: 110px;
             padding: 4px;
             font-size: 0.8rem;
@@ -296,17 +306,18 @@
         }
         .calendar-day-name {
             font-weight: bold;
-            background-color: #f3f4f6;
+            background-color: #2c3e50; /* Dark Slate Gray */
+            color: #3498db; /* Metallic Blue */
             text-align: center;
             padding: 4px 0;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid #7f8c8d;
         }
         .calendar-day-number {
             font-weight: bold;
             margin-bottom: 4px;
         }
         .calendar-event {
-            background-color: #0ea5e9;
+            background-color: #3498db; /* Metallic Blue */
             color: white;
             border-radius: 3px;
             padding: 2px 4px;
@@ -324,13 +335,14 @@
         <div class="logo">
             <!-- Inline SVG to display the logo in the nav -->
             <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="50" cy="50" r="48" fill="#0ea5e9"/>
+                <circle cx="50" cy="50" r="48" fill="#3498db"/>
                 <text x="50" y="57" text-anchor="middle" font-size="45" fill="white" font-family="Verdana, sans-serif">R</text>
             </svg>
             <span>Rowlett Group</span>
         </div>
         <ul id="nav-menu">
             <li data-section="home-section" class="active">Home</li>
+            <li data-section="companion-section">Meeting Companion</li>
             <li data-section="schedule-section">Schedule</li>
             <li data-section="birthdays-section">Birthdays</li>
             <li data-section="announcements-section">Announcements</li>
@@ -347,6 +359,10 @@
             <div class="grid grid-cols-2">
                 <div class="box">
                     <h3>Upcoming Meetings</h3>
+                    <a href="zoommtg://zoom.us/join?action=join&confno=89039357234&pwd=dGFobXpwY04yalVZQ1RySlRCcitsUT09" class="btn" style="display: block; text-align: center; margin-bottom: 1rem;">
+                        <i class="fas fa-video"></i> Start Zoom Meeting
+                    </a>
+                    <p style="font-size: 0.8rem; text-align: center; margin-bottom: 1rem;">(Requires Zoom to be installed)</p>
                     <ul id="home-upcoming-events"></ul>
                     <button class="btn" onclick="goToSection('schedule-section')">View Full Schedule</button>
                 </div>
@@ -365,6 +381,24 @@
                     <div id="home-latest-photos" style="display:flex; gap:0.5rem; overflow-x: auto;"></div>
                     <button class="btn" onclick="goToSection('gallery-section')">Browse Gallery</button>
                 </div>
+            </div>
+        </section>
+
+        <!-- Meeting Companion Section -->
+        <section id="companion-section">
+            <h2>Meeting Companion</h2>
+            <p class="mb-4">Select a meeting type to view the format and readings.</p>
+            <div id="meeting-format-buttons" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                <button class="btn" onclick="showMeetingFormat('open-discussion')">Open Discussion</button>
+                <button class="btn" onclick="showMeetingFormat('closed-discussion')">Closed Discussion</button>
+                <button class="btn" onclick="showMeetingFormat('big-book')">Big Book Study</button>
+                <button class="btn" onclick="showMeetingFormat('12x12')">12x12 Study</button>
+                <button class="btn" onclick="showMeetingFormat('personal-story')">Personal Story</button>
+                <button class="btn" onclick="showMeetingFormat('foundations')">Foundations Speaker</button>
+                <button class="btn" onclick="showMeetingFormat('birthday')">Birthday Night</button>
+            </div>
+            <div id="meeting-format-display" class="box mt-4" style="display: none;">
+                <!-- Meeting format will be injected here -->
             </div>
         </section>
 
@@ -1667,6 +1701,80 @@ function initNav() {
             goToSection(target);
         });
     });
+}
+// Meeting Companion: format data and display logic
+const meetingFormats = {
+    'open-discussion': `
+        <h3>Open Discussion Meeting</h3>
+        <p><strong>Chairperson opens the meeting:</strong> "Welcome to the Rowlett Group of Alcoholics Anonymous. My name is ___, and I am an alcoholic."</p>
+        <p>Moment of silence, followed by the Serenity Prayer.</p>
+        <p>Read "How It Works" from Chapter 5 of the Big Book.</p>
+        <p>Acknowledge newcomers and visitors.</p>
+        <p>Introduce the topic for discussion. (e.g., a Step, a Tradition, a reading from AA literature, or a general topic related to recovery).</p>
+        <p>Facilitate sharing, ensuring everyone who wants to share has the opportunity.</p>
+        <p>Close with the Lord's Prayer or the Responsibility Declaration.</p>
+    `,
+    'closed-discussion': `
+        <h3>Closed Discussion Meeting (for alcoholics only)</h3>
+        <p><strong>Chairperson opens the meeting:</strong> "Welcome to the Rowlett Group of Alcoholics Anonymous. This is a closed meeting, for alcoholics or those who have a desire to stop drinking. My name is ___, and I am an alcoholic."</p>
+        <p>Moment of silence, followed by the Serenity Prayer.</p>
+        <p>Read "How It Works" and the Twelve Traditions.</p>
+        <p>Acknowledge newcomers.</p>
+        <p>Introduce the topic, often focusing on more in-depth aspects of the Steps, Traditions, or personal recovery challenges.</p>
+        <p>Facilitate sharing in a safe, closed environment.</p>
+        <p>Close with the Lord's Prayer or the Responsibility Declaration.</p>
+    `,
+    'big-book': `
+        <h3>Big Book Study</h3>
+        <p><strong>Chairperson opens the meeting:</strong> "Welcome to the Big Book study of the Rowlett Group. My name is ___, and I am an alcoholic."</p>
+        <p>Moment of silence, followed by the Serenity Prayer.</p>
+        <p>Read a chapter or section from the book "Alcoholics Anonymous."</p>
+        <p>The reader or chairperson may pause to allow for comments or questions, or discussion may follow the reading.</p>
+        <p>Focus is on understanding the text and applying it to personal recovery.</p>
+        <p>Close with the Lord's Prayer or the Responsibility Declaration.</p>
+    `,
+    '12x12': `
+        <h3>12 Steps and 12 Traditions Study</h3>
+        <p><strong>Chairperson opens the meeting:</strong> "Welcome to the 12 & 12 study of the Rowlett Group. My name is ___, and I am an alcoholic."</p>
+        <p>Moment of silence, followed by the Serenity Prayer.</p>
+        <p>Read a Step or Tradition from the book "Twelve Steps and Twelve Traditions."</p>
+        <p>Discussion focuses on the selected Step or Tradition, its meaning, and its application in members' lives.</p>
+        <p>Close with the Lord's Prayer or the Responsibility Declaration.</p>
+    `,
+    'personal-story': `
+        <h3>Personal Story Speaker Meeting</h3>
+        <p><strong>Chairperson opens the meeting:</strong> "Welcome to the Rowlett Group of Alcoholics Anonymous. My name is ___, and I am an alcoholic."</p>
+        <p>Moment of silence and Serenity Prayer.</p>
+        <p>Read "How It Works."</p>
+        <p>Introduce the speaker. The speaker shares their experience, strength, and hope: what it was like, what happened, and what it's like now.</p>
+        <p>Sharing is typically for a set amount of time (e.g., 20-30 minutes).</p>
+        <p>After the speaker, the meeting may open for brief sharing or proceed to closing.</p>
+        <p>Close with the Lord's Prayer or the Responsibility Declaration.</p>
+    `,
+    'foundations': `
+        <h3>Foundations Speaker Meeting</h3>
+        <p><strong>Chairperson opens the meeting:</strong> "Welcome to the Foundations meeting of the Rowlett Group. My name is ___, and I am an alcoholic."</p>
+        <p>Moment of silence and Serenity Prayer.</p>
+        <p>Introduce the speaker, who will share on a foundational aspect of AA recovery (e.g., Sponsorship, Service, Home Group, a specific Step).</p>
+        <p>The speaker's share is the main focus of the meeting.</p>
+        <p>Close with the Lord's Prayer or the Responsibility Declaration.</p>
+    `,
+    'birthday': `
+        <h3>Birthday Night Meeting</h3>
+        <p><strong>Chairperson opens the meeting:</strong> "Welcome to the Birthday Night celebration of the Rowlett Group. My name is ___, and I am an alcoholic."</p>
+        <p>Moment of silence and Serenity Prayer.</p>
+        <p>Acknowledge members celebrating a sobriety anniversary this month.</p>
+        <p>Invite each person up to receive a chip. They may share briefly on their recovery.</p>
+        <p>The group celebrates their milestones.</p>
+        <p>Close with the Serenity Prayer, often holding hands in a circle.</p>
+    `
+};
+function showMeetingFormat(format) {
+    const display = document.getElementById('meeting-format-display');
+    if (meetingFormats[format]) {
+        display.innerHTML = meetingFormats[format];
+        display.style.display = 'block';
+    }
 }
 // Initialize the application
 function init() {
