@@ -161,6 +161,15 @@
             color: #ecf0f1; /* Silver */
         }
 
+        /* Specific style for the roster search input to ensure visibility */
+        #roster-search {
+            padding: 0.5rem;
+            border: 1px solid #7f8c8d; /* Silver-Gray */
+            border-radius: 4px;
+            background: #34495e; /* Wet Asphalt */
+            color: #ecf0f1; /* Silver */
+        }
+
         /* Gallery */
         #gallery-grid {
             display: grid;
@@ -633,8 +642,16 @@
                             <select multiple id="gc-attendees" style="height: 120px; background: #34495e; color: #ecf0f1; border: 1px solid #7f8c8d; border-radius: 4px; padding: 0.5rem; width: 100%;"></select>
                         </div>
                         <div class="form-group">
-                            <label for="gc-servant-reports">Servant Reports</label>
-                            <textarea id="gc-servant-reports" rows="3" placeholder="Summary of reports..."></textarea>
+                            <label for="gc-servant-select">Add Servant Report</label>
+                            <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+                                <select id="gc-servant-select" style="flex-grow: 1;"></select>
+                                <button type="button" class="btn" onclick="addServantReport()">Add Report</button>
+                            </div>
+                            <textarea id="gc-servant-report-input" rows="2" placeholder="Type report here for the selected servant..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-servant-reports">Servant Reports Summary</label>
+                            <textarea id="gc-servant-reports" rows="4" placeholder="Reports will be compiled here..."></textarea>
                         </div>
                         <input type="hidden" id="gc-edit-id">
                         <button id="gc-form-btn" class="btn" onclick="handleGCLogSubmit()">Add GC Entry</button>
@@ -3526,11 +3543,13 @@ function populateAttendeeDropdown() {
 }
 
 function populateMemberDropdowns() {
-    const members = storage.getMembers().sort((a, b) => a.name.localeCompare(b.name));
+    const allMembers = storage.getMembers().sort((a, b) => a.name.localeCompare(b.name));
+    const servantMembers = allMembers.filter(m => m.isServant);
+
     const dropdowns = [
-        { id: 'log-chairperson', placeholder: 'Select Chairperson' },
-        { id: 'event-speaker', placeholder: 'Select Speaker (optional)', optional: true },
-        { id: 'event-chair', placeholder: 'Select Chairperson (optional)', optional: true }
+        { id: 'log-chairperson', placeholder: 'Select Chairperson', members: servantMembers, optional: false },
+        { id: 'event-speaker', placeholder: 'Select Speaker (optional)', members: allMembers, optional: true },
+        { id: 'event-chair', placeholder: 'Select Chairperson (optional)', members: servantMembers, optional: true }
     ];
 
     dropdowns.forEach(dd_info => {
@@ -3552,7 +3571,7 @@ function populateMemberDropdowns() {
             select.appendChild(noneOption);
         }
 
-        members.forEach(member => {
+        dd_info.members.forEach(member => {
             const option = document.createElement('option');
             option.value = member.name;
             option.textContent = member.name;
@@ -3560,6 +3579,39 @@ function populateMemberDropdowns() {
         });
 
         select.value = currentValue;
+    });
+}
+
+function addServantReport() {
+    const select = document.getElementById('gc-servant-select');
+    if (!select.value) {
+        showToast('Please select a servant.', 'error');
+        return;
+    }
+    const reportInput = document.getElementById('gc-servant-report-input');
+    const reportText = reportInput.value.trim();
+    if (!reportText) {
+        showToast('Please enter a report for the selected servant.', 'error');
+        return;
+    }
+    const summaryTextarea = document.getElementById('gc-servant-reports');
+    const servantName = select.options[select.selectedIndex].text;
+    const newReport = `${servantName}: ${reportText}`;
+    summaryTextarea.value += (summaryTextarea.value ? '\n' : '') + newReport;
+    reportInput.value = '';
+    showToast('Servant report added to summary.', 'success');
+}
+
+function populateServantsDropdown() {
+    const select = document.getElementById('gc-servant-select');
+    if (!select) return;
+    const servants = storage.getMembers().filter(m => m.isServant).sort((a, b) => a.name.localeCompare(b.name));
+    select.innerHTML = '<option value="">Select a servant...</option>';
+    servants.forEach(s => {
+        const option = document.createElement('option');
+        option.value = s.id;
+        option.textContent = s.servantPosition ? `${s.name} (${s.servantPosition})` : s.name;
+        select.appendChild(option);
     });
 }
 
@@ -3655,6 +3707,7 @@ function init() {
     updateChairpersonAnnouncements();
     populateAttendeeDropdown();
     populateMemberDropdowns();
+    populateServantsDropdown();
     setupAudioRecorder();
 
     // Back to Top button logic
