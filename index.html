@@ -528,6 +528,11 @@
                     <div id="home-latest-photos" style="display:flex; gap:0.5rem; overflow-x: auto;"></div>
                     <button class="btn" onclick="goToSection('gallery-section')">Browse Gallery</button>
                 </div>
+                <div class="box" style="text-align: center;">
+                    <h3>7th Tradition</h3>
+                    <img id="qr-code-img" src="https://via.placeholder.com/250" alt="QR Code Placeholder" style="width: 250px; height: 250px; margin: auto; border-radius: 8px;">
+                    <p class="mt-2">For questions, please contact Nathan D at 214-000-0000.</p>
+                </div>
             </div>
         </section>
 
@@ -543,6 +548,14 @@
                         <div class="form-group">
                             <label for="log-date">Meeting Date</label>
                             <input type="date" id="log-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="log-time">Meeting Time</label>
+                            <input type="time" id="log-time">
+                        </div>
+                        <div class="form-group">
+                            <label for="log-chairperson">Chairperson's Name</label>
+                            <input type="text" id="log-chairperson" placeholder="Enter name">
                         </div>
                         <div class="form-group">
                             <label for="log-headcount">Head Count</label>
@@ -567,6 +580,8 @@
                         <thead>
                             <tr>
                                 <th>Date</th>
+                                <th>Time</th>
+                                <th>Chairperson</th>
                                 <th>Head Count</th>
                                 <th>7th Tradition</th>
                                 <th>Orange Can</th>
@@ -577,16 +592,79 @@
                     </table>
                 </div>
 
-                <!-- Right column for QR Code -->
-                <div class="box" style="text-align: center;">
-                    <h3>7th Tradition QR Code</h3>
-                    <p class="mb-2">Update the link in the settings to change the QR code.</p>
-                    <img id="qr-code-img" src="https://via.placeholder.com/250" alt="QR Code Placeholder" style="width: 250px; height: 250px; margin: auto; border-radius: 8px;">
-                    <div class="form-group mt-4">
-                        <label for="qr-code-link">QR Code Image Link</label>
-                        <input type="text" id="qr-code-link" placeholder="Paste image URL here...">
+                <!-- Right column for Group Conscience Log -->
+                <div>
+                    <div class="box mb-4">
+                        <h3>Active Announcements</h3>
+                        <ul id="chairperson-announcements-list"></ul>
                     </div>
-                    <button class="btn" onclick="updateQRCode()">Update QR Code</button>
+                    <div class="box">
+                        <h3 id="gc-form-title">Log Group Conscience Item</h3>
+                        <div class="form-group">
+                            <label for="gc-date">Date</label>
+                            <input type="date" id="gc-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-item">Item/Motion</label>
+                            <textarea id="gc-item" rows="2" placeholder="Describe the motion..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-submitted-by">Submitted By</label>
+                            <input type="text" id="gc-submitted-by" placeholder="Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-status">Status</label>
+                            <select id="gc-status">
+                                <option value="passed">Passed</option>
+                                <option value="failed">Failed</option>
+                                <option value="tabled">Tabled</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-votes">Votes (For-Against)</label>
+                            <input type="text" id="gc-votes" placeholder="e.g., 10-2">
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-attendees">Members Present</label>
+                            <textarea id="gc-attendees" rows="3" placeholder="List names, separated by commas..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-servant-reports">Servant Reports</label>
+                            <textarea id="gc-servant-reports" rows="3" placeholder="Summary of reports..."></textarea>
+                        </div>
+                        <input type="hidden" id="gc-edit-id">
+                        <button id="gc-form-btn" class="btn" onclick="handleGCLogSubmit()">Add GC Entry</button>
+                        <button id="gc-form-cancel-btn" class="btn secondary" onclick="cancelGCEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
+                    </div>
+
+                    <h3 class="mt-4">Current Month's Group Conscience</h3>
+                    <table id="gc-log-table-current">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Item</th>
+                                <th>Submitted By</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gc-log-body-current"></tbody>
+                    </table>
+
+                    <h3 class="mt-4">Previous Months' Group Conscience</h3>
+                    <table id="gc-log-table-previous">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Item</th>
+                                <th>Submitted By</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gc-log-body-previous"></tbody>
+                    </table>
+                    <button class="btn mt-2" onclick="exportGroupConscienceLogToPDF()" style="margin-bottom: 1rem;">Export Full GC Log to PDF</button>
                 </div>
             </div>
         </section>
@@ -1607,8 +1685,8 @@ const storage = {
     savePhotos(p) { localStorage.setItem('photos', JSON.stringify(p)); },
     getChairpersonLog() { return JSON.parse(localStorage.getItem('chairpersonLog') || '[]'); },
     saveChairpersonLog(log) { localStorage.setItem('chairpersonLog', JSON.stringify(log)); },
-    getQRCodeLink() { return localStorage.getItem('qrCodeLink') || 'https://via.placeholder.com/250'; },
-    saveQRCodeLink(link) { localStorage.setItem('qrCodeLink', link); }
+    getGroupConscienceLog() { return JSON.parse(localStorage.getItem('groupConscienceLog') || '[]'); },
+    saveGroupConscienceLog(log) { localStorage.setItem('groupConscienceLog', JSON.stringify(log)); }
 };
 // Initialize default data on first load
 function initDefaults() {
@@ -1645,9 +1723,9 @@ function initDefaults() {
     if (!localStorage.getItem('chairpersonLog')) {
         storage.saveChairpersonLog([]);
     }
-    // Load QR code
-    document.getElementById('qr-code-img').src = storage.getQRCodeLink();
-    document.getElementById('qr-code-link').value = storage.getQRCodeLink();
+    if (!localStorage.getItem('groupConscienceLog')) {
+        storage.saveGroupConscienceLog([]);
+    }
 }
 function handleEventSubmit() {
     const editId = document.getElementById('event-edit-id').value;
@@ -1988,12 +2066,13 @@ function addAnnouncement() {
         return;
     }
     const ann = storage.getAnnouncements();
-    ann.unshift({ id: genId(), text, dateCreated: new Date().toISOString() });
+    ann.unshift({ id: genId(), text, dateCreated: new Date().toISOString(), active: true });
     storage.saveAnnouncements(ann);
     showToast('Announcement added!', 'success');
     document.getElementById('announcement-text').value = '';
     updateAnnouncementsList();
     updateHome();
+    updateChairpersonAnnouncements();
 }
 // Delete announcement
 function deleteAnnouncement(id) {
@@ -2004,7 +2083,21 @@ function deleteAnnouncement(id) {
     showToast('Announcement deleted.', 'info');
     updateAnnouncementsList();
     updateHome();
+    updateChairpersonAnnouncements();
 }
+// Toggle announcement active state
+function toggleAnnouncementActive(id) {
+    let ann = storage.getAnnouncements();
+    const index = ann.findIndex(a => a.id === id);
+    if (index > -1) {
+        ann[index].active = !ann[index].active;
+        storage.saveAnnouncements(ann);
+        updateAnnouncementsList();
+        updateHome();
+        updateChairpersonAnnouncements();
+    }
+}
+
 // Update announcements list
 function updateAnnouncementsList() {
     const ul = document.getElementById('announcements-list');
@@ -2012,12 +2105,53 @@ function updateAnnouncementsList() {
     const ann = storage.getAnnouncements();
     ann.forEach(a => {
         const li = document.createElement('li');
+        li.style.display = 'flex';
+        li.style.alignItems = 'center';
+        li.style.marginBottom = '0.5rem';
+        if (!a.active) {
+            li.style.opacity = '0.5';
+        }
+
         const dateStr = new Date(a.dateCreated).toLocaleDateString();
-        li.innerHTML = `<strong>${dateStr}:</strong> ${a.text} <button class="btn secondary" onclick="deleteAnnouncement('${a.id}')">Delete</button>`;
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = a.active;
+        checkbox.style.marginRight = '1rem';
+        checkbox.onchange = () => toggleAnnouncementActive(a.id);
+
+        const text = document.createElement('span');
+        text.innerHTML = `<strong>${dateStr}:</strong> ${a.text}`;
+        text.style.flexGrow = '1';
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn secondary';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.onclick = () => deleteAnnouncement(a.id);
+
+        li.appendChild(checkbox);
+        li.appendChild(text);
+        li.appendChild(deleteBtn);
         ul.appendChild(li);
     });
     if (ann.length === 0) {
         ul.innerHTML = '<li>No announcements posted</li>';
+    }
+}
+
+function updateChairpersonAnnouncements() {
+    const ul = document.getElementById('chairperson-announcements-list');
+    if (!ul) return;
+    ul.innerHTML = '';
+    const activeAnnouncements = storage.getAnnouncements().filter(a => a.active);
+    activeAnnouncements.forEach(a => {
+        const li = document.createElement('li');
+        const dateStr = new Date(a.dateCreated).toLocaleDateString();
+        li.innerHTML = `<strong>${dateStr}:</strong> ${a.text}`;
+        ul.appendChild(li);
+    });
+    if (activeAnnouncements.length === 0) {
+        ul.innerHTML = '<li>No active announcements</li>';
     }
 }
 // Modal functions
@@ -2128,6 +2262,8 @@ function handleChairpersonLogSubmit() {
 
 function addChairpersonLog() {
     const date = document.getElementById('log-date').value;
+    const time = document.getElementById('log-time').value;
+    const chairperson = document.getElementById('log-chairperson').value.trim();
     const headcount = document.getElementById('log-headcount').value;
     const tradition = document.getElementById('log-7th-tradition').value;
     const orangeCan = document.getElementById('log-orange-can').value;
@@ -2141,6 +2277,8 @@ function addChairpersonLog() {
     log.push({
         id: genId(),
         date,
+        time,
+        chairperson,
         headcount: parseInt(headcount) || 0,
         tradition: parseFloat(tradition) || 0,
         orangeCan: parseFloat(orangeCan) || 0,
@@ -2149,6 +2287,8 @@ function addChairpersonLog() {
     showToast('Log entry added.', 'success');
     updateChairpersonLogTable();
     document.getElementById('log-date').value = '';
+    document.getElementById('log-time').value = '';
+    document.getElementById('log-chairperson').value = '';
     document.getElementById('log-headcount').value = '';
     document.getElementById('log-7th-tradition').value = '';
     document.getElementById('log-orange-can').value = '';
@@ -2159,10 +2299,27 @@ function updateChairpersonLogTable() {
     tbody.innerHTML = '';
     const log = storage.getChairpersonLog().sort((a, b) => new Date(b.date) - new Date(a.date));
 
+    // Update the table header
+    const thead = document.getElementById('chairperson-log-table').querySelector('thead');
+    thead.innerHTML = `
+        <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Chairperson</th>
+            <th>Head Count</th>
+            <th>7th Tradition</th>
+            <th>Orange Can</th>
+            <th>Actions</th>
+        </tr>
+    `;
+
     log.forEach(entry => {
         const tr = document.createElement('tr');
+        const timeStr = entry.time ? new Date('1970-01-01T' + entry.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'N/A';
         tr.innerHTML = `
             <td>${new Date(entry.date).toLocaleDateString()}</td>
+            <td>${timeStr}</td>
+            <td>${entry.chairperson || 'N/A'}</td>
             <td>${entry.headcount}</td>
             <td>$${entry.tradition.toFixed(2)}</td>
             <td>$${entry.orangeCan.toFixed(2)}</td>
@@ -2182,6 +2339,8 @@ function editChairpersonLog(id) {
 
     document.getElementById('log-edit-id').value = entry.id;
     document.getElementById('log-date').value = entry.date;
+    document.getElementById('log-time').value = entry.time;
+    document.getElementById('log-chairperson').value = entry.chairperson;
     document.getElementById('log-headcount').value = entry.headcount;
     document.getElementById('log-7th-tradition').value = entry.tradition;
     document.getElementById('log-orange-can').value = entry.orangeCan;
@@ -2197,6 +2356,8 @@ function updateChairpersonLog(id) {
     if (index === -1) return;
 
     const date = document.getElementById('log-date').value;
+    const time = document.getElementById('log-time').value;
+    const chairperson = document.getElementById('log-chairperson').value.trim();
     const headcount = document.getElementById('log-headcount').value;
     const tradition = document.getElementById('log-7th-tradition').value;
     const orangeCan = document.getElementById('log-orange-can').value;
@@ -2209,6 +2370,8 @@ function updateChairpersonLog(id) {
     log[index] = {
         id,
         date,
+        time,
+        chairperson,
         headcount: parseInt(headcount) || 0,
         tradition: parseFloat(tradition) || 0,
         orangeCan: parseFloat(orangeCan) || 0,
@@ -2223,6 +2386,8 @@ function updateChairpersonLog(id) {
 function cancelLogEdit() {
     document.getElementById('log-edit-id').value = '';
     document.getElementById('log-date').value = '';
+    document.getElementById('log-time').value = '';
+    document.getElementById('log-chairperson').value = '';
     document.getElementById('log-headcount').value = '';
     document.getElementById('log-7th-tradition').value = '';
     document.getElementById('log-orange-can').value = '';
@@ -2241,16 +2406,153 @@ function deleteChairpersonLog(id) {
     updateChairpersonLogTable();
 }
 
-function updateQRCode() {
-    const link = document.getElementById('qr-code-link').value.trim();
-    if (link) {
-        storage.saveQRCodeLink(link);
-        document.getElementById('qr-code-img').src = link;
-        showToast('QR Code updated!', 'success');
+// Group Conscience Log Functions
+function handleGCLogSubmit() {
+    const editId = document.getElementById('gc-edit-id').value;
+    if (editId) {
+        updateGCLog(editId);
     } else {
-        showToast('Please enter a valid image URL.', 'error');
+        addGCLog();
     }
 }
+
+function addGCLog() {
+    const log = {
+        id: genId(),
+        date: document.getElementById('gc-date').value,
+        item: document.getElementById('gc-item').value.trim(),
+        submittedBy: document.getElementById('gc-submitted-by').value.trim(),
+        status: document.getElementById('gc-status').value,
+        votes: document.getElementById('gc-votes').value.trim(),
+        attendees: document.getElementById('gc-attendees').value.trim(),
+        servantReports: document.getElementById('gc-servant-reports').value.trim(),
+    };
+
+    if (!log.date || !log.item) {
+        showToast('Please provide at least a date and an item/motion.', 'error');
+        return;
+    }
+
+    const logs = storage.getGroupConscienceLog();
+    logs.push(log);
+    storage.saveGroupConscienceLog(logs);
+    showToast('Group Conscience entry added.', 'success');
+    updateGCLogTable();
+    cancelGCEdit(); // Clear form
+}
+
+function updateGCLogTable() {
+    const currentTbody = document.getElementById('gc-log-body-current');
+    const previousTbody = document.getElementById('gc-log-body-previous');
+    currentTbody.innerHTML = '';
+    previousTbody.innerHTML = '';
+
+    const logs = storage.getGroupConscienceLog().sort((a, b) => new Date(b.date) - new Date(a.date));
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    logs.forEach(log => {
+        const logDate = new Date(log.date);
+        const logMonth = logDate.getMonth();
+        const logYear = logDate.getFullYear();
+
+        const isCurrentMonth = logMonth === currentMonth && logYear === currentYear;
+        const tbody = isCurrentMonth ? currentTbody : previousTbody;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${logDate.toLocaleDateString()}</td>
+            <td>${log.item.substring(0, 50)}${log.item.length > 50 ? '...' : ''}</td>
+            <td>${log.submittedBy || 'N/A'}</td>
+            <td>${log.status}</td>
+            <td>
+                <button class="btn" onclick="editGCLog('${log.id}')" style="margin-right: 5px;">Edit</button>
+                <button class="btn secondary" onclick="deleteGCLog('${log.id}')">Delete</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    if (currentTbody.innerHTML === '') {
+        currentTbody.innerHTML = '<tr><td colspan="5">No entries for the current month.</td></tr>';
+    }
+    if (previousTbody.innerHTML === '') {
+        previousTbody.innerHTML = '<tr><td colspan="5">No entries for previous months.</td></tr>';
+    }
+}
+
+function editGCLog(id) {
+    const logs = storage.getGroupConscienceLog();
+    const log = logs.find(l => l.id === id);
+    if (!log) return;
+
+    document.getElementById('gc-edit-id').value = log.id;
+    document.getElementById('gc-date').value = log.date;
+    document.getElementById('gc-item').value = log.item;
+    document.getElementById('gc-submitted-by').value = log.submittedBy;
+    document.getElementById('gc-status').value = log.status;
+    document.getElementById('gc-votes').value = log.votes;
+    document.getElementById('gc-attendees').value = log.attendees;
+    document.getElementById('gc-servant-reports').value = log.servantReports;
+
+    document.getElementById('gc-form-title').textContent = 'Edit GC Entry';
+    document.getElementById('gc-form-btn').textContent = 'Save Changes';
+    document.getElementById('gc-form-cancel-btn').style.display = 'inline-block';
+}
+
+function updateGCLog(id) {
+    const logs = storage.getGroupConscienceLog();
+    const index = logs.findIndex(l => l.id === id);
+    if (index === -1) return;
+
+    const log = {
+        id,
+        date: document.getElementById('gc-date').value,
+        item: document.getElementById('gc-item').value.trim(),
+        submittedBy: document.getElementById('gc-submitted-by').value.trim(),
+        status: document.getElementById('gc-status').value,
+        votes: document.getElementById('gc-votes').value.trim(),
+        attendees: document.getElementById('gc-attendees').value.trim(),
+        servantReports: document.getElementById('gc-servant-reports').value.trim(),
+    };
+
+    if (!log.date || !log.item) {
+        showToast('Please provide at least a date and an item/motion.', 'error');
+        return;
+    }
+
+    logs[index] = log;
+    storage.saveGroupConscienceLog(logs);
+    showToast('Group Conscience entry updated.', 'success');
+    cancelGCEdit();
+    updateGCLogTable();
+}
+
+function cancelGCEdit() {
+    document.getElementById('gc-edit-id').value = '';
+    document.getElementById('gc-date').value = '';
+    document.getElementById('gc-item').value = '';
+    document.getElementById('gc-submitted-by').value = '';
+    document.getElementById('gc-status').value = 'passed';
+    document.getElementById('gc-votes').value = '';
+    document.getElementById('gc-attendees').value = '';
+    document.getElementById('gc-servant-reports').value = '';
+
+    document.getElementById('gc-form-title').textContent = 'Log Group Conscience Item';
+    document.getElementById('gc-form-btn').textContent = 'Add GC Entry';
+    document.getElementById('gc-form-cancel-btn').style.display = 'none';
+}
+
+function deleteGCLog(id) {
+    if (!confirm('Delete this Group Conscience entry?')) return;
+    let logs = storage.getGroupConscienceLog();
+    logs = logs.filter(l => l.id !== id);
+    storage.saveGroupConscienceLog(logs);
+    showToast('GC entry deleted.', 'info');
+    updateGCLogTable();
+}
+
 
 function exportChairpersonLogToPDF() {
     const { jsPDF } = window.jspdf;
@@ -2265,12 +2567,15 @@ function exportChairpersonLogToPDF() {
     doc.setFontSize(18);
     doc.text("Chairperson's Contribution Log", 14, 22);
 
-    const tableColumn = ["Date", "Head Count", "7th Tradition ($)", "Orange Can ($)"];
+    const tableColumn = ["Date", "Time", "Chairperson", "Head Count", "7th Tradition ($)", "Orange Can ($)"];
     const tableRows = [];
 
     log.forEach(entry => {
+        const timeStr = entry.time ? new Date('1970-01-01T' + entry.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'N/A';
         const logData = [
             new Date(entry.date).toLocaleDateString(),
+            timeStr,
+            entry.chairperson || 'N/A',
             entry.headcount,
             entry.tradition.toFixed(2),
             entry.orangeCan.toFixed(2)
@@ -2288,6 +2593,66 @@ function exportChairpersonLogToPDF() {
     showToast('PDF export generated!', 'success');
 }
 
+function exportGroupConscienceLogToPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const logs = storage.getGroupConscienceLog().sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    if (logs.length === 0) {
+        showToast('No Group Conscience entries to export.', 'error');
+        return;
+    }
+
+    doc.setFontSize(18);
+    doc.text("Group Conscience Log", 14, 22);
+
+    let y = 30;
+
+    logs.forEach((log, index) => {
+        if (y > 260) {
+            doc.addPage();
+            y = 20;
+        }
+
+        doc.setFontSize(14);
+        doc.text(`Date: ${new Date(log.date).toLocaleDateString()}`, 14, y);
+        y += 7;
+
+        doc.setFontSize(12);
+        doc.text(`Motion/Item: ${log.item}`, 14, y);
+        y += 7;
+
+        doc.text(`Submitted By: ${log.submittedBy}`, 14, y);
+        y += 7;
+
+        doc.text(`Status: ${log.status}`, 14, y);
+        y += 7;
+
+        doc.text(`Votes: ${log.votes}`, 14, y);
+        y += 7;
+
+        doc.text("Members Present:", 14, y);
+        y += 7;
+        const attendees = doc.splitTextToSize(log.attendees, 180);
+        doc.text(attendees, 14, y);
+        y += attendees.length * 5;
+
+        doc.text("Servant Reports:", 14, y);
+        y += 7;
+        const reports = doc.splitTextToSize(log.servantReports, 180);
+        doc.text(reports, 14, y);
+        y += reports.length * 5;
+
+        if (index < logs.length - 1) {
+            doc.line(14, y, 200, y); // Separator line
+            y += 10;
+        }
+    });
+
+    doc.save('Group_Conscience_Log.pdf');
+    showToast('PDF export generated!', 'success');
+}
+
 // Data Management
 function exportData(dataType) {
     let data;
@@ -2298,7 +2663,7 @@ function exportData(dataType) {
         announcements: 'announcements',
         photos: 'photos',
         chairpersonLog: 'chairpersonLog',
-        qrCodeLink: 'qrCodeLink',
+        groupConscienceLog: 'groupConscienceLog',
     };
 
     if (dataType === 'all') {
@@ -2307,7 +2672,6 @@ function exportData(dataType) {
             data[key] = JSON.parse(localStorage.getItem(keys[key]) || '[]');
         });
         // Handle non-JSON items
-        data.qrCodeLink = localStorage.getItem('qrCodeLink') || '';
 
     } else if (keys[dataType]) {
         data = { [dataType]: JSON.parse(localStorage.getItem(keys[dataType]) || '[]') };
@@ -2350,7 +2714,7 @@ function importData() {
             if (data.announcements) { storage.saveAnnouncements(data.announcements); imported = true; }
             if (data.photos) { storage.savePhotos(data.photos); imported = true; }
             if (data.chairpersonLog) { storage.saveChairpersonLog(data.chairpersonLog); imported = true; }
-            if (data.qrCodeLink) { storage.saveQRCodeLink(data.qrCodeLink); imported = true; }
+            if (data.groupConscienceLog) { storage.saveGroupConscienceLog(data.groupConscienceLog); imported = true; }
 
             if (imported) {
                 showToast('Data imported successfully! The page will now reload.', 'success');
@@ -2461,15 +2825,15 @@ function updateHome() {
     }
     const homeAnnouncements = document.getElementById('home-recent-announcements');
     homeAnnouncements.innerHTML = '';
-    const ann = storage.getAnnouncements().slice(0, 3);
-    ann.forEach(a => {
+    const activeAnnouncements = storage.getAnnouncements().filter(a => a.active).slice(0, 3);
+    activeAnnouncements.forEach(a => {
         const li = document.createElement('li');
         const dateStr = new Date(a.dateCreated).toLocaleDateString();
         li.textContent = `${dateStr}: ${a.text}`;
         homeAnnouncements.appendChild(li);
     });
-    if (ann.length === 0) {
-        homeAnnouncements.innerHTML = '<li>No announcements</li>';
+    if (activeAnnouncements.length === 0) {
+        homeAnnouncements.innerHTML = '<li>No active announcements</li>';
     }
     const homePhotos = document.getElementById('home-latest-photos');
     homePhotos.innerHTML = '';
@@ -2791,6 +3155,8 @@ function init() {
     renderCalendar();
     showHistory('genesis-history');
     updateChairpersonLogTable();
+    updateGCLogTable();
+    updateChairpersonAnnouncements();
 
     // Back to Top button logic
     const mainEl = document.querySelector('main');
