@@ -198,6 +198,34 @@
             font-size: 40px;
             font-weight: bold;
             cursor: pointer;
+            z-index: 101;
+        }
+
+        /* Next & previous buttons */
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            padding: 16px;
+            margin-top: -22px;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            transition: 0.6s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .next {
+            right: 0;
+            border-radius: 3px 0 0 3px;
+        }
+        .prev {
+            left: 0;
+        }
+        .prev:hover, .next:hover {
+            background-color: rgba(0,0,0,0.8);
         }
 
         /* History section */
@@ -426,6 +454,9 @@
                 <button class="btn" onclick="showMeetingFormat('personal-story')">Personal Story</button>
                 <button class="btn" onclick="showMeetingFormat('foundations')">Foundations Speaker</button>
                 <button class="btn" onclick="showMeetingFormat('birthday')">Birthday Night</button>
+            </div>
+            <h3 class="mt-4">Readings</h3>
+            <div id="reading-buttons" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
                 <button class="btn" onclick="showMeetingFormat('how-it-works')">How It Works</button>
                 <button class="btn" onclick="showMeetingFormat('traditions')">The 12 Traditions</button>
                 <button class="btn" onclick="showMeetingFormat('promises')">The 9th Step Promises</button>
@@ -602,7 +633,12 @@
         <!-- The Modal -->
         <div id="photo-modal" class="modal">
             <span class="modal-close" onclick="closeModal()">&times;</span>
-            <img class="modal-content" id="modal-image">
+            <a class="prev" onclick="showPreviousPhoto()">&#10094;</a>
+            <a class="next" onclick="showNextPhoto()">&#10095;</a>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; max-width: 90vw; max-height: 90vh;">
+                <img class="modal-content" id="modal-image" style="max-height: 80vh; object-fit: contain;">
+                <div id="modal-caption" style="text-align: center; color: #ccc; padding: 10px 0; font-size: 1rem; height: 2rem;"></div>
+            </div>
         </div>
 
         <!-- History Section -->
@@ -1587,15 +1623,56 @@ function updateAnnouncementsList() {
     }
 }
 // Modal functions
-function openModal(src) {
-    const modal = document.getElementById('photo-modal');
+let currentPhotoIndex = 0;
+let currentPhotoList = [];
+
+function updateModalContent() {
+    const photo = currentPhotoList[currentPhotoIndex];
+    if (!photo) { closeModal(); return; }
+
     const modalImg = document.getElementById('modal-image');
-    modal.style.display = "flex";
-    modalImg.src = src;
+    const caption = document.getElementById('modal-caption');
+
+    modalImg.src = photo.src;
+    caption.textContent = photo.tags && photo.tags.length > 0 ? `Tags: ${photo.tags.join(', ')}` : '';
 }
+
+function showNextPhoto() {
+    if (currentPhotoList.length === 0) return;
+    currentPhotoIndex = (currentPhotoIndex + 1) % currentPhotoList.length;
+    updateModalContent();
+}
+
+function showPreviousPhoto() {
+    if (currentPhotoList.length === 0) return;
+    currentPhotoIndex = (currentPhotoIndex - 1 + currentPhotoList.length) % currentPhotoList.length;
+    updateModalContent();
+}
+
+function handleEscKey(event) {
+    if (event.key === 'Escape') {
+        closeModal();
+    }
+}
+
+function openModal(index, photos) {
+    currentPhotoList = photos;
+    currentPhotoIndex = index;
+
+    if (currentPhotoList.length === 0) return;
+
+    const modal = document.getElementById('photo-modal');
+    modal.style.display = "flex";
+
+    updateModalContent();
+
+    document.addEventListener('keydown', handleEscKey);
+}
+
 function closeModal() {
     const modal = document.getElementById('photo-modal');
     modal.style.display = "none";
+    document.removeEventListener('keydown', handleEscKey);
 }
 // Photo uploading
 function uploadPhotos() {
@@ -1650,7 +1727,7 @@ function updateGallery() {
         wrapper.style.position = 'relative';
         const img = document.createElement('img');
         img.src = photo.src;
-        img.onclick = () => openModal(photo.src);
+        img.onclick = () => openModal(idx, filteredPhotos);
         wrapper.appendChild(img);
         const delBtn = document.createElement('button');
         delBtn.textContent = '×';
@@ -1735,13 +1812,17 @@ function updateHome() {
     }
     const homePhotos = document.getElementById('home-latest-photos');
     homePhotos.innerHTML = '';
-    const photos = storage.getPhotos().slice(-3);
-    photos.forEach(src => {
+    const allPhotos = storage.getPhotos();
+    const recentPhotos = allPhotos.slice(-Math.min(3, allPhotos.length)).reverse();
+    recentPhotos.forEach(photo => {
         const img = document.createElement('img');
-        img.src = src;
+        img.src = photo.src;
         img.style.height = '60px';
         img.style.width = 'auto';
         img.style.borderRadius = '4px';
+        img.style.cursor = 'pointer';
+        const originalIndex = allPhotos.findIndex(p => p.src === photo.src);
+        img.onclick = () => openModal(originalIndex, allPhotos);
         homePhotos.appendChild(img);
     });
     if (photos.length === 0) {
