@@ -169,6 +169,35 @@
             height: auto;
             border-radius: 6px;
             object-fit: cover;
+            cursor: pointer;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            max-width: 80%;
+            max-height: 80%;
+        }
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
         }
 
         /* History section */
@@ -320,6 +349,7 @@
             background-color: #3498db; /* Metallic Blue */
             color: white;
             border-radius: 3px;
+            border-left: 5px solid #2980b9; /* Default category color */
             padding: 2px 4px;
             font-size: 0.7rem;
             margin-bottom: 2px;
@@ -396,6 +426,9 @@
                 <button class="btn" onclick="showMeetingFormat('personal-story')">Personal Story</button>
                 <button class="btn" onclick="showMeetingFormat('foundations')">Foundations Speaker</button>
                 <button class="btn" onclick="showMeetingFormat('birthday')">Birthday Night</button>
+                <button class="btn" onclick="showMeetingFormat('how-it-works')">How It Works</button>
+                <button class="btn" onclick="showMeetingFormat('traditions')">The 12 Traditions</button>
+                <button class="btn" onclick="showMeetingFormat('promises')">The 9th Step Promises</button>
             </div>
             <div id="meeting-format-display" class="box mt-4" style="display: none;">
                 <!-- Meeting format will be injected here -->
@@ -440,6 +473,19 @@
                 <input type="time" id="event-time" />
             </div>
             <div class="form-group">
+                <label for="event-category">Category</label>
+                <select id="event-category">
+                    <option value="General">General</option>
+                    <option value="Open Discussion">Open Discussion</option>
+                    <option value="Closed Discussion">Closed Discussion</option>
+                    <option value="Big Book Study">Big Book Study</option>
+                    <option value="12x12 Study">12x12 Study</option>
+                    <option value="Personal Story">Personal Story</option>
+                    <option value="Foundations Speaker">Foundations Speaker</option>
+                    <option value="Birthday Night">Birthday Night</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="event-reading">Reading</label>
                 <input type="text" id="event-reading" placeholder="e.g. How It Works" />
             </div>
@@ -458,11 +504,26 @@
             <button class="btn" onclick="addEvent()">Add Event</button>
 
             <h3 class="mt-4">Upcoming Events (Next 30 Days)</h3>
+            <div class="form-group">
+                <label for="category-filter">Filter by Category</label>
+                <select id="category-filter" onchange="updateEventsTable()">
+                    <option value="All">All Categories</option>
+                    <option value="General">General</option>
+                    <option value="Open Discussion">Open Discussion</option>
+                    <option value="Closed Discussion">Closed Discussion</option>
+                    <option value="Big Book Study">Big Book Study</option>
+                    <option value="12x12 Study">12x12 Study</option>
+                    <option value="Personal Story">Personal Story</option>
+                    <option value="Foundations Speaker">Foundations Speaker</option>
+                    <option value="Birthday Night">Birthday Night</option>
+                </select>
+            </div>
             <table id="events-table">
                 <thead>
                     <tr>
                         <th>Date</th>
                         <th>Title</th>
+                        <th>Category</th>
                         <th>Time</th>
                         <th>Speaker</th>
                         <th>Chair</th>
@@ -517,12 +578,32 @@
         <!-- Gallery Section -->
         <section id="gallery-section">
             <h2>Photo Gallery</h2>
-            <p class="mb-2">Upload pictures of fliers or events for everyone to browse.</p>
-            <input type="file" id="photo-upload" accept="image/*" multiple />
+            <p class="mb-2">Upload pictures of fliers or events. Add comma-separated tags to help organize them.</p>
+            <div class="form-group">
+                <label for="photo-upload">Select Photos</label>
+                <input type="file" id="photo-upload" accept="image/*" multiple />
+            </div>
+            <div class="form-group">
+                <label for="photo-tags">Tags (comma-separated)</label>
+                <input type="text" id="photo-tags" placeholder="e.g. bbq, anniversary, 2024" />
+            </div>
             <button class="btn" onclick="uploadPhotos()">Upload Selected</button>
+
+            <h3 class="mt-4">Filter Photos</h3>
+            <div class="form-group">
+                <input type="text" id="tag-filter" onkeyup="updateGallery()" placeholder="Filter by tag..." />
+            </div>
+            <div id="tag-list" class="mb-4"></div>
+
             <h3 class="mt-4">Photos</h3>
             <div id="gallery-grid"></div>
         </section>
+
+        <!-- The Modal -->
+        <div id="photo-modal" class="modal">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <img class="modal-content" id="modal-image">
+        </div>
 
         <!-- History Section -->
         <section id="history-section">
@@ -1299,7 +1380,15 @@ function initDefaults() {
         storage.saveAnnouncements([]);
     }
     if (!localStorage.getItem('photos')) {
+        // We will now store photos as objects with src and tags
         storage.savePhotos([]);
+    } else {
+        // Backwards compatibility: convert old string array to new object array
+        const photos = storage.getPhotos();
+        if (photos.length > 0 && typeof photos[0] === 'string') {
+            const newPhotos = photos.map(p => ({ src: p, tags: [] }));
+            storage.savePhotos(newPhotos);
+        }
     }
 }
 // Add an event
@@ -1308,6 +1397,7 @@ function addEvent() {
     const dateVal = document.getElementById('event-date').value;
     const dayVal = document.getElementById('event-day').value;
     const time = document.getElementById('event-time').value;
+    const category = document.getElementById('event-category').value;
     const reading = document.getElementById('event-reading').value.trim();
     const speaker = document.getElementById('event-speaker').value.trim();
     const chair = document.getElementById('event-chair').value.trim();
@@ -1323,6 +1413,7 @@ function addEvent() {
         date: dateVal || null,
         dayOfWeek: dateVal ? null : parseInt(dayVal, 10),
         time,
+        category,
         reading,
         speaker,
         chair,
@@ -1381,18 +1472,24 @@ function computeUpcomingOccurrences(daysAhead = 30) {
 // Update events table
 function updateEventsTable() {
     const tbody = document.getElementById('events-body');
+    const categoryFilter = document.getElementById('category-filter').value;
     tbody.innerHTML = '';
-    const occ = computeUpcomingOccurrences(60);
+    let occ = computeUpcomingOccurrences(60);
+
+    if (categoryFilter !== 'All') {
+        occ = occ.filter(item => (item.event.category || 'General') === categoryFilter);
+    }
+
     occ.forEach(item => {
         const tr = document.createElement('tr');
         const dateStr = item.occurDate.toLocaleDateString();
         const timeStr = item.occurDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        tr.innerHTML = `<td>${dateStr}</td><td>${item.event.title}</td><td>${timeStr}</td><td>${item.event.speaker || ''}</td><td>${item.event.chair || ''}</td><td><button class="btn secondary" onclick="deleteEvent('${item.event.id}')">Delete</button></td>`;
+        tr.innerHTML = `<td>${dateStr}</td><td>${item.event.title}</td><td>${item.event.category || 'General'}</td><td>${timeStr}</td><td>${item.event.speaker || ''}</td><td>${item.event.chair || ''}</td><td><button class="btn secondary" onclick="deleteEvent('${item.event.id}')">Delete</button></td>`;
         tbody.appendChild(tr);
     });
     if (occ.length === 0) {
         const tr = document.createElement('tr');
-        tr.innerHTML = '<td colspan="6">No upcoming events</td>';
+        tr.innerHTML = '<td colspan="7">No upcoming events match the filter.</td>';
         tbody.appendChild(tr);
     }
 }
@@ -1489,24 +1586,38 @@ function updateAnnouncementsList() {
         ul.innerHTML = '<li>No announcements posted</li>';
     }
 }
+// Modal functions
+function openModal(src) {
+    const modal = document.getElementById('photo-modal');
+    const modalImg = document.getElementById('modal-image');
+    modal.style.display = "flex";
+    modalImg.src = src;
+}
+function closeModal() {
+    const modal = document.getElementById('photo-modal');
+    modal.style.display = "none";
+}
 // Photo uploading
 function uploadPhotos() {
     const input = document.getElementById('photo-upload');
+    const tagsInput = document.getElementById('photo-tags');
     const files = Array.from(input.files);
     if (!files || files.length === 0) {
         alert('Select one or more images to upload.');
         return;
     }
+    const tags = tagsInput.value.split(',').map(tag => tag.trim()).filter(tag => tag);
     const photos = storage.getPhotos();
     let remaining = files.length;
     files.forEach(file => {
         const reader = new FileReader();
         reader.onload = function (e) {
-            photos.push(e.target.result);
+            photos.push({ src: e.target.result, tags: tags });
             remaining--;
             if (remaining === 0) {
                 storage.savePhotos(photos);
                 input.value = '';
+                tagsInput.value = '';
                 updateGallery();
                 updateHome();
             }
@@ -1526,13 +1637,20 @@ function deletePhoto(index) {
 // Update gallery display
 function updateGallery() {
     const grid = document.getElementById('gallery-grid');
+    const filterInput = document.getElementById('tag-filter');
+    const filterValue = filterInput.value.toLowerCase().trim();
     grid.innerHTML = '';
+
     const photos = storage.getPhotos();
-    photos.forEach((src, idx) => {
+    const filteredPhotos = filterValue ? photos.filter(p => p.tags.some(tag => tag.toLowerCase().includes(filterValue))) : photos;
+
+    filteredPhotos.forEach((photo, idx) => {
+        const originalIndex = photos.findIndex(p => p.src === photo.src); // Find original index for deletion
         const wrapper = document.createElement('div');
         wrapper.style.position = 'relative';
         const img = document.createElement('img');
-        img.src = src;
+        img.src = photo.src;
+        img.onclick = () => openModal(photo.src);
         wrapper.appendChild(img);
         const delBtn = document.createElement('button');
         delBtn.textContent = '×';
@@ -1546,13 +1664,38 @@ function updateGallery() {
         delBtn.style.width = '24px';
         delBtn.style.height = '24px';
         delBtn.style.cursor = 'pointer';
-        delBtn.onclick = () => deletePhoto(idx);
+        delBtn.onclick = () => deletePhoto(originalIndex);
         wrapper.appendChild(delBtn);
         grid.appendChild(wrapper);
     });
-    if (photos.length === 0) {
-        grid.innerHTML = '<p>No photos uploaded yet.</p>';
+
+    if (filteredPhotos.length === 0) {
+        grid.innerHTML = '<p>No photos match the filter.</p>';
     }
+    renderTagList();
+}
+
+function renderTagList() {
+    const tagList = document.getElementById('tag-list');
+    const photos = storage.getPhotos();
+    const allTags = [...new Set(photos.flatMap(p => p.tags))]; // Get unique tags
+    tagList.innerHTML = '';
+    allTags.forEach(tag => {
+        const tagEl = document.createElement('span');
+        tagEl.className = 'btn secondary';
+        tagEl.textContent = tag;
+        tagEl.style.marginRight = '0.5rem';
+        tagEl.style.marginBottom = '0.5rem';
+        tagEl.style.cursor = 'pointer';
+        tagEl.onclick = () => setTagFilter(tag);
+        tagList.appendChild(tagEl);
+    });
+}
+
+function setTagFilter(tag) {
+    const filterInput = document.getElementById('tag-filter');
+    filterInput.value = tag;
+    updateGallery();
 }
 // Update home overview boxes
 function updateHome() {
@@ -1616,6 +1759,16 @@ function showHistory(id) {
     if (id === 'rowlett-history') document.getElementById('rowlett-btn').classList.add('active');
 }
 // Calendar: state for current month
+const categoryColors = {
+    "General": "#7f8c8d",
+    "Open Discussion": "#2ecc71",
+    "Closed Discussion": "#e74c3c",
+    "Big Book Study": "#f1c40f",
+    "12x12 Study": "#9b59b6",
+    "Personal Story": "#1abc9c",
+    "Foundations Speaker": "#d35400",
+    "Birthday Night": "#e67e22"
+};
 let currentMonthDate = new Date();
 currentMonthDate.setDate(1);
 function renderCalendar() {
@@ -1661,6 +1814,7 @@ function renderCalendar() {
                 const evEl = document.createElement('span');
                 evEl.className = 'calendar-event';
                 evEl.textContent = ev.title;
+                evEl.style.borderLeftColor = categoryColors[ev.category] || categoryColors['General'];
                 cell.appendChild(evEl);
             }
         });
@@ -1767,6 +1921,58 @@ const meetingFormats = {
         <p>Invite each person up to receive a chip. They may share briefly on their recovery.</p>
         <p>The group celebrates their milestones.</p>
         <p>Close with the Serenity Prayer, often holding hands in a circle.</p>
+    `,
+    'how-it-works': `
+        <h3>How It Works</h3>
+        <p>RARELY HAVE we seen a person fail who has thoroughly followed our path. Those who do not recover are people who cannot or will not completely give themselves to this simple program, usually men and women who are constitutionally incapable of being honest with themselves. There are such unfortunates. They are not at fault; they seem to have been born that way. They are naturally incapable of grasping and developing a manner of living which demands rigorous honesty. Their chances are less than average. There are those, too, who suffer from grave emotional and mental disorders, but many of them do recover if they have the capacity to be honest.</p>
+        <p>Our stories disclose in a general way what we used to be like, what happened, and what we are like now. If you have decided you want what we have and are willing to go to any length to get it-then you are ready to take certain steps.</p>
+        <p>At some of these we balked. We thought we could find an easier, softer way. But we could not. With all the earnestness at our command, we beg of you to be fearless and thorough from the very start. Some of us have tried to hold on to our old ideas and the result was nil until we let go absolutely.</p>
+        <p>Remember that we deal with alcohol - cunning, baffling, powerful! Without help it is too much for us. But there is One who has all power-that One is God. May you find Him now!</p>
+        <p>Half measures availed us nothing. We stood at the turning point. We asked His protection and care with complete abandon.</p>
+        <p>Here are the steps we took, which are suggested as a program of recovery:</p>
+        <ol style="list-style-position: inside;">
+            <li>We admitted we were powerless over alcohol - that our lives had become unmanageable.</li>
+            <li>Came to believe that a Power greater than ourselves could restore us to sanity.</li>
+            <li>Made a decision to turn our will and our lives over to the care of God as we understood Him.</li>
+            <li>Made a searching and fearless moral inventory of ourselves.</li>
+            <li>Admitted to God, to ourselves and to another human being the exact nature of our wrongs.</li>
+            <li>Were entirely ready to have God remove all these defects of character.</li>
+            <li>Humbly asked Him to remove our shortcomings.</li>
+            <li>Made a list of all persons we had harmed, and became willing to make amends to them all.</li>
+            <li>Made direct amends to such people wherever possible, except when to do so would injure them or others.</li>
+            <li>Continued to take personal inventory and when we were wrong promptly admitted it.</li>
+            <li>Sought through prayer and meditation to improve our conscious contact with God as we understood Him, praying only for knowledge of His will for us and the power to carry that out.</li>
+            <li>Having had a spiritual awakening as the result of these steps, we tried to carry this message to alcoholics and to practice these principles in all our affairs.</li>
+        </ol>
+        <p>Many of us exclaimed, "What an order! I can't go through with it." Do not be discouraged. No one among us has been able to maintain anything like perfect adherence to these principles. We are not saints. The point is, that we are willing to grow along spiritual lines. The principles we have set down are guides to progress. We claim spiritual progress rather than spiritual perfection.</p>
+        <p>Our description of the alcoholic, the chapter to the agnostic, and our personal adventures before and after make clear three pertinent ideas:</p>
+        <ul style="list-style-position: inside;">
+            <li>a. That we were alcoholic and could not manage our own lives.</li>
+            <li>b. That probably no human power could have relieved our alcoholism.</li>
+            <li>c. That God could and would if He were sought.</li>
+        </ul>
+    `,
+    'traditions': `
+        <h3>The Twelve Traditions</h3>
+        <ol style="list-style-position: inside;">
+            <li>Our common welfare should come first; personal recovery depends upon A.A. unity.</li>
+            <li>For our group purpose there is but one ultimate authority — a loving God as He may express Himself in our group conscience. Our leaders are but trusted servants; they do not govern.</li>
+            <li>The only requirement for A.A. membership is a desire to stop drinking.</li>
+            <li>Each group should be autonomous except in matters affecting other groups or A.A. as a whole.</li>
+            <li>Each group has but one primary purpose — to carry its message to the alcoholic who still suffers.</li>
+            <li>An A.A. group ought never endorse, finance, or lend the A.A. name to any related facility or outside enterprise, lest problems of money, property, and prestige divert us from our primary purpose.</li>
+            <li>Every A.A. group ought to be fully self-supporting, declining outside contributions.</li>
+            <li>Alcoholics Anonymous should remain forever non-professional, but our service centers may employ special workers.</li>
+            <li>A.A., as such, ought never be organized; but we may create service boards or committees directly responsible to those they serve.</li>
+            <li>Alcoholics Anonymous has no opinion on outside issues; hence the A.A. name ought never be drawn into public controversy.</li>
+            <li>Our public relations policy is based on attraction rather than promotion; we need always maintain personal anonymity at the level of press, radio, and films.</li>
+            <li>Anonymity is the spiritual foundation of all our traditions, ever reminding us to place principles before personalities.</li>
+        </ol>
+    `,
+    'promises': `
+        <h3>The 9th Step Promises</h3>
+        <p>If we are painstaking about this phase of our development, we will be amazed before we are halfway through. We are going to know a new freedom and a new happiness. We will not regret the past nor wish to shut the door on it. We will comprehend the word serenity and we will know peace. No matter how far down the scale we have gone, we will see how our experience can benefit others. That feeling of uselessness and self pity will disappear. We will lose interest in selfish things and gain interest in our fellows. Self seeking will slip away. Our whole attitude and outlook upon life will change. Fear of people and of economic insecurity will leave us. We will intuitively know how to handle situations which used to baffle us. We will suddenly realize that God is doing for us what we could not do for ourselves.</p>
+        <p>Are these extravagant promises? We think not! They are being fulfilled among us – Sometimes quickly, sometimes slowly. They will always materialize if we work for them.</p>
     `
 };
 function showMeetingFormat(format) {
