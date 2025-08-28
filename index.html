@@ -540,6 +540,10 @@
         <section id="chairperson-section">
             <h2>Chairperson's Corner</h2>
             <p class="mb-4">Track meeting attendance and contributions. All data is stored locally.</p>
+            <div class="box mb-4">
+                <h3 class="text-lg font-bold">Member Management</h3>
+                <button class="btn" onclick="openRosterModal()">View Full Member Roster</button>
+            </div>
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
                 <!-- Left column for form and table -->
                 <div>
@@ -626,7 +630,7 @@
                         </div>
                         <div class="form-group">
                             <label for="gc-attendees">Members Present</label>
-                            <textarea id="gc-attendees" rows="3" placeholder="List names, separated by commas..."></textarea>
+                            <select multiple id="gc-attendees" style="height: 120px; background: #34495e; color: #ecf0f1; border: 1px solid #7f8c8d; border-radius: 4px; padding: 0.5rem; width: 100%;"></select>
                         </div>
                         <div class="form-group">
                             <label for="gc-servant-reports">Servant Reports</label>
@@ -665,6 +669,19 @@
                         <tbody id="gc-log-body-previous"></tbody>
                     </table>
                     <button class="btn mt-2" onclick="exportGroupConscienceLogToPDF()" style="margin-bottom: 1rem;">Export Full GC Log to PDF</button>
+
+                    <div class="box mt-4">
+                        <h3>Record Meeting Audio</h3>
+                        <p class="mb-2 text-sm" style="font-size: 0.8rem; opacity: 0.8;">Record audio from your microphone and save it as a local file.</p>
+                        <div id="audio-recorder-controls" class="flex items-center gap-2" style="display:flex; gap: 0.5rem; align-items: center;">
+                            <button id="record-btn" class="btn"><i class="fas fa-microphone" style="margin-right: 0.5rem;"></i>Start Recording</button>
+                            <button id="stop-btn" class="btn secondary" disabled><i class="fas fa-stop" style="margin-right: 0.5rem;"></i>Stop</button>
+                        </div>
+                        <div id="audio-player-container" class="mt-4" style="display: none;">
+                            <audio id="audio-player" controls style="width: 100%;"></audio>
+                            <a id="download-link" class="btn mt-2" style="display: none;"><i class="fas fa-download" style="margin-right: 0.5rem;"></i>Download Recording</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -798,32 +815,76 @@
             </table>
         </section>
 
-        <!-- Birthdays Section -->
+        <!-- Members Section -->
         <section id="birthdays-section">
-            <h2>Member Birthdays</h2>
-            <p class="mb-2">Add members’ birthdays and see upcoming celebrations.</p>
-            <button class="btn" onclick="toggleBirthdayForm()">Add Birthday</button>
-            <div id="add-birthday-form" class="box" style="display:none; margin-top: 1rem;">
-                <div class="form-group">
-                    <label for="birthday-name">Name</label>
-                    <input type="text" id="birthday-name" placeholder="Member's name" />
+            <h2>Member Roster & Birthdays</h2>
+            <p class="mb-2">Add and manage member information and see upcoming sobriety birthdays.</p>
+            <button class="btn" onclick="toggleMemberForm()">Add Member</button>
+            <div id="add-member-form" class="box" style="display:none; margin-top: 1rem;">
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div>
+                        <div class="form-group">
+                            <label for="member-name">Name*</label>
+                            <input type="text" id="member-name" placeholder="Member's name" />
+                        </div>
+                        <div class="form-group">
+                            <label for="member-birthday">Sobriety Date*</label>
+                            <input type="date" id="member-birthday" />
+                        </div>
+                        <div class="form-group">
+                            <label for="member-phone">Phone Number</label>
+                            <input type="tel" id="member-phone" placeholder="e.g., 123-456-7890" />
+                        </div>
+                        <div class="form-group">
+                            <label for="member-email">Email</label>
+                            <input type="email" id="member-email" placeholder="member@example.com" />
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label for="member-city">City</label>
+                            <input type="text" id="member-city" placeholder="e.g., Rowlett" />
+                        </div>
+                        <div class="form-group">
+                            <label for="member-homegroup">Homegroup</label>
+                            <input type="text" id="member-homegroup" placeholder="e.g., The Rowlett Group" />
+                        </div>
+                        <div class="form-group">
+                            <label for="member-sponsor">Sponsor</label>
+                            <input type="text" id="member-sponsor" placeholder="Sponsor's name" />
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="birthday-date">Birthday (MM-DD)</label>
-                    <input type="date" id="birthday-date" />
+                <div class="box" style="margin-top: 1rem; border-top: 1px solid #7f8c8d; padding-top: 1rem;">
+                    <h4 class="font-bold">Service Position</h4>
+                    <div class="form-group" style="display: flex; align-items: center; gap: 1rem;">
+                        <input type="checkbox" id="member-is-servant" style="width: auto;"/>
+                        <label for="member-is-servant">Is this member a current servant?</label>
+                    </div>
+                    <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="member-servant-position">Position</label>
+                            <input type="text" id="member-servant-position" placeholder="e.g., Treasurer" />
+                        </div>
+                        <div class="form-group">
+                            <label for="member-servant-since">Serving Since</label>
+                            <input type="date" id="member-servant-since" />
+                        </div>
+                    </div>
                 </div>
-                <input type="hidden" id="birthday-edit-id">
-                <button id="birthday-form-btn" class="btn" onclick="handleBirthdaySubmit()">Add Birthday</button>
-                <button id="birthday-form-cancel-btn" class="btn secondary" onclick="cancelBirthdayEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
+                <input type="hidden" id="member-edit-id">
+                <button id="member-form-btn" class="btn" onclick="handleMemberSubmit()">Add Member</button>
+                <button id="member-form-cancel-btn" class="btn secondary" onclick="cancelMemberEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
             </div>
             
-            <h3 class="mt-4">All Birthdays</h3>
+            <h3 class="mt-4">Upcoming & Recent Birthdays</h3>
             <table id="birthdays-table">
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Birthday</th>
-                        <th>Next Occurrence</th>
+                        <th>Sobriety Date</th>
+                        <th>Next Birthday</th>
+                        <th>Years</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -1625,6 +1686,33 @@
         </section>
     </main>
 
+    <!-- Member Roster Modal -->
+    <div id="roster-modal" class="modal">
+        <div class="box" style="width: 90%; max-width: 1200px; max-height: 90vh; overflow-y: auto; background: #2c3e50; color: #ecf0f1; border: 1px solid #3498db;">
+            <span class="modal-close" onclick="closeRosterModal()">&times;</span>
+            <h2 style="color: #3498db;">Full Member Roster</h2>
+            <div class="form-group">
+                <input type="text" id="roster-search" onkeyup="renderRosterTable()" placeholder="Search by name, email, phone..." />
+            </div>
+            <div style="overflow-x: auto;">
+                <table id="roster-table">
+                    <thead>
+                        <tr>
+                            <th onclick="sortRosterBy('name')" style="cursor: pointer;">Name &#x2195;</th>
+                            <th onclick="sortRosterBy('city')" style="cursor: pointer;">City &#x2195;</th>
+                            <th onclick="sortRosterBy('homegroup')" style="cursor: pointer;">Homegroup &#x2195;</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th onclick="sortRosterBy('isServant')" style="cursor: pointer;">Servant? &#x2195;</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="roster-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <!-- Embed the application script directly into this file -->
     <script>
 // Utility to generate unique IDs based on timestamp
@@ -1647,8 +1735,8 @@ function toggleEventForm() {
     form.style.display = isVisible ? 'none' : 'block';
 }
 
-function toggleBirthdayForm() {
-    const form = document.getElementById('add-birthday-form');
+function toggleMemberForm() {
+    const form = document.getElementById('add-member-form');
     const isVisible = form.style.display === 'block';
     form.style.display = isVisible ? 'none' : 'block';
 }
@@ -1677,8 +1765,8 @@ function showToast(message, type = 'info') { // type can be 'info', 'success', o
 const storage = {
     getEvents() { return JSON.parse(localStorage.getItem('events') || '[]'); },
     saveEvents(events) { localStorage.setItem('events', JSON.stringify(events)); },
-    getBirthdays() { return JSON.parse(localStorage.getItem('birthdays') || '[]'); },
-    saveBirthdays(b) { localStorage.setItem('birthdays', JSON.stringify(b)); },
+    getMembers() { return JSON.parse(localStorage.getItem('members') || '[]'); },
+    saveMembers(m) { localStorage.setItem('members', JSON.stringify(m)); },
     getAnnouncements() { return JSON.parse(localStorage.getItem('announcements') || '[]'); },
     saveAnnouncements(a) { localStorage.setItem('announcements', JSON.stringify(a)); },
     getPhotos() { return JSON.parse(localStorage.getItem('photos') || '[]'); },
@@ -1690,6 +1778,26 @@ const storage = {
 };
 // Initialize default data on first load
 function initDefaults() {
+    // Migration from 'birthdays' to 'members' for backward compatibility
+    if (localStorage.getItem('birthdays') && !localStorage.getItem('members')) {
+        const oldBirthdays = JSON.parse(localStorage.getItem('birthdays') || '[]');
+        const newMembers = oldBirthdays.map(b => ({
+            id: b.id,
+            name: b.name,
+            birthday: b.birthday,
+            phone: '',
+            email: '',
+            homegroup: '',
+            sponsor: '',
+            city: '',
+            isServant: false,
+            servantPosition: '',
+            servantSince: ''
+        }));
+        storage.saveMembers(newMembers);
+        localStorage.removeItem('birthdays'); // Clean up old data
+    }
+
     if (!localStorage.getItem('events')) {
         const defaults = [
             { id: genId(), title: 'Open Discussion', dayOfWeek: 0, time: '19:00', reading: 'How It Works', speaker: '', chair: '', description: 'Weekly open discussion meeting' },
@@ -1698,13 +1806,13 @@ function initDefaults() {
         ];
         storage.saveEvents(defaults);
     }
-    if (!localStorage.getItem('birthdays')) {
-        const bdays = [
-            { id: genId(), name: 'Alice', birthday: '1990-09-10' },
-            { id: genId(), name: 'Bob', birthday: '1985-12-05' },
-            { id: genId(), name: 'Charlie', birthday: '1993-04-22' }
+    if (!localStorage.getItem('members')) {
+        const members = [
+            { id: genId(), name: 'Alice', birthday: '1990-09-10', phone: '123-456-7890', email: 'alice@example.com', homegroup: 'Rowlett Group', sponsor: 'Bob', city: 'Rowlett', isServant: true, servantPosition: 'Treasurer', servantSince: '2022-01-01' },
+            { id: genId(), name: 'Bob', birthday: '1985-12-05', phone: '', email: '', homegroup: 'Rowlett Group', sponsor: '', city: 'Garland', isServant: false, servantPosition: '', servantSince: '' },
+            { id: genId(), name: 'Charlie', birthday: '1993-04-22', phone: '', email: '', homegroup: '', sponsor: '', city: 'Dallas', isServant: false, servantPosition: '', servantSince: '' }
         ];
-        storage.saveBirthdays(bdays);
+        storage.saveMembers(members);
     }
     if (!localStorage.getItem('announcements')) {
         storage.saveAnnouncements([]);
@@ -1933,101 +2041,188 @@ function updateEventsTable() {
         tbody.appendChild(tr);
     }
 }
-function handleBirthdaySubmit() {
-    const editId = document.getElementById('birthday-edit-id').value;
+function handleMemberSubmit() {
+    const editId = document.getElementById('member-edit-id').value;
     if (editId) {
-        updateBirthday();
+        updateMember();
     } else {
-        addBirthday();
+        addMember();
     }
 }
 
-function editBirthday(id) {
-    const bdays = storage.getBirthdays();
-    const bdayToEdit = bdays.find(b => b.id === id);
-    if (!bdayToEdit) {
-        console.error('Birthday not found for editing');
+function editMember(id) {
+    const members = storage.getMembers();
+    const memberToEdit = members.find(m => m.id === id);
+    if (!memberToEdit) {
+        console.error('Member not found for editing');
         return;
     }
 
     // Show the form
-    const form = document.getElementById('add-birthday-form');
+    const form = document.getElementById('add-member-form');
     if (form.style.display === 'none') {
         form.style.display = 'block';
     }
 
-    document.getElementById('birthday-edit-id').value = bdayToEdit.id;
-    document.getElementById('birthday-name').value = bdayToEdit.name;
-    document.getElementById('birthday-date').value = bdayToEdit.birthday;
+    document.getElementById('member-edit-id').value = memberToEdit.id;
+    document.getElementById('member-name').value = memberToEdit.name;
+    document.getElementById('member-birthday').value = memberToEdit.birthday;
+    document.getElementById('member-phone').value = memberToEdit.phone || '';
+    document.getElementById('member-email').value = memberToEdit.email || '';
+    document.getElementById('member-homegroup').value = memberToEdit.homegroup || '';
+    document.getElementById('member-sponsor').value = memberToEdit.sponsor || '';
+    document.getElementById('member-city').value = memberToEdit.city || '';
+    document.getElementById('member-is-servant').checked = memberToEdit.isServant || false;
+    document.getElementById('member-servant-position').value = memberToEdit.servantPosition || '';
+    document.getElementById('member-servant-since').value = memberToEdit.servantSince || '';
 
-    document.getElementById('birthday-form-btn').textContent = 'Save Changes';
-    document.getElementById('birthday-form-cancel-btn').style.display = 'inline-block';
+    document.getElementById('member-form-btn').textContent = 'Save Changes';
+    document.getElementById('member-form-cancel-btn').style.display = 'inline-block';
 
     document.getElementById('birthdays-section').scrollIntoView({ behavior: 'smooth' });
 }
 
-function cancelBirthdayEdit() {
-    document.getElementById('birthday-edit-id').value = '';
-    document.getElementById('birthday-name').value = '';
-    document.getElementById('birthday-date').value = '';
+function cancelMemberEdit() {
+    document.getElementById('member-edit-id').value = '';
+    document.getElementById('member-name').value = '';
+    document.getElementById('member-birthday').value = '';
+    document.getElementById('member-phone').value = '';
+    document.getElementById('member-email').value = '';
+    document.getElementById('member-homegroup').value = '';
+    document.getElementById('member-sponsor').value = '';
+    document.getElementById('member-city').value = '';
+    document.getElementById('member-is-servant').checked = false;
+    document.getElementById('member-servant-position').value = '';
+    document.getElementById('member-servant-since').value = '';
 
-    document.getElementById('birthday-form-btn').textContent = 'Add Birthday';
-    document.getElementById('birthday-form-cancel-btn').style.display = 'none';
+
+    document.getElementById('member-form-btn').textContent = 'Add Member';
+    document.getElementById('member-form-cancel-btn').style.display = 'none';
 }
 
-function updateBirthday() {
-    const id = document.getElementById('birthday-edit-id').value;
+function updateMember() {
+    const id = document.getElementById('member-edit-id').value;
     if (!id) return;
 
-    const name = document.getElementById('birthday-name').value.trim();
-    const bdate = document.getElementById('birthday-date').value;
+    const name = document.getElementById('member-name').value.trim();
+    const bdate = document.getElementById('member-birthday').value;
 
     if (!name || !bdate) {
-        showToast('Please provide both name and date.', 'error');
+        showToast('Please provide both name and sobriety date.', 'error');
         return;
     }
 
-    let bdays = storage.getBirthdays();
-    const bdayIndex = bdays.findIndex(b => b.id === id);
+    let members = storage.getMembers();
+    const memberIndex = members.findIndex(m => m.id === id);
 
-    if (bdayIndex > -1) {
-        bdays[bdayIndex] = { id, name, birthday: bdate };
-        storage.saveBirthdays(bdays);
-        showToast('Birthday updated successfully!', 'success');
+    if (memberIndex > -1) {
+        members[memberIndex] = {
+            id,
+            name,
+            birthday: bdate,
+            phone: document.getElementById('member-phone').value.trim(),
+            email: document.getElementById('member-email').value.trim(),
+            homegroup: document.getElementById('member-homegroup').value.trim(),
+            sponsor: document.getElementById('member-sponsor').value.trim(),
+            city: document.getElementById('member-city').value.trim(),
+            isServant: document.getElementById('member-is-servant').checked,
+            servantPosition: document.getElementById('member-servant-position').value.trim(),
+            servantSince: document.getElementById('member-servant-since').value
+        };
+        storage.saveMembers(members);
+        showToast('Member updated successfully!', 'success');
     }
 
-    cancelBirthdayEdit(); // Resets form and buttons
+    cancelMemberEdit(); // Resets form and buttons
     updateBirthdaysTable();
     updateHome();
+    populateAttendeeDropdown();
 }
 
-// Add birthday
-function addBirthday() {
-    const name = document.getElementById('birthday-name').value.trim();
-    const bdate = document.getElementById('birthday-date').value;
+// Add member
+function addMember() {
+    const name = document.getElementById('member-name').value.trim();
+    const bdate = document.getElementById('member-birthday').value;
     if (!name || !bdate) {
-        showToast('Please provide both name and date.', 'error');
+        showToast('Please provide both name and sobriety date.', 'error');
         return;
     }
-    const bdays = storage.getBirthdays();
-    bdays.push({ id: genId(), name, birthday: bdate });
-    storage.saveBirthdays(bdays);
-    showToast('Birthday added successfully!', 'success');
-    document.getElementById('birthday-name').value = '';
-    document.getElementById('birthday-date').value = '';
+    const members = storage.getMembers();
+    members.push({
+        id: genId(),
+        name,
+        birthday: bdate,
+        phone: document.getElementById('member-phone').value.trim(),
+        email: document.getElementById('member-email').value.trim(),
+        homegroup: document.getElementById('member-homegroup').value.trim(),
+        sponsor: document.getElementById('member-sponsor').value.trim(),
+        city: document.getElementById('member-city').value.trim(),
+        isServant: document.getElementById('member-is-servant').checked,
+        servantPosition: document.getElementById('member-servant-position').value.trim(),
+        servantSince: document.getElementById('member-servant-since').value
+    });
+    storage.saveMembers(members);
+    showToast('Member added successfully!', 'success');
+    cancelMemberEdit();
     updateBirthdaysTable();
     updateHome();
+    populateAttendeeDropdown();
 }
-// Delete birthday
-function deleteBirthday(id) {
-    if (!confirm('Delete this birthday?')) return;
-    let bdays = storage.getBirthdays();
-    bdays = bdays.filter(b => b.id !== id);
-    storage.saveBirthdays(bdays);
-    showToast('Birthday deleted.', 'info');
+// Delete member
+function deleteMember(id) {
+    if (!confirm('Delete this member?')) return;
+    let members = storage.getMembers();
+    members = members.filter(m => m.id !== id);
+    storage.saveMembers(members);
+    showToast('Member deleted.', 'info');
     updateBirthdaysTable();
     updateHome();
+    populateAttendeeDropdown();
 }
+
+// Helper to find all anniversaries within a given date window
+function getAnniversariesInWindow(members, pastDays, futureDays) {
+    const now = new Date();
+    now.setHours(0,0,0,0);
+
+    const lowerBound = new Date(now);
+    lowerBound.setDate(lowerBound.getDate() - pastDays);
+
+    const upperBound = new Date(now);
+    upperBound.setDate(upperBound.getDate() + futureDays);
+
+    const relevantMembers = [];
+
+    members.forEach(member => {
+        if (!member.birthday) return; // Skip members with no birthday
+        const [origYear, month, day] = member.birthday.split('-').map(Number);
+
+        // Check anniversary for the current year
+        const thisYearAnniversary = new Date(now.getFullYear(), month - 1, day);
+        if (thisYearAnniversary >= lowerBound && thisYearAnniversary <= upperBound) {
+            relevantMembers.push({ ...member, displayDate: thisYearAnniversary });
+            return; // Move to next member, avoid duplicates
+        }
+
+        // Check anniversary for last year (for pastDays window)
+        if (now.getFullYear() > origYear) {
+             const lastYearAnniversary = new Date(now.getFullYear() - 1, month - 1, day);
+             if (lastYearAnniversary >= lowerBound && lastYearAnniversary <= upperBound) {
+                relevantMembers.push({ ...member, displayDate: lastYearAnniversary });
+                return;
+             }
+        }
+
+        // Check anniversary for next year (for futureDays window)
+        const nextYearAnniversary = new Date(now.getFullYear() + 1, month - 1, day);
+        if (nextYearAnniversary >= lowerBound && nextYearAnniversary <= upperBound) {
+            relevantMembers.push({ ...member, displayDate: nextYearAnniversary });
+        }
+    });
+
+    return relevantMembers.sort((a, b) => a.displayDate - b.displayDate);
+}
+
 // Compute next birthday date relative to now
 function nextBirthdayDate(bdayStr) {
     const now = new Date();
@@ -2042,19 +2237,41 @@ function nextBirthdayDate(bdayStr) {
 function updateBirthdaysTable() {
     const tbody = document.getElementById('birthdays-body');
     tbody.innerHTML = '';
-    const bdays = storage.getBirthdays();
-    const sorted = bdays.map(b => ({ ...b, nextDate: nextBirthdayDate(b.birthday) })).sort((a, b) => a.nextDate - b.nextDate);
-    sorted.forEach(b => {
+    const members = storage.getMembers();
+    const membersInWindow = getAnniversariesInWindow(members, 15, 60);
+
+    const now = new Date();
+    now.setHours(0,0,0,0);
+
+    membersInWindow.forEach(m => {
         const tr = document.createElement('tr');
-        const nextDateStr = b.nextDate.toLocaleDateString();
-        const origDate = new Date(b.birthday);
-        const md = origDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-        tr.innerHTML = `<td>${b.name}</td><td>${md}</td><td>${nextDateStr}</td><td><button class="btn" onclick="editBirthday('${b.id}')" style="margin-right: 5px;">Edit</button><button class="btn secondary" onclick="deleteBirthday('${b.id}')">Delete</button></td>`;
+
+        // Highlight past birthdays in a muted yellow/gold color
+        if (m.displayDate < now) {
+            tr.style.backgroundColor = '#6b5d2f';
+        }
+
+        const displayDateStr = m.displayDate.toLocaleDateString();
+        const origDate = new Date(m.birthday);
+        const md = origDate.toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
+
+        // Calculate years of sobriety based on the anniversary date
+        const years = m.displayDate.getFullYear() - origDate.getFullYear();
+
+        tr.innerHTML = `
+            <td>${m.name}</td>
+            <td>${md}</td>
+            <td>${displayDateStr}</td>
+            <td>${years}</td>
+            <td>
+                <button class="btn" onclick="editMember('${m.id}')" style="margin-right: 5px;">Edit</button>
+                <button class="btn secondary" onclick="deleteMember('${m.id}')">Delete</button>
+            </td>`;
         tbody.appendChild(tr);
     });
-    if (sorted.length === 0) {
+    if (membersInWindow.length === 0) {
         const tr = document.createElement('tr');
-        tr.innerHTML = '<td colspan="4">No birthdays added</td>';
+        tr.innerHTML = '<td colspan="5">No recent or upcoming birthdays in the next 60 days.</td>';
         tbody.appendChild(tr);
     }
 }
@@ -2424,7 +2641,7 @@ function addGCLog() {
         submittedBy: document.getElementById('gc-submitted-by').value.trim(),
         status: document.getElementById('gc-status').value,
         votes: document.getElementById('gc-votes').value.trim(),
-        attendees: document.getElementById('gc-attendees').value.trim(),
+        attendees: Array.from(document.getElementById('gc-attendees').selectedOptions).map(opt => opt.value),
         servantReports: document.getElementById('gc-servant-reports').value.trim(),
     };
 
@@ -2493,7 +2710,19 @@ function editGCLog(id) {
     document.getElementById('gc-submitted-by').value = log.submittedBy;
     document.getElementById('gc-status').value = log.status;
     document.getElementById('gc-votes').value = log.votes;
-    document.getElementById('gc-attendees').value = log.attendees;
+
+    // Handle populating the multi-select dropdown
+    const attendees = log.attendees || [];
+    const select = document.getElementById('gc-attendees');
+    if (Array.isArray(attendees)) {
+        Array.from(select.options).forEach(option => {
+            option.selected = attendees.includes(option.value);
+        });
+    } else {
+        // For old string data, we can't reliably pre-select. Clear selection.
+        select.selectedIndex = -1;
+    }
+
     document.getElementById('gc-servant-reports').value = log.servantReports;
 
     document.getElementById('gc-form-title').textContent = 'Edit GC Entry';
@@ -2513,7 +2742,7 @@ function updateGCLog(id) {
         submittedBy: document.getElementById('gc-submitted-by').value.trim(),
         status: document.getElementById('gc-status').value,
         votes: document.getElementById('gc-votes').value.trim(),
-        attendees: document.getElementById('gc-attendees').value.trim(),
+        attendees: Array.from(document.getElementById('gc-attendees').selectedOptions).map(opt => opt.value),
         servantReports: document.getElementById('gc-servant-reports').value.trim(),
     };
 
@@ -2633,7 +2862,8 @@ function exportGroupConscienceLogToPDF() {
 
         doc.text("Members Present:", 14, y);
         y += 7;
-        const attendees = doc.splitTextToSize(log.attendees, 180);
+        const attendeesText = Array.isArray(log.attendees) ? log.attendees.join(', ') : (log.attendees || '');
+        const attendees = doc.splitTextToSize(attendeesText, 180);
         doc.text(attendees, 14, y);
         y += attendees.length * 5;
 
@@ -2814,14 +3044,28 @@ function updateHome() {
     }
     const homeBirthdays = document.getElementById('home-upcoming-birthdays');
     homeBirthdays.innerHTML = '';
-    const bdays = storage.getBirthdays().map(b => ({ ...b, nextDate: nextBirthdayDate(b.birthday) })).sort((a, b) => a.nextDate - b.nextDate);
-    bdays.slice(0, 5).forEach(b => {
-        const li = document.createElement('li');
-        li.textContent = `${b.name} — ${b.nextDate.toLocaleDateString()}`;
-        homeBirthdays.appendChild(li);
-    });
-    if (bdays.length === 0) {
-        homeBirthdays.innerHTML = '<li>No birthdays added</li>';
+    const allMembers = storage.getMembers();
+    const membersInWindow = getAnniversariesInWindow(allMembers, 15, 60);
+
+    const now = new Date();
+    now.setHours(0,0,0,0);
+
+    if (membersInWindow.length > 0) {
+        membersInWindow.forEach(m => {
+            const li = document.createElement('li');
+            const years = m.displayDate.getFullYear() - new Date(m.birthday).getFullYear();
+            li.textContent = `${m.name} — ${m.displayDate.toLocaleDateString()} (${years} years)`;
+
+            // Highlight past birthdays
+            if (m.displayDate < now) {
+                li.style.backgroundColor = '#6b5d2f'; // Muted yellow/gold
+                li.style.padding = '2px 4px';
+                li.style.borderRadius = '3px';
+            }
+            homeBirthdays.appendChild(li);
+        });
+    } else {
+        homeBirthdays.innerHTML = '<li>No recent or upcoming birthdays.</li>';
     }
     const homeAnnouncements = document.getElementById('home-recent-announcements');
     homeAnnouncements.innerHTML = '';
@@ -3142,6 +3386,203 @@ function showMeetingFormat(format) {
         display.style.display = 'block';
     }
 }
+// Chairperson's Corner Roster Modal Logic
+let rosterSortColumn = 'name';
+let rosterSortDirection = 'asc';
+
+function openRosterModal() {
+    document.getElementById('roster-modal').style.display = 'flex';
+    renderRosterTable();
+}
+
+function closeRosterModal() {
+    document.getElementById('roster-modal').style.display = 'none';
+}
+
+function sortRosterBy(column) {
+    if (rosterSortColumn === column) {
+        rosterSortDirection = rosterSortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+        rosterSortColumn = column;
+        rosterSortDirection = 'asc';
+    }
+    // Update header indicators
+    document.querySelectorAll('#roster-table th').forEach(th => {
+        th.textContent = th.textContent.replace(/ [↑↓]/, '');
+    });
+    const header = Array.from(document.querySelectorAll('#roster-table th')).find(th => th.textContent.toLowerCase().startsWith(column));
+    if (header) {
+        header.textContent += rosterSortDirection === 'asc' ? ' ↓' : ' ↑';
+    }
+    renderRosterTable();
+}
+
+function renderRosterTable() {
+    const tbody = document.getElementById('roster-table-body');
+    if (!tbody) return;
+    const searchTerm = document.getElementById('roster-search').value.toLowerCase();
+    tbody.innerHTML = '';
+
+    let members = storage.getMembers();
+
+    // 1. Filter
+    if (searchTerm) {
+        members = members.filter(m => {
+            return m.name.toLowerCase().includes(searchTerm) ||
+                   (m.email && m.email.toLowerCase().includes(searchTerm)) ||
+                   (m.phone && m.phone.includes(searchTerm)) ||
+                   (m.homegroup && m.homegroup.toLowerCase().includes(searchTerm)) ||
+                   (m.city && m.city.toLowerCase().includes(searchTerm));
+        });
+    }
+
+    // 2. Sort
+    members.sort((a, b) => {
+        let valA = a[rosterSortColumn] === undefined ? '' : a[rosterSortColumn];
+        let valB = b[rosterSortColumn] === undefined ? '' : b[rosterSortColumn];
+
+        if (typeof valA === 'boolean') {
+            valA = valA ? 1 : 0;
+            valB = valB ? 1 : 0;
+        } else if (typeof valA === 'string') {
+            valA = valA.toLowerCase();
+            valB = valB.toLowerCase();
+        }
+
+        if (valA < valB) return rosterSortDirection === 'asc' ? -1 : 1;
+        if (valA > valB) return rosterSortDirection === 'asc' ? 1 : -1;
+        return 0;
+    });
+
+    // 3. Render
+    if(members.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7">No members found.</td></tr>';
+        return;
+    }
+
+    members.forEach(member => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${member.name}</td>
+            <td>${member.city || ''}</td>
+            <td>${member.homegroup || ''}</td>
+            <td>${member.phone || ''}</td>
+            <td>${member.email || ''}</td>
+            <td>${member.isServant ? 'Yes' : 'No'}</td>
+            <td>
+                <button class="btn" onclick="editMemberFromRoster('${member.id}')">Edit</button>
+                <button class="btn secondary" onclick="deleteMemberAndRefreshRoster('${member.id}')">Delete</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function editMemberFromRoster(id) {
+    closeRosterModal();
+    editMember(id);
+}
+
+function deleteMemberAndRefreshRoster(id) {
+    deleteMember(id);
+    renderRosterTable();
+}
+
+function populateAttendeeDropdown() {
+    const select = document.getElementById('gc-attendees');
+    if (!select) return;
+    const members = storage.getMembers().sort((a, b) => a.name.localeCompare(b.name));
+
+    // Preserve selected values if they exist, useful if the list is refreshed while form is open
+    const selectedValues = Array.from(select.selectedOptions).map(opt => opt.value);
+
+    select.innerHTML = ''; // Clear existing options
+    members.forEach(member => {
+        const option = document.createElement('option');
+        option.value = member.name;
+        option.textContent = member.name;
+        if (selectedValues.includes(member.name)) {
+            option.selected = true;
+        }
+        select.appendChild(option);
+    });
+}
+
+function setupAudioRecorder() {
+    const recordBtn = document.getElementById('record-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const audioPlayer = document.getElementById('audio-player');
+    const downloadLink = document.getElementById('download-link');
+    const playerContainer = document.getElementById('audio-player-container');
+
+    if (!recordBtn) return; // Exit if the recorder elements aren't on the page
+
+    let mediaRecorder;
+    let chunks = [];
+
+    async function startRecording() {
+        try {
+            // Request microphone access
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+
+            // Event handler for when data is available
+            mediaRecorder.ondataavailable = e => {
+                chunks.push(e.data);
+            };
+
+            // Event handler for when recording stops
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                chunks = [];
+                const audioURL = window.URL.createObjectURL(blob);
+                audioPlayer.src = audioURL;
+                downloadLink.href = audioURL;
+
+                // Create a filename with a timestamp
+                const timestamp = new Date().toISOString().slice(0, 19).replace(/[-:T]/g, '').replace(/ /g, '_');
+                downloadLink.download = `meeting-audio-${timestamp}.webm`;
+
+                // Make the player and download link visible
+                playerContainer.style.display = 'block';
+                downloadLink.style.display = 'inline-block';
+
+                // Stop the microphone track to turn off the browser's recording indicator
+                stream.getTracks().forEach(track => track.stop());
+            };
+
+            // Start recording and update UI
+            mediaRecorder.start();
+            recordBtn.disabled = true;
+            stopBtn.disabled = false;
+            playerContainer.style.display = 'none';
+            downloadLink.style.display = 'none';
+            showToast('Recording started...', 'info');
+
+        } catch (err) {
+            console.error("Error starting recording:", err);
+            if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
+                showToast('Microphone permission denied. Please allow access in your browser settings.', 'error');
+            } else {
+                showToast('Could not start recording. No microphone found or an error occurred.', 'error');
+            }
+        }
+    }
+
+    function stopRecording() {
+        if (mediaRecorder && mediaRecorder.state !== "inactive") {
+            mediaRecorder.stop();
+            recordBtn.disabled = false;
+            stopBtn.disabled = true;
+            showToast('Recording stopped.', 'info');
+        }
+    }
+
+    recordBtn.addEventListener('click', startRecording);
+    stopBtn.addEventListener('click', stopRecording);
+}
+
+
 // Initialize the application
 function init() {
     initDefaults();
@@ -3157,6 +3598,8 @@ function init() {
     updateChairpersonLogTable();
     updateGCLogTable();
     updateChairpersonAnnouncements();
+    populateAttendeeDropdown();
+    setupAudioRecorder();
 
     // Back to Top button logic
     const mainEl = document.querySelector('main');
