@@ -611,6 +611,34 @@
                         <h3>Active Announcements</h3>
                         <ul id="chairperson-announcements-list"></ul>
                     </div>
+
+                    <!-- Live Group Conscience Module -->
+                    <div class="box mb-4">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3>Live Group Conscience</h3>
+                            <button class="btn secondary" onclick="toggleLiveGC()">Show/Hide</button>
+                        </div>
+                        <div id="live-gc-module" style="display: none;">
+                            <h4 class="mt-4">New Business / Open Motions</h4>
+                            <div class="form-group">
+                                <label for="new-business-item">New Item</label>
+                                <textarea id="new-business-item" rows="2" placeholder="Describe the new business item or motion..."></textarea>
+                            </div>
+                            <button class="btn" onclick="addNewBusinessItem()">Add New Item</button>
+
+                            <h4 class="mt-4">Motions Queue</h4>
+                            <table id="live-gc-table">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="live-gc-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
                     <div class="box">
                         <h3 id="gc-form-title">Log Group Conscience Item</h3>
                         <div class="form-group">
@@ -642,16 +670,14 @@
                             <select multiple id="gc-attendees" style="height: 120px; background: #34495e; color: #ecf0f1; border: 1px solid #7f8c8d; border-radius: 4px; padding: 0.5rem; width: 100%;"></select>
                         </div>
                         <div class="form-group">
-                            <label for="gc-servant-select">Add Servant Report</label>
-                            <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
-                                <select id="gc-servant-select" style="flex-grow: 1;"></select>
-                                <button type="button" class="btn" onclick="addServantReport()">Add Report</button>
+                            <label>Servant Reports</label>
+                            <div id="gc-servant-reports-container">
+                                <!-- Servant report inputs will be dynamically generated here -->
                             </div>
-                            <textarea id="gc-servant-report-input" rows="2" placeholder="Type report here for the selected servant..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="gc-servant-reports">Servant Reports Summary</label>
-                            <textarea id="gc-servant-reports" rows="4" placeholder="Reports will be compiled here..."></textarea>
+                            <div id="gc-servant-reports-legacy-container" style="display: none;">
+                                <label for="gc-servant-reports-legacy">Legacy Reports (read-only)</label>
+                                <textarea id="gc-servant-reports-legacy" rows="4" readonly></textarea>
+                            </div>
                         </div>
                         <input type="hidden" id="gc-edit-id">
                         <button id="gc-form-btn" class="btn" onclick="handleGCLogSubmit()">Add GC Entry</button>
@@ -902,6 +928,7 @@
                         <th>Sobriety Date</th>
                         <th>Next Birthday</th>
                         <th>Years</th>
+                        <th>Sober Time</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -1797,7 +1824,9 @@ const storage = {
     getChairpersonLog() { return JSON.parse(localStorage.getItem('chairpersonLog') || '[]'); },
     saveChairpersonLog(log) { localStorage.setItem('chairpersonLog', JSON.stringify(log)); },
     getGroupConscienceLog() { return JSON.parse(localStorage.getItem('groupConscienceLog') || '[]'); },
-    saveGroupConscienceLog(log) { localStorage.setItem('groupConscienceLog', JSON.stringify(log)); }
+    saveGroupConscienceLog(log) { localStorage.setItem('groupConscienceLog', JSON.stringify(log)); },
+    getLiveGCItems() { return JSON.parse(localStorage.getItem('liveGCItems') || '[]'); },
+    saveLiveGCItems(items) { localStorage.setItem('liveGCItems', JSON.stringify(items)); }
 };
 // Initialize default data on first load
 function initDefaults() {
@@ -1856,6 +1885,9 @@ function initDefaults() {
     }
     if (!localStorage.getItem('groupConscienceLog')) {
         storage.saveGroupConscienceLog([]);
+    }
+    if (!localStorage.getItem('liveGCItems')) {
+        storage.saveLiveGCItems([]);
     }
 }
 function handleEventSubmit() {
@@ -2161,6 +2193,7 @@ function updateMember() {
     updateHome();
     populateAttendeeDropdown();
     populateMemberDropdowns();
+    renderServantReportInputs();
 }
 
 // Add member
@@ -2192,6 +2225,7 @@ function addMember() {
     updateHome();
     populateAttendeeDropdown();
     populateMemberDropdowns();
+    renderServantReportInputs();
 }
 // Delete member
 function deleteMember(id) {
@@ -2204,6 +2238,7 @@ function deleteMember(id) {
     updateHome();
     populateAttendeeDropdown();
     populateMemberDropdowns();
+    renderServantReportInputs();
 }
 
 // Helper to find all anniversaries within a given date window
@@ -2249,6 +2284,30 @@ function getAnniversariesInWindow(members, pastDays, futureDays) {
     return relevantMembers.sort((a, b) => a.displayDate - b.displayDate);
 }
 
+// Calculate sober time
+function calculateSoberTime(bdayStr) {
+    if (!bdayStr) return { years: 0, months: 0, days: 0 };
+    const soberDate = new Date(bdayStr);
+    const now = new Date();
+
+    let years = now.getFullYear() - soberDate.getFullYear();
+    let months = now.getMonth() - soberDate.getMonth();
+    let days = now.getDate() - soberDate.getDate();
+
+    if (days < 0) {
+        months--;
+        const lastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+        days += lastMonth.getDate();
+    }
+
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+
+    return { years, months, days };
+}
+
 // Compute next birthday date relative to now
 function nextBirthdayDate(bdayStr) {
     const now = new Date();
@@ -2283,12 +2342,15 @@ function updateBirthdaysTable() {
 
         // Calculate years of sobriety based on the anniversary date
         const years = m.displayDate.getFullYear() - origDate.getFullYear();
+        const soberTime = calculateSoberTime(m.birthday);
+        const soberTimeStr = `${soberTime.years}y ${soberTime.months}m ${soberTime.days}d`;
 
         tr.innerHTML = `
             <td>${m.name}</td>
             <td>${md}</td>
             <td>${displayDateStr}</td>
             <td>${years}</td>
+            <td>${soberTimeStr}</td>
             <td>
                 <button class="btn" onclick="editMember('${m.id}')" style="margin-right: 5px;">Edit</button>
                 <button class="btn secondary" onclick="deleteMember('${m.id}')">Delete</button>
@@ -2297,7 +2359,7 @@ function updateBirthdaysTable() {
     });
     if (membersInWindow.length === 0) {
         const tr = document.createElement('tr');
-        tr.innerHTML = '<td colspan="5">No recent or upcoming birthdays in the next 60 days.</td>';
+        tr.innerHTML = '<td colspan="6">No recent or upcoming birthdays in the next 60 days.</td>';
         tbody.appendChild(tr);
     }
 }
@@ -2660,6 +2722,18 @@ function handleGCLogSubmit() {
 }
 
 function addGCLog() {
+    const servantReportInputs = document.querySelectorAll('.servant-report-input');
+    const servantReports = [];
+    servantReportInputs.forEach(input => {
+        if (input.value.trim() !== '') {
+            servantReports.push({
+                servantId: input.dataset.servantId,
+                servantName: input.dataset.servantName,
+                report: input.value.trim()
+            });
+        }
+    });
+
     const log = {
         id: genId(),
         date: document.getElementById('gc-date').value,
@@ -2668,7 +2742,7 @@ function addGCLog() {
         status: document.getElementById('gc-status').value,
         votes: document.getElementById('gc-votes').value.trim(),
         attendees: Array.from(document.getElementById('gc-attendees').selectedOptions).map(opt => opt.value),
-        servantReports: document.getElementById('gc-servant-reports').value.trim(),
+        servantReports: servantReports,
     };
 
     if (!log.date || !log.item) {
@@ -2749,7 +2823,23 @@ function editGCLog(id) {
         select.selectedIndex = -1;
     }
 
-    document.getElementById('gc-servant-reports').value = log.servantReports;
+    // Clear existing reports and hide legacy container
+    document.querySelectorAll('.servant-report-input').forEach(input => input.value = '');
+    const legacyContainer = document.getElementById('gc-servant-reports-legacy-container');
+    const legacyTextarea = document.getElementById('gc-servant-reports-legacy');
+    legacyContainer.style.display = 'none';
+
+    if (log.servantReports && Array.isArray(log.servantReports)) {
+        log.servantReports.forEach(report => {
+            const textarea = document.getElementById(`servant-report-${report.servantId}`);
+            if (textarea) {
+                textarea.value = report.report;
+            }
+        });
+    } else if (log.servantReports && typeof log.servantReports === 'string' && log.servantReports.trim() !== '') {
+        legacyContainer.style.display = 'block';
+        legacyTextarea.value = log.servantReports;
+    }
 
     document.getElementById('gc-form-title').textContent = 'Edit GC Entry';
     document.getElementById('gc-form-btn').textContent = 'Save Changes';
@@ -2761,6 +2851,18 @@ function updateGCLog(id) {
     const index = logs.findIndex(l => l.id === id);
     if (index === -1) return;
 
+    const servantReportInputs = document.querySelectorAll('.servant-report-input');
+    const servantReports = [];
+    servantReportInputs.forEach(input => {
+        if (input.value.trim() !== '') {
+            servantReports.push({
+                servantId: input.dataset.servantId,
+                servantName: input.dataset.servantName,
+                report: input.value.trim()
+            });
+        }
+    });
+
     const log = {
         id,
         date: document.getElementById('gc-date').value,
@@ -2769,7 +2871,7 @@ function updateGCLog(id) {
         status: document.getElementById('gc-status').value,
         votes: document.getElementById('gc-votes').value.trim(),
         attendees: Array.from(document.getElementById('gc-attendees').selectedOptions).map(opt => opt.value),
-        servantReports: document.getElementById('gc-servant-reports').value.trim(),
+        servantReports: servantReports,
     };
 
     if (!log.date || !log.item) {
@@ -2792,7 +2894,10 @@ function cancelGCEdit() {
     document.getElementById('gc-status').value = 'passed';
     document.getElementById('gc-votes').value = '';
     document.getElementById('gc-attendees').value = '';
-    document.getElementById('gc-servant-reports').value = '';
+    document.querySelectorAll('.servant-report-input').forEach(input => input.value = '');
+    document.getElementById('gc-servant-reports-legacy-container').style.display = 'none';
+    document.getElementById('gc-servant-reports-legacy').value = '';
+
 
     document.getElementById('gc-form-title').textContent = 'Log Group Conscience Item';
     document.getElementById('gc-form-btn').textContent = 'Add GC Entry';
@@ -2806,6 +2911,82 @@ function deleteGCLog(id) {
     storage.saveGroupConscienceLog(logs);
     showToast('GC entry deleted.', 'info');
     updateGCLogTable();
+}
+
+// Live Group Conscience functions
+function toggleLiveGC() {
+    const module = document.getElementById('live-gc-module');
+    module.style.display = module.style.display === 'none' ? 'block' : 'none';
+}
+
+function addNewBusinessItem() {
+    const itemText = document.getElementById('new-business-item').value.trim();
+    if (!itemText) {
+        showToast('Please enter an item.', 'error');
+        return;
+    }
+
+    const items = storage.getLiveGCItems();
+    items.push({
+        id: genId(),
+        item: itemText,
+        status: 'Proposed'
+    });
+    storage.saveLiveGCItems(items);
+    showToast('New business item added.', 'success');
+    document.getElementById('new-business-item').value = '';
+    updateLiveGCTable();
+}
+
+function updateLiveGCTable() {
+    const tbody = document.getElementById('live-gc-body');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    const items = storage.getLiveGCItems();
+
+    items.forEach(item => {
+        const tr = document.createElement('tr');
+        const statusOptions = ['Proposed', 'Active Discussion', 'Tabled']
+            .map(s => `<option value="${s}" ${s === item.status ? 'selected' : ''}>${s}</option>`)
+            .join('');
+
+        tr.innerHTML = `
+            <td>${item.item}</td>
+            <td>
+                <select onchange="updateLiveGCItemStatus('${item.id}', this.value)">
+                    ${statusOptions}
+                </select>
+            </td>
+            <td>
+                <button class="btn secondary" onclick="deleteLiveGCItem('${item.id}')">Delete</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    if (items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3">No new business items.</td></tr>';
+    }
+}
+
+function updateLiveGCItemStatus(id, newStatus) {
+    let items = storage.getLiveGCItems();
+    const index = items.findIndex(item => item.id === id);
+    if (index > -1) {
+        items[index].status = newStatus;
+        storage.saveLiveGCItems(items);
+        showToast('Item status updated.', 'success');
+        updateLiveGCTable();
+    }
+}
+
+function deleteLiveGCItem(id) {
+    if (!confirm('Delete this item?')) return;
+    let items = storage.getLiveGCItems();
+    items = items.filter(item => item.id !== id);
+    storage.saveLiveGCItems(items);
+    showToast('Item deleted.', 'info');
+    updateLiveGCTable();
 }
 
 
@@ -2895,7 +3076,17 @@ function exportGroupConscienceLogToPDF() {
 
         doc.text("Servant Reports:", 14, y);
         y += 7;
-        const reports = doc.splitTextToSize(log.servantReports, 180);
+
+        let reportsText = '';
+        if (log.servantReports && Array.isArray(log.servantReports) && log.servantReports.length > 0) {
+            reportsText = log.servantReports.map(r => `${r.servantName}:\n${r.report}`).join('\n\n');
+        } else if (log.servantReports && typeof log.servantReports === 'string') {
+            reportsText = log.servantReports;
+        } else {
+            reportsText = 'No reports submitted.';
+        }
+
+        const reports = doc.splitTextToSize(reportsText, 180);
         doc.text(reports, 14, y);
         y += reports.length * 5;
 
@@ -3582,36 +3773,26 @@ function populateMemberDropdowns() {
     });
 }
 
-function addServantReport() {
-    const select = document.getElementById('gc-servant-select');
-    if (!select.value) {
-        showToast('Please select a servant.', 'error');
-        return;
-    }
-    const reportInput = document.getElementById('gc-servant-report-input');
-    const reportText = reportInput.value.trim();
-    if (!reportText) {
-        showToast('Please enter a report for the selected servant.', 'error');
-        return;
-    }
-    const summaryTextarea = document.getElementById('gc-servant-reports');
-    const servantName = select.options[select.selectedIndex].text;
-    const newReport = `${servantName}: ${reportText}`;
-    summaryTextarea.value += (summaryTextarea.value ? '\n' : '') + newReport;
-    reportInput.value = '';
-    showToast('Servant report added to summary.', 'success');
-}
+function renderServantReportInputs() {
+    const container = document.getElementById('gc-servant-reports-container');
+    if (!container) return;
+    container.innerHTML = '';
+    const servants = storage.getMembers().filter(m => m.isServant).sort((a, b) => (a.servantPosition || a.name).localeCompare(b.servantPosition || b.name));
 
-function populateServantsDropdown() {
-    const select = document.getElementById('gc-servant-select');
-    if (!select) return;
-    const servants = storage.getMembers().filter(m => m.isServant).sort((a, b) => a.name.localeCompare(b.name));
-    select.innerHTML = '<option value="">Select a servant...</option>';
+    if (servants.length === 0) {
+        container.innerHTML = '<p class="text-sm opacity-75">No servants found. Add servants with positions in the Member Roster to see report fields here.</p>';
+        return;
+    }
+
     servants.forEach(s => {
-        const option = document.createElement('option');
-        option.value = s.id;
-        option.textContent = s.servantPosition ? `${s.name} (${s.servantPosition})` : s.name;
-        select.appendChild(option);
+        const servantName = s.servantPosition ? `${s.name} (${s.servantPosition})` : s.name;
+        const div = document.createElement('div');
+        div.className = 'form-group';
+        div.innerHTML = `
+            <label for="servant-report-${s.id}">${servantName}</label>
+            <textarea id="servant-report-${s.id}" data-servant-id="${s.id}" data-servant-name="${servantName}" class="servant-report-input" rows="2" placeholder="Report for ${servantName}..."></textarea>
+        `;
+        container.appendChild(div);
     });
 }
 
@@ -3704,10 +3885,11 @@ function init() {
     showHistory('genesis-history');
     updateChairpersonLogTable();
     updateGCLogTable();
+    updateLiveGCTable();
     updateChairpersonAnnouncements();
     populateAttendeeDropdown();
     populateMemberDropdowns();
-    populateServantsDropdown();
+    renderServantReportInputs();
     setupAudioRecorder();
 
     // Back to Top button logic
