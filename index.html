@@ -532,7 +532,9 @@
                 <label for="event-description">Description</label>
                 <textarea id="event-description" rows="2" placeholder="Notes or description..."></textarea>
             </div>
-            <button class="btn" onclick="addEvent()">Add Event</button>
+            <input type="hidden" id="event-edit-id">
+            <button id="event-form-btn" class="btn" onclick="handleEventSubmit()">Add Event</button>
+            <button id="event-form-cancel-btn" class="btn secondary" onclick="cancelEventEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
 
             <h3 class="mt-4">Upcoming Events (Next 30 Days)</h3>
             <div class="form-group">
@@ -577,7 +579,9 @@
                 <label for="birthday-date">Birthday (MM-DD)</label>
                 <input type="date" id="birthday-date" />
             </div>
-            <button class="btn" onclick="addBirthday()">Add Birthday</button>
+            <input type="hidden" id="birthday-edit-id">
+            <button id="birthday-form-btn" class="btn" onclick="handleBirthdaySubmit()">Add Birthday</button>
+            <button id="birthday-form-cancel-btn" class="btn secondary" onclick="cancelBirthdayEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
             
             <h3 class="mt-4">All Birthdays</h3>
             <table id="birthdays-table">
@@ -1427,6 +1431,101 @@ function initDefaults() {
         }
     }
 }
+function handleEventSubmit() {
+    const editId = document.getElementById('event-edit-id').value;
+    if (editId) {
+        updateEvent();
+    } else {
+        addEvent();
+    }
+}
+
+function editEvent(id) {
+    const events = storage.getEvents();
+    const eventToEdit = events.find(ev => ev.id === id);
+    if (!eventToEdit) {
+        console.error('Event not found for editing');
+        return;
+    }
+
+    document.getElementById('event-edit-id').value = eventToEdit.id;
+    document.getElementById('event-title').value = eventToEdit.title;
+    document.getElementById('event-date').value = eventToEdit.date || '';
+    document.getElementById('event-day').value = eventToEdit.dayOfWeek !== null ? eventToEdit.dayOfWeek : '';
+    document.getElementById('event-time').value = eventToEdit.time;
+    document.getElementById('event-category').value = eventToEdit.category || 'General';
+    document.getElementById('event-reading').value = eventToEdit.reading || '';
+    document.getElementById('event-speaker').value = eventToEdit.speaker || '';
+    document.getElementById('event-chair').value = eventToEdit.chair || '';
+    document.getElementById('event-description').value = eventToEdit.description || '';
+
+    document.getElementById('event-form-btn').textContent = 'Save Changes';
+    document.getElementById('event-form-cancel-btn').style.display = 'inline-block';
+
+    // Scroll to form for better UX
+    document.getElementById('schedule-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+function cancelEventEdit() {
+    document.getElementById('event-edit-id').value = '';
+    document.getElementById('event-title').value = '';
+    document.getElementById('event-date').value = '';
+    document.getElementById('event-day').value = '';
+    document.getElementById('event-time').value = '';
+    document.getElementById('event-category').value = 'General';
+    document.getElementById('event-reading').value = '';
+    document.getElementById('event-speaker').value = '';
+    document.getElementById('event-chair').value = '';
+    document.getElementById('event-description').value = '';
+
+    document.getElementById('event-form-btn').textContent = 'Add Event';
+    document.getElementById('event-form-cancel-btn').style.display = 'none';
+}
+
+function updateEvent() {
+    const id = document.getElementById('event-edit-id').value;
+    if (!id) return;
+
+    const title = document.getElementById('event-title').value.trim();
+    const dateVal = document.getElementById('event-date').value;
+    const dayVal = document.getElementById('event-day').value;
+    const time = document.getElementById('event-time').value;
+    const category = document.getElementById('event-category').value;
+    const reading = document.getElementById('event-reading').value.trim();
+    const speaker = document.getElementById('event-speaker').value.trim();
+    const chair = document.getElementById('event-chair').value.trim();
+    const description = document.getElementById('event-description').value.trim();
+
+    if (!title || !time || (!dateVal && dayVal === '')) {
+        alert('Please provide at least a title, time, and either a date or day of week.');
+        return;
+    }
+
+    let events = storage.getEvents();
+    const eventIndex = events.findIndex(ev => ev.id === id);
+
+    if (eventIndex > -1) {
+        events[eventIndex] = {
+            id,
+            title,
+            date: dateVal || null,
+            dayOfWeek: dateVal ? null : parseInt(dayVal, 10),
+            time,
+            category,
+            reading,
+            speaker,
+            chair,
+            description
+        };
+        storage.saveEvents(events);
+    }
+
+    cancelEventEdit(); // Resets form and buttons
+    updateEventsTable();
+    updateHome();
+    renderCalendar();
+}
+
 // Add an event
 function addEvent() {
     const title = document.getElementById('event-title').value.trim();
@@ -1520,7 +1619,7 @@ function updateEventsTable() {
         const tr = document.createElement('tr');
         const dateStr = item.occurDate.toLocaleDateString();
         const timeStr = item.occurDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        tr.innerHTML = `<td>${dateStr}</td><td>${item.event.title}</td><td>${item.event.category || 'General'}</td><td>${timeStr}</td><td>${item.event.speaker || ''}</td><td>${item.event.chair || ''}</td><td><button class="btn secondary" onclick="deleteEvent('${item.event.id}')">Delete</button></td>`;
+        tr.innerHTML = `<td>${dateStr}</td><td>${item.event.title}</td><td>${item.event.category || 'General'}</td><td>${timeStr}</td><td>${item.event.speaker || ''}</td><td>${item.event.chair || ''}</td><td><button class="btn" onclick="editEvent('${item.event.id}')" style="margin-right: 5px;">Edit</button><button class="btn secondary" onclick="deleteEvent('${item.event.id}')">Delete</button></td>`;
         tbody.appendChild(tr);
     });
     if (occ.length === 0) {
@@ -1529,6 +1628,67 @@ function updateEventsTable() {
         tbody.appendChild(tr);
     }
 }
+function handleBirthdaySubmit() {
+    const editId = document.getElementById('birthday-edit-id').value;
+    if (editId) {
+        updateBirthday();
+    } else {
+        addBirthday();
+    }
+}
+
+function editBirthday(id) {
+    const bdays = storage.getBirthdays();
+    const bdayToEdit = bdays.find(b => b.id === id);
+    if (!bdayToEdit) {
+        console.error('Birthday not found for editing');
+        return;
+    }
+
+    document.getElementById('birthday-edit-id').value = bdayToEdit.id;
+    document.getElementById('birthday-name').value = bdayToEdit.name;
+    document.getElementById('birthday-date').value = bdayToEdit.birthday;
+
+    document.getElementById('birthday-form-btn').textContent = 'Save Changes';
+    document.getElementById('birthday-form-cancel-btn').style.display = 'inline-block';
+
+    document.getElementById('birthdays-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+function cancelBirthdayEdit() {
+    document.getElementById('birthday-edit-id').value = '';
+    document.getElementById('birthday-name').value = '';
+    document.getElementById('birthday-date').value = '';
+
+    document.getElementById('birthday-form-btn').textContent = 'Add Birthday';
+    document.getElementById('birthday-form-cancel-btn').style.display = 'none';
+}
+
+function updateBirthday() {
+    const id = document.getElementById('birthday-edit-id').value;
+    if (!id) return;
+
+    const name = document.getElementById('birthday-name').value.trim();
+    const bdate = document.getElementById('birthday-date').value;
+
+    if (!name || !bdate) {
+        alert('Please provide both name and date.');
+        return;
+    }
+
+    let bdays = storage.getBirthdays();
+    const bdayIndex = bdays.findIndex(b => b.id === id);
+
+    if (bdayIndex > -1) {
+        bdays[bdayIndex] = { id, name, birthday: bdate };
+        storage.saveBirthdays(bdays);
+    }
+
+    cancelBirthdayEdit(); // Resets form and buttons
+    updateBirthdaysTable();
+    updateHome();
+}
+
 // Add birthday
 function addBirthday() {
     const name = document.getElementById('birthday-name').value.trim();
@@ -1575,7 +1735,7 @@ function updateBirthdaysTable() {
         const nextDateStr = b.nextDate.toLocaleDateString();
         const origDate = new Date(b.birthday);
         const md = origDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-        tr.innerHTML = `<td>${b.name}</td><td>${md}</td><td>${nextDateStr}</td><td><button class="btn secondary" onclick="deleteBirthday('${b.id}')">Delete</button></td>`;
+        tr.innerHTML = `<td>${b.name}</td><td>${md}</td><td>${nextDateStr}</td><td><button class="btn" onclick="editBirthday('${b.id}')" style="margin-right: 5px;">Edit</button><button class="btn secondary" onclick="deleteBirthday('${b.id}')">Delete</button></td>`;
         tbody.appendChild(tr);
     });
     if (sorted.length === 0) {
