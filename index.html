@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rowlett Group Home</title>
+    <!-- Link to the custom favicon logo -->
+    <!-- Include Tailwind CSS for utility classes and Font Awesome for icons -->
+    <script type="text/javascript" nonce="6a1ecf93e9ea40d69745a521409" src="//local.adguard.org?ts=1756309701836&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile-FWN5RSYCJYXFxtPJuZcVXR%26ts%3D487864%26p%3Dfs%26cid%3D1%26sig%3D7ff30eeb1ec578f48096db98306ce9016bf2e3d0dab442c691f75906ada342cb&amp;app=chrome.exe&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1"></script><script type="text/javascript" nonce="6a1ecf93e9ea40d69745a521409" src="//local.adguard.org?ts=1756309701836&amp;name=AdGuard%20Extra&amp;name=AdGuard%20Popup%20Blocker&amp;type=user-script"></script><script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Link to the custom favicon logo -->
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <style>
+        /* Basic reset and typography */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f8fafc;
+            color: #1f2937;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3 {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Navigation bar */
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            background: #0f172a;
+            color: #fff;
+            padding: 0.5rem 1rem;
+        }
+        nav .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.25rem;
+        }
+        nav .logo svg {
+            width: 32px;
+            height: 32px;
+            margin-right: 0.5rem;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        nav li {
+            cursor: pointer;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        nav li:hover, nav li.active {
+            background: #334155;
+        }
+
+        /* Main content area */
+        main {
+            flex: 1;
+            padding: 1rem;
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            overflow-y: auto;
+        }
+        section {
+            display: none;
+        }
+        section.active {
+            display: block;
+        }
+
+        /* Home overview boxes */
+        .grid {
+            display: grid;
+            gap: 1rem;
+        }
+        .grid-cols-2 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+        .box {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+        th, td {
+            padding: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+        }
+        th {
+            background: #f3f4f6;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            background: #0ea5e9;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background: #0284c7;
+        }
+        .btn.secondary {
+            background: #94a3b8;
+        }
+        .btn.secondary:hover {
+            background: #64748b;
+        }
+
+        /* Form styling */
+        .form-group {
+            margin-bottom: 0.75rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            background: #fff;
+        }
+
+        /* Gallery */
+        #gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        #gallery-grid img {
+            width: 100%;
+            height: auto;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        /* History section */
+        .history-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .history-nav button {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 4px;
+            background: #94a3b8;
+            color: #fff;
+            cursor: pointer;
+        }
+        .history-nav button.active {
+            background: #0ea5e9;
+        }
+        /* Timeline styles adapted from the original history pages.  */
+        .timeline-container {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #94a3b8; /* slate-400 */
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+            border-radius: 3px;
+        }
+        .timeline-block {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-block.left {
+            left: 0;
+        }
+        .timeline-block.right {
+            left: 50%;
+        }
+        .timeline-block::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -14px;
+            background-color: white;
+            border: 4px solid #06B6D4; /* cyan-500 */
+            top: 25px;
+            border-radius: 50%;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+        .timeline-block.right::after {
+            left: -12px;
+            right: auto;
+        }
+        .timeline-content {
+            padding: 20px 30px;
+            background-color: white;
+            position: relative;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .timeline-block:hover::after {
+            transform: scale(1.2);
+            border-color: #FBBF24; /* amber-400 */
+        }
+        /* Info popups are hidden by default. They will appear on hover via timeline-content:hover .info-popup. */
+        .info-popup {
+            position: absolute;
+            bottom: calc(100% + 15px);
+            left: 50%;
+            transform: translateX(-50%) scale(0.95);
+            width: 90%;
+            min-width: 250px;
+            background-color: #2d3748; /* gray-800 */
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            z-index: 10;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .timeline-content:hover .info-popup {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) scale(1);
+        }
+        /* History content sections */
+        .history-content {
+            display: none;
+        }
+        .history-content.active {
+            display: block;
+        }
+        /* Calendar styles */
+        #calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .calendar-day {
+            border-right: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
+            min-height: 110px;
+            padding: 4px;
+            font-size: 0.8rem;
+            position: relative;
+        }
+        .calendar-day:nth-child(7n) {
+            border-right: none;
+        }
+        .calendar-day-name {
+            font-weight: bold;
+            background-color: #f3f4f6;
+            text-align: center;
+            padding: 4px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .calendar-day-number {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .calendar-event {
+            background-color: #0ea5e9;
+            color: white;
+            border-radius: 3px;
+            padding: 2px 4px;
+            font-size: 0.7rem;
+            margin-bottom: 2px;
+            display: block;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <!-- Inline SVG to display the logo in the nav -->
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="48" fill="#0ea5e9"/>
+                <text x="50" y="57" text-anchor="middle" font-size="45" fill="white" font-family="Verdana, sans-serif">R</text>
+            </svg>
+            <span>Rowlett Group</span>
+        </div>
+        <ul id="nav-menu">
+            <li data-section="home-section" class="active">Home</li>
+            <li data-section="schedule-section">Schedule</li>
+            <li data-section="birthdays-section">Birthdays</li>
+            <li data-section="announcements-section">Announcements</li>
+            <li data-section="gallery-section">Gallery</li>
+            <li data-section="history-section">History</li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- Home Section -->
+        <section id="home-section" class="active">
+            <h1>Welcome to the Rowlett Group</h1>
+            <p class="mb-4">This internal site serves as your one-stop hub for meeting schedules, member birthdays, group announcements, and more. All data you add here is stored locally in your browser.</p>
+            <div class="grid grid-cols-2">
+                <div class="box">
+                    <h3>Upcoming Meetings</h3>
+                    <ul id="home-upcoming-events"></ul>
+                    <button class="btn" onclick="goToSection('schedule-section')">View Full Schedule</button>
+                </div>
+                <div class="box">
+                    <h3>Upcoming Birthdays</h3>
+                    <ul id="home-upcoming-birthdays"></ul>
+                    <button class="btn" onclick="goToSection('birthdays-section')">Manage Birthdays</button>
+                </div>
+                <div class="box">
+                    <h3>Recent Announcements</h3>
+                    <ul id="home-recent-announcements"></ul>
+                    <button class="btn" onclick="goToSection('announcements-section')">View All Announcements</button>
+                </div>
+                <div class="box">
+                    <h3>Latest Photos</h3>
+                    <div id="home-latest-photos" style="display:flex; gap:0.5rem; overflow-x: auto;"></div>
+                    <button class="btn" onclick="goToSection('gallery-section')">Browse Gallery</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Schedule Section -->
+        <section id="schedule-section">
+            <h2>Schedule of Meetings & Events</h2>
+            <p class="mb-2">Add recurring weekly meetings or special one-time events. Use the calendar to browse by month. Upcoming events for the next 60 days are listed below.</p>
+
+            <!-- Calendar Controls -->
+            <div id="calendar-controls" style="display:flex; align-items:center; justify-content: space-between; gap:0.5rem; margin-bottom:0.5rem;">
+                <button class="btn secondary" id="prev-month-btn">&lt; Prev</button>
+                <h3 id="calendar-month-year" style="flex:1; text-align:center;"></h3>
+                <button class="btn secondary" id="next-month-btn">Next &gt;</button>
+            </div>
+            <div id="calendar-grid"></div>
+            <div class="form-group">
+                <label for="event-title">Title</label>
+                <input type="text" id="event-title" placeholder="e.g. Big Book Study" />
+            </div>
+            <div class="form-group">
+                <label for="event-date">Date (leave blank for weekly)</label>
+                <input type="date" id="event-date" />
+            </div>
+            <div class="form-group">
+                <label for="event-day">Day of Week (for weekly meetings)</label>
+                <select id="event-day">
+                    <option value="">--Select day--</option>
+                    <option value="0">Sunday</option>
+                    <option value="1">Monday</option>
+                    <option value="2">Tuesday</option>
+                    <option value="3">Wednesday</option>
+                    <option value="4">Thursday</option>
+                    <option value="5">Friday</option>
+                    <option value="6">Saturday</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="event-time">Time</label>
+                <input type="time" id="event-time" />
+            </div>
+            <div class="form-group">
+                <label for="event-reading">Reading</label>
+                <input type="text" id="event-reading" placeholder="e.g. How It Works" />
+            </div>
+            <div class="form-group">
+                <label for="event-speaker">Speaker</label>
+                <input type="text" id="event-speaker" placeholder="Name of speaker" />
+            </div>
+            <div class="form-group">
+                <label for="event-chair">Chairperson</label>
+                <input type="text" id="event-chair" placeholder="Name of chair" />
+            </div>
+            <div class="form-group">
+                <label for="event-description">Description</label>
+                <textarea id="event-description" rows="2" placeholder="Notes or description..."></textarea>
+            </div>
+            <button class="btn" onclick="addEvent()">Add Event</button>
+
+            <h3 class="mt-4">Upcoming Events (Next 30 Days)</h3>
+            <table id="events-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Title</th>
+                        <th>Time</th>
+                        <th>Speaker</th>
+                        <th>Chair</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="events-body"></tbody>
+            </table>
+        </section>
+
+        <!-- Birthdays Section -->
+        <section id="birthdays-section">
+            <h2>Member Birthdays</h2>
+            <p class="mb-2">Add members’ birthdays and see upcoming celebrations.</p>
+            <div class="form-group">
+                <label for="birthday-name">Name</label>
+                <input type="text" id="birthday-name" placeholder="Member's name" />
+            </div>
+            <div class="form-group">
+                <label for="birthday-date">Birthday (MM-DD)</label>
+                <input type="date" id="birthday-date" />
+            </div>
+            <button class="btn" onclick="addBirthday()">Add Birthday</button>
+            
+            <h3 class="mt-4">All Birthdays</h3>
+            <table id="birthdays-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Birthday</th>
+                        <th>Next Occurrence</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="birthdays-body"></tbody>
+            </table>
+        </section>
+
+        <!-- Announcements Section -->
+        <section id="announcements-section">
+            <h2>Announcements</h2>
+            <div class="form-group">
+                <label for="announcement-text">Announcement</label>
+                <textarea id="announcement-text" rows="2" placeholder="Enter announcement..."></textarea>
+            </div>
+            <button class="btn" onclick="addAnnouncement()">Add Announcement</button>
+            
+            <h3 class="mt-4">Current Announcements</h3>
+            <ul id="announcements-list"></ul>
+        </section>
+
+        <!-- Gallery Section -->
+        <section id="gallery-section">
+            <h2>Photo Gallery</h2>
+            <p class="mb-2">Upload pictures of fliers or events for everyone to browse.</p>
+            <input type="file" id="photo-upload" accept="image/*" multiple />
+            <button class="btn" onclick="uploadPhotos()">Upload Selected</button>
+            <h3 class="mt-4">Photos</h3>
+            <div id="gallery-grid"></div>
+        </section>
+
+        <!-- History Section -->
+        <section id="history-section">
+            <h2>History &amp; Resources</h2>
+            <!-- History navigation buttons for different timelines -->
+            <div class="history-nav">
+                <button id="genesis-btn" onclick="showHistory('genesis-history')">Genesis of AA</button>
+                <button id="dfw-btn" onclick="showHistory('dfw-history')">Dallas/Fort Worth History</button>
+                <button id="rowlett-btn" onclick="showHistory('rowlett-history')">Rowlett Group History</button>
+            </div>
+            <!-- Embedded histories (hidden by default, toggled via showHistory()) -->
+            <div id="genesis-history" class="history-content">
+                <h3 class="mb-4 font-bold text-xl">The Genesis of Alcoholics Anonymous</h3>
+                <!-- Genesis timeline -->
+                <div class="timeline-wrapper">
+                <div class="timeline-container">
+                
+                            <!-- Event 1: 1895 - Bill W. Born -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-blue-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-blue-400 pb-1 mb-2">William Griffith Wilson's Birth</h4>
+                                        <p class="text-sm">Born in East Dorset, Vermont. His early life was marked by feelings of isolation and a strong drive for recognition, factors that would later influence his drinking and recovery.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-blue-800">Nov 26, 1895: Bill W. Born <i class="fa-solid fa-baby ml-2 text-blue-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Birth of William Griffith Wilson, co-founder of Alcoholics Anonymous.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 2: 1879 - Dr. Bob Born -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-purple-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-purple-400 pb-1 mb-2">Robert Holbrook Smith's Birth</h4>
+                                        <p class="text-sm">Born in St. Johnsbury, Vermont. He would later become a respected surgeon in Akron, Ohio, and co-founder of AA, despite his long struggle with alcoholism.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-purple-800">Aug 8, 1879: Dr. Bob Born <i class="fa-solid fa-baby ml-2 text-purple-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Birth of Robert Holbrook Smith, co-founder of Alcoholics Anonymous.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 3: Early 1900s - Bill W.'s Descent & Marriage -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-green-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-green-400 pb-1 mb-2">Bill's Struggle & Lois Wilson</h4>
+                                        <p class="text-sm">Bill's drinking progresses, leading to severe consequences. He marries Lois Burnham Wilson in 1918, who would become a steadfast supporter and co-founder of Al-Anon.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-green-800">1910s-30s: Bill's Descent & Lois <i class="fa-solid fa-ring ml-2 text-green-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Bill's alcoholism escalates, bringing financial ruin and repeated hospitalizations, deeply impacting his wife, Lois.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 4: Early 1900s - Dr. Bob's Hidden Battle & Marriage -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-teal-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-teal-400 pb-1 mb-2">Dr. Bob's Hidden Battle & Anne Smith</h4>
+                                        <p class="text-sm">Dr. Bob's alcoholism becomes a decades-long struggle, hidden from many. He marries Anne Ripley Smith, who would become a crucial figure in early AA and Al-Anon, supporting his recovery efforts.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-teal-800">1910s-30s: Dr. Bob's Struggle & Anne <i class="fa-solid fa-house-medical-flag ml-2 text-teal-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Dr. Bob battles severe, often hidden, alcoholism despite his medical career, supported by his wife, Anne.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 5: November 1934 - Ebby T.'s Visit & Bill's Turning Point -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-cyan-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-cyan-400 pb-1 mb-2">The Spiritual Solution Introduced</h4>
+                                        <p class="text-sm">Bill's old drinking friend, Ebby T., visits him, sober, and introduces the idea of a spiritual solution, learned from the Oxford Group. This plants the seed for Bill's own spiritual awakening.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-cyan-800">Nov 1934: Ebby T. & Bill's Shift <i class="fa-solid fa-hand-holding-heart ml-2 text-cyan-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Ebby T. visits Bill, sharing his newfound sobriety through a spiritual experience, igniting hope in Bill during his deepest despair.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 6: December 1934 - Bill's Spiritual Awakening -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-yellow-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-yellow-400 pb-1 mb-2">The "White Light" Experience</h4>
+                                        <p class="text-sm">While hospitalized in Towns Hospital, Bill experiences a profound spiritual awakening after crying out to God in desperation. The obsession with alcohol is lifted, and he finds immediate sobriety.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-yellow-800">Dec 1934: Bill's Awakening <i class="fa-solid fa-lightbulb ml-2 text-yellow-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">In Towns Hospital, Bill W. has a powerful spiritual experience that removes his obsession to drink, marking his last drink.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 7: Early 1935 - Bill's Early Attempts & The Paradox -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-orange-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-orange-400 pb-1 mb-2">The Helper Therapy Principle</h4>
+                                        <p class="text-sm">Bill's initial attempts to "convert" other alcoholics fail until he realizes he must share his experience with empathy, not preach. He discovers that helping others is crucial for his own sobriety.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-orange-800">Early 1935: The Paradox Discovered <i class="fa-solid fa-person-digging ml-2 text-orange-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Bill learns that helping other alcoholics is essential for maintaining his own sobriety, laying the groundwork for AA's core service principle.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 8: May 1935 - Bill W. Meets Dr. Bob (AA's Founding) -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-red-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-red-400 pb-1 mb-2">The Birth of AA</h4>
+                                        <p class="text-sm">During a business trip to Akron, Bill, desperate to help another alcoholic to stay sober himself, is introduced to Dr. Bob by Henrietta Seiberling. Their shared experience and mutual need ignite the spark of Alcoholics Anonymous.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-red-800">May 1935: AA is Born <i class="fa-solid fa-handshake ml-2 text-red-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Bill W. meets Dr. Bob in Akron, Ohio. Their first conversation and shared experience mark the official founding of Alcoholics Anonymous.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 9: June 10, 1935 - Dr. Bob's Last Drink -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-indigo-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-indigo-400 pb-1 mb-2">The Last Drink</h4>
+                                        <p class="text-sm">After continued discussions with Bill and a final relapse, Dr. Bob takes his last drink on June 10, 1935, achieving continuous sobriety. This date is celebrated as AA's founding day.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-indigo-800">June 10, 1935: Dr. Bob Sober <i class="fa-solid fa-calendar-check ml-2 text-indigo-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Dr. Bob takes his last drink, achieving continuous sobriety and solidifying the foundation of the new fellowship.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 10: June 1935 Onwards - The First AA Group in Akron -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-purple-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-purple-400 pb-1 mb-2">Working with Others</h4>
+                                        <p class="text-sm">Bill and Dr. Bob begin working with other alcoholics, primarily at Akron City Hospital. They apply their principles of sharing experience, spiritual transformation, and mutual support, forming the nucleus of the first AA group.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-purple-800">June 1935+: Akron Group <i class="fa-solid fa-hospital ml-2 text-purple-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Bill and Dr. Bob begin intensive work with other alcoholics, particularly in hospitals, forming the first AA group in Akron.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 11: Late 1930s - Evolution of the Twelve Steps -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-green-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-green-400 pb-1 mb-2">From Oxford Group to AA's Principles</h4>
+                                        <p class="text-sm">The Twelve Steps evolved from the six principles of the Oxford Group, a spiritual movement that influenced early AA. Bill W. expanded and formalized these into the Twelve Steps, making them more specific to alcoholism and accessible to a wider audience, including those without a traditional religious background.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-green-800">Late 1930s: Steps Evolve <i class="fa-solid fa-scroll ml-2 text-green-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">The Twelve Steps are developed and formalized by Bill W., building on earlier spiritual principles.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 12: 1938-1939 - Drafting of the Twelve Steps -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-teal-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-teal-400 pb-1 mb-2">Codifying the Program</h4>
+                                        <p class="text-sm">Bill W., with input from Dr. Bob and early members, drafts the Twelve Steps, codifying the spiritual principles and actions necessary for recovery. These steps become the core program of AA.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-teal-800">1938-1939: Twelve Steps Drafted <i class="fa-solid fa-list-ol ml-2 text-teal-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">The Twelve Steps are formally drafted, outlining the program of recovery for alcoholics.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 13: April 1939 - Publication of "Alcoholics Anonymous" (First Edition) -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-cyan-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-cyan-400 pb-1 mb-2">Carrying the Message to the World</h4>
+                                        <p class="text-sm">The foundational text, "Alcoholics Anonymous" (the Big Book), is published. It details the problem of alcoholism, the spiritual solution, and the Twelve Steps, making the program accessible to a wider audience.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-cyan-800">Apr 1939: Big Book (1st Ed.) <i class="fa-solid fa-book-open ml-2 text-cyan-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">The book "Alcoholics Anonymous" is published, providing the definitive text for the fellowship's program of recovery.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 14: Late 1930s - 1940s - Growth & Emergence of Traditions -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-yellow-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-yellow-400 pb-1 mb-2">Maintaining Unity</h4>
+                                        <p class="text-sm">As AA grows rapidly, issues of group autonomy, money, and public relations arise. The Twelve Traditions emerge informally and are later codified to ensure the unity and survival of the fellowship.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-yellow-800">1930s-40s: Traditions Emerge <i class="fa-solid fa-users-line ml-2 text-yellow-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Rapid growth leads to the development of the Twelve Traditions, guiding AA's groups and preserving its unity.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 15: Nov 16, 1950 - Dr. Bob's Passing -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-orange-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-orange-400 pb-1 mb-2">A Legacy of Service</h4>
+                                        <p class="text-sm">Dr. Bob passes away in Akron, Ohio, having maintained continuous sobriety since June 10, 1935. His life of dedicated service, particularly in hospitals, leaves an enduring legacy as AA's co-founder.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-orange-800">Nov 16, 1950: Dr. Bob Passes <i class="fa-solid fa-cross ml-2 text-orange-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Dr. Bob, co-founder of AA, passes away, having achieved continuous sobriety and dedicated his life to helping others.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 16: 1953 - Publication of "Twelve Steps and Twelve Traditions" -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-red-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-red-400 pb-1 mb-2">Deeper Understanding & Guidance</h4>
+                                        <p class="text-sm">Written by Bill W., this book provides detailed interpretations and historical context for both the Twelve Steps and the Twelve Traditions. It was created to offer members a deeper understanding of the spiritual principles and the guidelines for group unity, helping AA mature as a fellowship.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-red-800">1953: 12 & 12 Published <i class="fa-solid fa-book-bookmark ml-2 text-red-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">The "Twelve Steps and Twelve Traditions" book is published, offering deeper insights into the program and guiding principles.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 17: 1955 - Publication of "Alcoholics Anonymous" (Second Edition) -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-indigo-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-indigo-400 pb-1 mb-2">Growth and Traditions</h4>
+                                        <p class="text-sm">The second edition of the Big Book is published, reflecting AA's significant growth and including the formalized Twelve Traditions.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-indigo-800">1955: Big Book (2nd Ed.) <i class="fa-solid fa-book-reader ml-2 text-indigo-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">The second edition of the Big Book is released, documenting AA's growth and formally including the Twelve Traditions.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 18: 1950s - Development of Concepts for World Service -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-purple-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-purple-400 pb-1 mb-2">Guiding Global Service</h4>
+                                        <p class="text-sm">Bill W. develops the Twelve Concepts for World Service to provide a framework for AA's growing global service structure, ensuring effective leadership and decision-making while maintaining group autonomy.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-purple-800">1950s: World Service Concepts <i class="fa-solid fa-globe ml-2 text-purple-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">The Twelve Concepts for World Service are developed to guide AA's expanding global service structure.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 19: 1971 - Bill W.'s Passing -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-green-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-green-400 pb-1 mb-2">A Founder's Legacy</h4>
+                                        <p class="text-sm">Bill W. passes away in Miami Beach, Florida. His vision and dedication led to the founding of AA and its global spread, leaving an immeasurable legacy for millions in recovery.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-green-800">Jan 24, 1971: Bill W. Passes <i class="fa-solid fa-person-praying ml-2 text-green-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Bill W., co-founder of AA, passes away, leaving behind a global fellowship dedicated to sobriety.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 20: 1976 - Publication of "Alcoholics Anonymous" (Third Edition) -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-teal-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-teal-400 pb-1 mb-2">Continued Expansion</h4>
+                                        <p class="text-sm">The third edition of the Big Book is published, reflecting further growth in AA membership worldwide and reaffirming the unchanging core principles.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-teal-800">1976: Big Book (3rd Ed.) <i class="fa-solid fa-book-bookmark ml-2 text-teal-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">The third edition of the Big Book is released, documenting AA's continued expansion.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 21: 2001 - Publication of "Alcoholics Anonymous" (Fourth Edition) -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-cyan-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-cyan-400 pb-1 mb-2">Into the New Millennium</h4>
+                                        <p class="text-sm">The fourth edition of the Big Book is published, highlighting AA's global reach into the new millennium and the enduring power of its message.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-cyan-800">2001: Big Book (4th Ed.) <i class="fa-solid fa-book-atlas ml-2 text-cyan-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">The fourth edition of the Big Book is released, marking AA's presence worldwide at the turn of the millennium.</p>
+                                </div>
+                            </div>
+                
+                        </div>
+                </div>
+            </div>
+            <div id="dfw-history" class="history-content">
+                <h3 class="mb-4 font-bold text-xl">Dallas/Fort Worth AA History</h3>
+                <!-- Dallas/Fort Worth timeline -->
+                <div class="timeline-wrapper">
+                <div class="timeline-container">
+                
+                            <!-- Event 1: 1940 - AA Comes to Houston -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-blue-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-blue-400 pb-1 mb-2">Texas Roots</h4>
+                                        <p class="text-sm">The first documented AA group in Texas forms in Houston with Larry Jewell. This is significant as Esther E., a key figure in Dallas AA, sobered up here before moving to Dallas.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-blue-800">1940: AA in Houston <i class="fa-solid fa-map-pin ml-2 text-blue-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">The first AA group in Texas is established in Houston.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 2: June 14, 1941 - Ruth T.'s Letter (Dallas) -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-purple-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-purple-400 pb-1 mb-2">First Dallas Outreach</h4>
+                                        <p class="text-sm">Ruth T., a Dallas alcoholic, sends the first recorded letter from Dallas to Ruth Hock, Bill W.'s secretary in New York, inquiring about AA activity in the area. This marks the initial plea for help from Dallas.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-purple-800">Jun 14, 1941: Ruth T.'s Plea <i class="fa-solid fa-envelope ml-2 text-purple-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">First recorded outreach from Dallas to AA General Service Office.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 3: 1941 - First Fort Worth Group (Hazy History) -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-green-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-green-400 pb-1 mb-2">Fort Worth's Early Beginnings</h4>
+                                        <p class="text-sm">George McL. is credited with starting the first AA group in Fort Worth. Early history is "hazy," but correspondence details an initial meeting with seven attendees.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-green-800">1941: Fort Worth's First Group <i class="fa-solid fa-users ml-2 text-green-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">George McL. is credited with starting the first AA group in Fort Worth.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 4: Dec 1, 1941 - Kent W.'s Arrival (Dallas) -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-teal-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-teal-400 pb-1 mb-2">Energetic but Fleeting Efforts</h4>
+                                        <p class="text-sm">Kent W., a sober AA member from Florida, moves to Dallas and eagerly begins promoting AA in local media, planning meetings, and even titled himself "Chief Sponsor" of Dallas AA.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-teal-800">Dec 1, 1941: Kent W. in Dallas <i class="fa-solid fa-bullhorn ml-2 text-teal-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Kent W. arrives in Dallas, eager to establish an AA group.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 5: Jan 7, 1942 - First Recorded Dallas Meeting (Kent W.) -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-cyan-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-cyan-400 pb-1 mb-2">Initial Surge and Disappearance</h4>
+                                        <p class="text-sm">Kent W. holds the first recorded AA meeting in Dallas at the White Plaza Hotel, attended by 12 people. A Dallas Morning News story sparks 72 inquiries. Despite his efforts, Kent W. is "never heard from again," highlighting the fragility of early group formation.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-cyan-800">Jan 7, 1942: 1st Dallas Meeting <i class="fa-solid fa-hotel ml-2 text-cyan-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">First recorded AA meeting in Dallas held by Kent W. at the White Plaza Hotel.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 6: April 2, 1943 - Esther E. Starts "The Dallas Group" -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-yellow-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-yellow-400 pb-1 mb-2">AA Takes Root in Dallas</h4>
+                                        <p class="text-sm">Esther E. (whose story "A Flower of the South" is in the Big Book), having sobered up in Houston, moves to Dallas and starts "The Dallas Group" in her home. Ruth T. attends this inaugural meeting.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-yellow-800">Apr 2, 1943: "The Dallas Group" <i class="fa-solid fa-house-chimney ml-2 text-yellow-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Esther E. starts "The Dallas Group" in her home, marking AA truly taking root in Dallas.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 7: 1945 - Dallas AA First Permanent Home -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-orange-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-orange-400 pb-1 mb-2">Establishing a Presence</h4>
+                                        <p class="text-sm">Dallas AA secures its first permanent home at 912 ½ Main Street in downtown. By year-end, fewer than 20 people in the city are sober, but numbers are growing by word-of-mouth.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-orange-800">1945: Dallas AA Home <i class="fa-solid fa-building ml-2 text-orange-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Dallas AA establishes its first permanent home downtown.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 8: 1946 - Suburban Group Formed (Dallas) -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-red-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-red-400 pb-1 mb-2">Post-War Expansion</h4>
+                                        <p class="text-sm">Following World War II, AA membership surges. Searcy W. forms a second group, the Suburban Group, which remains active in Dallas today.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-red-800">1946: Suburban Group <i class="fa-solid fa-people-group ml-2 text-red-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Searcy W. forms the Suburban Group in Dallas.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 9: Sep 18, 1947 - Dallas Central Office Opens -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-indigo-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-indigo-400 pb-1 mb-2">Organizational Foresight</h4>
+                                        <p class="text-sm">The Dallas Central Office holds its first Board meeting and officially opens on Akard Street. Dick P. serves as the first Office Manager, despite suffering physically from Jamaica Ginger Poisoning, demonstrating profound commitment.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-indigo-800">Sep 18, 1947: Dallas Central Office <i class="fa-solid fa-phone ml-2 text-indigo-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">The Dallas Central Office officially opens for business.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 10: 1960 - Esther E. Passes Away -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-purple-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-purple-400 pb-1 mb-2">A Pioneer's Legacy</h4>
+                                        <p class="text-sm">Esther E. passes away with slightly more than 19 years of sobriety. Her personal copy of the Big Book, inscribed by Bill W., is displayed at the Dallas Intergroup Office, a tangible link to her foundational role.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-purple-800">1960: Esther E. Passes <i class="fa-solid fa-book-heart ml-2 text-purple-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Esther E., instrumental in establishing AA in Dallas, passes away.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 11: 1968 - Dallas Intergroup Reorganizes -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-green-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-green-400 pb-1 mb-2">Maturation of Service</h4>
+                                        <p class="text-sm">Dallas Intergroup reorganizes, and the Central Office begins operating more formally under the guidance of the then eight or nine AA groups. A member generously loans \$2,000 to stock AA literature.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-green-800">1968: Dallas Intergroup Reorg <i class="fa-solid fa-sitemap ml-2 text-green-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Dallas Intergroup reorganizes for more formal operations.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 12: 1971 - Dallas Central Office Publishes Directory -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-teal-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-teal-400 pb-1 mb-2">Broadening Reach</h4>
+                                        <p class="text-sm">The Dallas Central Office, then located in the Hudson & Hudson Building, publishes a comprehensive meeting directory that includes groups in jails, hospitals, and other facilities, reflecting the broadening reach of AA.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-teal-800">1971: Dallas Meeting Directory <i class="fa-solid fa-address-book ml-2 text-teal-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Dallas Central Office publishes a comprehensive meeting directory.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 13: 1973 - Dallas Fellowship Grows to 30 Groups -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-cyan-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-cyan-400 pb-1 mb-2">Significant Growth</h4>
+                                        <p class="text-sm">The Dallas fellowship experiences substantial growth, reaching 30 active groups, demonstrating the increasing demand for AA's message in the region.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-cyan-800">1973: 30 Dallas Groups <i class="fa-solid fa-chart-line ml-2 text-cyan-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">The Dallas AA fellowship grows to 30 groups.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 14: 1978 - Lambda Dallas Group Founded -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-yellow-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-yellow-400 pb-1 mb-2">Serving Diverse Communities</h4>
+                                        <p class="text-sm">The Lambda Dallas Group is founded in Oak Lawn, Dallas' LGBTQ neighborhood. This group plays a vital role in carrying the AA message to thousands within this specific community, highlighting AA's adaptability.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-yellow-800">1978: Lambda Dallas Group <i class="fa-solid fa-rainbow ml-2 text-yellow-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">The Lambda Dallas Group is founded, serving the LGBTQ community.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 15: June 10, 1983 - The Glass House Group Founded (Fort Worth) -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-orange-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-orange-400 pb-1 mb-2">Fort Worth Milestone</h4>
+                                        <p class="text-sm">The Glass House group is founded on the west side of Fort Worth by a few members emphasizing spirituality. Its first meeting on Houghton Street notably coincides with AA's 48th anniversary. The podium built by founder Don A. is still in use today.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-orange-800">Jun 10, 1983: Glass House (FW) <i class="fa-solid fa-house-crack ml-2 text-orange-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">The Glass House group is founded in Fort Worth.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 16: 1984 - The Glass House Moves to Hemsell Place -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-red-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-red-400 pb-1 mb-2">Rapid Growth & Incorporation</h4>
+                                        <p class="text-sm">Within months, The Glass House outgrows its initial location, leading to the acquisition of its current facility at 6713 Hemsell Place. The move involves extensive volunteer effort, and the group is incorporated by Bryan H., Jim Williams, Kelly Y., and Massie T.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-red-800">1984: Glass House Relocates <i class="fa-solid fa-location-dot ml-2 text-red-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">The Glass House group moves to its current Fort Worth facility.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 17: 1989 - Dallas Intergroup Becomes DIA -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-indigo-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-indigo-400 pb-1 mb-2">Formalizing Structure</h4>
+                                        <p class="text-sm">The Dallas Intergroup formalizes its structure by incorporating and becoming the Dallas Intergroup Association (DIA), a non-profit organization, reflecting its maturation as a service entity.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-indigo-800">1989: Dallas Intergroup (DIA) <i class="fa-solid fa-building-columns ml-2 text-indigo-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Dallas Intergroup incorporates as the Dallas Intergroup Association (DIA).</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 18: June 1993 - Bryan Honts (Glass House Founder) Passes -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-purple-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-purple-400 pb-1 mb-2">A Founder Remembered</h4>
+                                        <p class="text-sm">Bryan Honts, a founder of The Glass House group in Fort Worth, passes away. His contributions were vital to the group's establishment and early growth.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-purple-800">Jun 1993: Bryan Honts Passes <i class="fa-solid fa-user-tie ml-2 text-purple-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Bryan Honts, a founder of The Glass House group, passes away.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 19: Jan 1999 - Jim Williams (Glass House Founder) Passes -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-green-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-green-400 pb-1 mb-2">Speaker and Founder</h4>
+                                        <p class="text-sm">Jim Williams, a founder of The Glass House group and a prolific AA speaker, passes away. His shares and service significantly impacted many members.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-green-800">Jan 1999: Jim Williams Passes <i class="fa-solid fa-microphone ml-2 text-green-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Jim Williams, a founder and speaker at The Glass House, passes away.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 20: April 2000 - Dallas AA Central Office Reverts Name -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-teal-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-teal-400 pb-1 mb-2">Clarifying Identity</h4>
+                                        <p class="text-sm">The Dallas Intergroup Association (DIA) reverts its name to the Dallas AA Central Office. This change was made to better describe its primary function to potential newcomers seeking help, emphasizing accessibility.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-teal-800">Apr 2000: Dallas Central Office <i class="fa-solid fa-retweet ml-2 text-teal-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Dallas Intergroup Association (DIA) reverts its name to Dallas AA Central Office.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 21: 2002 - Dr. Rex Howard (Glass House Founder) Passes -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-cyan-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-cyan-400 pb-1 mb-2">Another Founder's Departure</h4>
+                                        <p class="text-sm">Dr. Rex Howard, another founder of The Glass House group, passes away. His contributions were integral to the early spiritual emphasis of the group.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-cyan-800">2002: Dr. Rex Howard Passes <i class="fa-solid fa-user-md ml-2 text-cyan-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Dr. Rex Howard, a founder of The Glass House group, passes away.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 22: 2003 - Searcy W. Passes (Dallas) -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-yellow-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-yellow-400 pb-1 mb-2">Dallas's Oldest Member</h4>
+                                        <p class="text-sm">Searcy W., founder of Dallas's Suburban Group and then Dallas's oldest AA member, passes away with 57 years of sobriety, leaving a long legacy of recovery and service.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-yellow-800">2003: Searcy W. Passes <i class="fa-solid fa-star-of-life ml-2 text-yellow-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Searcy W., founder of the Suburban Group and Dallas's oldest AA member, passes away.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 23: April 2009 - Kelly Young (Glass House Key Figure) Passes -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-orange-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-orange-400 pb-1 mb-2">Spiritual Leadership</h4>
+                                        <p class="text-sm">Kelly Young, a key figure at The Glass House group who served as Chairman of its Board for 24 years, passes away after 27 years of active service, leaving a lasting legacy of spiritual leadership.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-orange-800">Apr 2009: Kelly Young Passes <i class="fa-solid fa-hand-holding-medical ml-2 text-orange-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Kelly Young, a key figure at The Glass House group, passes away.</p>
+                                </div>
+                            </div>
+                
+                            <!-- Event 24: Present - DFW AA Today -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-red-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-red-400 pb-1 mb-2">Continuing Service</h4>
+                                        <p class="text-sm">The Dallas Central Office/DIA supports over 160 AA groups, hosting over 1500 meetings. The Fort Worth AA Central Office serves a wide multi-county area, and NETA 65 serves over 500 AA groups, demonstrating ongoing growth and vital service.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-red-800">Present: DFW AA Today <i class="fa-solid fa-city ml-2 text-red-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Dallas and Fort Worth AA continue to thrive, supporting thousands of members.</p>
+                                </div>
+                            </div>
+                
+                        </div>
+                </div>
+            </div>
+            <div id="rowlett-history" class="history-content">
+                <h3 class="mb-4 font-bold text-xl">Rowlett Group History</h3>
+                <!-- Rowlett Group timeline -->
+                <div class="timeline-wrapper">
+                <div class="timeline-container">
+                            <!-- 1995 -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-sky-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-sky-400 pb-1 mb-2">The Backstory</h4>
+                                        <p class="text-sm">The Sunshine Group was struggling financially. Knowing the end was near, members gave notice to their landlord, promising to somehow pay two months of back rent. After it folded, a new vision was born.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-sky-800">1995: A Leap of Faith <i class="fa-solid fa-seedling ml-2 text-sky-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Eight former Sunshine Group members founded a new, non-smoking group. On July 22, the first meeting was held at 4501 Rowlett Road in a tiny 10.5' x 14' room.</p>
+                                </div>
+                            </div>
+                
+                            <!-- 1996 -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-teal-50">
+                                     <div class="info-popup">
+                                        <h4 class="font-bold border-b border-teal-400 pb-1 mb-2">Volunteer Spirit</h4>
+                                        <p class="text-sm">Extensive remodeling and refinishing was mostly done by Group volunteers working nights and weekends, creating the group home for the next six years!</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-teal-800">1996: Building Our Home <i class="fa-solid fa-hammer ml-2 text-teal-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">The 1st Anniversary BBQ was memorably rained out. That fall, the group room tripled in size, and the Open House featured speaker Searcy W., who held a fifty-year chip!</p>
+                                </div>
+                            </div>
+                            
+                            <!-- 1997-1998 -->
+                            <div class="timeline-block left">
+                                 <div class="timeline-content bg-teal-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-teal-400 pb-1 mb-2">Meeting Growth</h4>
+                                        <p class="text-sm">Monthly AA birthday meetings were combined with Al-Anon. The total weekly meeting count grew rapidly: from none to 12 in 1997, then to 17 by the end of 1998.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-teal-800">1997-1998: More Meetings! <i class="fa-solid fa-users ml-2 text-teal-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">The group expanded its schedule, adding monthly birthday meetings, multiple noon meetings, and 6 PM meetings to better serve the growing community.</p>
+                                 </div>
+                            </div>
+                
+                            <!-- 1999-2002 -->
+                            <div class="timeline-block right">
+                                 <div class="timeline-content bg-teal-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-teal-400 pb-1 mb-2">Key Events</h4>
+                                        <ul class="text-sm list-disc list-inside space-y-1">
+                                            <li><b>May 1999:</b> $500 approved to double Al-Anon space with volunteer labor.</li>
+                                            <li><b>Feb 2002:</b> Sponsorship workshop featured a four-member panel with a moderator.</li>
+                                             <li><b>Aug 2002:</b> 7th Anniversary had ~100 members and guests.</li>
+                                        </ul>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-teal-800">1999-2002: Service & Structure <i class="fa-solid fa-book-open ml-2 text-teal-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">This era focused on service, with a 4th Anniversary party, a Sponsorship Workshop, and the formal designation of the Rowlett Group Bylaws.</p>
+                                 </div>
+                            </div>
+                
+                            <!-- 2003 -->
+                            <div class="timeline-block left">
+                                 <div class="timeline-content bg-amber-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-amber-400 pb-1 mb-2">The Big Move</h4>
+                                        <p class="text-sm">Minimum requirements for a new space: affordable rent, 1,000 sq ft, kitchen, bathroom, and storage. The new Garland facility's 2nd birthday night celebrated 27 members representing over 140 years of sobriety.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-amber-800">2003: A Test of Unity <i class="fa-solid fa-truck-moving ml-2 text-amber-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Forced to move, the group relocated to Garland. In an amazing show of unity, 50-60 members moved everything in under an hour, ensuring no meetings were missed.</p>
+                                 </div>
+                            </div>
+                
+                            <!-- 2004-2007 -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-amber-50">
+                                     <div class="info-popup">
+                                        <h4 class="font-bold border-b border-amber-400 pb-1 mb-2">Lease & Name</h4>
+                                        <p class="text-sm">In 2006, the lease was extended, with the Rowlett Group becoming the official signatory. In June 2007, the group reconsidered a name change but elected to keep the Rowlett Group name despite being in Garland.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-amber-800">2004-2007: Settling In <i class="fa-solid fa-anchor ml-2 text-amber-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">The group held its 2nd inventory, created job descriptions, and hosted workshops. The 12th Anniversary theme was "Imagine Life Without Faith."</p>
+                                </div>
+                            </div>
+                
+                             <!-- 2008-2009 -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-amber-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-amber-400 pb-1 mb-2">Fellowship!</h4>
+                                        <p class="text-sm">Members insisted on enjoying life: Friday Night Candlelight Meetings followed by Denny's, Starbucks after the Saturday 8 PM meeting with guitars and sing-alongs, July 4th at the lake, and Sober Celebrations with live music by Turning Point.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-amber-800">2008-2009: Thriving! <i class="fa-solid fa-star ml-2 text-amber-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">The Chaha/Bass Pro location boomed. Birthday nights were Standing Room Only, and the "Luau" themed 14th Anniversary party was a huge success.</p>
+                                </div>
+                            </div>
+                
+                            <!-- 2010-2014 -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-amber-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-amber-400 pb-1 mb-2">A New Home</h4>
+                                        <p class="text-sm">In July 2010, 48 members attended a Group Conscience to approve the move "Behind Denny's." Work commenced, and the group held an Open House in lieu of an anniversary party after moving on Oct 30.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-amber-800">2010-2014: Service & A New Move <i class="fa-solid fa-briefcase ml-2 text-amber-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Members carried the message to correctional facilities, providing Big Books. The group hosted workshops and remained active in District/Area service.</p>
+                                </div>
+                            </div>
+                
+                            <!-- 2015 -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-red-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-red-400 pb-1 mb-2">A Fateful Year</h4>
+                                        <p class="text-sm">The decision to find a new home was made at Denny's in June. The lease at 362 Oaks Trail commenced on August 15. The tornado hit on December 26, minutes after attendees had traveled past the heavily damaged I-30/190 interchange.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-red-800">2015: Resilience & Rebirth <i class="fa-solid fa-heart-pulse ml-2 text-red-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Facing decline, four members decided to stick together, finding a new home at Oaks Trail. The year ended with a tornado narrowly missing the group's birthday night.</p>
+                                </div>
+                            </div>
+                
+                            <!-- 2016-2019 -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-indigo-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-indigo-400 pb-1 mb-2">Holding Fast</h4>
+                                        <p class="text-sm">Though many AAs came and went, the central core of the group held fast. In 2019, the group signed another three-year lease, bringing the total years at Oaks Trail to seven. Overhead remained low and reserves prudent.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-indigo-800">2016-2019: A New Home <i class="fa-solid fa-house-chimney-heart ml-2 text-indigo-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Slow, steady growth continued. A fresh crop of dedicated AAs took hold, and newcomers were getting and staying sober by way of the twelve steps.</p>
+                                </div>
+                            </div>
+                            
+                             <!-- 2020 -->
+                            <div class="timeline-block left">
+                                <div class="timeline-content bg-indigo-50">
+                                     <div class="info-popup">
+                                        <h4 class="font-bold border-b border-indigo-400 pb-1 mb-2">Digital Fellowship</h4>
+                                        <p class="text-sm">To keep members informed during the pandemic lockdown, the "Rowlett Friends of Bill" private Facebook page was created in April.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-indigo-800">2020: The Pandemic Pivot <i class="fa-solid fa-laptop ml-2 text-indigo-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">The COVID-19 pandemic led to our first Zoom meeting on April 1. In-person meetings resumed in May, and in June, Tuesday night became a dedicated Newcomer meeting.</p>
+                                </div>
+                            </div>
+                
+                            <!-- 2021-Present -->
+                            <div class="timeline-block right">
+                                <div class="timeline-content bg-green-50">
+                                    <div class="info-popup">
+                                        <h4 class="font-bold border-b border-green-400 pb-1 mb-2">Anniversary Update</h4>
+                                        <p class="text-sm">The 26th Anniversary Party was planned for August 2021, but once again COVID reared its ugly head, forcing the anniversary to be postponed until February 2022.</p>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-green-800">2021-Present: Re-Energized! <i class="fa-solid fa-champagne-glasses ml-2 text-green-500"></i></h2>
+                                    <p class="mt-2 text-slate-700">Group unity is stronger than ever. Fellowship dinners are popular, and outdoor Birthday Nights are celebrated with enthusiasm by friends and family.</p>
+                                </div>
+                            </div>
+                
+                        </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Embed the application script directly into this file -->
+    <script>
+// Utility to generate unique IDs based on timestamp
+function genId() {
+    return Date.now().toString() + Math.random().toString(36).substring(2);
+}
+// Navigate to a given section and update nav active states
+function goToSection(sectionId) {
+    document.querySelectorAll('main section').forEach(sec => sec.classList.remove('active'));
+    document.querySelectorAll('nav li').forEach(li => li.classList.remove('active'));
+    const section = document.getElementById(sectionId);
+    if (section) section.classList.add('active');
+    const navItem = document.querySelector('nav li[data-section="' + sectionId + '"]');
+    if (navItem) navItem.classList.add('active');
+}
+// Storage wrappers using localStorage
+const storage = {
+    getEvents() { return JSON.parse(localStorage.getItem('events') || '[]'); },
+    saveEvents(events) { localStorage.setItem('events', JSON.stringify(events)); },
+    getBirthdays() { return JSON.parse(localStorage.getItem('birthdays') || '[]'); },
+    saveBirthdays(b) { localStorage.setItem('birthdays', JSON.stringify(b)); },
+    getAnnouncements() { return JSON.parse(localStorage.getItem('announcements') || '[]'); },
+    saveAnnouncements(a) { localStorage.setItem('announcements', JSON.stringify(a)); },
+    getPhotos() { return JSON.parse(localStorage.getItem('photos') || '[]'); },
+    savePhotos(p) { localStorage.setItem('photos', JSON.stringify(p)); }
+};
+// Initialize default data on first load
+function initDefaults() {
+    if (!localStorage.getItem('events')) {
+        const defaults = [
+            { id: genId(), title: 'Open Discussion', dayOfWeek: 0, time: '19:00', reading: 'How It Works', speaker: '', chair: '', description: 'Weekly open discussion meeting' },
+            { id: genId(), title: 'Big Book Study', dayOfWeek: 2, time: '19:00', reading: 'Big Book', speaker: '', chair: '', description: 'Weekly big book study' },
+            { id: genId(), title: 'Speaker Meeting', dayOfWeek: 5, time: '19:00', reading: 'Speaker’s Choice', speaker: 'Guest Speaker', chair: '', description: 'Weekly speaker meeting' }
+        ];
+        storage.saveEvents(defaults);
+    }
+    if (!localStorage.getItem('birthdays')) {
+        const bdays = [
+            { id: genId(), name: 'Alice', birthday: '1990-09-10' },
+            { id: genId(), name: 'Bob', birthday: '1985-12-05' },
+            { id: genId(), name: 'Charlie', birthday: '1993-04-22' }
+        ];
+        storage.saveBirthdays(bdays);
+    }
+    if (!localStorage.getItem('announcements')) {
+        storage.saveAnnouncements([]);
+    }
+    if (!localStorage.getItem('photos')) {
+        storage.savePhotos([]);
+    }
+}
+// Add an event
+function addEvent() {
+    const title = document.getElementById('event-title').value.trim();
+    const dateVal = document.getElementById('event-date').value;
+    const dayVal = document.getElementById('event-day').value;
+    const time = document.getElementById('event-time').value;
+    const reading = document.getElementById('event-reading').value.trim();
+    const speaker = document.getElementById('event-speaker').value.trim();
+    const chair = document.getElementById('event-chair').value.trim();
+    const description = document.getElementById('event-description').value.trim();
+    if (!title || !time || (!dateVal && dayVal === '')) {
+        alert('Please provide at least a title, time, and either a date or day of week.');
+        return;
+    }
+    const events = storage.getEvents();
+    events.push({
+        id: genId(),
+        title,
+        date: dateVal || null,
+        dayOfWeek: dateVal ? null : parseInt(dayVal, 10),
+        time,
+        reading,
+        speaker,
+        chair,
+        description
+    });
+    storage.saveEvents(events);
+    document.getElementById('event-title').value = '';
+    document.getElementById('event-date').value = '';
+    document.getElementById('event-day').value = '';
+    document.getElementById('event-time').value = '';
+    document.getElementById('event-reading').value = '';
+    document.getElementById('event-speaker').value = '';
+    document.getElementById('event-chair').value = '';
+    document.getElementById('event-description').value = '';
+    updateEventsTable();
+    updateHome();
+    renderCalendar();
+}
+// Delete an event by id
+function deleteEvent(id) {
+    if (!confirm('Delete this event?')) return;
+    let events = storage.getEvents();
+    events = events.filter(ev => ev.id !== id);
+    storage.saveEvents(events);
+    updateEventsTable();
+    updateHome();
+    renderCalendar();
+}
+// Compute upcoming occurrences within next X days
+function computeUpcomingOccurrences(daysAhead = 30) {
+    const events = storage.getEvents();
+    const now = new Date();
+    const end = new Date();
+    end.setDate(end.getDate() + daysAhead);
+    let occurrences = [];
+    events.forEach(ev => {
+        if (ev.date) {
+            const eventDate = new Date(ev.date + 'T' + (ev.time || '00:00'));
+            if (eventDate >= now && eventDate <= end) occurrences.push({ occurDate: eventDate, event: ev });
+        } else if (ev.dayOfWeek !== null && ev.dayOfWeek !== undefined) {
+            for (let d = 0; d <= daysAhead; d++) {
+                const date = new Date(now);
+                date.setHours(0, 0, 0, 0);
+                date.setDate(date.getDate() + d);
+                if (date.getDay() === ev.dayOfWeek) {
+                    const [hours, minutes] = (ev.time || '00:00').split(':');
+                    date.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+                    if (date >= now && date <= end) occurrences.push({ occurDate: new Date(date), event: ev });
+                }
+            }
+        }
+    });
+    occurrences.sort((a, b) => a.occurDate - b.occurDate);
+    return occurrences;
+}
+// Update events table
+function updateEventsTable() {
+    const tbody = document.getElementById('events-body');
+    tbody.innerHTML = '';
+    const occ = computeUpcomingOccurrences(60);
+    occ.forEach(item => {
+        const tr = document.createElement('tr');
+        const dateStr = item.occurDate.toLocaleDateString();
+        const timeStr = item.occurDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        tr.innerHTML = `<td>${dateStr}</td><td>${item.event.title}</td><td>${timeStr}</td><td>${item.event.speaker || ''}</td><td>${item.event.chair || ''}</td><td><button class="btn secondary" onclick="deleteEvent('${item.event.id}')">Delete</button></td>`;
+        tbody.appendChild(tr);
+    });
+    if (occ.length === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td colspan="6">No upcoming events</td>';
+        tbody.appendChild(tr);
+    }
+}
+// Add birthday
+function addBirthday() {
+    const name = document.getElementById('birthday-name').value.trim();
+    const bdate = document.getElementById('birthday-date').value;
+    if (!name || !bdate) {
+        alert('Please provide both name and date.');
+        return;
+    }
+    const bdays = storage.getBirthdays();
+    bdays.push({ id: genId(), name, birthday: bdate });
+    storage.saveBirthdays(bdays);
+    document.getElementById('birthday-name').value = '';
+    document.getElementById('birthday-date').value = '';
+    updateBirthdaysTable();
+    updateHome();
+}
+// Delete birthday
+function deleteBirthday(id) {
+    if (!confirm('Delete this birthday?')) return;
+    let bdays = storage.getBirthdays();
+    bdays = bdays.filter(b => b.id !== id);
+    storage.saveBirthdays(bdays);
+    updateBirthdaysTable();
+    updateHome();
+}
+// Compute next birthday date relative to now
+function nextBirthdayDate(bdayStr) {
+    const now = new Date();
+    const [year, month, day] = bdayStr.split('-').map(Number);
+    let nextDate = new Date(now.getFullYear(), month - 1, day);
+    if (nextDate < now.setHours(0, 0, 0, 0)) {
+        nextDate = new Date(now.getFullYear() + 1, month - 1, day);
+    }
+    return nextDate;
+}
+// Update birthdays table
+function updateBirthdaysTable() {
+    const tbody = document.getElementById('birthdays-body');
+    tbody.innerHTML = '';
+    const bdays = storage.getBirthdays();
+    const sorted = bdays.map(b => ({ ...b, nextDate: nextBirthdayDate(b.birthday) })).sort((a, b) => a.nextDate - b.nextDate);
+    sorted.forEach(b => {
+        const tr = document.createElement('tr');
+        const nextDateStr = b.nextDate.toLocaleDateString();
+        const origDate = new Date(b.birthday);
+        const md = origDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        tr.innerHTML = `<td>${b.name}</td><td>${md}</td><td>${nextDateStr}</td><td><button class="btn secondary" onclick="deleteBirthday('${b.id}')">Delete</button></td>`;
+        tbody.appendChild(tr);
+    });
+    if (sorted.length === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td colspan="4">No birthdays added</td>';
+        tbody.appendChild(tr);
+    }
+}
+// Add announcement
+function addAnnouncement() {
+    const text = document.getElementById('announcement-text').value.trim();
+    if (!text) {
+        alert('Enter an announcement.');
+        return;
+    }
+    const ann = storage.getAnnouncements();
+    ann.unshift({ id: genId(), text, dateCreated: new Date().toISOString() });
+    storage.saveAnnouncements(ann);
+    document.getElementById('announcement-text').value = '';
+    updateAnnouncementsList();
+    updateHome();
+}
+// Delete announcement
+function deleteAnnouncement(id) {
+    if (!confirm('Delete this announcement?')) return;
+    let ann = storage.getAnnouncements();
+    ann = ann.filter(a => a.id !== id);
+    storage.saveAnnouncements(ann);
+    updateAnnouncementsList();
+    updateHome();
+}
+// Update announcements list
+function updateAnnouncementsList() {
+    const ul = document.getElementById('announcements-list');
+    ul.innerHTML = '';
+    const ann = storage.getAnnouncements();
+    ann.forEach(a => {
+        const li = document.createElement('li');
+        const dateStr = new Date(a.dateCreated).toLocaleDateString();
+        li.innerHTML = `<strong>${dateStr}:</strong> ${a.text} <button class="btn secondary" onclick="deleteAnnouncement('${a.id}')">Delete</button>`;
+        ul.appendChild(li);
+    });
+    if (ann.length === 0) {
+        ul.innerHTML = '<li>No announcements posted</li>';
+    }
+}
+// Photo uploading
+function uploadPhotos() {
+    const input = document.getElementById('photo-upload');
+    const files = Array.from(input.files);
+    if (!files || files.length === 0) {
+        alert('Select one or more images to upload.');
+        return;
+    }
+    const photos = storage.getPhotos();
+    let remaining = files.length;
+    files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            photos.push(e.target.result);
+            remaining--;
+            if (remaining === 0) {
+                storage.savePhotos(photos);
+                input.value = '';
+                updateGallery();
+                updateHome();
+            }
+        };
+        reader.readAsDataURL(file);
+    });
+}
+// Delete photo by index
+function deletePhoto(index) {
+    if (!confirm('Delete this photo?')) return;
+    const photos = storage.getPhotos();
+    photos.splice(index, 1);
+    storage.savePhotos(photos);
+    updateGallery();
+    updateHome();
+}
+// Update gallery display
+function updateGallery() {
+    const grid = document.getElementById('gallery-grid');
+    grid.innerHTML = '';
+    const photos = storage.getPhotos();
+    photos.forEach((src, idx) => {
+        const wrapper = document.createElement('div');
+        wrapper.style.position = 'relative';
+        const img = document.createElement('img');
+        img.src = src;
+        wrapper.appendChild(img);
+        const delBtn = document.createElement('button');
+        delBtn.textContent = '×';
+        delBtn.style.position = 'absolute';
+        delBtn.style.top = '4px';
+        delBtn.style.right = '4px';
+        delBtn.style.background = 'rgba(0,0,0,0.6)';
+        delBtn.style.color = '#fff';
+        delBtn.style.border = 'none';
+        delBtn.style.borderRadius = '50%';
+        delBtn.style.width = '24px';
+        delBtn.style.height = '24px';
+        delBtn.style.cursor = 'pointer';
+        delBtn.onclick = () => deletePhoto(idx);
+        wrapper.appendChild(delBtn);
+        grid.appendChild(wrapper);
+    });
+    if (photos.length === 0) {
+        grid.innerHTML = '<p>No photos uploaded yet.</p>';
+    }
+}
+// Update home overview boxes
+function updateHome() {
+    const homeEvents = document.getElementById('home-upcoming-events');
+    homeEvents.innerHTML = '';
+    const occ = computeUpcomingOccurrences(30);
+    occ.slice(0, 5).forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.occurDate.toLocaleDateString()} ${item.occurDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} — ${item.event.title}`;
+        homeEvents.appendChild(li);
+    });
+    if (occ.length === 0) {
+        homeEvents.innerHTML = '<li>No upcoming events</li>';
+    }
+    const homeBirthdays = document.getElementById('home-upcoming-birthdays');
+    homeBirthdays.innerHTML = '';
+    const bdays = storage.getBirthdays().map(b => ({ ...b, nextDate: nextBirthdayDate(b.birthday) })).sort((a, b) => a.nextDate - b.nextDate);
+    bdays.slice(0, 5).forEach(b => {
+        const li = document.createElement('li');
+        li.textContent = `${b.name} — ${b.nextDate.toLocaleDateString()}`;
+        homeBirthdays.appendChild(li);
+    });
+    if (bdays.length === 0) {
+        homeBirthdays.innerHTML = '<li>No birthdays added</li>';
+    }
+    const homeAnnouncements = document.getElementById('home-recent-announcements');
+    homeAnnouncements.innerHTML = '';
+    const ann = storage.getAnnouncements().slice(0, 3);
+    ann.forEach(a => {
+        const li = document.createElement('li');
+        const dateStr = new Date(a.dateCreated).toLocaleDateString();
+        li.textContent = `${dateStr}: ${a.text}`;
+        homeAnnouncements.appendChild(li);
+    });
+    if (ann.length === 0) {
+        homeAnnouncements.innerHTML = '<li>No announcements</li>';
+    }
+    const homePhotos = document.getElementById('home-latest-photos');
+    homePhotos.innerHTML = '';
+    const photos = storage.getPhotos().slice(-3);
+    photos.forEach(src => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.style.height = '60px';
+        img.style.width = 'auto';
+        img.style.borderRadius = '4px';
+        homePhotos.appendChild(img);
+    });
+    if (photos.length === 0) {
+        homePhotos.innerHTML = '<span>No photos yet</span>';
+    }
+}
+// History display: show selected timeline and hide others
+function showHistory(id) {
+    document.querySelectorAll('.history-content').forEach(sec => sec.classList.remove('active'));
+    const target = document.getElementById(id);
+    if (target) target.classList.add('active');
+    document.querySelectorAll('.history-nav button').forEach(btn => btn.classList.remove('active'));
+    if (id === 'genesis-history') document.getElementById('genesis-btn').classList.add('active');
+    if (id === 'dfw-history') document.getElementById('dfw-btn').classList.add('active');
+    if (id === 'rowlett-history') document.getElementById('rowlett-btn').classList.add('active');
+}
+// Calendar: state for current month
+let currentMonthDate = new Date();
+currentMonthDate.setDate(1);
+function renderCalendar() {
+    const grid = document.getElementById('calendar-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    const year = currentMonthDate.getFullYear();
+    const month = currentMonthDate.getMonth();
+    const monthName = currentMonthDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+    document.getElementById('calendar-month-year').textContent = monthName;
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    dayNames.forEach(name => {
+        const div = document.createElement('div');
+        div.className = 'calendar-day-name';
+        div.textContent = name;
+        grid.appendChild(div);
+    });
+    for (let i = 0; i < firstDay; i++) {
+        const blank = document.createElement('div');
+        blank.className = 'calendar-day';
+        blank.style.visibility = 'hidden';
+        grid.appendChild(blank);
+    }
+    for (let d = 1; d <= daysInMonth; d++) {
+        const date = new Date(year, month, d);
+        const cell = document.createElement('div');
+        cell.className = 'calendar-day';
+        const num = document.createElement('div');
+        num.className = 'calendar-day-number';
+        num.textContent = d;
+        cell.appendChild(num);
+        const events = storage.getEvents();
+        events.forEach(ev => {
+            let occurs = false;
+            if (ev.date) {
+                if (ev.date === date.toISOString().substring(0,10)) occurs = true;
+            } else if (ev.dayOfWeek !== null && ev.dayOfWeek !== undefined) {
+                if (date.getDay() === ev.dayOfWeek) occurs = true;
+            }
+            if (occurs) {
+                const evEl = document.createElement('span');
+                evEl.className = 'calendar-event';
+                evEl.textContent = ev.title;
+                cell.appendChild(evEl);
+            }
+        });
+        grid.appendChild(cell);
+    }
+    const totalCells = dayNames.length + firstDay + daysInMonth;
+    const remainder = totalCells % 7;
+    if (remainder !== 0) {
+        for (let i = 0; i < 7 - remainder; i++) {
+            const blank = document.createElement('div');
+            blank.className = 'calendar-day';
+            blank.style.visibility = 'hidden';
+            grid.appendChild(blank);
+        }
+    }
+}
+function initCalendarNav() {
+    const prevBtn = document.getElementById('prev-month-btn');
+    const nextBtn = document.getElementById('next-month-btn');
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            currentMonthDate.setMonth(currentMonthDate.getMonth() - 1);
+            renderCalendar();
+        });
+    }
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            currentMonthDate.setMonth(currentMonthDate.getMonth() + 1);
+            renderCalendar();
+        });
+    }
+}
+// Navigation click handlers
+function initNav() {
+    document.querySelectorAll('nav li').forEach(li => {
+        li.addEventListener('click', () => {
+            const target = li.getAttribute('data-section');
+            goToSection(target);
+        });
+    });
+}
+// Initialize the application
+function init() {
+    initDefaults();
+    initNav();
+    initCalendarNav();
+    updateEventsTable();
+    updateBirthdaysTable();
+    updateAnnouncementsList();
+    updateGallery();
+    updateHome();
+    renderCalendar();
+    showHistory('genesis-history');
+}
+document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
