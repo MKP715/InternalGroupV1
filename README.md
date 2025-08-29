@@ -1,4 +1,4 @@
-# Rowlett Group Internal Website
+# Group Internal Website
 
 This is a simple, single-page internal website for the Rowlett Group. It serves as a centralized hub for group information, schedules, and resources. All data is stored locally in the user's browser, meaning no information is sent to or stored on an external server.
 
