@@ -541,6 +541,136 @@
             margin-top: 5px;
         }
 
+        /* Vote Progress Bars */
+        .vote-progress-container {
+            margin: 1rem 0;
+        }
+        .vote-progress-item {
+            margin-bottom: 0.75rem;
+        }
+        .vote-progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+        .vote-progress-bar-bg {
+            background: #2c3e50;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 24px;
+            border: 1px solid #7f8c8d;
+            position: relative;
+        }
+        .vote-progress-bar-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        .vote-progress-bar-fill.for {
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+        }
+        .vote-progress-bar-fill.against {
+            background: linear-gradient(90deg, #c0392b, #e74c3c);
+        }
+        .vote-progress-bar-fill.abstain {
+            background: linear-gradient(90deg, #d68910, #f39c12);
+        }
+
+        /* GC Trends Dashboard */
+        .trends-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .trend-chart-container {
+            background: #34495e;
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid #7f8c8d;
+        }
+        .trend-chart-container h4 {
+            color: #3498db;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Amendment Tracking */
+        .amendment-timeline {
+            border-left: 3px solid #3498db;
+            padding-left: 1rem;
+            margin: 1rem 0;
+        }
+        .amendment-item {
+            position: relative;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: #34495e;
+            border-radius: 6px;
+        }
+        .amendment-item::before {
+            content: '';
+            position: absolute;
+            left: -1.5rem;
+            top: 1rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #3498db;
+            border: 2px solid #2c3e50;
+        }
+        .amendment-item.adopted::before {
+            background: #2ecc71;
+        }
+        .amendment-item.rejected::before {
+            background: #e74c3c;
+        }
+
+        /* Notification Badge */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        /* Notification Banner Animations */
+        @keyframes slideDown {
+            from {
+                transform: translateX(-50%) translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideUp {
+            from {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(-50%) translateY(-100%);
+                opacity: 0;
+            }
+        }
+
         /* Message styles */
         .message-item {
             background: #34495e;
@@ -823,10 +953,43 @@
                             <label for="gc-votes-abstain">Votes Abstain</label>
                             <input type="number" id="gc-votes-abstain" min="0" placeholder="0" oninput="updateVotePercentages()">
                         </div>
-                        <div id="vote-summary" style="padding: 0.5rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.75rem; font-size: 0.85rem;">
-                            <div><strong>Total Votes:</strong> <span id="total-votes">0</span></div>
-                            <div><strong>For:</strong> <span id="percent-for">0%</span> | <strong>Against:</strong> <span id="percent-against">0%</span> | <strong>Abstain:</strong> <span id="percent-abstain">0%</span></div>
-                            <div id="quorum-status" style="margin-top: 0.25rem;"></div>
+                        <div id="vote-summary" style="padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.75rem; font-size: 0.85rem;">
+                            <div style="margin-bottom: 0.5rem;"><strong>Total Votes:</strong> <span id="total-votes">0</span></div>
+
+                            <!-- Vote Progress Bars -->
+                            <div class="vote-progress-container">
+                                <div class="vote-progress-item">
+                                    <div class="vote-progress-label">
+                                        <span><strong>For:</strong> <span id="votes-for-count">0</span></span>
+                                        <span id="percent-for">0%</span>
+                                    </div>
+                                    <div class="vote-progress-bar-bg">
+                                        <div id="progress-bar-for" class="vote-progress-bar-fill for" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+
+                                <div class="vote-progress-item">
+                                    <div class="vote-progress-label">
+                                        <span><strong>Against:</strong> <span id="votes-against-count">0</span></span>
+                                        <span id="percent-against">0%</span>
+                                    </div>
+                                    <div class="vote-progress-bar-bg">
+                                        <div id="progress-bar-against" class="vote-progress-bar-fill against" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+
+                                <div class="vote-progress-item">
+                                    <div class="vote-progress-label">
+                                        <span><strong>Abstain:</strong> <span id="votes-abstain-count">0</span></span>
+                                        <span id="percent-abstain">0%</span>
+                                    </div>
+                                    <div class="vote-progress-bar-bg">
+                                        <div id="progress-bar-abstain" class="vote-progress-bar-fill abstain" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="quorum-status" style="margin-top: 0.5rem;"></div>
                         </div>
                         <div class="form-group">
                             <label for="gc-attendees">Members Present</label>
@@ -1008,8 +1171,8 @@
                             <tbody id="gc-history-search-body"></tbody>
                         </table>
 
-                        <h4 class="mt-4">Statistics</h4>
-                        <div id="gc-stats" style="padding: 1rem; background: #2c3e50; border-radius: 6px;">
+                        <h4 class="mt-4">Quick Statistics</h4>
+                        <div id="gc-stats" style="padding: 1rem; background: #2c3e50; border-radius: 6px; margin-bottom: 1rem;">
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
                                 <div>
                                     <strong style="color: #3498db;">Total Motions:</strong>
@@ -1032,6 +1195,46 @@
                                     <div id="stat-pass-rate">0%</div>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- GC Trends Dashboard -->
+                        <h4 class="mt-4">Group Conscience Trends & Analysis</h4>
+                        <div class="trends-grid">
+                            <div class="trend-chart-container">
+                                <h4>Monthly Motion Activity</h4>
+                                <canvas id="gc-trends-monthly-chart" width="400" height="250"></canvas>
+                            </div>
+                            <div class="trend-chart-container">
+                                <h4>Pass/Fail/Tabled Distribution</h4>
+                                <canvas id="gc-trends-status-chart" width="400" height="250"></canvas>
+                            </div>
+                            <div class="trend-chart-container">
+                                <h4>Voting Participation Trend</h4>
+                                <canvas id="gc-trends-participation-chart" width="400" height="250"></canvas>
+                            </div>
+                            <div class="trend-chart-container">
+                                <h4>Top Motion Topics (Keywords)</h4>
+                                <div id="gc-top-topics" style="padding: 1rem; max-height: 250px; overflow-y: auto;">
+                                    <!-- Top topics will be listed here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Annual Summary Report Generator -->
+                        <h4 class="mt-4">Annual Summary Report</h4>
+                        <div style="padding: 1rem; background: #2c3e50; border-radius: 6px;">
+                            <div class="form-group">
+                                <label for="annual-report-year">Select Year</label>
+                                <select id="annual-report-year">
+                                    <!-- Years will be populated dynamically -->
+                                </select>
+                            </div>
+                            <button class="btn" onclick="generateAnnualReport()">
+                                <i class="fas fa-file-pdf" style="margin-right: 0.5rem;"></i>Generate Annual PDF Report
+                            </button>
+                            <button class="btn secondary" onclick="refreshGCTrends()" style="margin-left: 0.5rem;">
+                                <i class="fas fa-sync" style="margin-right: 0.5rem;"></i>Refresh Charts
+                            </button>
                         </div>
                     </div>
 
@@ -4101,6 +4304,17 @@ function updateVotePercentages() {
 
     document.getElementById('total-votes').textContent = totalVotes;
 
+    // Update vote counts
+    if (document.getElementById('votes-for-count')) {
+        document.getElementById('votes-for-count').textContent = votesFor;
+    }
+    if (document.getElementById('votes-against-count')) {
+        document.getElementById('votes-against-count').textContent = votesAgainst;
+    }
+    if (document.getElementById('votes-abstain-count')) {
+        document.getElementById('votes-abstain-count').textContent = votesAbstain;
+    }
+
     if (totalVotes > 0) {
         const percentFor = ((votesFor / totalVotes) * 100).toFixed(1);
         const percentAgainst = ((votesAgainst / totalVotes) * 100).toFixed(1);
@@ -4109,10 +4323,32 @@ function updateVotePercentages() {
         document.getElementById('percent-for').textContent = percentFor + '%';
         document.getElementById('percent-against').textContent = percentAgainst + '%';
         document.getElementById('percent-abstain').textContent = percentAbstain + '%';
+
+        // Update progress bars
+        if (document.getElementById('progress-bar-for')) {
+            document.getElementById('progress-bar-for').style.width = percentFor + '%';
+        }
+        if (document.getElementById('progress-bar-against')) {
+            document.getElementById('progress-bar-against').style.width = percentAgainst + '%';
+        }
+        if (document.getElementById('progress-bar-abstain')) {
+            document.getElementById('progress-bar-abstain').style.width = percentAbstain + '%';
+        }
     } else {
         document.getElementById('percent-for').textContent = '0%';
         document.getElementById('percent-against').textContent = '0%';
         document.getElementById('percent-abstain').textContent = '0%';
+
+        // Reset progress bars
+        if (document.getElementById('progress-bar-for')) {
+            document.getElementById('progress-bar-for').style.width = '0%';
+        }
+        if (document.getElementById('progress-bar-against')) {
+            document.getElementById('progress-bar-against').style.width = '0%';
+        }
+        if (document.getElementById('progress-bar-abstain')) {
+            document.getElementById('progress-bar-abstain').style.width = '0%';
+        }
     }
 
     updateQuorumStatus();
@@ -4373,10 +4609,37 @@ function openGCDetailsModal(id) {
         const percentAgainst = ((votesAgainst / totalVotes) * 100).toFixed(1);
         const percentAbstain = ((votesAbstain / totalVotes) * 100).toFixed(1);
         votesDisplay = `
-            <div style="margin-top: 0.5rem;">
-                <strong>For:</strong> ${votesFor} (${percentFor}%) |
-                <strong>Against:</strong> ${votesAgainst} (${percentAgainst}%) |
-                <strong>Abstain:</strong> ${votesAbstain} (${percentAbstain}%)
+            <div style="margin-top: 1rem;">
+                <strong style="display: block; margin-bottom: 0.5rem;">Voting Results (Total: ${totalVotes})</strong>
+                <div class="vote-progress-container">
+                    <div class="vote-progress-item">
+                        <div class="vote-progress-label">
+                            <span><strong>For:</strong> ${votesFor}</span>
+                            <span>${percentFor}%</span>
+                        </div>
+                        <div class="vote-progress-bar-bg">
+                            <div class="vote-progress-bar-fill for" style="width: ${percentFor}%;"></div>
+                        </div>
+                    </div>
+                    <div class="vote-progress-item">
+                        <div class="vote-progress-label">
+                            <span><strong>Against:</strong> ${votesAgainst}</span>
+                            <span>${percentAgainst}%</span>
+                        </div>
+                        <div class="vote-progress-bar-bg">
+                            <div class="vote-progress-bar-fill against" style="width: ${percentAgainst}%;"></div>
+                        </div>
+                    </div>
+                    <div class="vote-progress-item">
+                        <div class="vote-progress-label">
+                            <span><strong>Abstain:</strong> ${votesAbstain}</span>
+                            <span>${percentAbstain}%</span>
+                        </div>
+                        <div class="vote-progress-bar-bg">
+                            <div class="vote-progress-bar-fill abstain" style="width: ${percentAbstain}%;"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         `;
     } else if (log.votes) {
@@ -4384,6 +4647,11 @@ function openGCDetailsModal(id) {
     }
 
     const attendeesList = Array.isArray(log.attendees) ? log.attendees.join(', ') : (log.attendees || 'N/A');
+    const attendeeCount = Array.isArray(log.attendees) ? log.attendees.length : 0;
+
+    // Calculate participation rate
+    const totalMembers = storage.getMembers().length;
+    const participationRate = totalMembers > 0 ? ((attendeeCount / totalMembers) * 100).toFixed(1) : 0;
 
     const detailsContent = document.getElementById('gc-details-content');
     detailsContent.innerHTML = `
@@ -4393,7 +4661,10 @@ function openGCDetailsModal(id) {
             <div style="margin-top: 0.5rem;"><strong>Submitted By:</strong> ${log.submittedBy || 'N/A'}</div>
             <div style="margin-top: 0.5rem;"><strong>Status:</strong> <span style="color: ${log.status === 'passed' ? '#2ecc71' : log.status === 'failed' ? '#e74c3c' : '#f39c12'};">${log.status.toUpperCase()}</span></div>
             ${votesDisplay}
-            <div style="margin-top: 0.5rem;"><strong>Members Present:</strong> ${attendeesList}</div>
+            <div style="margin-top: 0.5rem;">
+                <strong>Members Present:</strong> ${attendeeCount} of ${totalMembers} (${participationRate}% turnout)
+                <div style="font-size: 0.85rem; opacity: 0.9; margin-top: 0.25rem;">${attendeesList}</div>
+            </div>
         </div>
     `;
 
@@ -4411,24 +4682,64 @@ function closeGCDetailsModal() {
 function loadGCComments(gcId) {
     const commentsList = document.getElementById('gc-comments-list');
     const allComments = storage.getGCComments();
-    const comments = allComments.filter(c => c.gcId === gcId).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    const comments = allComments.filter(c => c.gcId === gcId).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
     if (comments.length === 0) {
         commentsList.innerHTML = '<div style="text-align: center; opacity: 0.6; padding: 1rem;">No comments yet.</div>';
         return;
     }
 
-    commentsList.innerHTML = comments.map(comment => {
-        const typeColors = {
-            discussion: '#3498db',
-            amendment: '#f39c12',
-            clarification: '#9b59b6',
-            support: '#2ecc71',
-            concern: '#e74c3c'
-        };
-        const typeColor = typeColors[comment.type] || '#7f8c8d';
+    // Separate amendments from other comments
+    const amendments = comments.filter(c => c.type === 'amendment');
+    const otherComments = comments.filter(c => c.type !== 'amendment');
 
-        return `
+    let html = '';
+
+    // Show Amendment Timeline if there are amendments
+    if (amendments.length > 0) {
+        html += '<div style="margin-bottom: 1.5rem;"><h4 style="color: #f39c12; margin-bottom: 0.75rem;">Amendment History</h4><div class="amendment-timeline">';
+        amendments.forEach(amendment => {
+            const statusClass = amendment.status || '';
+            const statusBadge = amendment.status === 'adopted'
+                ? '<span style="background: #2ecc71; color: white; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.75rem; margin-left: 0.5rem;">ADOPTED</span>'
+                : amendment.status === 'rejected'
+                ? '<span style="background: #e74c3c; color: white; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.75rem; margin-left: 0.5rem;">REJECTED</span>'
+                : '';
+
+            html += `
+                <div class="amendment-item ${statusClass}">
+                    <div style="margin-bottom: 0.5rem;">
+                        <strong style="color: #f39c12;">${amendment.author}</strong>
+                        <span style="font-size: 0.75rem; opacity: 0.7; margin-left: 0.5rem;">${new Date(amendment.timestamp).toLocaleString()}</span>
+                        ${statusBadge}
+                    </div>
+                    <div style="margin-bottom: 0.5rem;">${amendment.text}</div>
+                    ${!amendment.status ? `
+                        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                            <button class="btn" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;" onclick="updateAmendmentStatus('${amendment.id}', 'adopted')">Mark Adopted</button>
+                            <button class="btn secondary" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;" onclick="updateAmendmentStatus('${amendment.id}', 'rejected')">Mark Rejected</button>
+                        </div>
+                    ` : ''}
+                    <button class="btn secondary" style="font-size: 0.75rem; padding: 0.3rem 0.6rem; margin-top: 0.5rem;" onclick="deleteGCComment('${amendment.id}')">Delete</button>
+                </div>
+            `;
+        });
+        html += '</div></div>';
+    }
+
+    // Show other comments
+    if (otherComments.length > 0) {
+        html += '<div><h4 style="color: #3498db; margin-bottom: 0.75rem;">Discussion & Comments</h4>';
+        otherComments.forEach(comment => {
+            const typeColors = {
+                discussion: '#3498db',
+                clarification: '#9b59b6',
+                support: '#2ecc71',
+                concern: '#e74c3c'
+            };
+            const typeColor = typeColors[comment.type] || '#7f8c8d';
+
+            html += `
             <div style="background: #2c3e50; padding: 0.75rem; border-radius: 4px; margin-bottom: 0.5rem; border-left: 4px solid ${typeColor};">
                 <div style="display: flex; justify-content: space-between; align-items: start;">
                     <div>
@@ -4441,7 +4752,22 @@ function loadGCComments(gcId) {
                 <div style="margin-top: 0.5rem;">${comment.text}</div>
             </div>
         `;
-    }).join('');
+        });
+        html += '</div>';
+    }
+
+    commentsList.innerHTML = html;
+}
+
+function updateAmendmentStatus(amendmentId, status) {
+    let comments = storage.getGCComments();
+    const comment = comments.find(c => c.id === amendmentId);
+    if (comment) {
+        comment.status = status;
+        storage.saveGCComments(comments);
+        showToast(`Amendment marked as ${status}!`, 'success');
+        loadGCComments(currentGCIdForComments);
+    }
 }
 
 function addGCComment() {
@@ -4561,6 +4887,414 @@ function updateGCStatistics() {
     document.getElementById('stat-failed-motions').textContent = failed;
     document.getElementById('stat-tabled-motions').textContent = tabled;
     document.getElementById('stat-pass-rate').textContent = passRate + '%';
+}
+
+// ========== FEATURE: GC Trends Dashboard ==========
+let gcTrendsCharts = {
+    monthly: null,
+    status: null,
+    participation: null
+};
+
+function refreshGCTrends() {
+    renderMonthlyActivityChart();
+    renderStatusDistributionChart();
+    renderParticipationTrendChart();
+    renderTopTopics();
+    populateAnnualReportYears();
+}
+
+function renderMonthlyActivityChart() {
+    const logs = storage.getGroupConscienceLog();
+    const monthCounts = {};
+
+    logs.forEach(log => {
+        const date = new Date(log.date);
+        const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        monthCounts[monthKey] = (monthCounts[monthKey] || 0) + 1;
+    });
+
+    const sortedMonths = Object.keys(monthCounts).sort();
+    const last12Months = sortedMonths.slice(-12);
+    const counts = last12Months.map(month => monthCounts[month]);
+
+    const ctx = document.getElementById('gc-trends-monthly-chart');
+    if (!ctx) return;
+
+    if (gcTrendsCharts.monthly) {
+        gcTrendsCharts.monthly.destroy();
+    }
+
+    gcTrendsCharts.monthly = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: last12Months.map(m => {
+                const [year, month] = m.split('-');
+                return new Date(year, month - 1).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+            }),
+            datasets: [{
+                label: 'Motions per Month',
+                data: counts,
+                borderColor: '#3498db',
+                backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: '#ecf0f1', stepSize: 1 },
+                    grid: { color: 'rgba(127, 140, 141, 0.2)' }
+                },
+                x: {
+                    ticks: { color: '#ecf0f1' },
+                    grid: { color: 'rgba(127, 140, 141, 0.2)' }
+                }
+            }
+        }
+    });
+}
+
+function renderStatusDistributionChart() {
+    const logs = storage.getGroupConscienceLog();
+    const passed = logs.filter(l => l.status === 'passed').length;
+    const failed = logs.filter(l => l.status === 'failed').length;
+    const tabled = logs.filter(l => l.status === 'tabled').length;
+
+    const ctx = document.getElementById('gc-trends-status-chart');
+    if (!ctx) return;
+
+    if (gcTrendsCharts.status) {
+        gcTrendsCharts.status.destroy();
+    }
+
+    gcTrendsCharts.status = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Passed', 'Failed', 'Tabled'],
+            datasets: [{
+                data: [passed, failed, tabled],
+                backgroundColor: ['#2ecc71', '#e74c3c', '#f39c12'],
+                borderWidth: 2,
+                borderColor: '#2c3e50'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: '#ecf0f1' }
+                }
+            }
+        }
+    });
+}
+
+function renderParticipationTrendChart() {
+    const logs = storage.getGroupConscienceLog().sort((a, b) => new Date(a.date) - new Date(b.date));
+    const last10 = logs.slice(-10);
+
+    const participationData = last10.map(log => {
+        const totalVotes = (log.votesFor || 0) + (log.votesAgainst || 0) + (log.votesAbstain || 0);
+        return totalVotes;
+    });
+
+    const labels = last10.map((log, idx) => `Motion ${idx + 1}`);
+
+    const ctx = document.getElementById('gc-trends-participation-chart');
+    if (!ctx) return;
+
+    if (gcTrendsCharts.participation) {
+        gcTrendsCharts.participation.destroy();
+    }
+
+    gcTrendsCharts.participation = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Total Votes Cast',
+                data: participationData,
+                backgroundColor: '#3498db',
+                borderColor: '#2980b9',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: '#ecf0f1', stepSize: 1 },
+                    grid: { color: 'rgba(127, 140, 141, 0.2)' }
+                },
+                x: {
+                    ticks: { color: '#ecf0f1' },
+                    grid: { color: 'rgba(127, 140, 141, 0.2)' }
+                }
+            }
+        }
+    });
+}
+
+function renderTopTopics() {
+    const logs = storage.getGroupConscienceLog();
+    const wordCounts = {};
+
+    // Common words to exclude
+    const stopWords = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'is', 'was', 'are', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'should', 'could', 'may', 'might', 'can', 'that', 'this', 'these', 'those', 'we', 'us', 'our']);
+
+    logs.forEach(log => {
+        const words = log.item.toLowerCase().split(/\s+/);
+        words.forEach(word => {
+            const cleaned = word.replace(/[^a-z]/g, '');
+            if (cleaned.length > 3 && !stopWords.has(cleaned)) {
+                wordCounts[cleaned] = (wordCounts[cleaned] || 0) + 1;
+            }
+        });
+    });
+
+    const topWords = Object.entries(wordCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10);
+
+    const container = document.getElementById('gc-top-topics');
+    if (!container) return;
+
+    if (topWords.length === 0) {
+        container.innerHTML = '<p style="opacity: 0.7;">No topic data available yet.</p>';
+        return;
+    }
+
+    container.innerHTML = topWords.map(([word, count]) => `
+        <div style="padding: 0.5rem; margin-bottom: 0.5rem; background: #2c3e50; border-radius: 4px; display: flex; justify-content: space-between;">
+            <span style="text-transform: capitalize;">${word}</span>
+            <span style="background: #3498db; padding: 0.2rem 0.6rem; border-radius: 3px; font-weight: bold;">${count}</span>
+        </div>
+    `).join('');
+}
+
+function populateAnnualReportYears() {
+    const logs = storage.getGroupConscienceLog();
+    const years = new Set();
+
+    logs.forEach(log => {
+        const year = new Date(log.date).getFullYear();
+        years.add(year);
+    });
+
+    const currentYear = new Date().getFullYear();
+    years.add(currentYear);
+
+    const select = document.getElementById('annual-report-year');
+    if (!select) return;
+
+    select.innerHTML = Array.from(years)
+        .sort((a, b) => b - a)
+        .map(year => `<option value="${year}">${year}</option>`)
+        .join('');
+}
+
+function generateAnnualReport() {
+    const year = parseInt(document.getElementById('annual-report-year').value);
+    if (!year) {
+        showToast('Please select a year.', 'error');
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const logs = storage.getGroupConscienceLog().filter(log => {
+        return new Date(log.date).getFullYear() === year;
+    });
+
+    if (logs.length === 0) {
+        showToast(`No GC data found for ${year}.`, 'error');
+        return;
+    }
+
+    // Title
+    doc.setFontSize(20);
+    doc.text(`Group Conscience Annual Report - ${year}`, 14, 22);
+
+    // Summary Statistics
+    doc.setFontSize(14);
+    doc.text('Annual Summary', 14, 35);
+    doc.setFontSize(11);
+
+    const passed = logs.filter(l => l.status === 'passed').length;
+    const failed = logs.filter(l => l.status === 'failed').length;
+    const tabled = logs.filter(l => l.status === 'tabled').length;
+    const passRate = logs.length > 0 ? ((passed / logs.length) * 100).toFixed(1) : 0;
+
+    let yPos = 45;
+    doc.text(`Total Motions: ${logs.length}`, 14, yPos);
+    yPos += 7;
+    doc.text(`Passed: ${passed}`, 14, yPos);
+    yPos += 7;
+    doc.text(`Failed: ${failed}`, 14, yPos);
+    yPos += 7;
+    doc.text(`Tabled: ${tabled}`, 14, yPos);
+    yPos += 7;
+    doc.text(`Pass Rate: ${passRate}%`, 14, yPos);
+    yPos += 12;
+
+    // Motion Details Table
+    doc.setFontSize(14);
+    doc.text('Motion Details', 14, yPos);
+    yPos += 5;
+
+    const tableData = logs.map(log => [
+        new Date(log.date).toLocaleDateString(),
+        log.item.substring(0, 50) + (log.item.length > 50 ? '...' : ''),
+        log.status.toUpperCase(),
+        `${log.votesFor || 0}-${log.votesAgainst || 0}-${log.votesAbstain || 0}`
+    ]);
+
+    doc.autoTable({
+        startY: yPos,
+        head: [['Date', 'Motion', 'Status', 'Votes (F-A-Ab)']],
+        body: tableData,
+        theme: 'grid',
+        headStyles: { fillColor: [52, 152, 219] },
+        styles: { fontSize: 9 }
+    });
+
+    // Footer
+    const pageCount = doc.internal.getNumberOfPages();
+    doc.setFontSize(10);
+    for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.text(`Page ${i} of ${pageCount}`, doc.internal.pageSize.width / 2, doc.internal.pageSize.height - 10, { align: 'center' });
+        doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, doc.internal.pageSize.height - 10);
+    }
+
+    doc.save(`GC_Annual_Report_${year}.pdf`);
+    showToast(`Annual report for ${year} downloaded successfully!`, 'success');
+}
+
+// ========== FEATURE: Notification & Reminder System ==========
+function checkUpcomingGCMeetings() {
+    // Check localStorage for the last GC meeting date
+    const logs = storage.getGroupConscienceLog();
+    if (logs.length === 0) return;
+
+    // Sort by date to get the most recent
+    const sortedLogs = logs.sort((a, b) => new Date(b.date) - new Date(a.date));
+    const lastGCDate = new Date(sortedLogs[0].date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Calculate days since last GC
+    const daysSinceLastGC = Math.floor((today - lastGCDate) / (1000 * 60 * 60 * 24));
+
+    // Assuming monthly GC meetings (30 days), warn at 25+ days
+    if (daysSinceLastGC >= 25 && daysSinceLastGC < 40) {
+        const daysUntilNext = 30 - daysSinceLastGC;
+        if (daysUntilNext > 0) {
+            showNotificationBanner(`Group Conscience meeting coming up in approximately ${daysUntilNext} days!`, 'info');
+        } else {
+            showNotificationBanner(`Group Conscience meeting may be overdue! Last meeting was ${daysSinceLastGC} days ago.`, 'warning');
+        }
+    }
+
+    // Check for pending proposed agenda items
+    const proposedItems = storage.getProposedAgendaItems().filter(item => item.status === 'pending');
+    if (proposedItems.length > 0) {
+        showNotificationBanner(`${proposedItems.length} proposed agenda item(s) pending for next GC meeting.`, 'info');
+    }
+
+    // Check for incomplete action items
+    const actionItems = storage.getGCActionItems().filter(item => item.status !== 'completed');
+    const overdueActions = actionItems.filter(item => {
+        if (!item.dueDate) return false;
+        return new Date(item.dueDate) < today;
+    });
+
+    if (overdueActions.length > 0) {
+        showNotificationBanner(`${overdueActions.length} GC action item(s) are overdue!`, 'urgent');
+    }
+}
+
+function showNotificationBanner(message, type = 'info') {
+    // Check if we've already shown this notification in this session
+    const sessionKey = `notification_shown_${message}`;
+    if (sessionStorage.getItem(sessionKey)) {
+        return; // Don't show duplicate notifications in same session
+    }
+
+    const banner = document.createElement('div');
+    banner.style.cssText = `
+        position: fixed;
+        top: 60px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: ${type === 'urgent' ? '#e74c3c' : type === 'warning' ? '#f39c12' : '#3498db'};
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        z-index: 1000;
+        max-width: 600px;
+        text-align: center;
+        animation: slideDown 0.3s ease;
+    `;
+    banner.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <i class="fas fa-bell" style="font-size: 1.2rem;"></i>
+            <span>${message}</span>
+            <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; margin-left: 1rem;">&times;</button>
+        </div>
+    `;
+
+    document.body.appendChild(banner);
+
+    // Mark as shown for this session
+    sessionStorage.setItem(sessionKey, 'true');
+
+    // Auto-remove after 10 seconds
+    setTimeout(() => {
+        if (banner.parentElement) {
+            banner.style.animation = 'slideUp 0.3s ease';
+            setTimeout(() => banner.remove(), 300);
+        }
+    }, 10000);
+}
+
+// Request browser notification permission
+function requestNotificationPermission() {
+    if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+                showToast('Browser notifications enabled!', 'success');
+            }
+        });
+    }
+}
+
+// Show browser notification (if permission granted)
+function showBrowserNotification(title, message) {
+    if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification(title, {
+            body: message,
+            icon: 'logo.svg',
+            badge: 'logo.svg'
+        });
+    }
 }
 
 
@@ -6543,6 +7277,7 @@ function init() {
     updateActionItemsTable();
     searchGCHistory();
     updateGCStatistics();
+    refreshGCTrends();
 
     // Initialize new features
     loadCurrentUser();
@@ -6568,6 +7303,9 @@ function init() {
     renderCurrentCheckouts();
     renderReadingSchedules();
     loadAccessibilitySettings();
+
+    // Check for upcoming GC meetings and show notifications
+    setTimeout(() => checkUpcomingGCMeetings(), 2000); // Delay 2 seconds for better UX
 
     // Back to Top button logic
     const mainEl = document.querySelector('main');
