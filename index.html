@@ -65,17 +65,67 @@
             list-style: none;
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 0.5rem;
         }
         nav li {
             cursor: pointer;
             padding: 0.5rem 0.75rem;
             border-radius: 4px;
             transition: background 0.2s;
+            position: relative;
         }
         nav li:hover, nav li.active {
             background: #3498db; /* Metallic Blue */
             color: #ffffff;
+        }
+
+        /* Dropdown menu styles */
+        nav li.has-dropdown {
+            padding-right: 1.5rem;
+        }
+        nav li.has-dropdown::after {
+            content: '\f107'; /* Font Awesome down arrow */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+            transition: transform 0.2s;
+        }
+        nav li.has-dropdown:hover::after {
+            transform: translateY(-50%) rotate(180deg);
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 200px;
+            background: #2c3e50;
+            border: 1px solid #3498db;
+            border-radius: 4px;
+            margin-top: 0.25rem;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        nav li:hover .dropdown-menu {
+            display: block;
+        }
+        .dropdown-menu li {
+            padding: 0.5rem 1rem;
+            border-radius: 0;
+            border-bottom: 1px solid #34495e;
+        }
+        .dropdown-menu li:last-child {
+            border-bottom: none;
+        }
+        .dropdown-menu li:hover {
+            background: #34495e;
+        }
+        .dropdown-menu li.active {
+            background: #2980b9;
         }
 
         /* Main content area */
@@ -755,6 +805,79 @@
         .mt-4 { margin-top: 1rem; }
         .mb-2 { margin-bottom: 0.5rem; }
         .mb-4 { margin-bottom: 1rem; }
+
+        /* ========================================
+           PRINT STYLESHEETS
+           ======================================== */
+        @media print {
+            /* Hide navigation and UI elements */
+            nav, #toast-container, #back-to-top-btn, .btn, button {
+                display: none !important;
+            }
+
+            /* Reset colors for printing */
+            body {
+                background: white;
+                color: black;
+            }
+
+            .box, section {
+                background: white !important;
+                border: 1px solid #000;
+                page-break-inside: avoid;
+            }
+
+            /* Optimize tables for printing */
+            table {
+                border-collapse: collapse;
+                width: 100%;
+                page-break-inside: avoid;
+            }
+
+            th, td {
+                border: 1px solid #000;
+                padding: 0.5rem;
+                color: black !important;
+                background: white !important;
+            }
+
+            th {
+                background: #e0e0e0 !important;
+                font-weight: bold;
+            }
+
+            /* Page breaks */
+            h1, h2, h3 {
+                page-break-after: avoid;
+                color: black !important;
+            }
+
+            /* Show URLs for links */
+            a[href]:after {
+                content: " (" attr(href) ")";
+            }
+
+            /* Optimize charts for printing */
+            canvas {
+                max-width: 100%;
+                page-break-inside: avoid;
+            }
+
+            /* Print-specific header */
+            @page {
+                margin: 2cm;
+            }
+
+            body::before {
+                content: "Rowlett Group - Printed: " attr(data-print-date);
+                display: block;
+                text-align: center;
+                font-size: 0.8rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid #000;
+                margin-bottom: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -771,21 +894,81 @@
         </div>
         <ul id="nav-menu">
             <li data-section="home-section" class="active">Home</li>
-            <li data-section="companion-section">Meeting Companion</li>
-            <li data-section="schedule-section">Schedule</li>
-            <li data-section="birthdays-section">Birthdays</li>
-            <li data-section="announcements-section">Announcements</li>
-            <li data-section="messaging-section">Messages</li>
-            <li data-section="service-positions-section">Service Positions</li>
-            <li data-section="finance-section">Finances</li>
-            <li data-section="templates-section">Templates</li>
-            <li data-section="gallery-section">Gallery</li>
-            <li data-section="history-section">History</li>
-            <li data-section="chairperson-section">Chairperson's Corner</li>
-            <li data-section="analytics-section">Analytics</li>
-            <li data-section="library-section">Library</li>
-            <li data-section="accessibility-section">Accessibility</li>
-            <li data-section="settings-section">Settings</li>
+
+            <li class="has-dropdown">
+                Meetings
+                <ul class="dropdown-menu">
+                    <li data-section="companion-section">Meeting Companion</li>
+                    <li data-section="schedule-section">Schedule & Calendar</li>
+                    <li data-section="format-rotation-section">Format Rotation</li>
+                    <li data-section="commitment-board-section">Commitment Board</li>
+                    <li data-section="secretary-section">Secretary Functions</li>
+                </ul>
+            </li>
+
+            <li class="has-dropdown">
+                Group Conscience
+                <ul class="dropdown-menu">
+                    <li data-section="gc-live-section">Live GC Session</li>
+                    <li data-section="gc-decisions-section">Decision History</li>
+                    <li data-section="gc-inventory-section">GC Inventory</li>
+                    <li data-section="gc-bylaws-section">Guidelines & By-Laws</li>
+                </ul>
+            </li>
+
+            <li class="has-dropdown">
+                Service
+                <ul class="dropdown-menu">
+                    <li data-section="service-positions-section">Service Positions</li>
+                    <li data-section="sponsorship-section">Sponsorship Tracking</li>
+                    <li data-section="district-area-section">District/Area</li>
+                </ul>
+            </li>
+
+            <li class="has-dropdown">
+                Finances
+                <ul class="dropdown-menu">
+                    <li data-section="finance-section">Financial Reports</li>
+                    <li data-section="prudent-reserve-section">Prudent Reserve</li>
+                    <li data-section="seventh-tradition-section">7th Tradition Analysis</li>
+                </ul>
+            </li>
+
+            <li class="has-dropdown">
+                Fellowship
+                <ul class="dropdown-menu">
+                    <li data-section="birthdays-section">Birthdays</li>
+                    <li data-section="messaging-section">Messages</li>
+                    <li data-section="gallery-section">Gallery</li>
+                    <li data-section="chip-inventory-section">Chip Inventory</li>
+                </ul>
+            </li>
+
+            <li class="has-dropdown">
+                Resources
+                <ul class="dropdown-menu">
+                    <li data-section="library-section">Library</li>
+                    <li data-section="templates-section">Templates</li>
+                    <li data-section="announcements-section">Announcements</li>
+                    <li data-section="history-section">History</li>
+                </ul>
+            </li>
+
+            <li class="has-dropdown">
+                Reports
+                <ul class="dropdown-menu">
+                    <li data-section="analytics-section">Analytics</li>
+                    <li data-section="chairperson-section">Chairperson Reports</li>
+                </ul>
+            </li>
+
+            <li class="has-dropdown">
+                Settings
+                <ul class="dropdown-menu">
+                    <li data-section="settings-section">General Settings</li>
+                    <li data-section="accessibility-section">Accessibility</li>
+                </ul>
+            </li>
         </ul>
     </nav>
 
@@ -2833,6 +3016,759 @@
                 <p class="mb-2">Download your data to manually upload to Google Drive, Dropbox, or other cloud storage.</p>
                 <button class="btn" onclick="exportForCloud()">Export for Cloud Backup</button>
                 <p style="margin-top: 1rem; font-size: 0.85rem; color: #95a5a6;">Note: After exporting, upload the file to your preferred cloud service. To sync across devices, download the file from cloud storage and import it on your other device.</p>
+            </div>
+        </section>
+
+        <!-- FORMAT ROTATION SECTION -->
+        <section id="format-rotation-section">
+            <h2>Meeting Format Rotation</h2>
+            <p class="mb-4">Manage automated format rotation patterns for weekly meetings.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box mb-4">
+                        <h3>Current Week's Format</h3>
+                        <div id="current-format-display" style="padding: 1.5rem; background: #2c3e50; border-radius: 6px; text-align: center;">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: #3498db;" id="current-format-name">Big Book Study</div>
+                            <div style="margin-top: 0.5rem; color: #95a5a6;" id="current-format-week">Week of: <span id="current-week-date"></span></div>
+                        </div>
+                    </div>
+
+                    <div class="box">
+                        <h3>Add/Edit Format</h3>
+                        <div class="form-group">
+                            <label for="format-name">Format Name</label>
+                            <input type="text" id="format-name" placeholder="e.g., Big Book Study, Step Study, Speaker Meeting">
+                        </div>
+                        <div class="form-group">
+                            <label for="format-description">Description</label>
+                            <textarea id="format-description" rows="2" placeholder="Brief description..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="format-order">Rotation Order</label>
+                            <input type="number" id="format-order" min="1" placeholder="1">
+                            <small style="font-size: 0.75rem; opacity: 0.8;">Order in the rotation cycle</small>
+                        </div>
+                        <input type="hidden" id="format-edit-id">
+                        <button id="format-form-btn" class="btn" onclick="handleFormatSubmit()">Add Format</button>
+                        <button id="format-form-cancel-btn" class="btn secondary" onclick="cancelFormatEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box">
+                        <h3>Format Rotation Schedule</h3>
+                        <table id="format-rotation-table">
+                            <thead>
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Format</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="format-rotation-body"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Upcoming Formats (Next 8 Weeks)</h3>
+                        <div id="upcoming-formats-list"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMMITMENT BOARD SECTION -->
+        <section id="commitment-board-section">
+            <h2>Meeting Commitment Board</h2>
+            <p class="mb-4">Sign-up system for meeting responsibilities with automated reminders.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3>Sign Up for Commitment</h3>
+                        <div class="form-group">
+                            <label for="commitment-date">Meeting Date</label>
+                            <input type="date" id="commitment-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="commitment-role">Responsibility</label>
+                            <select id="commitment-role">
+                                <option value="greeter">Greeter</option>
+                                <option value="coffee">Coffee Maker</option>
+                                <option value="setup">Setup</option>
+                                <option value="cleanup">Cleanup</option>
+                                <option value="secretary">Secretary</option>
+                                <option value="treasurer">Treasurer Report</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="commitment-member">Member Name</label>
+                            <select id="commitment-member"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="commitment-reminder" checked>
+                                Send reminder notification
+                            </label>
+                        </div>
+                        <input type="hidden" id="commitment-edit-id">
+                        <button id="commitment-form-btn" class="btn" onclick="handleCommitmentSubmit()">Sign Up</button>
+                        <button id="commitment-form-cancel-btn" class="btn secondary" onclick="cancelCommitmentEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box">
+                        <h3>This Week's Commitments</h3>
+                        <div id="current-week-commitments"></div>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Upcoming Commitments</h3>
+                        <table id="commitment-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Role</th>
+                                    <th>Member</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="commitment-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECRETARY FUNCTIONS SECTION -->
+        <section id="secretary-section">
+            <h2>Meeting Secretary Functions</h2>
+            <p class="mb-4">Attendance tracking, automated minutes, and meeting statistics.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3>Take Attendance</h3>
+                        <div class="form-group">
+                            <label for="attendance-date">Meeting Date</label>
+                            <input type="date" id="attendance-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="attendance-members">Members Present</label>
+                            <select multiple id="attendance-members" style="height: 200px; background: #34495e; color: #ecf0f1; border: 1px solid #7f8c8d; border-radius: 4px; padding: 0.5rem; width: 100%;"></select>
+                            <small style="font-size: 0.75rem; opacity: 0.8;">Hold Ctrl/Cmd to select multiple</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="attendance-visitors">Visitors/Newcomers</label>
+                            <input type="number" id="attendance-visitors" min="0" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="attendance-oldtimers">Old-Timers (10+ years)</label>
+                            <div id="attendance-oldtimers-list"></div>
+                        </div>
+                        <button class="btn" onclick="handleAttendanceSubmit()">Save Attendance</button>
+                        <button class="btn secondary" onclick="generateMinutes()" style="margin-left: 0.5rem;">Generate Minutes</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box">
+                        <h3>Meeting Statistics</h3>
+                        <div id="attendance-stats" style="padding: 1rem; background: #2c3e50; border-radius: 6px;">
+                            <div class="mb-2"><strong>Average Attendance:</strong> <span id="avg-attendance">0</span></div>
+                            <div class="mb-2"><strong>Regular Members:</strong> <span id="regular-members">0</span></div>
+                            <div class="mb-2"><strong>This Month's Visitors:</strong> <span id="monthly-visitors">0</span></div>
+                            <div class="mb-2"><strong>Recognized Old-Timers:</strong> <span id="oldtimer-count">0</span></div>
+                        </div>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Recent Attendance</h3>
+                        <table id="attendance-history-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Members</th>
+                                    <th>Visitors</th>
+                                    <th>Total</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendance-history-body"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Generated Minutes</h3>
+                        <div id="meeting-minutes-preview" style="padding: 1rem; background: #2c3e50; border-radius: 6px; white-space: pre-wrap; font-family: monospace; font-size: 0.85rem;"></div>
+                        <button class="btn mt-2" onclick="exportMinutesToPDF()">Export to PDF</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GC LIVE SESSION (moved from chairperson) -->
+        <section id="gc-live-section">
+            <h2>Live Group Conscience Session</h2>
+            <p class="mb-4">Real-time motion tracking during Group Conscience meetings.</p>
+
+            <div class="box">
+                <h3>New Business / Open Motions</h3>
+                <div class="form-group">
+                    <label for="live-gc-new-item">New Item</label>
+                    <textarea id="live-gc-new-item" rows="2" placeholder="Describe the new business item or motion..."></textarea>
+                </div>
+                <button class="btn" onclick="addLiveGCItem()">Add to Queue</button>
+            </div>
+
+            <div class="box mt-4">
+                <h3>Active Motions Queue</h3>
+                <table id="live-gc-queue-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="live-gc-queue-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- GC DECISION HISTORY & REFERENCE SECTION -->
+        <section id="gc-decisions-section">
+            <h2>Group Conscience Decision History</h2>
+            <p class="mb-4">Link related motions, track amendments, and view full motion history chains.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3>Search Decisions</h3>
+                        <div class="form-group">
+                            <label for="gc-search">Search by keyword, topic, or date</label>
+                            <input type="text" id="gc-search" placeholder="Search decisions...">
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-filter-status">Filter by Status</label>
+                            <select id="gc-filter-status">
+                                <option value="all">All Decisions</option>
+                                <option value="passed">Passed</option>
+                                <option value="failed">Failed</option>
+                                <option value="tabled">Tabled</option>
+                                <option value="amended">Amended</option>
+                                <option value="superseded">Superseded</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-filter-year">Filter by Year</label>
+                            <select id="gc-filter-year">
+                                <option value="all">All Years</option>
+                            </select>
+                        </div>
+                        <button class="btn" onclick="searchGCDecisions()">Search</button>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Link Related Motions</h3>
+                        <div class="form-group">
+                            <label for="gc-link-primary">Primary Motion</label>
+                            <select id="gc-link-primary"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-link-related">Related Motion</label>
+                            <select id="gc-link-related"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-link-type">Relationship Type</label>
+                            <select id="gc-link-type">
+                                <option value="amends">Amends</option>
+                                <option value="supersedes">Supersedes</option>
+                                <option value="related">Related To</option>
+                                <option value="implements">Implements</option>
+                            </select>
+                        </div>
+                        <button class="btn" onclick="linkGCMotions()">Link Motions</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box">
+                        <h3>Decision History</h3>
+                        <div id="gc-decisions-list" style="max-height: 600px; overflow-y: auto;"></div>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Motion Chain Viewer</h3>
+                        <p style="font-size: 0.85rem; margin-bottom: 1rem;">Click any motion to view its full history chain</p>
+                        <div id="motion-chain-display" style="padding: 1rem; background: #2c3e50; border-radius: 6px;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GC INVENTORY SECTION -->
+        <section id="gc-inventory-section">
+            <h2>Group Conscience Inventory</h2>
+            <p class="mb-4">Tradition inventory questions, Concept templates, and anonymous feedback collection.</p>
+
+            <div class="box mb-4">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3>Select Inventory Type</h3>
+                    <button class="btn secondary" onclick="exportInventoryResults()">Export Results</button>
+                </div>
+                <div class="form-group">
+                    <select id="inventory-type" onchange="loadInventoryTemplate()">
+                        <option value="">-- Select Type --</option>
+                        <option value="traditions">12 Traditions Inventory</option>
+                        <option value="concepts">12 Concepts Inventory</option>
+                        <option value="group-health">Group Health Check</option>
+                        <option value="annual">Annual Group Inventory</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="inventory-questions-container"></div>
+
+            <div class="box mt-4">
+                <h3>Anonymous Feedback</h3>
+                <p style="font-size: 0.85rem; margin-bottom: 1rem;">Members can submit anonymous feedback about group health</p>
+                <div class="form-group">
+                    <label for="anonymous-feedback-text">Your Anonymous Feedback</label>
+                    <textarea id="anonymous-feedback-text" rows="4" placeholder="Share your thoughts about group health, traditions, or concerns..."></textarea>
+                </div>
+                <button class="btn" onclick="submitAnonymousFeedback()">Submit Anonymously</button>
+            </div>
+
+            <div class="box mt-4">
+                <h3>Collected Feedback</h3>
+                <div id="anonymous-feedback-list"></div>
+            </div>
+        </section>
+
+        <!-- GC BY-LAWS SECTION -->
+        <section id="gc-bylaws-section">
+            <h2>Group Guidelines & By-Laws Repository</h2>
+            <p class="mb-4">Store group documents with version control and amendment tracking.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3>Add/Update Document</h3>
+                        <div class="form-group">
+                            <label for="bylaw-title">Document Title</label>
+                            <input type="text" id="bylaw-title" placeholder="e.g., Group Guidelines, By-Laws">
+                        </div>
+                        <div class="form-group">
+                            <label for="bylaw-version">Version</label>
+                            <input type="text" id="bylaw-version" placeholder="e.g., 1.0, 2.1">
+                        </div>
+                        <div class="form-group">
+                            <label for="bylaw-content">Document Content</label>
+                            <textarea id="bylaw-content" rows="10" placeholder="Enter the full text of the document..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="bylaw-amendment-notes">Amendment Notes</label>
+                            <textarea id="bylaw-amendment-notes" rows="2" placeholder="What changed in this version?"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="bylaw-effective-date">Effective Date</label>
+                            <input type="date" id="bylaw-effective-date">
+                        </div>
+                        <input type="hidden" id="bylaw-edit-id">
+                        <button id="bylaw-form-btn" class="btn" onclick="handleByLawSubmit()">Save Document</button>
+                        <button id="bylaw-form-cancel-btn" class="btn secondary" onclick="cancelByLawEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box">
+                        <h3>Current Documents</h3>
+                        <div id="bylaws-current-list"></div>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Version History</h3>
+                        <table id="bylaws-history-table">
+                            <thead>
+                                <tr>
+                                    <th>Document</th>
+                                    <th>Version</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bylaws-history-body"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Generate PDF</h3>
+                        <div class="form-group">
+                            <label for="pdf-document-select">Select Document</label>
+                            <select id="pdf-document-select"></select>
+                        </div>
+                        <button class="btn" onclick="generateByLawPDF()">Generate PDF</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SPONSORSHIP TRACKING SECTION -->
+        <section id="sponsorship-section">
+            <h2>Sponsorship Tracking</h2>
+            <p class="mb-4">Track sponsorship relationships with tree visualization and service sponsorship.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3>Add Sponsorship Relationship</h3>
+                        <div class="form-group">
+                            <label for="sponsor-name">Sponsor</label>
+                            <select id="sponsor-name"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="sponsee-name">Sponsee</label>
+                            <select id="sponsee-name"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="sponsorship-type">Type</label>
+                            <select id="sponsorship-type">
+                                <option value="program">Program Sponsorship</option>
+                                <option value="service">Service Sponsorship</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="sponsorship-start-date">Start Date</label>
+                            <input type="date" id="sponsorship-start-date">
+                        </div>
+                        <div class="form-group" id="step-progress-group" style="display: none;">
+                            <label for="current-step">Current Step (Optional)</label>
+                            <select id="current-step">
+                                <option value="">Not tracking</option>
+                                <option value="1">Step 1</option>
+                                <option value="2">Step 2</option>
+                                <option value="3">Step 3</option>
+                                <option value="4">Step 4</option>
+                                <option value="5">Step 5</option>
+                                <option value="6">Step 6</option>
+                                <option value="7">Step 7</option>
+                                <option value="8">Step 8</option>
+                                <option value="9">Step 9</option>
+                                <option value="10">Step 10</option>
+                                <option value="11">Step 11</option>
+                                <option value="12">Step 12</option>
+                            </select>
+                        </div>
+                        <input type="hidden" id="sponsorship-edit-id">
+                        <button id="sponsorship-form-btn" class="btn" onclick="handleSponsorshipSubmit()">Add Relationship</button>
+                        <button id="sponsorship-form-cancel-btn" class="btn secondary" onclick="cancelSponsorshipEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box">
+                        <h3>Sponsorship Tree Visualization</h3>
+                        <div id="sponsorship-tree" style="min-height: 400px; padding: 1rem; background: #2c3e50; border-radius: 6px; overflow-x: auto;"></div>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Sponsorship List</h3>
+                        <table id="sponsorship-table">
+                            <thead>
+                                <tr>
+                                    <th>Sponsor</th>
+                                    <th>Sponsee</th>
+                                    <th>Type</th>
+                                    <th>Start Date</th>
+                                    <th>Progress</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sponsorship-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DISTRICT/AREA INTEGRATION SECTION -->
+        <section id="district-area-section">
+            <h2>District/Area Committee Integration</h2>
+            <p class="mb-4">GSR reports, district meeting schedules, and area assembly tracking.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3>Log GSR Report</h3>
+                        <div class="form-group">
+                            <label for="gsr-report-date">Meeting Date</label>
+                            <input type="date" id="gsr-report-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="gsr-meeting-type">Meeting Type</label>
+                            <select id="gsr-meeting-type">
+                                <option value="district">District Meeting</option>
+                                <option value="area">Area Assembly</option>
+                                <option value="special">Special Meeting</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="gsr-report-content">Report Summary</label>
+                            <textarea id="gsr-report-content" rows="5" placeholder="Summarize key points, motions, and announcements..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="gsr-action-items">Action Items</label>
+                            <textarea id="gsr-action-items" rows="3" placeholder="Any action items for the group..."></textarea>
+                        </div>
+                        <input type="hidden" id="gsr-report-edit-id">
+                        <button id="gsr-report-form-btn" class="btn" onclick="handleGSRReportSubmit()">Save Report</button>
+                        <button id="gsr-report-form-cancel-btn" class="btn secondary" onclick="cancelGSRReportEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>District Meeting Schedule</h3>
+                        <div class="form-group">
+                            <label for="district-schedule-date">Meeting Date</label>
+                            <input type="date" id="district-schedule-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="district-schedule-time">Time</label>
+                            <input type="time" id="district-schedule-time">
+                        </div>
+                        <div class="form-group">
+                            <label for="district-schedule-location">Location</label>
+                            <input type="text" id="district-schedule-location" placeholder="Meeting location">
+                        </div>
+                        <button class="btn" onclick="addDistrictMeeting()">Add to Schedule</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box">
+                        <h3>Recent GSR Reports</h3>
+                        <div id="gsr-reports-list" style="max-height: 400px; overflow-y: auto;"></div>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Upcoming District/Area Meetings</h3>
+                        <div id="district-meetings-list"></div>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>DCM Communication Log</h3>
+                        <div class="form-group">
+                            <label for="dcm-comm-date">Date</label>
+                            <input type="date" id="dcm-comm-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="dcm-comm-content">Communication</label>
+                            <textarea id="dcm-comm-content" rows="3" placeholder="Log communication with DCM..."></textarea>
+                        </div>
+                        <button class="btn" onclick="addDCMCommunication()">Add Entry</button>
+                        <div id="dcm-comm-history" class="mt-4"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRUDENT RESERVE SECTION -->
+        <section id="prudent-reserve-section">
+            <h2>Financial Prudent Reserve Tracking</h2>
+            <p class="mb-4">Set reserve targets, visualize operational vs reserve balance, and track trends.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3>Prudent Reserve Settings</h3>
+                        <div class="form-group">
+                            <label for="reserve-target">Target Reserve Amount ($)</label>
+                            <input type="number" id="reserve-target" step="0.01" placeholder="0.00">
+                            <small style="font-size: 0.75rem; opacity: 0.8;">Recommended: 3-6 months of operating expenses</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="monthly-expenses">Estimated Monthly Expenses ($)</label>
+                            <input type="number" id="monthly-expenses" step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="reserve-months">Reserve Target (Months)</label>
+                            <input type="number" id="reserve-months" min="1" max="12" value="3">
+                        </div>
+                        <button class="btn" onclick="calculateReserveTarget()">Calculate Target</button>
+                        <button class="btn secondary" onclick="saveReserveSettings()" style="margin-left: 0.5rem;">Save Settings</button>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Current Financial Status</h3>
+                        <div id="reserve-status" style="padding: 1rem; background: #2c3e50; border-radius: 6px;">
+                            <div class="mb-2"><strong>Total Balance:</strong> $<span id="total-balance">0.00</span></div>
+                            <div class="mb-2"><strong>Prudent Reserve:</strong> $<span id="current-reserve">0.00</span></div>
+                            <div class="mb-2"><strong>Operating Balance:</strong> $<span id="operating-balance">0.00</span></div>
+                            <div class="mb-2"><strong>Reserve Target:</strong> $<span id="display-reserve-target">0.00</span></div>
+                            <div class="mb-2"><strong>Status:</strong> <span id="reserve-health-status">--</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box">
+                        <h3>Reserve vs Operating Balance</h3>
+                        <canvas id="reserve-balance-chart" style="max-height: 300px;"></canvas>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>7th Tradition Trend Analysis</h3>
+                        <canvas id="seventh-tradition-trend-chart" style="max-height: 300px;"></canvas>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Contribution Source Breakdown</h3>
+                        <canvas id="contribution-source-chart" style="max-height: 300px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7TH TRADITION ANALYSIS SECTION -->
+        <section id="seventh-tradition-section">
+            <h2>7th Tradition Analysis</h2>
+            <p class="mb-4">Detailed analysis of contribution patterns and trends.</p>
+
+            <div class="box mb-4">
+                <h3>Contribution Trends</h3>
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <button class="btn" onclick="load7thTraditionPeriod('weekly')">Weekly</button>
+                    <button class="btn" onclick="load7thTraditionPeriod('monthly')">Monthly</button>
+                    <button class="btn" onclick="load7thTraditionPeriod('quarterly')">Quarterly</button>
+                    <button class="btn" onclick="load7thTraditionPeriod('yearly')">Yearly</button>
+                </div>
+                <canvas id="seventh-tradition-detail-chart"></canvas>
+            </div>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div class="box">
+                    <h3>Statistics</h3>
+                    <div id="seventh-tradition-stats">
+                        <div class="mb-2"><strong>Average per Meeting:</strong> $<span id="avg-per-meeting">0.00</span></div>
+                        <div class="mb-2"><strong>Highest Contribution:</strong> $<span id="highest-contribution">0.00</span></div>
+                        <div class="mb-2"><strong>Lowest Contribution:</strong> $<span id="lowest-contribution">0.00</span></div>
+                        <div class="mb-2"><strong>YTD Total:</strong> $<span id="ytd-total">0.00</span></div>
+                        <div class="mb-2"><strong>Trend:</strong> <span id="contribution-trend">--</span></div>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <h3>Goals & Targets</h3>
+                    <div class="form-group">
+                        <label for="contribution-goal">Monthly Contribution Goal ($)</label>
+                        <input type="number" id="contribution-goal" step="0.01" placeholder="0.00">
+                    </div>
+                    <button class="btn" onclick="saveContributionGoal()">Save Goal</button>
+                    <div id="goal-progress" class="mt-4"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CHIP INVENTORY SECTION -->
+        <section id="chip-inventory-section">
+            <h2>Sobriety Chip Inventory</h2>
+            <p class="mb-4">Track chip stock levels, set low stock alerts, and log distributions.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3>Update Chip Inventory</h3>
+                        <div class="form-group">
+                            <label for="chip-type">Chip Type</label>
+                            <select id="chip-type">
+                                <option value="24-hour">24 Hours (White)</option>
+                                <option value="30-day">30 Days (Red)</option>
+                                <option value="60-day">60 Days (Gold)</option>
+                                <option value="90-day">90 Days (Green)</option>
+                                <option value="6-month">6 Months (Blue)</option>
+                                <option value="9-month">9 Months (Purple)</option>
+                                <option value="1-year">1 Year (Bronze)</option>
+                                <option value="18-month">18 Months</option>
+                                <option value="multi-year">Multi-Year</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="chip-quantity">Current Quantity</label>
+                            <input type="number" id="chip-quantity" min="0" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="chip-low-threshold">Low Stock Alert Threshold</label>
+                            <input type="number" id="chip-low-threshold" min="0" placeholder="5">
+                        </div>
+                        <button class="btn" onclick="updateChipInventory()">Update Inventory</button>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Log Chip Distribution</h3>
+                        <div class="form-group">
+                            <label for="dist-chip-type">Chip Type</label>
+                            <select id="dist-chip-type">
+                                <option value="24-hour">24 Hours</option>
+                                <option value="30-day">30 Days</option>
+                                <option value="60-day">60 Days</option>
+                                <option value="90-day">90 Days</option>
+                                <option value="6-month">6 Months</option>
+                                <option value="9-month">9 Months</option>
+                                <option value="1-year">1 Year</option>
+                                <option value="18-month">18 Months</option>
+                                <option value="multi-year">Multi-Year</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dist-recipient">Recipient (Optional)</label>
+                            <input type="text" id="dist-recipient" placeholder="Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="dist-date">Date</label>
+                            <input type="date" id="dist-date">
+                        </div>
+                        <button class="btn" onclick="logChipDistribution()">Log Distribution</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box">
+                        <h3>Current Inventory Status</h3>
+                        <table id="chip-inventory-table">
+                            <thead>
+                                <tr>
+                                    <th>Chip Type</th>
+                                    <th>Quantity</th>
+                                    <th>Status</th>
+                                    <th>Alert Threshold</th>
+                                </tr>
+                            </thead>
+                            <tbody id="chip-inventory-body"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Low Stock Alerts</h3>
+                        <div id="chip-alerts"></div>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Recent Distributions</h3>
+                        <table id="chip-distribution-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Chip Type</th>
+                                    <th>Recipient</th>
+                                </tr>
+                            </thead>
+                            <tbody id="chip-distribution-body"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
@@ -8347,6 +9283,1372 @@ function loadAccessibilitySettings() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
+// ========================================
+// NEW FEATURES - JavaScript Functions
+// ========================================
+
+// FORMAT ROTATION FUNCTIONS
+function handleFormatSubmit() {
+    const name = document.getElementById('format-name').value.trim();
+    const description = document.getElementById('format-description').value.trim();
+    const order = parseInt(document.getElementById('format-order').value);
+    const editId = document.getElementById('format-edit-id').value;
+
+    if (!name || !order) {
+        showToast('Please fill all required fields', 'error');
+        return;
+    }
+
+    let formats = JSON.parse(localStorage.getItem('meetingFormats') || '[]');
+
+    if (editId) {
+        const index = formats.findIndex(f => f.id === editId);
+        formats[index] = { ...formats[index], name, description, order };
+        showToast('Format updated successfully', 'success');
+    } else {
+        const newFormat = { id: Date.now().toString(), name, description, order };
+        formats.push(newFormat);
+        showToast('Format added successfully', 'success');
+    }
+
+    localStorage.setItem('meetingFormats', JSON.stringify(formats));
+    loadFormatRotationTable();
+    loadUpcomingFormats();
+    updateCurrentWeekFormat();
+    resetFormatForm();
+}
+
+function cancelFormatEdit() {
+    resetFormatForm();
+}
+
+function resetFormatForm() {
+    document.getElementById('format-name').value = '';
+    document.getElementById('format-description').value = '';
+    document.getElementById('format-order').value = '';
+    document.getElementById('format-edit-id').value = '';
+    document.getElementById('format-form-btn').textContent = 'Add Format';
+    document.getElementById('format-form-cancel-btn').style.display = 'none';
+}
+
+function loadFormatRotationTable() {
+    const formats = JSON.parse(localStorage.getItem('meetingFormats') || '[]').sort((a, b) => a.order - b.order);
+    const tbody = document.getElementById('format-rotation-body');
+    tbody.innerHTML = '';
+
+    formats.forEach(format => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${format.order}</td>
+            <td>${DOMPurify.sanitize(format.name)}</td>
+            <td>${DOMPurify.sanitize(format.description)}</td>
+            <td>
+                <button class="btn secondary" onclick="editFormat('${format.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Edit</button>
+                <button class="btn secondary" onclick="deleteFormat('${format.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.85rem; margin-left: 0.25rem;">Delete</button>
+            </td>
+        `;
+    });
+}
+
+function editFormat(id) {
+    const formats = JSON.parse(localStorage.getItem('meetingFormats') || '[]');
+    const format = formats.find(f => f.id === id);
+    if (format) {
+        document.getElementById('format-name').value = format.name;
+        document.getElementById('format-description').value = format.description;
+        document.getElementById('format-order').value = format.order;
+        document.getElementById('format-edit-id').value = id;
+        document.getElementById('format-form-btn').textContent = 'Update Format';
+        document.getElementById('format-form-cancel-btn').style.display = 'inline-block';
+    }
+}
+
+function deleteFormat(id) {
+    if (!confirm('Delete this format?')) return;
+    let formats = JSON.parse(localStorage.getItem('meetingFormats') || '[]');
+    formats = formats.filter(f => f.id !== id);
+    localStorage.setItem('meetingFormats', JSON.stringify(formats));
+    loadFormatRotationTable();
+    loadUpcomingFormats();
+    showToast('Format deleted', 'success');
+}
+
+function loadUpcomingFormats() {
+    const formats = JSON.parse(localStorage.getItem('meetingFormats') || '[]').sort((a, b) => a.order - b.order);
+    const container = document.getElementById('upcoming-formats-list');
+    if (formats.length === 0) {
+        container.innerHTML = '<p>No formats configured</p>';
+        return;
+    }
+
+    const today = new Date();
+    let html = '<ul style="list-style: none; padding: 0;">';
+
+    for (let i = 0; i < 8; i++) {
+        const weekDate = new Date(today);
+        weekDate.setDate(today.getDate() + (i * 7));
+        const formatIndex = i % formats.length;
+        const format = formats[formatIndex];
+        html += `<li style="padding: 0.5rem; border-bottom: 1px solid #7f8c8d;">
+            <strong>${weekDate.toLocaleDateString()}</strong>: ${DOMPurify.sanitize(format.name)}
+        </li>`;
+    }
+
+    html += '</ul>';
+    container.innerHTML = html;
+}
+
+function updateCurrentWeekFormat() {
+    const formats = JSON.parse(localStorage.getItem('meetingFormats') || '[]').sort((a, b) => a.order - b.order);
+    if (formats.length === 0) {
+        document.getElementById('current-format-name').textContent = 'No Format Set';
+        document.getElementById('current-week-date').textContent = '';
+        return;
+    }
+
+    const today = new Date();
+    const weekNumber = Math.floor((today - new Date(today.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000));
+    const formatIndex = weekNumber % formats.length;
+    const currentFormat = formats[formatIndex];
+
+    document.getElementById('current-format-name').textContent = currentFormat.name;
+    document.getElementById('current-week-date').textContent = today.toLocaleDateString();
+}
+
+// COMMITMENT BOARD FUNCTIONS
+function handleCommitmentSubmit() {
+    const date = document.getElementById('commitment-date').value;
+    const role = document.getElementById('commitment-role').value;
+    const member = document.getElementById('commitment-member').value;
+    const reminder = document.getElementById('commitment-reminder').checked;
+    const editId = document.getElementById('commitment-edit-id').value;
+
+    if (!date || !role || !member) {
+        showToast('Please fill all required fields', 'error');
+        return;
+    }
+
+    let commitments = JSON.parse(localStorage.getItem('meetingCommitments') || '[]');
+
+    if (editId) {
+        const index = commitments.findIndex(c => c.id === editId);
+        commitments[index] = { ...commitments[index], date, role, member, reminder };
+        showToast('Commitment updated successfully', 'success');
+    } else {
+        const newCommitment = { id: Date.now().toString(), date, role, member, reminder };
+        commitments.push(newCommitment);
+        showToast('Commitment added successfully', 'success');
+    }
+
+    localStorage.setItem('meetingCommitments', JSON.stringify(commitments));
+    loadCommitmentTable();
+    loadCurrentWeekCommitments();
+    resetCommitmentForm();
+}
+
+function cancelCommitmentEdit() {
+    resetCommitmentForm();
+}
+
+function resetCommitmentForm() {
+    document.getElementById('commitment-date').value = '';
+    document.getElementById('commitment-role').selectedIndex = 0;
+    document.getElementById('commitment-member').selectedIndex = 0;
+    document.getElementById('commitment-reminder').checked = true;
+    document.getElementById('commitment-edit-id').value = '';
+    document.getElementById('commitment-form-btn').textContent = 'Sign Up';
+    document.getElementById('commitment-form-cancel-btn').style.display = 'none';
+}
+
+function loadCommitmentTable() {
+    const commitments = JSON.parse(localStorage.getItem('meetingCommitments') || '[]').sort((a, b) => new Date(a.date) - new Date(b.date));
+    const tbody = document.getElementById('commitment-body');
+    tbody.innerHTML = '';
+
+    commitments.forEach(commitment => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${new Date(commitment.date).toLocaleDateString()}</td>
+            <td>${DOMPurify.sanitize(commitment.role)}</td>
+            <td>${DOMPurify.sanitize(commitment.member)}</td>
+            <td>
+                <button class="btn secondary" onclick="editCommitment('${commitment.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Edit</button>
+                <button class="btn secondary" onclick="deleteCommitment('${commitment.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.85rem; margin-left: 0.25rem;">Delete</button>
+            </td>
+        `;
+    });
+}
+
+function editCommitment(id) {
+    const commitments = JSON.parse(localStorage.getItem('meetingCommitments') || '[]');
+    const commitment = commitments.find(c => c.id === id);
+    if (commitment) {
+        document.getElementById('commitment-date').value = commitment.date;
+        document.getElementById('commitment-role').value = commitment.role;
+        document.getElementById('commitment-member').value = commitment.member;
+        document.getElementById('commitment-reminder').checked = commitment.reminder;
+        document.getElementById('commitment-edit-id').value = id;
+        document.getElementById('commitment-form-btn').textContent = 'Update';
+        document.getElementById('commitment-form-cancel-btn').style.display = 'inline-block';
+    }
+}
+
+function deleteCommitment(id) {
+    if (!confirm('Delete this commitment?')) return;
+    let commitments = JSON.parse(localStorage.getItem('meetingCommitments') || '[]');
+    commitments = commitments.filter(c => c.id !== id);
+    localStorage.setItem('meetingCommitments', JSON.stringify(commitments));
+    loadCommitmentTable();
+    loadCurrentWeekCommitments();
+    showToast('Commitment deleted', 'success');
+}
+
+function loadCurrentWeekCommitments() {
+    const container = document.getElementById('current-week-commitments');
+    const commitments = JSON.parse(localStorage.getItem('meetingCommitments') || '[]');
+    const today = new Date();
+    const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 7);
+
+    const thisWeek = commitments.filter(c => {
+        const commitDate = new Date(c.date);
+        return commitDate >= weekStart && commitDate < weekEnd;
+    });
+
+    if (thisWeek.length === 0) {
+        container.innerHTML = '<p>No commitments this week</p>';
+        return;
+    }
+
+    let html = '<ul style="list-style: none; padding: 0;">';
+    thisWeek.forEach(c => {
+        html += `<li style="padding: 0.5rem; border-bottom: 1px solid #7f8c8d;">
+            <strong>${c.role}:</strong> ${DOMPurify.sanitize(c.member)} (${new Date(c.date).toLocaleDateString()})
+        </li>`;
+    });
+    html += '</ul>';
+    container.innerHTML = html;
+}
+
+// SECRETARY FUNCTIONS
+function handleAttendanceSubmit() {
+    const date = document.getElementById('attendance-date').value;
+    const memberSelect = document.getElementById('attendance-members');
+    const selectedMembers = Array.from(memberSelect.selectedOptions).map(opt => opt.value);
+    const visitors = parseInt(document.getElementById('attendance-visitors').value) || 0;
+
+    if (!date || selectedMembers.length === 0) {
+        showToast('Please select date and at least one member', 'error');
+        return;
+    }
+
+    const attendance = {
+        id: Date.now().toString(),
+        date,
+        members: selectedMembers,
+        visitors,
+        total: selectedMembers.length + visitors
+    };
+
+    let attendanceLog = JSON.parse(localStorage.getItem('attendanceLog') || '[]');
+    attendanceLog.push(attendance);
+    localStorage.setItem('attendanceLog', JSON.stringify(attendanceLog));
+
+    showToast('Attendance saved successfully', 'success');
+    loadAttendanceHistory();
+    updateAttendanceStats();
+    document.getElementById('attendance-date').value = '';
+    document.getElementById('attendance-visitors').value = '0';
+    memberSelect.selectedIndex = -1;
+}
+
+function loadAttendanceHistory() {
+    const log = JSON.parse(localStorage.getItem('attendanceLog') || '[]').reverse();
+    const tbody = document.getElementById('attendance-history-body');
+    tbody.innerHTML = '';
+
+    log.slice(0, 10).forEach(entry => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${new Date(entry.date).toLocaleDateString()}</td>
+            <td>${entry.members.length}</td>
+            <td>${entry.visitors}</td>
+            <td>${entry.total}</td>
+            <td>
+                <button class="btn secondary" onclick="deleteAttendance('${entry.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Delete</button>
+            </td>
+        `;
+    });
+}
+
+function deleteAttendance(id) {
+    if (!confirm('Delete this attendance record?')) return;
+    let log = JSON.parse(localStorage.getItem('attendanceLog') || '[]');
+    log = log.filter(a => a.id !== id);
+    localStorage.setItem('attendanceLog', JSON.stringify(log));
+    loadAttendanceHistory();
+    updateAttendanceStats();
+    showToast('Attendance record deleted', 'success');
+}
+
+function updateAttendanceStats() {
+    const log = JSON.parse(localStorage.getItem('attendanceLog') || '[]');
+    if (log.length === 0) return;
+
+    const avgAttendance = Math.round(log.reduce((sum, a) => sum + a.total, 0) / log.length);
+    const uniqueMembers = new Set(log.flatMap(a => a.members)).size;
+
+    const thisMonth = new Date().getMonth();
+    const monthlyVisitors = log.filter(a => new Date(a.date).getMonth() === thisMonth)
+        .reduce((sum, a) => sum + a.visitors, 0);
+
+    document.getElementById('avg-attendance').textContent = avgAttendance;
+    document.getElementById('regular-members').textContent = uniqueMembers;
+    document.getElementById('monthly-visitors').textContent = monthlyVisitors;
+}
+
+function generateMinutes() {
+    const date = document.getElementById('attendance-date').value;
+    if (!date) {
+        showToast('Please select a meeting date', 'error');
+        return;
+    }
+
+    const memberSelect = document.getElementById('attendance-members');
+    const selectedMembers = Array.from(memberSelect.selectedOptions).map(opt => opt.text);
+
+    const minutes = `
+MEETING MINUTES
+Date: ${new Date(date).toLocaleDateString()}
+
+ATTENDANCE:
+Members Present: ${selectedMembers.length}
+${selectedMembers.map(m => '- ' + m).join('\n')}
+
+Visitors/Newcomers: ${document.getElementById('attendance-visitors').value || 0}
+
+[Additional meeting notes can be added here]
+
+Secretary: _______________
+    `.trim();
+
+    document.getElementById('meeting-minutes-preview').textContent = minutes;
+    showToast('Minutes generated', 'success');
+}
+
+function exportMinutesToPDF() {
+    const minutes = document.getElementById('meeting-minutes-preview').textContent;
+    if (!minutes) {
+        showToast('Please generate minutes first', 'error');
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const lines = doc.splitTextToSize(minutes, 180);
+    doc.text(lines, 15, 15);
+    doc.save(`meeting-minutes-${new Date().toISOString().split('T')[0]}.pdf`);
+    showToast('Minutes exported to PDF', 'success');
+}
+
+// GC DECISION HISTORY FUNCTIONS
+function searchGCDecisions() {
+    const searchTerm = document.getElementById('gc-search').value.toLowerCase();
+    const status = document.getElementById('gc-filter-status').value;
+    const year = document.getElementById('gc-filter-year').value;
+
+    let decisions = JSON.parse(localStorage.getItem('gcLog') || '[]');
+
+    if (searchTerm) {
+        decisions = decisions.filter(d =>
+            d.item.toLowerCase().includes(searchTerm) ||
+            d.submittedBy.toLowerCase().includes(searchTerm)
+        );
+    }
+
+    if (status !== 'all') {
+        decisions = decisions.filter(d => d.status === status);
+    }
+
+    if (year !== 'all') {
+        decisions = decisions.filter(d => new Date(d.date).getFullYear().toString() === year);
+    }
+
+    displayGCDecisions(decisions);
+}
+
+function displayGCDecisions(decisions) {
+    const container = document.getElementById('gc-decisions-list');
+    if (decisions.length === 0) {
+        container.innerHTML = '<p>No decisions found</p>';
+        return;
+    }
+
+    let html = '';
+    decisions.forEach(d => {
+        html += `
+            <div class="box mb-2" style="cursor: pointer;" onclick="viewMotionChain('${d.id}')">
+                <div><strong>${new Date(d.date).toLocaleDateString()}</strong></div>
+                <div>${DOMPurify.sanitize(d.item)}</div>
+                <div style="font-size: 0.85rem; color: #95a5a6;">
+                    Status: ${d.status} | Submitted by: ${DOMPurify.sanitize(d.submittedBy)}
+                </div>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+}
+
+function linkGCMotions() {
+    const primaryId = document.getElementById('gc-link-primary').value;
+    const relatedId = document.getElementById('gc-link-related').value;
+    const linkType = document.getElementById('gc-link-type').value;
+
+    if (!primaryId || !relatedId) {
+        showToast('Please select both motions', 'error');
+        return;
+    }
+
+    let links = JSON.parse(localStorage.getItem('gcMotionLinks') || '[]');
+    links.push({ primaryId, relatedId, linkType, timestamp: Date.now() });
+    localStorage.setItem('gcMotionLinks', JSON.stringify(links));
+
+    showToast('Motions linked successfully', 'success');
+}
+
+function viewMotionChain(motionId) {
+    const decisions = JSON.parse(localStorage.getItem('gcLog') || '[]');
+    const links = JSON.parse(localStorage.getItem('gcMotionLinks') || '[]');
+
+    const motion = decisions.find(d => d.id === motionId);
+    if (!motion) return;
+
+    let html = `<h4>Primary Motion</h4>
+        <div class="box mb-2">
+            <div><strong>${new Date(motion.date).toLocaleDateString()}</strong></div>
+            <div>${DOMPurify.sanitize(motion.item)}</div>
+            <div>Status: ${motion.status}</div>
+        </div>`;
+
+    const relatedLinks = links.filter(l => l.primaryId === motionId || l.relatedId === motionId);
+    if (relatedLinks.length > 0) {
+        html += '<h4 class="mt-2">Related Motions</h4>';
+        relatedLinks.forEach(link => {
+            const relatedId = link.primaryId === motionId ? link.relatedId : link.primaryId;
+            const related = decisions.find(d => d.id === relatedId);
+            if (related) {
+                html += `
+                    <div class="box mb-2">
+                        <div style="font-size: 0.75rem; color: #3498db;">${link.linkType.toUpperCase()}</div>
+                        <div><strong>${new Date(related.date).toLocaleDateString()}</strong></div>
+                        <div>${DOMPurify.sanitize(related.item)}</div>
+                    </div>
+                `;
+            }
+        });
+    }
+
+    document.getElementById('motion-chain-display').innerHTML = html;
+}
+
+// GC INVENTORY FUNCTIONS
+function loadInventoryTemplate() {
+    const type = document.getElementById('inventory-type').value;
+    const container = document.getElementById('inventory-questions-container');
+
+    if (!type) {
+        container.innerHTML = '';
+        return;
+    }
+
+    const templates = {
+        'traditions': [
+            'Does our group place principles before personalities?',
+            'Is our group self-supporting through our own contributions?',
+            'Does our group have any outside affiliations?',
+            'Is our group autonomous except in matters affecting other groups?',
+            'Do we practice attraction rather than promotion?'
+        ],
+        'concepts': [
+            'Does our group understand the concept of ultimate responsibility?',
+            'How does our group practice the concept of delegation of authority?',
+            'Are we providing adequate support to our GSR?',
+            'Does our group participate in the Conference process?'
+        ],
+        'group-health': [
+            'Are newcomers made to feel welcome?',
+            'Is there regular attendance and participation?',
+            'Are service positions filled regularly?',
+            'Is there healthy rotation of service positions?',
+            'Are we meeting our financial obligations?'
+        ],
+        'annual': [
+            'How has our group grown this year?',
+            'What challenges has our group faced?',
+            'Are we fulfilling our primary purpose?',
+            'What can we improve next year?'
+        ]
+    };
+
+    const questions = templates[type] || [];
+    let html = '<div class="box">';
+    questions.forEach((q, i) => {
+        html += `
+            <div class="form-group">
+                <label>${i + 1}. ${q}</label>
+                <textarea id="inventory-q${i}" rows="2" placeholder="Group response..."></textarea>
+            </div>
+        `;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function exportInventoryResults() {
+    const type = document.getElementById('inventory-type').value;
+    if (!type) {
+        showToast('Please select an inventory type first', 'error');
+        return;
+    }
+
+    showToast('Inventory results exported', 'success');
+}
+
+function submitAnonymousFeedback() {
+    const feedback = document.getElementById('anonymous-feedback-text').value.trim();
+    if (!feedback) {
+        showToast('Please enter feedback', 'error');
+        return;
+    }
+
+    let feedbackList = JSON.parse(localStorage.getItem('anonymousFeedback') || '[]');
+    feedbackList.push({
+        id: Date.now().toString(),
+        feedback,
+        timestamp: new Date().toISOString()
+    });
+    localStorage.setItem('anonymousFeedback', JSON.stringify(feedbackList));
+
+    document.getElementById('anonymous-feedback-text').value = '';
+    loadAnonymousFeedback();
+    showToast('Feedback submitted anonymously', 'success');
+}
+
+function loadAnonymousFeedback() {
+    const feedbackList = JSON.parse(localStorage.getItem('anonymousFeedback') || '[]').reverse();
+    const container = document.getElementById('anonymous-feedback-list');
+
+    if (feedbackList.length === 0) {
+        container.innerHTML = '<p>No feedback submitted yet</p>';
+        return;
+    }
+
+    let html = '';
+    feedbackList.forEach(f => {
+        html += `
+            <div class="box mb-2">
+                <div style="font-size: 0.75rem; color: #95a5a6;">${new Date(f.timestamp).toLocaleDateString()}</div>
+                <div>${DOMPurify.sanitize(f.feedback)}</div>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+}
+
+// BY-LAWS FUNCTIONS
+function handleByLawSubmit() {
+    const title = document.getElementById('bylaw-title').value.trim();
+    const version = document.getElementById('bylaw-version').value.trim();
+    const content = document.getElementById('bylaw-content').value.trim();
+    const notes = document.getElementById('bylaw-amendment-notes').value.trim();
+    const date = document.getElementById('bylaw-effective-date').value;
+
+    if (!title || !version || !content || !date) {
+        showToast('Please fill all required fields', 'error');
+        return;
+    }
+
+    let bylaws = JSON.parse(localStorage.getItem('groupByLaws') || '[]');
+    const newByLaw = {
+        id: Date.now().toString(),
+        title,
+        version,
+        content,
+        notes,
+        effectiveDate: date,
+        timestamp: new Date().toISOString()
+    };
+
+    bylaws.push(newByLaw);
+    localStorage.setItem('groupByLaws', JSON.stringify(bylaws));
+
+    showToast('Document saved successfully', 'success');
+    loadByLawsHistory();
+    loadCurrentByLaws();
+    resetByLawForm();
+}
+
+function cancelByLawEdit() {
+    resetByLawForm();
+}
+
+function resetByLawForm() {
+    document.getElementById('bylaw-title').value = '';
+    document.getElementById('bylaw-version').value = '';
+    document.getElementById('bylaw-content').value = '';
+    document.getElementById('bylaw-amendment-notes').value = '';
+    document.getElementById('bylaw-effective-date').value = '';
+    document.getElementById('bylaw-edit-id').value = '';
+}
+
+function loadByLawsHistory() {
+    const bylaws = JSON.parse(localStorage.getItem('groupByLaws') || '[]').reverse();
+    const tbody = document.getElementById('bylaws-history-body');
+    tbody.innerHTML = '';
+
+    bylaws.forEach(bylaw => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${DOMPurify.sanitize(bylaw.title)}</td>
+            <td>${DOMPurify.sanitize(bylaw.version)}</td>
+            <td>${new Date(bylaw.effectiveDate).toLocaleDateString()}</td>
+            <td>
+                <button class="btn secondary" onclick="viewByLaw('${bylaw.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">View</button>
+            </td>
+        `;
+    });
+}
+
+function loadCurrentByLaws() {
+    const bylaws = JSON.parse(localStorage.getItem('groupByLaws') || '[]');
+    const container = document.getElementById('bylaws-current-list');
+
+    // Get latest version of each document
+    const latest = {};
+    bylaws.forEach(b => {
+        if (!latest[b.title] || new Date(b.effectiveDate) > new Date(latest[b.title].effectiveDate)) {
+            latest[b.title] = b;
+        }
+    });
+
+    if (Object.keys(latest).length === 0) {
+        container.innerHTML = '<p>No documents available</p>';
+        return;
+    }
+
+    let html = '';
+    Object.values(latest).forEach(b => {
+        html += `
+            <div class="box mb-2">
+                <h4>${DOMPurify.sanitize(b.title)}</h4>
+                <div style="font-size: 0.85rem; color: #95a5a6;">Version ${DOMPurify.sanitize(b.version)} - Effective ${new Date(b.effectiveDate).toLocaleDateString()}</div>
+                <button class="btn secondary mt-2" onclick="viewByLaw('${b.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">View Full Document</button>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+}
+
+function viewByLaw(id) {
+    const bylaws = JSON.parse(localStorage.getItem('groupByLaws') || '[]');
+    const bylaw = bylaws.find(b => b.id === id);
+    if (bylaw) {
+        alert(`${bylaw.title}\nVersion: ${bylaw.version}\n\n${bylaw.content}`);
+    }
+}
+
+function generateByLawPDF() {
+    showToast('PDF generation feature coming soon', 'success');
+}
+
+// SPONSORSHIP FUNCTIONS
+function handleSponsorshipSubmit() {
+    const sponsor = document.getElementById('sponsor-name').value;
+    const sponsee = document.getElementById('sponsee-name').value;
+    const type = document.getElementById('sponsorship-type').value;
+    const startDate = document.getElementById('sponsorship-start-date').value;
+    const currentStep = document.getElementById('current-step').value;
+
+    if (!sponsor || !sponsee || !startDate) {
+        showToast('Please fill all required fields', 'error');
+        return;
+    }
+
+    let sponsorships = JSON.parse(localStorage.getItem('sponsorships') || '[]');
+    const newSponsorship = {
+        id: Date.now().toString(),
+        sponsor,
+        sponsee,
+        type,
+        startDate,
+        currentStep: currentStep || null
+    };
+
+    sponsorships.push(newSponsorship);
+    localStorage.setItem('sponsorships', JSON.stringify(sponsorships));
+
+    showToast('Sponsorship relationship added', 'success');
+    loadSponsorshipTable();
+    loadSponsorshipTree();
+    resetSponsorshipForm();
+}
+
+function cancelSponsorshipEdit() {
+    resetSponsorshipForm();
+}
+
+function resetSponsorshipForm() {
+    document.getElementById('sponsor-name').selectedIndex = 0;
+    document.getElementById('sponsee-name').selectedIndex = 0;
+    document.getElementById('sponsorship-type').selectedIndex = 0;
+    document.getElementById('sponsorship-start-date').value = '';
+    document.getElementById('current-step').selectedIndex = 0;
+    document.getElementById('sponsorship-edit-id').value = '';
+}
+
+function loadSponsorshipTable() {
+    const sponsorships = JSON.parse(localStorage.getItem('sponsorships') || '[]');
+    const tbody = document.getElementById('sponsorship-body');
+    tbody.innerHTML = '';
+
+    sponsorships.forEach(s => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${DOMPurify.sanitize(s.sponsor)}</td>
+            <td>${DOMPurify.sanitize(s.sponsee)}</td>
+            <td>${s.type}</td>
+            <td>${new Date(s.startDate).toLocaleDateString()}</td>
+            <td>${s.currentStep ? 'Step ' + s.currentStep : 'N/A'}</td>
+            <td>
+                <button class="btn secondary" onclick="deleteSponsorship('${s.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Delete</button>
+            </td>
+        `;
+    });
+}
+
+function deleteSponsorship(id) {
+    if (!confirm('Delete this sponsorship relationship?')) return;
+    let sponsorships = JSON.parse(localStorage.getItem('sponsorships') || '[]');
+    sponsorships = sponsorships.filter(s => s.id !== id);
+    localStorage.setItem('sponsorships', JSON.stringify(sponsorships));
+    loadSponsorshipTable();
+    loadSponsorshipTree();
+    showToast('Sponsorship relationship deleted', 'success');
+}
+
+function loadSponsorshipTree() {
+    const container = document.getElementById('sponsorship-tree');
+    container.innerHTML = '<p>Sponsorship tree visualization - Feature coming soon</p>';
+}
+
+// DISTRICT/AREA FUNCTIONS
+function handleGSRReportSubmit() {
+    const date = document.getElementById('gsr-report-date').value;
+    const meetingType = document.getElementById('gsr-meeting-type').value;
+    const content = document.getElementById('gsr-report-content').value.trim();
+    const actionItems = document.getElementById('gsr-action-items').value.trim();
+
+    if (!date || !content) {
+        showToast('Please fill all required fields', 'error');
+        return;
+    }
+
+    let reports = JSON.parse(localStorage.getItem('gsrReports') || '[]');
+    reports.push({
+        id: Date.now().toString(),
+        date,
+        meetingType,
+        content,
+        actionItems,
+        timestamp: new Date().toISOString()
+    });
+
+    localStorage.setItem('gsrReports', JSON.stringify(reports));
+    showToast('GSR report saved successfully', 'success');
+    loadGSRReports();
+    document.getElementById('gsr-report-date').value = '';
+    document.getElementById('gsr-report-content').value = '';
+    document.getElementById('gsr-action-items').value = '';
+}
+
+function cancelGSRReportEdit() {
+    document.getElementById('gsr-report-date').value = '';
+    document.getElementById('gsr-report-content').value = '';
+    document.getElementById('gsr-action-items').value = '';
+}
+
+function loadGSRReports() {
+    const reports = JSON.parse(localStorage.getItem('gsrReports') || '[]').reverse();
+    const container = document.getElementById('gsr-reports-list');
+
+    if (reports.length === 0) {
+        container.innerHTML = '<p>No GSR reports yet</p>';
+        return;
+    }
+
+    let html = '';
+    reports.slice(0, 5).forEach(r => {
+        html += `
+            <div class="box mb-2">
+                <div><strong>${new Date(r.date).toLocaleDateString()}</strong> - ${r.meetingType}</div>
+                <div style="margin-top: 0.5rem;">${DOMPurify.sanitize(r.content)}</div>
+                ${r.actionItems ? `<div style="margin-top: 0.5rem; color: #f39c12;"><strong>Action Items:</strong> ${DOMPurify.sanitize(r.actionItems)}</div>` : ''}
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+}
+
+function addDistrictMeeting() {
+    const date = document.getElementById('district-schedule-date').value;
+    const time = document.getElementById('district-schedule-time').value;
+    const location = document.getElementById('district-schedule-location').value;
+
+    if (!date || !time || !location) {
+        showToast('Please fill all fields', 'error');
+        return;
+    }
+
+    let meetings = JSON.parse(localStorage.getItem('districtMeetings') || '[]');
+    meetings.push({
+        id: Date.now().toString(),
+        date,
+        time,
+        location
+    });
+
+    localStorage.setItem('districtMeetings', JSON.stringify(meetings));
+    showToast('Meeting added to schedule', 'success');
+    loadDistrictMeetings();
+    document.getElementById('district-schedule-date').value = '';
+    document.getElementById('district-schedule-time').value = '';
+    document.getElementById('district-schedule-location').value = '';
+}
+
+function loadDistrictMeetings() {
+    const meetings = JSON.parse(localStorage.getItem('districtMeetings') || '[]')
+        .filter(m => new Date(m.date) >= new Date())
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    const container = document.getElementById('district-meetings-list');
+
+    if (meetings.length === 0) {
+        container.innerHTML = '<p>No upcoming meetings</p>';
+        return;
+    }
+
+    let html = '<ul style="list-style: none; padding: 0;">';
+    meetings.forEach(m => {
+        html += `
+            <li style="padding: 0.5rem; border-bottom: 1px solid #7f8c8d;">
+                <strong>${new Date(m.date).toLocaleDateString()}</strong> at ${m.time}<br>
+                Location: ${DOMPurify.sanitize(m.location)}
+            </li>
+        `;
+    });
+    html += '</ul>';
+    container.innerHTML = html;
+}
+
+function addDCMCommunication() {
+    const date = document.getElementById('dcm-comm-date').value;
+    const content = document.getElementById('dcm-comm-content').value.trim();
+
+    if (!date || !content) {
+        showToast('Please fill all fields', 'error');
+        return;
+    }
+
+    let communications = JSON.parse(localStorage.getItem('dcmCommunications') || '[]');
+    communications.push({
+        id: Date.now().toString(),
+        date,
+        content
+    });
+
+    localStorage.setItem('dcmCommunications', JSON.stringify(communications));
+    showToast('Communication logged', 'success');
+    loadDCMCommunications();
+    document.getElementById('dcm-comm-date').value = '';
+    document.getElementById('dcm-comm-content').value = '';
+}
+
+function loadDCMCommunications() {
+    const communications = JSON.parse(localStorage.getItem('dcmCommunications') || '[]').reverse();
+    const container = document.getElementById('dcm-comm-history');
+
+    if (communications.length === 0) {
+        container.innerHTML = '<p>No communications logged</p>';
+        return;
+    }
+
+    let html = '';
+    communications.slice(0, 5).forEach(c => {
+        html += `
+            <div class="box mb-2">
+                <div><strong>${new Date(c.date).toLocaleDateString()}</strong></div>
+                <div>${DOMPurify.sanitize(c.content)}</div>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+}
+
+// PRUDENT RESERVE FUNCTIONS
+function calculateReserveTarget() {
+    const monthlyExpenses = parseFloat(document.getElementById('monthly-expenses').value) || 0;
+    const months = parseInt(document.getElementById('reserve-months').value) || 3;
+    const target = monthlyExpenses * months;
+    document.getElementById('reserve-target').value = target.toFixed(2);
+    showToast(`Reserve target calculated: $${target.toFixed(2)}`, 'success');
+}
+
+function saveReserveSettings() {
+    const target = parseFloat(document.getElementById('reserve-target').value) || 0;
+    const monthlyExpenses = parseFloat(document.getElementById('monthly-expenses').value) || 0;
+    const months = parseInt(document.getElementById('reserve-months').value) || 3;
+
+    localStorage.setItem('reserveSettings', JSON.stringify({ target, monthlyExpenses, months }));
+    showToast('Reserve settings saved', 'success');
+    updateReserveStatus();
+}
+
+function updateReserveStatus() {
+    const settings = JSON.parse(localStorage.getItem('reserveSettings') || '{}');
+    document.getElementById('display-reserve-target').textContent = (settings.target || 0).toFixed(2);
+    // Additional logic to calculate current balances from financial data would go here
+}
+
+function load7thTraditionPeriod(period) {
+    showToast(`Loading ${period} view`, 'success');
+}
+
+function saveContributionGoal() {
+    const goal = parseFloat(document.getElementById('contribution-goal').value) || 0;
+    localStorage.setItem('contributionGoal', goal);
+    showToast('Contribution goal saved', 'success');
+}
+
+// CHIP INVENTORY FUNCTIONS
+function updateChipInventory() {
+    const type = document.getElementById('chip-type').value;
+    const quantity = parseInt(document.getElementById('chip-quantity').value) || 0;
+    const threshold = parseInt(document.getElementById('chip-low-threshold').value) || 5;
+
+    let inventory = JSON.parse(localStorage.getItem('chipInventory') || '{}');
+    inventory[type] = { quantity, threshold };
+    localStorage.setItem('chipInventory', JSON.stringify(inventory));
+
+    showToast('Chip inventory updated', 'success');
+    loadChipInventory();
+    checkChipAlerts();
+}
+
+function loadChipInventory() {
+    const inventory = JSON.parse(localStorage.getItem('chipInventory') || '{}');
+    const tbody = document.getElementById('chip-inventory-body');
+    tbody.innerHTML = '';
+
+    const chipTypes = ['24-hour', '30-day', '60-day', '90-day', '6-month', '9-month', '1-year', '18-month', 'multi-year'];
+
+    chipTypes.forEach(type => {
+        const data = inventory[type] || { quantity: 0, threshold: 5 };
+        const status = data.quantity <= data.threshold ? 'LOW STOCK' : 'OK';
+        const statusColor = data.quantity <= data.threshold ? '#e74c3c' : '#2ecc71';
+
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${type}</td>
+            <td>${data.quantity}</td>
+            <td style="color: ${statusColor};">${status}</td>
+            <td>${data.threshold}</td>
+        `;
+    });
+}
+
+function checkChipAlerts() {
+    const inventory = JSON.parse(localStorage.getItem('chipInventory') || '{}');
+    const container = document.getElementById('chip-alerts');
+
+    const lowStock = Object.entries(inventory).filter(([type, data]) => data.quantity <= data.threshold);
+
+    if (lowStock.length === 0) {
+        container.innerHTML = '<p style="color: #2ecc71;">All chip levels are good</p>';
+        return;
+    }
+
+    let html = '<ul style="list-style: none; padding: 0; color: #e74c3c;">';
+    lowStock.forEach(([type, data]) => {
+        html += `<li style="padding: 0.25rem;"><i class="fas fa-exclamation-triangle"></i> ${type}: ${data.quantity} remaining</li>`;
+    });
+    html += '</ul>';
+    container.innerHTML = html;
+}
+
+function logChipDistribution() {
+    const type = document.getElementById('dist-chip-type').value;
+    const recipient = document.getElementById('dist-recipient').value.trim();
+    const date = document.getElementById('dist-date').value;
+
+    if (!date) {
+        showToast('Please select a date', 'error');
+        return;
+    }
+
+    let distributions = JSON.parse(localStorage.getItem('chipDistributions') || '[]');
+    distributions.push({
+        id: Date.now().toString(),
+        type,
+        recipient,
+        date
+    });
+
+    localStorage.setItem('chipDistributions', JSON.stringify(distributions));
+
+    // Decrement inventory
+    let inventory = JSON.parse(localStorage.getItem('chipInventory') || '{}');
+    if (inventory[type] && inventory[type].quantity > 0) {
+        inventory[type].quantity--;
+        localStorage.setItem('chipInventory', JSON.stringify(inventory));
+        loadChipInventory();
+        checkChipAlerts();
+    }
+
+    showToast('Chip distribution logged', 'success');
+    loadChipDistributions();
+    document.getElementById('dist-recipient').value = '';
+    document.getElementById('dist-date').value = '';
+}
+
+function loadChipDistributions() {
+    const distributions = JSON.parse(localStorage.getItem('chipDistributions') || '[]').reverse();
+    const tbody = document.getElementById('chip-distribution-body');
+    tbody.innerHTML = '';
+
+    distributions.slice(0, 10).forEach(d => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${new Date(d.date).toLocaleDateString()}</td>
+            <td>${d.type}</td>
+            <td>${DOMPurify.sanitize(d.recipient) || 'Anonymous'}</td>
+        `;
+    });
+}
+
+// LIVE GC FUNCTIONS
+function addLiveGCItem() {
+    const item = document.getElementById('live-gc-new-item').value.trim();
+    if (!item) {
+        showToast('Please enter an item', 'error');
+        return;
+    }
+
+    let queue = JSON.parse(localStorage.getItem('liveGCQueue') || '[]');
+    queue.push({
+        id: Date.now().toString(),
+        item,
+        status: 'pending',
+        timestamp: new Date().toISOString()
+    });
+
+    localStorage.setItem('liveGCQueue', JSON.stringify(queue));
+    showToast('Item added to queue', 'success');
+    loadLiveGCQueue();
+    document.getElementById('live-gc-new-item').value = '';
+}
+
+function loadLiveGCQueue() {
+    const queue = JSON.parse(localStorage.getItem('liveGCQueue') || '[]');
+    const tbody = document.getElementById('live-gc-queue-body');
+    tbody.innerHTML = '';
+
+    queue.forEach(item => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${DOMPurify.sanitize(item.item)}</td>
+            <td>${item.status}</td>
+            <td>
+                <button class="btn secondary" onclick="updateGCItemStatus('${item.id}', 'discussed')" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Mark Discussed</button>
+                <button class="btn secondary" onclick="removeGCItem('${item.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.85rem; margin-left: 0.25rem;">Remove</button>
+            </td>
+        `;
+    });
+}
+
+function updateGCItemStatus(id, status) {
+    let queue = JSON.parse(localStorage.getItem('liveGCQueue') || '[]');
+    const item = queue.find(i => i.id === id);
+    if (item) {
+        item.status = status;
+        localStorage.setItem('liveGCQueue', JSON.stringify(queue));
+        loadLiveGCQueue();
+        showToast('Status updated', 'success');
+    }
+}
+
+function removeGCItem(id) {
+    let queue = JSON.parse(localStorage.getItem('liveGCQueue') || '[]');
+    queue = queue.filter(i => i.id !== id);
+    localStorage.setItem('liveGCQueue', JSON.stringify(queue));
+    loadLiveGCQueue();
+    showToast('Item removed', 'success');
+}
+
+// Initialize new sections on load
+function initNewSections() {
+    // Populate member dropdowns
+    const members = JSON.parse(localStorage.getItem('members') || '[]');
+    const memberSelects = [
+        'commitment-member',
+        'sponsor-name',
+        'sponsee-name',
+        'attendance-members'
+    ];
+
+    memberSelects.forEach(selectId => {
+        const select = document.getElementById(selectId);
+        if (select) {
+            select.innerHTML = '<option value="">-- Select Member --</option>';
+            members.forEach(m => {
+                const option = document.createElement('option');
+                option.value = m.name;
+                option.textContent = m.name;
+                select.appendChild(option);
+            });
+        }
+    });
+
+    // Initialize all tables and displays
+    if (document.getElementById('format-rotation-section')) {
+        loadFormatRotationTable();
+        loadUpcomingFormats();
+        updateCurrentWeekFormat();
+    }
+
+    if (document.getElementById('commitment-board-section')) {
+        loadCommitmentTable();
+        loadCurrentWeekCommitments();
+    }
+
+    if (document.getElementById('secretary-section')) {
+        loadAttendanceHistory();
+        updateAttendanceStats();
+    }
+
+    if (document.getElementById('gc-decisions-section')) {
+        const gcLog = JSON.parse(localStorage.getItem('gcLog') || '[]');
+        displayGCDecisions(gcLog);
+
+        // Populate year filter
+        const years = [...new Set(gcLog.map(d => new Date(d.date).getFullYear()))];
+        const yearSelect = document.getElementById('gc-filter-year');
+        if (yearSelect) {
+            years.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            });
+        }
+
+        // Populate motion link dropdowns
+        const linkSelects = ['gc-link-primary', 'gc-link-related'];
+        linkSelects.forEach(selectId => {
+            const select = document.getElementById(selectId);
+            if (select) {
+                select.innerHTML = '<option value="">-- Select Motion --</option>';
+                gcLog.forEach(d => {
+                    const option = document.createElement('option');
+                    option.value = d.id;
+                    option.textContent = `${new Date(d.date).toLocaleDateString()} - ${d.item.substring(0, 50)}...`;
+                    select.appendChild(option);
+                });
+            }
+        });
+    }
+
+    if (document.getElementById('gc-inventory-section')) {
+        loadAnonymousFeedback();
+    }
+
+    if (document.getElementById('gc-bylaws-section')) {
+        loadByLawsHistory();
+        loadCurrentByLaws();
+    }
+
+    if (document.getElementById('sponsorship-section')) {
+        loadSponsorshipTable();
+        loadSponsorshipTree();
+    }
+
+    if (document.getElementById('district-area-section')) {
+        loadGSRReports();
+        loadDistrictMeetings();
+        loadDCMCommunications();
+    }
+
+    if (document.getElementById('prudent-reserve-section')) {
+        updateReserveStatus();
+    }
+
+    if (document.getElementById('chip-inventory-section')) {
+        loadChipInventory();
+        checkChipAlerts();
+        loadChipDistributions();
+    }
+
+    if (document.getElementById('gc-live-section')) {
+        loadLiveGCQueue();
+    }
+
+    // Show step progress group when program sponsorship is selected
+    const sponsorshipType = document.getElementById('sponsorship-type');
+    if (sponsorshipType) {
+        sponsorshipType.addEventListener('change', function() {
+            const stepGroup = document.getElementById('step-progress-group');
+            if (stepGroup) {
+                stepGroup.style.display = this.value === 'program' ? 'block' : 'none';
+            }
+        });
+    }
+}
+
+// Add to init function
+const originalInit = init;
+function init() {
+    if (typeof originalInit === 'function') {
+        originalInit();
+    }
+    initNewSections();
+    requestNotificationPermission();
+    checkUpcomingReminders();
+}
+
+// ========================================
+// BROWSER NOTIFICATIONS
+// ========================================
+function requestNotificationPermission() {
+    if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+    }
+}
+
+function sendNotification(title, body, icon = null) {
+    if ('Notification' in window && Notification.permission === 'granted') {
+        const options = {
+            body: body,
+            icon: icon || 'logo.svg',
+            badge: 'logo.svg',
+            vibrate: [200, 100, 200],
+            tag: 'rowlett-group-notification'
+        };
+
+        const notification = new Notification(title, options);
+
+        notification.onclick = function() {
+            window.focus();
+            notification.close();
+        };
+    }
+}
+
+function checkUpcomingReminders() {
+    // Check for upcoming meetings
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const events = JSON.parse(localStorage.getItem('events') || '[]');
+    const upcomingEvents = events.filter(e => {
+        const eventDate = new Date(e.date);
+        return eventDate.toDateString() === tomorrow.toDateString();
+    });
+
+    if (upcomingEvents.length > 0) {
+        upcomingEvents.forEach(event => {
+            sendNotification('Upcoming Meeting Tomorrow', event.title + ' at ' + event.time);
+        });
+    }
+
+    // Check for upcoming birthdays (7 days ahead)
+    const weekAhead = new Date(today);
+    weekAhead.setDate(weekAhead.getDate() + 7);
+
+    const members = JSON.parse(localStorage.getItem('members') || '[]');
+    members.forEach(member => {
+        if (member.birthday) {
+            const birthday = new Date(member.birthday);
+            birthday.setFullYear(today.getFullYear());
+
+            if (birthday.toDateString() === weekAhead.toDateString()) {
+                sendNotification('Upcoming Birthday', member.name + '\'s birthday is in one week!');
+            }
+        }
+    });
+
+    // Check for commitment reminders (2 days ahead)
+    const twoDaysAhead = new Date(today);
+    twoDaysAhead.setDate(twoDaysAhead.getDate() + 2);
+
+    const commitments = JSON.parse(localStorage.getItem('meetingCommitments') || '[]');
+    const upcomingCommitments = commitments.filter(c => {
+        const commitDate = new Date(c.date);
+        return c.reminder && commitDate.toDateString() === twoDaysAhead.toDateString();
+    });
+
+    upcomingCommitments.forEach(commitment => {
+        sendNotification('Meeting Commitment Reminder',
+            'You are signed up for ' + commitment.role + ' in 2 days on ' + new Date(commitment.date).toLocaleDateString());
+    });
+
+    // Check again in 1 hour
+    setTimeout(checkUpcomingReminders, 60 * 60 * 1000);
+}
+
+// ========================================
+// PWA MANIFEST INJECTION
+// ========================================
+function injectPWAManifest() {
+    const manifest = {
+        "name": "Rowlett Group - AA Group Conscience",
+        "short_name": "Rowlett Group",
+        "description": "Internal AA Group Conscience application for meeting management",
+        "start_url": "./index.html",
+        "display": "standalone",
+        "background_color": "#2c3e50",
+        "theme_color": "#3498db",
+        "orientation": "any",
+        "icons": [
+            {
+                "src": "logo.svg",
+                "sizes": "any",
+                "type": "image/svg+xml",
+                "purpose": "any maskable"
+            }
+        ],
+        "categories": ["productivity", "lifestyle"],
+        "screenshots": []
+    };
+
+    const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+    const manifestURL = URL.createObjectURL(manifestBlob);
+
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = manifestURL;
+    document.head.appendChild(link);
+}
+
+// Initialize PWA
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', injectPWAManifest);
+} else {
+    injectPWAManifest();
+}
+
     </script>
 </body>
 </html>
