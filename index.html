@@ -480,6 +480,147 @@
         #back-to-top-btn:hover {
             background-color: #2980b9;
         }
+
+        /* Finance tab styles */
+        .finance-tab {
+            display: none;
+        }
+        .finance-tab.active {
+            display: block;
+        }
+
+        /* Announcement priority badges */
+        .announcement-item {
+            position: relative;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            background: #34495e;
+            border-left: 5px solid #7f8c8d;
+        }
+        .announcement-item.urgent {
+            border-left-color: #e74c3c;
+            background: #3d2d2d;
+        }
+        .announcement-item.normal {
+            border-left-color: #3498db;
+        }
+        .announcement-item.info {
+            border-left-color: #95a5a6;
+        }
+        .priority-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        .priority-badge.urgent {
+            background: #e74c3c;
+            color: white;
+        }
+        .priority-badge.normal {
+            background: #3498db;
+            color: white;
+        }
+        .priority-badge.info {
+            background: #95a5a6;
+            color: white;
+        }
+        .read-receipt-indicator {
+            font-size: 0.75rem;
+            color: #95a5a6;
+            margin-top: 5px;
+        }
+        .mark-as-read-btn {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            margin-top: 5px;
+        }
+
+        /* Message styles */
+        .message-item {
+            background: #34495e;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+        }
+        .message-item.unread {
+            background: #2d3e4e;
+            border-left-color: #e74c3c;
+        }
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .message-subject {
+            font-weight: bold;
+            color: #3498db;
+        }
+        .message-date {
+            font-size: 0.85rem;
+            color: #95a5a6;
+        }
+
+        /* Template card styles */
+        .template-card {
+            background: #34495e;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+        }
+        .template-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .template-type-badge {
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 3px;
+            background: #2980b9;
+            color: white;
+        }
+
+        /* Service position card */
+        .position-card {
+            background: #34495e;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .term-warning {
+            color: #f39c12;
+            font-weight: bold;
+        }
+        .term-expired {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        /* Nomination card */
+        .nomination-card {
+            background: #2c3e50;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            border-left: 3px solid #3498db;
+        }
+
+        /* Chart container */
+        #yoy-chart {
+            min-height: 300px;
+        }
+
+        /* Utility classes */
+        .mt-4 { margin-top: 1rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
     </style>
 </head>
 <body>
@@ -500,6 +641,10 @@
             <li data-section="schedule-section">Schedule</li>
             <li data-section="birthdays-section">Birthdays</li>
             <li data-section="announcements-section">Announcements</li>
+            <li data-section="messaging-section">Messages</li>
+            <li data-section="service-positions-section">Service Positions</li>
+            <li data-section="finance-section">Finances</li>
+            <li data-section="templates-section">Templates</li>
             <li data-section="gallery-section">Gallery</li>
             <li data-section="history-section">History</li>
             <li data-section="chairperson-section">Chairperson's Corner</li>
@@ -1125,10 +1270,241 @@
                 <label for="announcement-text">Announcement</label>
                 <textarea id="announcement-text" rows="2" placeholder="Enter announcement..."></textarea>
             </div>
+            <div class="form-group">
+                <label for="announcement-priority">Priority Level</label>
+                <select id="announcement-priority">
+                    <option value="info">Info</option>
+                    <option value="normal">Normal</option>
+                    <option value="urgent">Urgent</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="announcement-require-read-receipt" />
+                    Require read receipt (for important announcements)
+                </label>
+            </div>
             <button class="btn" onclick="addAnnouncement()">Add Announcement</button>
-            
+
             <h3 class="mt-4">Current Announcements</h3>
             <ul id="announcements-list"></ul>
+        </section>
+
+        <!-- Member Messaging Section -->
+        <section id="messaging-section">
+            <h2>Member Messaging</h2>
+            <p>Send messages to other members for service work coordination.</p>
+
+            <div class="form-group">
+                <label for="message-recipient">Send to:</label>
+                <select id="message-recipient">
+                    <option value="">Select a member...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="message-subject">Subject</label>
+                <input type="text" id="message-subject" placeholder="Message subject..." />
+            </div>
+            <div class="form-group">
+                <label for="message-text">Message</label>
+                <textarea id="message-text" rows="4" placeholder="Your message..."></textarea>
+            </div>
+            <button class="btn" onclick="sendMessage()">Send Message</button>
+
+            <h3 class="mt-4">Messages</h3>
+            <div class="history-nav">
+                <button onclick="showMessages('inbox')" class="active" id="inbox-btn">Inbox</button>
+                <button onclick="showMessages('sent')" id="sent-btn">Sent</button>
+            </div>
+            <div id="messages-container"></div>
+        </section>
+
+        <!-- Service Positions Section -->
+        <section id="service-positions-section">
+            <h2>Service Position Management</h2>
+
+            <h3>Add/Edit Service Position</h3>
+            <div class="form-group">
+                <label for="position-name">Position Name</label>
+                <input type="text" id="position-name" placeholder="e.g., Chairperson, Secretary, Treasurer..." />
+            </div>
+            <div class="form-group">
+                <label for="position-description">Description & Responsibilities</label>
+                <textarea id="position-description" rows="4" placeholder="Enter position responsibilities..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="position-term-length">Term Length (months)</label>
+                <input type="number" id="position-term-length" placeholder="6" min="1" />
+            </div>
+            <div class="form-group">
+                <label for="position-current-holder">Current Holder</label>
+                <select id="position-current-holder">
+                    <option value="">Vacant</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="position-start-date">Term Start Date</label>
+                <input type="date" id="position-start-date" />
+            </div>
+            <button class="btn" onclick="addServicePosition()">Add Position</button>
+
+            <h3 class="mt-4">Current Service Positions</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Current Holder</th>
+                        <th>Term Start</th>
+                        <th>Term End</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="service-positions-table"></tbody>
+            </table>
+
+            <h3 class="mt-4">Rotation Calendar</h3>
+            <p>Upcoming position elections (positions coming up in next 60 days)</p>
+            <div id="rotation-calendar"></div>
+
+            <h3 class="mt-4">Nomination System</h3>
+            <div class="form-group">
+                <label for="nomination-position">Position</label>
+                <select id="nomination-position">
+                    <option value="">Select position...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="nomination-nominee">Nominee</label>
+                <select id="nomination-nominee">
+                    <option value="">Select member...</option>
+                </select>
+            </div>
+            <button class="btn" onclick="addNomination()">Submit Nomination</button>
+
+            <h3 class="mt-4">Current Nominations</h3>
+            <div id="nominations-list"></div>
+        </section>
+
+        <!-- Finance Section -->
+        <section id="finance-section">
+            <h2>Financial Tracking</h2>
+
+            <div class="history-nav">
+                <button onclick="showFinanceTab('budget')" class="active" id="budget-tab">Budget</button>
+                <button onclick="showFinanceTab('expenses')" id="expenses-tab">Expenses</button>
+                <button onclick="showFinanceTab('reports')" id="reports-tab">Reports</button>
+            </div>
+
+            <div id="budget-content" class="finance-tab active">
+                <h3>Budget Management</h3>
+                <div class="form-group">
+                    <label for="budget-category">Category</label>
+                    <input type="text" id="budget-category" placeholder="e.g., Rent, Literature, Refreshments..." />
+                </div>
+                <div class="form-group">
+                    <label for="budget-amount">Monthly Budget Amount</label>
+                    <input type="number" id="budget-amount" placeholder="0.00" step="0.01" min="0" />
+                </div>
+                <button class="btn" onclick="addBudgetCategory()">Add Budget Category</button>
+
+                <h3 class="mt-4">Current Budget</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Monthly Budget</th>
+                            <th>Spent This Month</th>
+                            <th>Remaining</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="budget-table"></tbody>
+                </table>
+            </div>
+
+            <div id="expenses-content" class="finance-tab">
+                <h3>Log Expense</h3>
+                <div class="form-group">
+                    <label for="expense-date">Date</label>
+                    <input type="date" id="expense-date" />
+                </div>
+                <div class="form-group">
+                    <label for="expense-category">Category</label>
+                    <select id="expense-category">
+                        <option value="">Select category...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="expense-description">Description</label>
+                    <input type="text" id="expense-description" placeholder="What was purchased..." />
+                </div>
+                <div class="form-group">
+                    <label for="expense-amount">Amount</label>
+                    <input type="number" id="expense-amount" placeholder="0.00" step="0.01" min="0" />
+                </div>
+                <button class="btn" onclick="addExpense()">Log Expense</button>
+
+                <h3 class="mt-4">Recent Expenses</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expenses-table"></tbody>
+                </table>
+            </div>
+
+            <div id="reports-content" class="finance-tab">
+                <h3>Financial Reports</h3>
+                <div class="form-group">
+                    <label for="report-month">Select Month</label>
+                    <input type="month" id="report-month" />
+                </div>
+                <button class="btn" onclick="generateMonthlyReport()">Generate Report</button>
+
+                <div id="monthly-report" class="box mt-4"></div>
+
+                <h3 class="mt-4">Year-over-Year Comparison</h3>
+                <div id="yoy-chart" class="box"></div>
+            </div>
+        </section>
+
+        <!-- Meeting Format Templates Section -->
+        <section id="templates-section">
+            <h2>Meeting Format Templates</h2>
+
+            <h3>Create/Edit Template</h3>
+            <div class="form-group">
+                <label for="template-name">Template Name</label>
+                <input type="text" id="template-name" placeholder="e.g., Speaker Meeting, Step Study, Big Book..." />
+            </div>
+            <div class="form-group">
+                <label for="template-type">Template Type</label>
+                <select id="template-type">
+                    <option value="meeting-format">Meeting Format</option>
+                    <option value="speaker-checklist">Speaker Meeting Checklist</option>
+                    <option value="event-planning">Event Planning</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="template-content">Template Content</label>
+                <textarea id="template-content" rows="10" placeholder="Enter template content..."></textarea>
+            </div>
+            <button class="btn" onclick="saveTemplate()">Save Template</button>
+
+            <h3 class="mt-4">Saved Templates</h3>
+            <div class="history-nav">
+                <button onclick="filterTemplates('all')" class="active" id="all-templates-btn">All</button>
+                <button onclick="filterTemplates('meeting-format')" id="meeting-templates-btn">Meeting Formats</button>
+                <button onclick="filterTemplates('speaker-checklist')" id="speaker-templates-btn">Speaker Checklists</button>
+                <button onclick="filterTemplates('event-planning')" id="event-templates-btn">Event Planning</button>
+            </div>
+            <div id="templates-list"></div>
         </section>
 
         <!-- Gallery Section -->
@@ -1895,6 +2271,17 @@
         <!-- Settings Section -->
         <section id="settings-section">
             <h2>Settings & Data Management</h2>
+
+            <div class="box mb-4">
+                <h3>User Identity</h3>
+                <p class="mb-2">Set your name for messages and read receipts.</p>
+                <div class="form-group">
+                    <label for="current-user-name">Your Name</label>
+                    <input type="text" id="current-user-name" placeholder="Enter your name..." />
+                </div>
+                <button class="btn" onclick="saveCurrentUser()">Save Name</button>
+            </div>
+
             <div class="box mb-4">
                 <h3>Export Data</h3>
                 <p class="mb-2">Download your data as a JSON file for backup.</p>
@@ -1903,11 +2290,27 @@
                 <button class="btn secondary" onclick="exportData('birthdays')">Export Birthdays Only</button>
                 <button class="btn secondary" onclick="exportData('chairpersonLog')">Export Chairperson Log Only</button>
             </div>
-            <div class="box">
+
+            <div class="box mb-4">
                 <h3>Import Data</h3>
                 <p class="mb-2">Import data from a previously exported JSON file. <strong>Warning:</strong> This will overwrite existing data of the same type.</p>
                 <input type="file" id="import-file" accept=".json">
                 <button class="btn" onclick="importData()">Import Data</button>
+            </div>
+
+            <div class="box mb-4">
+                <h3>Automatic Backup & Version History</h3>
+                <p class="mb-2">Automatically save snapshots of your data for recovery.</p>
+                <button class="btn" onclick="createBackupSnapshot()">Create Backup Snapshot Now</button>
+                <button class="btn secondary" onclick="viewBackupHistory()">View Backup History</button>
+                <div id="backup-history" style="margin-top: 1rem;"></div>
+            </div>
+
+            <div class="box">
+                <h3>Cloud Sync (Export to Cloud)</h3>
+                <p class="mb-2">Download your data to manually upload to Google Drive, Dropbox, or other cloud storage.</p>
+                <button class="btn" onclick="exportForCloud()">Export for Cloud Backup</button>
+                <p style="margin-top: 1rem; font-size: 0.85rem; color: #95a5a6;">Note: After exporting, upload the file to your preferred cloud service. To sync across devices, download the file from cloud storage and import it on your other device.</p>
             </div>
         </section>
     </main>
@@ -2055,7 +2458,25 @@ const storage = {
     getGCActionItems() { return JSON.parse(localStorage.getItem('gcActionItems') || '[]'); },
     saveGCActionItems(actions) { localStorage.setItem('gcActionItems', JSON.stringify(actions)); },
     getGCSettings() { return JSON.parse(localStorage.getItem('gcSettings') || '{"quorumPercentage": 50, "quorumMinimum": 5}'); },
-    saveGCSettings(settings) { localStorage.setItem('gcSettings', JSON.stringify(settings)); }
+    saveGCSettings(settings) { localStorage.setItem('gcSettings', JSON.stringify(settings)); },
+
+    // New feature storage methods
+    getMessages() { return JSON.parse(localStorage.getItem('messages') || '[]'); },
+    saveMessages(messages) { localStorage.setItem('messages', JSON.stringify(messages)); },
+    getServicePositions() { return JSON.parse(localStorage.getItem('servicePositions') || '[]'); },
+    saveServicePositions(positions) { localStorage.setItem('servicePositions', JSON.stringify(positions)); },
+    getNominations() { return JSON.parse(localStorage.getItem('nominations') || '[]'); },
+    saveNominations(nominations) { localStorage.setItem('nominations', JSON.stringify(nominations)); },
+    getBudgetCategories() { return JSON.parse(localStorage.getItem('budgetCategories') || '[]'); },
+    saveBudgetCategories(categories) { localStorage.setItem('budgetCategories', JSON.stringify(categories)); },
+    getExpenses() { return JSON.parse(localStorage.getItem('expenses') || '[]'); },
+    saveExpenses(expenses) { localStorage.setItem('expenses', JSON.stringify(expenses)); },
+    getTemplates() { return JSON.parse(localStorage.getItem('templates') || '[]'); },
+    saveTemplates(templates) { localStorage.setItem('templates', JSON.stringify(templates)); },
+    getAnnouncementReadReceipts() { return JSON.parse(localStorage.getItem('announcementReadReceipts') || '{}'); },
+    saveAnnouncementReadReceipts(receipts) { localStorage.setItem('announcementReadReceipts', JSON.stringify(receipts)); },
+    getCurrentUser() { return localStorage.getItem('currentUser') || 'Anonymous'; },
+    saveCurrentUser(user) { localStorage.setItem('currentUser', user); }
 };
 // Initialize default data on first load
 function initDefaults() {
@@ -2611,11 +3032,24 @@ function addAnnouncement() {
         showToast('Enter an announcement.', 'error');
         return;
     }
+    const priority = document.getElementById('announcement-priority').value;
+    const requireReadReceipt = document.getElementById('announcement-require-read-receipt').checked;
+
     const ann = storage.getAnnouncements();
-    ann.unshift({ id: genId(), text, dateCreated: new Date().toISOString(), active: true });
+    ann.unshift({
+        id: genId(),
+        text,
+        dateCreated: new Date().toISOString(),
+        active: true,
+        priority: priority,
+        requireReadReceipt: requireReadReceipt,
+        readBy: []
+    });
     storage.saveAnnouncements(ann);
     showToast('Announcement added!', 'success');
     document.getElementById('announcement-text').value = '';
+    document.getElementById('announcement-priority').value = 'info';
+    document.getElementById('announcement-require-read-receipt').checked = false;
     updateAnnouncementsList();
     updateHome();
     updateChairpersonAnnouncements();
@@ -2649,11 +3083,11 @@ function updateAnnouncementsList() {
     const ul = document.getElementById('announcements-list');
     ul.innerHTML = '';
     const ann = storage.getAnnouncements();
+    const currentUser = storage.getCurrentUser();
+
     ann.forEach(a => {
-        const li = document.createElement('li');
-        li.style.display = 'flex';
-        li.style.alignItems = 'center';
-        li.style.marginBottom = '0.5rem';
+        const li = document.createElement('div');
+        li.className = `announcement-item ${a.priority || 'info'}`;
         if (!a.active) {
             li.style.opacity = '0.5';
         }
@@ -2666,17 +3100,50 @@ function updateAnnouncementsList() {
         checkbox.style.marginRight = '1rem';
         checkbox.onchange = () => toggleAnnouncementActive(a.id);
 
+        const priorityBadge = document.createElement('span');
+        priorityBadge.className = `priority-badge ${a.priority || 'info'}`;
+        priorityBadge.textContent = (a.priority || 'info').toUpperCase();
+
         const text = document.createElement('span');
         text.innerHTML = `<strong>${dateStr}:</strong> ${a.text}`;
         text.style.flexGrow = '1';
 
+        const topRow = document.createElement('div');
+        topRow.style.display = 'flex';
+        topRow.style.alignItems = 'center';
+        topRow.style.marginBottom = '8px';
+        topRow.appendChild(checkbox);
+        topRow.appendChild(text);
+        topRow.appendChild(priorityBadge);
+
+        li.appendChild(topRow);
+
+        // Read receipt handling
+        if (a.requireReadReceipt) {
+            const readBy = a.readBy || [];
+            const hasRead = readBy.includes(currentUser);
+
+            const readInfo = document.createElement('div');
+            readInfo.className = 'read-receipt-indicator';
+            readInfo.innerHTML = `<i class="fas fa-check-circle"></i> Read by ${readBy.length} member(s)`;
+
+            li.appendChild(readInfo);
+
+            if (!hasRead) {
+                const markReadBtn = document.createElement('button');
+                markReadBtn.className = 'btn mark-as-read-btn';
+                markReadBtn.textContent = 'Mark as Read';
+                markReadBtn.onclick = () => markAnnouncementAsRead(a.id);
+                li.appendChild(markReadBtn);
+            }
+        }
+
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'btn secondary';
+        deleteBtn.style.marginTop = '8px';
         deleteBtn.textContent = 'Delete';
         deleteBtn.onclick = () => deleteAnnouncement(a.id);
 
-        li.appendChild(checkbox);
-        li.appendChild(text);
         li.appendChild(deleteBtn);
         ul.appendChild(li);
     });
@@ -4789,6 +5256,979 @@ function setupAudioRecorder() {
     stopBtn.addEventListener('click', stopRecording);
 }
 
+// ==================== NEW FEATURES ====================
+
+// Mark announcement as read
+function markAnnouncementAsRead(announcementId) {
+    const ann = storage.getAnnouncements();
+    const announcement = ann.find(a => a.id === announcementId);
+    if (announcement) {
+        const currentUser = storage.getCurrentUser();
+        if (!announcement.readBy) announcement.readBy = [];
+        if (!announcement.readBy.includes(currentUser)) {
+            announcement.readBy.push(currentUser);
+            storage.saveAnnouncements(ann);
+            updateAnnouncementsList();
+            showToast('Marked as read', 'success');
+        }
+    }
+}
+
+// ========== MEMBER MESSAGING FUNCTIONS ==========
+
+function sendMessage() {
+    const recipientId = document.getElementById('message-recipient').value;
+    const subject = document.getElementById('message-subject').value.trim();
+    const text = document.getElementById('message-text').value.trim();
+
+    if (!recipientId || !subject || !text) {
+        showToast('Please fill in all fields', 'error');
+        return;
+    }
+
+    const currentUser = storage.getCurrentUser();
+    const messages = storage.getMessages();
+
+    messages.push({
+        id: genId(),
+        from: currentUser,
+        to: recipientId,
+        subject: subject,
+        message: text,
+        date: new Date().toISOString(),
+        read: false
+    });
+
+    storage.saveMessages(messages);
+    showToast('Message sent!', 'success');
+
+    document.getElementById('message-recipient').value = '';
+    document.getElementById('message-subject').value = '';
+    document.getElementById('message-text').value = '';
+
+    showMessages('sent');
+}
+
+function showMessages(type) {
+    const container = document.getElementById('messages-container');
+    const messages = storage.getMessages();
+    const currentUser = storage.getCurrentUser();
+
+    // Update button states
+    document.getElementById('inbox-btn').classList.toggle('active', type === 'inbox');
+    document.getElementById('sent-btn').classList.toggle('active', type === 'sent');
+
+    const filteredMessages = type === 'inbox'
+        ? messages.filter(m => m.to === currentUser)
+        : messages.filter(m => m.from === currentUser);
+
+    container.innerHTML = '';
+
+    if (filteredMessages.length === 0) {
+        container.innerHTML = `<p>No ${type} messages</p>`;
+        return;
+    }
+
+    filteredMessages.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    filteredMessages.forEach(msg => {
+        const div = document.createElement('div');
+        div.className = `message-item ${!msg.read && type === 'inbox' ? 'unread' : ''}`;
+
+        const header = document.createElement('div');
+        header.className = 'message-header';
+
+        const subj = document.createElement('div');
+        subj.className = 'message-subject';
+        subj.textContent = msg.subject;
+
+        const date = document.createElement('div');
+        date.className = 'message-date';
+        date.textContent = new Date(msg.date).toLocaleString();
+
+        header.appendChild(subj);
+        header.appendChild(date);
+
+        const fromTo = document.createElement('div');
+        fromTo.style.fontSize = '0.85rem';
+        fromTo.style.marginBottom = '8px';
+        fromTo.textContent = type === 'inbox' ? `From: ${msg.from}` : `To: ${msg.to}`;
+
+        const msgText = document.createElement('div');
+        msgText.textContent = msg.message;
+
+        div.appendChild(header);
+        div.appendChild(fromTo);
+        div.appendChild(msgText);
+
+        if (type === 'inbox' && !msg.read) {
+            const markReadBtn = document.createElement('button');
+            markReadBtn.className = 'btn';
+            markReadBtn.style.marginTop = '8px';
+            markReadBtn.textContent = 'Mark as Read';
+            markReadBtn.onclick = () => markMessageAsRead(msg.id);
+            div.appendChild(markReadBtn);
+        }
+
+        container.appendChild(div);
+    });
+}
+
+function markMessageAsRead(messageId) {
+    const messages = storage.getMessages();
+    const message = messages.find(m => m.id === messageId);
+    if (message) {
+        message.read = true;
+        storage.saveMessages(messages);
+        showMessages('inbox');
+        showToast('Marked as read', 'success');
+    }
+}
+
+function populateMessageRecipients() {
+    const select = document.getElementById('message-recipient');
+    const members = storage.getMembers();
+    const currentUser = storage.getCurrentUser();
+
+    select.innerHTML = '<option value="">Select a member...</option>';
+
+    members.forEach(m => {
+        if (m.name !== currentUser) {
+            const option = document.createElement('option');
+            option.value = m.name;
+            option.textContent = m.name;
+            select.appendChild(option);
+        }
+    });
+}
+
+// ========== SERVICE POSITION FUNCTIONS ==========
+
+function addServicePosition() {
+    const name = document.getElementById('position-name').value.trim();
+    const description = document.getElementById('position-description').value.trim();
+    const termLength = parseInt(document.getElementById('position-term-length').value);
+    const currentHolder = document.getElementById('position-current-holder').value;
+    const startDate = document.getElementById('position-start-date').value;
+
+    if (!name || !termLength) {
+        showToast('Please enter position name and term length', 'error');
+        return;
+    }
+
+    const positions = storage.getServicePositions();
+
+    positions.push({
+        id: genId(),
+        name: name,
+        description: description,
+        termLength: termLength,
+        currentHolder: currentHolder,
+        startDate: startDate,
+        history: []
+    });
+
+    storage.saveServicePositions(positions);
+    showToast('Service position added!', 'success');
+
+    document.getElementById('position-name').value = '';
+    document.getElementById('position-description').value = '';
+    document.getElementById('position-term-length').value = '';
+    document.getElementById('position-current-holder').value = '';
+    document.getElementById('position-start-date').value = '';
+
+    updateServicePositionsTable();
+    updateRotationCalendar();
+    populateNominationPositions();
+}
+
+function updateServicePositionsTable() {
+    const tbody = document.getElementById('service-positions-table');
+    const positions = storage.getServicePositions();
+
+    tbody.innerHTML = '';
+
+    positions.forEach(pos => {
+        const tr = document.createElement('tr');
+
+        const endDate = pos.startDate ? calculateEndDate(pos.startDate, pos.termLength) : 'N/A';
+        const daysRemaining = pos.startDate ? calculateDaysRemaining(pos.startDate, pos.termLength) : null;
+
+        let termStatus = '';
+        if (daysRemaining !== null) {
+            if (daysRemaining < 0) {
+                termStatus = `<span class="term-expired">EXPIRED</span>`;
+            } else if (daysRemaining < 60) {
+                termStatus = `<span class="term-warning">${daysRemaining} days left</span>`;
+            }
+        }
+
+        tr.innerHTML = `
+            <td>${pos.name}</td>
+            <td>${pos.currentHolder || 'Vacant'}</td>
+            <td>${pos.startDate ? new Date(pos.startDate).toLocaleDateString() : 'N/A'}</td>
+            <td>${endDate} ${termStatus}</td>
+            <td>
+                <button class="btn secondary" onclick="deleteServicePosition('${pos.id}')">Delete</button>
+            </td>
+        `;
+
+        tbody.appendChild(tr);
+    });
+
+    if (positions.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">No service positions defined</td></tr>';
+    }
+}
+
+function deleteServicePosition(id) {
+    if (!confirm('Delete this service position?')) return;
+    let positions = storage.getServicePositions();
+    positions = positions.filter(p => p.id !== id);
+    storage.saveServicePositions(positions);
+    updateServicePositionsTable();
+    updateRotationCalendar();
+    populateNominationPositions();
+    showToast('Position deleted', 'success');
+}
+
+function calculateEndDate(startDate, termMonths) {
+    const start = new Date(startDate);
+    const end = new Date(start);
+    end.setMonth(end.getMonth() + termMonths);
+    return end.toLocaleDateString();
+}
+
+function calculateDaysRemaining(startDate, termMonths) {
+    const start = new Date(startDate);
+    const end = new Date(start);
+    end.setMonth(end.getMonth() + termMonths);
+    const today = new Date();
+    const diffTime = end - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+}
+
+function updateRotationCalendar() {
+    const container = document.getElementById('rotation-calendar');
+    const positions = storage.getServicePositions();
+
+    const upcomingElections = positions.filter(pos => {
+        if (!pos.startDate) return false;
+        const days = calculateDaysRemaining(pos.startDate, pos.termLength);
+        return days !== null && days >= 0 && days <= 60;
+    });
+
+    container.innerHTML = '';
+
+    if (upcomingElections.length === 0) {
+        container.innerHTML = '<p>No elections coming up in the next 60 days</p>';
+        return;
+    }
+
+    upcomingElections.sort((a, b) => {
+        const daysA = calculateDaysRemaining(a.startDate, a.termLength);
+        const daysB = calculateDaysRemaining(b.startDate, b.termLength);
+        return daysA - daysB;
+    });
+
+    upcomingElections.forEach(pos => {
+        const days = calculateDaysRemaining(pos.startDate, pos.termLength);
+        const endDate = calculateEndDate(pos.startDate, pos.termLength);
+
+        const card = document.createElement('div');
+        card.className = 'position-card';
+        card.innerHTML = `
+            <h4>${pos.name}</h4>
+            <p><strong>Current:</strong> ${pos.currentHolder || 'Vacant'}</p>
+            <p><strong>Term ends:</strong> ${endDate}</p>
+            <p class="term-warning">${days} days remaining</p>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function addNomination() {
+    const positionId = document.getElementById('nomination-position').value;
+    const nominee = document.getElementById('nomination-nominee').value;
+
+    if (!positionId || !nominee) {
+        showToast('Please select position and nominee', 'error');
+        return;
+    }
+
+    const nominations = storage.getNominations();
+    const positions = storage.getServicePositions();
+    const position = positions.find(p => p.id === positionId);
+
+    nominations.push({
+        id: genId(),
+        positionId: positionId,
+        positionName: position.name,
+        nominee: nominee,
+        nominatedBy: storage.getCurrentUser(),
+        date: new Date().toISOString()
+    });
+
+    storage.saveNominations(nominations);
+    showToast('Nomination submitted!', 'success');
+
+    document.getElementById('nomination-position').value = '';
+    document.getElementById('nomination-nominee').value = '';
+
+    updateNominationsList();
+}
+
+function updateNominationsList() {
+    const container = document.getElementById('nominations-list');
+    const nominations = storage.getNominations();
+
+    container.innerHTML = '';
+
+    if (nominations.length === 0) {
+        container.innerHTML = '<p>No nominations yet</p>';
+        return;
+    }
+
+    nominations.forEach(nom => {
+        const card = document.createElement('div');
+        card.className = 'nomination-card';
+        card.innerHTML = `
+            <h4>${nom.positionName}</h4>
+            <p><strong>Nominee:</strong> ${nom.nominee}</p>
+            <p><strong>Nominated by:</strong> ${nom.nominatedBy}</p>
+            <p><strong>Date:</strong> ${new Date(nom.date).toLocaleDateString()}</p>
+            <button class="btn secondary" onclick="deleteNomination('${nom.id}')">Remove</button>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function deleteNomination(id) {
+    if (!confirm('Remove this nomination?')) return;
+    let nominations = storage.getNominations();
+    nominations = nominations.filter(n => n.id !== id);
+    storage.saveNominations(nominations);
+    updateNominationsList();
+    showToast('Nomination removed', 'success');
+}
+
+function populateNominationPositions() {
+    const select = document.getElementById('nomination-position');
+    const positions = storage.getServicePositions();
+
+    select.innerHTML = '<option value="">Select position...</option>';
+
+    positions.forEach(pos => {
+        const option = document.createElement('option');
+        option.value = pos.id;
+        option.textContent = pos.name;
+        select.appendChild(option);
+    });
+}
+
+function populateServicePositionHolders() {
+    const select = document.getElementById('position-current-holder');
+    const nomineeSelect = document.getElementById('nomination-nominee');
+    const members = storage.getMembers();
+
+    select.innerHTML = '<option value="">Vacant</option>';
+    nomineeSelect.innerHTML = '<option value="">Select member...</option>';
+
+    members.forEach(m => {
+        const option1 = document.createElement('option');
+        option1.value = m.name;
+        option1.textContent = m.name;
+        select.appendChild(option1);
+
+        const option2 = document.createElement('option');
+        option2.value = m.name;
+        option2.textContent = m.name;
+        nomineeSelect.appendChild(option2);
+    });
+}
+
+// ========== FINANCE FUNCTIONS ==========
+
+function showFinanceTab(tab) {
+    document.querySelectorAll('.finance-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.history-nav button').forEach(b => b.classList.remove('active'));
+
+    document.getElementById(`${tab}-content`).classList.add('active');
+    document.getElementById(`${tab}-tab`).classList.add('active');
+
+    if (tab === 'budget') updateBudgetTable();
+    if (tab === 'expenses') updateExpensesTable();
+    if (tab === 'reports') {
+        // Set default month to current
+        const today = new Date();
+        const month = today.toISOString().substring(0, 7);
+        document.getElementById('report-month').value = month;
+    }
+}
+
+function addBudgetCategory() {
+    const category = document.getElementById('budget-category').value.trim();
+    const amount = parseFloat(document.getElementById('budget-amount').value);
+
+    if (!category || isNaN(amount) || amount < 0) {
+        showToast('Please enter valid category and amount', 'error');
+        return;
+    }
+
+    const categories = storage.getBudgetCategories();
+
+    categories.push({
+        id: genId(),
+        category: category,
+        monthlyBudget: amount
+    });
+
+    storage.saveBudgetCategories(categories);
+    showToast('Budget category added!', 'success');
+
+    document.getElementById('budget-category').value = '';
+    document.getElementById('budget-amount').value = '';
+
+    updateBudgetTable();
+    populateExpenseCategories();
+}
+
+function updateBudgetTable() {
+    const tbody = document.getElementById('budget-table');
+    const categories = storage.getBudgetCategories();
+    const expenses = storage.getExpenses();
+
+    // Get current month
+    const today = new Date();
+    const currentMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+
+    tbody.innerHTML = '';
+
+    categories.forEach(cat => {
+        // Calculate spent this month
+        const monthExpenses = expenses.filter(e => {
+            const expenseMonth = e.date.substring(0, 7);
+            return e.category === cat.category && expenseMonth === currentMonth;
+        });
+
+        const spent = monthExpenses.reduce((sum, e) => sum + e.amount, 0);
+        const remaining = cat.monthlyBudget - spent;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${cat.category}</td>
+            <td>$${cat.monthlyBudget.toFixed(2)}</td>
+            <td>$${spent.toFixed(2)}</td>
+            <td style="color: ${remaining < 0 ? '#e74c3c' : '#2ecc71'}">$${remaining.toFixed(2)}</td>
+            <td>
+                <button class="btn secondary" onclick="deleteBudgetCategory('${cat.id}')">Delete</button>
+            </td>
+        `;
+
+        tbody.appendChild(tr);
+    });
+
+    if (categories.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">No budget categories defined</td></tr>';
+    }
+}
+
+function deleteBudgetCategory(id) {
+    if (!confirm('Delete this budget category?')) return;
+    let categories = storage.getBudgetCategories();
+    categories = categories.filter(c => c.id !== id);
+    storage.saveBudgetCategories(categories);
+    updateBudgetTable();
+    populateExpenseCategories();
+    showToast('Category deleted', 'success');
+}
+
+function addExpense() {
+    const date = document.getElementById('expense-date').value;
+    const category = document.getElementById('expense-category').value;
+    const description = document.getElementById('expense-description').value.trim();
+    const amount = parseFloat(document.getElementById('expense-amount').value);
+
+    if (!date || !category || !description || isNaN(amount) || amount < 0) {
+        showToast('Please fill in all fields with valid data', 'error');
+        return;
+    }
+
+    const expenses = storage.getExpenses();
+
+    expenses.push({
+        id: genId(),
+        date: date,
+        category: category,
+        description: description,
+        amount: amount
+    });
+
+    storage.saveExpenses(expenses);
+    showToast('Expense logged!', 'success');
+
+    document.getElementById('expense-date').value = '';
+    document.getElementById('expense-category').value = '';
+    document.getElementById('expense-description').value = '';
+    document.getElementById('expense-amount').value = '';
+
+    updateExpensesTable();
+    updateBudgetTable();
+}
+
+function updateExpensesTable() {
+    const tbody = document.getElementById('expenses-table');
+    const expenses = storage.getExpenses();
+
+    tbody.innerHTML = '';
+
+    // Sort by date descending
+    expenses.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    // Show last 20 expenses
+    expenses.slice(0, 20).forEach(exp => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${new Date(exp.date).toLocaleDateString()}</td>
+            <td>${exp.category}</td>
+            <td>${exp.description}</td>
+            <td>$${exp.amount.toFixed(2)}</td>
+            <td>
+                <button class="btn secondary" onclick="deleteExpense('${exp.id}')">Delete</button>
+            </td>
+        `;
+
+        tbody.appendChild(tr);
+    });
+
+    if (expenses.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">No expenses logged</td></tr>';
+    }
+}
+
+function deleteExpense(id) {
+    if (!confirm('Delete this expense?')) return;
+    let expenses = storage.getExpenses();
+    expenses = expenses.filter(e => e.id !== id);
+    storage.saveExpenses(expenses);
+    updateExpensesTable();
+    updateBudgetTable();
+    showToast('Expense deleted', 'success');
+}
+
+function populateExpenseCategories() {
+    const select = document.getElementById('expense-category');
+    const categories = storage.getBudgetCategories();
+
+    select.innerHTML = '<option value="">Select category...</option>';
+
+    categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat.category;
+        option.textContent = cat.category;
+        select.appendChild(option);
+    });
+}
+
+function generateMonthlyReport() {
+    const month = document.getElementById('report-month').value;
+    if (!month) {
+        showToast('Please select a month', 'error');
+        return;
+    }
+
+    const expenses = storage.getExpenses();
+    const categories = storage.getBudgetCategories();
+    const reportDiv = document.getElementById('monthly-report');
+
+    const monthExpenses = expenses.filter(e => e.date.startsWith(month));
+
+    let totalSpent = 0;
+    let totalBudget = 0;
+
+    let reportHTML = `<h4>Financial Report for ${month}</h4>`;
+    reportHTML += '<table style="width: 100%; margin-top: 1rem;"><thead><tr><th>Category</th><th>Budget</th><th>Spent</th><th>Variance</th></tr></thead><tbody>';
+
+    categories.forEach(cat => {
+        const catExpenses = monthExpenses.filter(e => e.category === cat.category);
+        const spent = catExpenses.reduce((sum, e) => sum + e.amount, 0);
+        const variance = cat.monthlyBudget - spent;
+
+        totalBudget += cat.monthlyBudget;
+        totalSpent += spent;
+
+        reportHTML += `
+            <tr>
+                <td>${cat.category}</td>
+                <td>$${cat.monthlyBudget.toFixed(2)}</td>
+                <td>$${spent.toFixed(2)}</td>
+                <td style="color: ${variance < 0 ? '#e74c3c' : '#2ecc71'}">$${variance.toFixed(2)}</td>
+            </tr>
+        `;
+    });
+
+    const totalVariance = totalBudget - totalSpent;
+
+    reportHTML += `
+        <tr style="font-weight: bold; border-top: 2px solid #3498db;">
+            <td>TOTAL</td>
+            <td>$${totalBudget.toFixed(2)}</td>
+            <td>$${totalSpent.toFixed(2)}</td>
+            <td style="color: ${totalVariance < 0 ? '#e74c3c' : '#2ecc71'}">$${totalVariance.toFixed(2)}</td>
+        </tr>
+    `;
+
+    reportHTML += '</tbody></table>';
+
+    reportHTML += `<p style="margin-top: 1rem;"><strong>Total Expenses:</strong> ${monthExpenses.length}</p>`;
+
+    reportDiv.innerHTML = reportHTML;
+
+    generateYoYChart();
+}
+
+function generateYoYChart() {
+    const expenses = storage.getExpenses();
+    const chartDiv = document.getElementById('yoy-chart');
+
+    // Group expenses by month
+    const monthlyTotals = {};
+
+    expenses.forEach(exp => {
+        const month = exp.date.substring(0, 7);
+        if (!monthlyTotals[month]) monthlyTotals[month] = 0;
+        monthlyTotals[month] += exp.amount;
+    });
+
+    // Get last 12 months
+    const months = Object.keys(monthlyTotals).sort().slice(-12);
+
+    if (months.length === 0) {
+        chartDiv.innerHTML = '<p>Not enough data for chart</p>';
+        return;
+    }
+
+    // Simple text-based chart
+    let chartHTML = '<h4>Last 12 Months Spending</h4>';
+    chartHTML += '<div style="margin-top: 1rem;">';
+
+    const maxAmount = Math.max(...months.map(m => monthlyTotals[m]));
+
+    months.forEach(month => {
+        const amount = monthlyTotals[month];
+        const barWidth = (amount / maxAmount) * 100;
+
+        chartHTML += `
+            <div style="margin-bottom: 0.5rem;">
+                <div style="font-size: 0.85rem; margin-bottom: 2px;">${month}: $${amount.toFixed(2)}</div>
+                <div style="background: #3498db; height: 20px; width: ${barWidth}%; border-radius: 3px;"></div>
+            </div>
+        `;
+    });
+
+    chartHTML += '</div>';
+
+    chartDiv.innerHTML = chartHTML;
+}
+
+// ========== BACKUP & SYNC FUNCTIONS ==========
+
+function saveCurrentUser() {
+    const name = document.getElementById('current-user-name').value.trim();
+    if (!name) {
+        showToast('Please enter your name', 'error');
+        return;
+    }
+    storage.saveCurrentUser(name);
+    showToast('Name saved!', 'success');
+}
+
+function loadCurrentUser() {
+    const name = storage.getCurrentUser();
+    const input = document.getElementById('current-user-name');
+    if (input) {
+        input.value = name;
+    }
+}
+
+function createBackupSnapshot() {
+    const backups = JSON.parse(localStorage.getItem('backupSnapshots') || '[]');
+
+    const snapshot = {
+        id: genId(),
+        date: new Date().toISOString(),
+        data: {
+            events: storage.getEvents(),
+            members: storage.getMembers(),
+            announcements: storage.getAnnouncements(),
+            photos: storage.getPhotos(),
+            chairpersonLog: storage.getChairpersonLog(),
+            groupConscienceLog: storage.getGroupConscienceLog(),
+            liveGCItems: storage.getLiveGCItems(),
+            proposedAgendaItems: storage.getProposedAgendaItems(),
+            gcComments: storage.getGCComments(),
+            gcActionItems: storage.getGCActionItems(),
+            gcSettings: storage.getGCSettings(),
+            messages: storage.getMessages(),
+            servicePositions: storage.getServicePositions(),
+            nominations: storage.getNominations(),
+            budgetCategories: storage.getBudgetCategories(),
+            expenses: storage.getExpenses(),
+            templates: storage.getTemplates()
+        }
+    };
+
+    backups.push(snapshot);
+
+    // Keep only last 10 backups
+    if (backups.length > 10) {
+        backups.shift();
+    }
+
+    localStorage.setItem('backupSnapshots', JSON.stringify(backups));
+    showToast('Backup snapshot created!', 'success');
+    viewBackupHistory();
+}
+
+function viewBackupHistory() {
+    const container = document.getElementById('backup-history');
+    const backups = JSON.parse(localStorage.getItem('backupSnapshots') || '[]');
+
+    if (backups.length === 0) {
+        container.innerHTML = '<p>No backup snapshots available. Create one to get started.</p>';
+        return;
+    }
+
+    container.innerHTML = '<h4>Available Backups</h4>';
+
+    backups.reverse().forEach((backup, index) => {
+        const card = document.createElement('div');
+        card.className = 'box';
+        card.style.marginTop = '10px';
+        card.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>Backup ${backups.length - index}</strong><br>
+                    <span style="font-size: 0.85rem; color: #95a5a6;">${new Date(backup.date).toLocaleString()}</span>
+                </div>
+                <div>
+                    <button class="btn" onclick="restoreBackup('${backup.id}')">Restore</button>
+                    <button class="btn secondary" onclick="deleteBackup('${backup.id}')" style="margin-left: 8px;">Delete</button>
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function restoreBackup(backupId) {
+    if (!confirm('This will restore data from the selected backup and overwrite your current data. Continue?')) {
+        return;
+    }
+
+    const backups = JSON.parse(localStorage.getItem('backupSnapshots') || '[]');
+    const backup = backups.find(b => b.id === backupId);
+
+    if (!backup) {
+        showToast('Backup not found', 'error');
+        return;
+    }
+
+    // Restore all data
+    const data = backup.data;
+    if (data.events) storage.saveEvents(data.events);
+    if (data.members) storage.saveMembers(data.members);
+    if (data.announcements) storage.saveAnnouncements(data.announcements);
+    if (data.photos) storage.savePhotos(data.photos);
+    if (data.chairpersonLog) storage.saveChairpersonLog(data.chairpersonLog);
+    if (data.groupConscienceLog) storage.saveGroupConscienceLog(data.groupConscienceLog);
+    if (data.liveGCItems) storage.saveLiveGCItems(data.liveGCItems);
+    if (data.proposedAgendaItems) storage.saveProposedAgendaItems(data.proposedAgendaItems);
+    if (data.gcComments) storage.saveGCComments(data.gcComments);
+    if (data.gcActionItems) storage.saveGCActionItems(data.gcActionItems);
+    if (data.gcSettings) storage.saveGCSettings(data.gcSettings);
+    if (data.messages) storage.saveMessages(data.messages);
+    if (data.servicePositions) storage.saveServicePositions(data.servicePositions);
+    if (data.nominations) storage.saveNominations(data.nominations);
+    if (data.budgetCategories) storage.saveBudgetCategories(data.budgetCategories);
+    if (data.expenses) storage.saveExpenses(data.expenses);
+    if (data.templates) storage.saveTemplates(data.templates);
+
+    showToast('Data restored from backup!', 'success');
+
+    // Reload page to reflect restored data
+    setTimeout(() => location.reload(), 1500);
+}
+
+function deleteBackup(backupId) {
+    if (!confirm('Delete this backup snapshot?')) return;
+
+    let backups = JSON.parse(localStorage.getItem('backupSnapshots') || '[]');
+    backups = backups.filter(b => b.id !== backupId);
+    localStorage.setItem('backupSnapshots', JSON.stringify(backups));
+
+    showToast('Backup deleted', 'success');
+    viewBackupHistory();
+}
+
+function exportForCloud() {
+    // Same as exportData('all') but with a cloud-friendly filename
+    const allData = {
+        events: storage.getEvents(),
+        members: storage.getMembers(),
+        announcements: storage.getAnnouncements(),
+        photos: storage.getPhotos(),
+        chairpersonLog: storage.getChairpersonLog(),
+        groupConscienceLog: storage.getGroupConscienceLog(),
+        liveGCItems: storage.getLiveGCItems(),
+        proposedAgendaItems: storage.getProposedAgendaItems(),
+        gcComments: storage.getGCComments(),
+        gcActionItems: storage.getGCActionItems(),
+        gcSettings: storage.getGCSettings(),
+        messages: storage.getMessages(),
+        servicePositions: storage.getServicePositions(),
+        nominations: storage.getNominations(),
+        budgetCategories: storage.getBudgetCategories(),
+        expenses: storage.getExpenses(),
+        templates: storage.getTemplates(),
+        exportDate: new Date().toISOString(),
+        version: '2.0'
+    };
+
+    const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+
+    const dateStr = new Date().toISOString().split('T')[0];
+    link.download = `rowlett-group-backup-${dateStr}.json`;
+
+    link.click();
+    showToast('Data exported for cloud backup!', 'success');
+}
+
+// ========== TEMPLATE FUNCTIONS ==========
+
+function saveTemplate() {
+    const name = document.getElementById('template-name').value.trim();
+    const type = document.getElementById('template-type').value;
+    const content = document.getElementById('template-content').value.trim();
+
+    if (!name || !content) {
+        showToast('Please enter template name and content', 'error');
+        return;
+    }
+
+    const templates = storage.getTemplates();
+
+    templates.push({
+        id: genId(),
+        name: name,
+        type: type,
+        content: content,
+        created: new Date().toISOString()
+    });
+
+    storage.saveTemplates(templates);
+    showToast('Template saved!', 'success');
+
+    document.getElementById('template-name').value = '';
+    document.getElementById('template-type').value = 'meeting-format';
+    document.getElementById('template-content').value = '';
+
+    filterTemplates('all');
+}
+
+function filterTemplates(type) {
+    const templates = storage.getTemplates();
+    const container = document.getElementById('templates-list');
+
+    // Update button states
+    document.getElementById('all-templates-btn').classList.toggle('active', type === 'all');
+    document.getElementById('meeting-templates-btn').classList.toggle('active', type === 'meeting-format');
+    document.getElementById('speaker-templates-btn').classList.toggle('active', type === 'speaker-checklist');
+    document.getElementById('event-templates-btn').classList.toggle('active', type === 'event-planning');
+
+    const filtered = type === 'all' ? templates : templates.filter(t => t.type === type);
+
+    container.innerHTML = '';
+
+    if (filtered.length === 0) {
+        container.innerHTML = '<p>No templates saved</p>';
+        return;
+    }
+
+    filtered.forEach(tmpl => {
+        const card = document.createElement('div');
+        card.className = 'template-card';
+
+        const header = document.createElement('div');
+        header.className = 'template-header';
+
+        const title = document.createElement('h4');
+        title.textContent = tmpl.name;
+
+        const badge = document.createElement('span');
+        badge.className = 'template-type-badge';
+        badge.textContent = tmpl.type.replace('-', ' ').toUpperCase();
+
+        header.appendChild(title);
+        header.appendChild(badge);
+
+        const content = document.createElement('pre');
+        content.style.whiteSpace = 'pre-wrap';
+        content.style.fontSize = '0.9rem';
+        content.style.marginTop = '10px';
+        content.textContent = tmpl.content;
+
+        const btnContainer = document.createElement('div');
+        btnContainer.style.marginTop = '10px';
+
+        const useBtn = document.createElement('button');
+        useBtn.className = 'btn';
+        useBtn.textContent = 'Use Template';
+        useBtn.onclick = () => useTemplate(tmpl.id);
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn secondary';
+        deleteBtn.style.marginLeft = '8px';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.onclick = () => deleteTemplate(tmpl.id);
+
+        btnContainer.appendChild(useBtn);
+        btnContainer.appendChild(deleteBtn);
+
+        card.appendChild(header);
+        card.appendChild(content);
+        card.appendChild(btnContainer);
+
+        container.appendChild(card);
+    });
+}
+
+function useTemplate(id) {
+    const templates = storage.getTemplates();
+    const template = templates.find(t => t.id === id);
+
+    if (template) {
+        // Copy to clipboard
+        navigator.clipboard.writeText(template.content).then(() => {
+            showToast('Template copied to clipboard!', 'success');
+        }).catch(() => {
+            showToast('Could not copy template', 'error');
+        });
+    }
+}
+
+function deleteTemplate(id) {
+    if (!confirm('Delete this template?')) return;
+    let templates = storage.getTemplates();
+    templates = templates.filter(t => t.id !== id);
+    storage.saveTemplates(templates);
+    filterTemplates('all');
+    showToast('Template deleted', 'success');
+}
+
 
 // Initialize the application
 function init() {
@@ -4818,6 +6258,24 @@ function init() {
     updateActionItemsTable();
     searchGCHistory();
     updateGCStatistics();
+
+    // Initialize new features
+    loadCurrentUser();
+    populateMessageRecipients();
+    showMessages('inbox');
+    populateServicePositionHolders();
+    updateServicePositionsTable();
+    updateRotationCalendar();
+    populateNominationPositions();
+    updateNominationsList();
+    populateExpenseCategories();
+    updateBudgetTable();
+    updateExpensesTable();
+    filterTemplates('all');
+
+    // Set default date for expense logging to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('expense-date').value = today;
 
     // Back to Top button logic
     const mainEl = document.querySelector('main');
