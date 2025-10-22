@@ -184,10 +184,18 @@
             color: #fff;
             border: 1px solid #2980b9; /* Darker Blue */
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
         }
         .btn:hover {
             background: #2980b9;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
         .btn.secondary {
             background: #7f8c8d; /* Silver-Gray */
@@ -900,10 +908,20 @@
                 Meetings
                 <ul class="dropdown-menu">
                     <li data-section="schedule-section">Schedule & Calendar</li>
-                    <li data-section="companion-section">Meeting Companion</li>
                     <li data-section="format-rotation-section">Format Rotation</li>
+                    <li data-section="companion-section">Meeting Companion</li>
                     <li data-section="commitment-board-section">Commitment Board</li>
                     <li data-section="secretary-section">Secretary Functions</li>
+                </ul>
+            </li>
+
+            <li class="has-dropdown">
+                Fellowship
+                <ul class="dropdown-menu">
+                    <li data-section="birthdays-section">Birthdays & Anniversaries</li>
+                    <li data-section="announcements-section">Announcements</li>
+                    <li data-section="messaging-section">Messages</li>
+                    <li data-section="gallery-section">Photo Gallery</li>
                 </ul>
             </li>
 
@@ -918,7 +936,7 @@
             </li>
 
             <li class="has-dropdown">
-                Service & Sponsorship
+                Service
                 <ul class="dropdown-menu">
                     <li data-section="service-positions-section">Service Positions</li>
                     <li data-section="sponsorship-section">Sponsorship Tracking</li>
@@ -930,19 +948,17 @@
                 Treasury
                 <ul class="dropdown-menu">
                     <li data-section="finance-section">Financial Reports</li>
-                    <li data-section="prudent-reserve-section">Prudent Reserve</li>
                     <li data-section="seventh-tradition-section">7th Tradition Analysis</li>
+                    <li data-section="prudent-reserve-section">Prudent Reserve</li>
                     <li data-section="chip-inventory-section">Chip Inventory</li>
                 </ul>
             </li>
 
             <li class="has-dropdown">
-                Fellowship
+                Reports
                 <ul class="dropdown-menu">
-                    <li data-section="birthdays-section">Birthdays & Anniversaries</li>
-                    <li data-section="messaging-section">Messages</li>
-                    <li data-section="gallery-section">Photo Gallery</li>
-                    <li data-section="announcements-section">Announcements</li>
+                    <li data-section="chairperson-section">Chairperson Reports</li>
+                    <li data-section="analytics-section">Group Analytics</li>
                 </ul>
             </li>
 
@@ -950,16 +966,8 @@
                 Resources
                 <ul class="dropdown-menu">
                     <li data-section="library-section">AA Literature Library</li>
-                    <li data-section="templates-section">Document Templates</li>
                     <li data-section="history-section">Group History</li>
-                </ul>
-            </li>
-
-            <li class="has-dropdown">
-                Reports & Analytics
-                <ul class="dropdown-menu">
-                    <li data-section="analytics-section">Group Analytics</li>
-                    <li data-section="chairperson-section">Chairperson Reports</li>
+                    <li data-section="templates-section">Document Templates</li>
                 </ul>
             </li>
 
@@ -985,22 +993,22 @@
                         <i class="fas fa-video"></i> Start Zoom Meeting
                     </a>
                     <p id="zoom-meeting-note" style="font-size: 0.8rem; text-align: center; margin-bottom: 1rem; display: none;">(Requires Zoom to be installed)</p>
-                    <ul id="home-upcoming-events"></ul>
+                    <ul id="home-upcoming-events" style="margin-bottom: 1rem; min-height: 60px;"></ul>
                     <button class="btn" onclick="goToSection('schedule-section')">View Full Schedule</button>
                 </div>
                 <div class="box">
                     <h3>Upcoming Birthdays</h3>
-                    <ul id="home-upcoming-birthdays"></ul>
+                    <ul id="home-upcoming-birthdays" style="margin-bottom: 1rem; min-height: 60px;"></ul>
                     <button class="btn" onclick="goToSection('birthdays-section')">Manage Birthdays</button>
                 </div>
                 <div class="box">
                     <h3>Recent Announcements</h3>
-                    <ul id="home-recent-announcements"></ul>
+                    <ul id="home-recent-announcements" style="margin-bottom: 1rem; min-height: 60px;"></ul>
                     <button class="btn" onclick="goToSection('announcements-section')">View All Announcements</button>
                 </div>
                 <div class="box">
                     <h3>Latest Photos</h3>
-                    <div id="home-latest-photos" style="display:flex; gap:0.5rem; overflow-x: auto;"></div>
+                    <div id="home-latest-photos" style="display:flex; gap:0.5rem; overflow-x: auto; margin-bottom: 1rem; min-height: 60px;"></div>
                     <button class="btn" onclick="goToSection('gallery-section')">Browse Gallery</button>
                 </div>
                 <div id="qr-code-box" class="box" style="text-align: center; display: none;">
@@ -3875,28 +3883,49 @@ function sanitizeHTML(html) {
 
 // Navigate to a given section and update nav active states
 function goToSection(sectionId) {
+    // Remove active class from all sections and nav items
     document.querySelectorAll('main section').forEach(sec => sec.classList.remove('active'));
     document.querySelectorAll('nav li').forEach(li => li.classList.remove('active'));
-    const section = document.getElementById(sectionId);
-    if (section) section.classList.add('active');
-    const navItem = document.querySelector('nav li[data-section="' + sectionId + '"]');
-    if (navItem) navItem.classList.add('active');
 
-    // If navigating to the schedule, render the calendar
+    // Add active class to target section
+    const section = document.getElementById(sectionId);
+    if (section) {
+        section.classList.add('active');
+    } else {
+        console.warn('Section not found:', sectionId);
+        return;
+    }
+
+    // Add active class to corresponding nav item
+    const navItem = document.querySelector('nav li[data-section="' + sectionId + '"]');
+    if (navItem) {
+        navItem.classList.add('active');
+    }
+
+    // Scroll to top of main content
+    const mainEl = document.querySelector('main');
+    if (mainEl) {
+        mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Close all dropdowns after navigation
+    document.querySelectorAll('nav li.has-dropdown').forEach(dd => {
+        dd.classList.remove('dropdown-open');
+    });
+
+    // Section-specific initialization
     if (sectionId === 'schedule-section') {
         renderCalendar();
-    }
-
-    // If navigating to analytics, refresh the dashboard
-    if (sectionId === 'analytics-section') {
+    } else if (sectionId === 'analytics-section') {
         refreshAnalytics();
-    }
-
-    // If navigating to library, refresh the views
-    if (sectionId === 'library-section') {
+    } else if (sectionId === 'library-section') {
         renderLibraryCatalog();
         renderCurrentCheckouts();
         renderReadingSchedules();
+    } else if (sectionId === 'birthdays-section') {
+        updateBirthdaysTable();
+    } else if (sectionId === 'announcements-section') {
+        updateAnnouncementsList();
     }
 }
 // Toggle form visibility
