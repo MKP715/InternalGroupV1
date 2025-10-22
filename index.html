@@ -662,12 +662,26 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="gc-votes">Votes (For-Against)</label>
-                            <input type="text" id="gc-votes" placeholder="e.g., 10-2">
+                            <label for="gc-votes-for">Votes For</label>
+                            <input type="number" id="gc-votes-for" min="0" placeholder="0" oninput="updateVotePercentages()">
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-votes-against">Votes Against</label>
+                            <input type="number" id="gc-votes-against" min="0" placeholder="0" oninput="updateVotePercentages()">
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-votes-abstain">Votes Abstain</label>
+                            <input type="number" id="gc-votes-abstain" min="0" placeholder="0" oninput="updateVotePercentages()">
+                        </div>
+                        <div id="vote-summary" style="padding: 0.5rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.75rem; font-size: 0.85rem;">
+                            <div><strong>Total Votes:</strong> <span id="total-votes">0</span></div>
+                            <div><strong>For:</strong> <span id="percent-for">0%</span> | <strong>Against:</strong> <span id="percent-against">0%</span> | <strong>Abstain:</strong> <span id="percent-abstain">0%</span></div>
+                            <div id="quorum-status" style="margin-top: 0.25rem;"></div>
                         </div>
                         <div class="form-group">
                             <label for="gc-attendees">Members Present</label>
-                            <select multiple id="gc-attendees" style="height: 120px; background: #34495e; color: #ecf0f1; border: 1px solid #7f8c8d; border-radius: 4px; padding: 0.5rem; width: 100%;"></select>
+                            <select multiple id="gc-attendees" style="height: 120px; background: #34495e; color: #ecf0f1; border: 1px solid #7f8c8d; border-radius: 4px; padding: 0.5rem; width: 100%;" onchange="updateVotePercentages()"></select>
+                            <small style="font-size: 0.75rem; opacity: 0.8;">Hold Ctrl/Cmd to select multiple members</small>
                         </div>
                         <div class="form-group">
                             <label>Servant Reports</label>
@@ -692,6 +706,7 @@
                                 <th>Item</th>
                                 <th>Submitted By</th>
                                 <th>Status</th>
+                                <th>Votes</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -706,12 +721,169 @@
                                 <th>Item</th>
                                 <th>Submitted By</th>
                                 <th>Status</th>
+                                <th>Votes</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="gc-log-body-previous"></tbody>
                     </table>
                     <button class="btn mt-2" onclick="exportGroupConscienceLogToPDF()" style="margin-bottom: 1rem;">Export Full GC Log to PDF</button>
+
+                    <!-- Pre-GC Submission System -->
+                    <div class="box mt-4">
+                        <h3>Pre-GC Agenda Submissions</h3>
+                        <p class="mb-2 text-sm" style="font-size: 0.8rem; opacity: 0.8;">Members can submit agenda items before the meeting</p>
+                        <div class="form-group">
+                            <label for="proposed-item-title">Item Title</label>
+                            <input type="text" id="proposed-item-title" placeholder="Brief title for the item">
+                        </div>
+                        <div class="form-group">
+                            <label for="proposed-item-description">Description</label>
+                            <textarea id="proposed-item-description" rows="3" placeholder="Detailed description of the proposal..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="proposed-item-submitter">Submitted By</label>
+                            <input type="text" id="proposed-item-submitter" placeholder="Your name">
+                        </div>
+                        <button class="btn" onclick="addProposedAgendaItem()">Submit Agenda Item</button>
+
+                        <h4 class="mt-4">Proposed Agenda Items</h4>
+                        <table id="proposed-agenda-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Submitter</th>
+                                    <th>Date Submitted</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="proposed-agenda-body"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- GC Settings (Quorum Configuration) -->
+                    <div class="box mt-4">
+                        <h3>Group Conscience Settings</h3>
+                        <div class="form-group">
+                            <label for="quorum-percentage">Quorum Percentage (%)</label>
+                            <input type="number" id="quorum-percentage" min="1" max="100" placeholder="50">
+                            <small style="font-size: 0.75rem; opacity: 0.8;">Percentage of total members required for quorum</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="quorum-minimum">Minimum Quorum Count</label>
+                            <input type="number" id="quorum-minimum" min="1" placeholder="5">
+                            <small style="font-size: 0.75rem; opacity: 0.8;">Minimum number of members required regardless of percentage</small>
+                        </div>
+                        <button class="btn" onclick="saveGCSettings()">Save Settings</button>
+                    </div>
+
+                    <!-- Action Items Tracking -->
+                    <div class="box mt-4">
+                        <h3>Action Items & Follow-Up</h3>
+                        <p class="mb-2 text-sm" style="font-size: 0.8rem; opacity: 0.8;">Track action items from passed motions</p>
+                        <div class="form-group">
+                            <label for="action-item-description">Action Item</label>
+                            <textarea id="action-item-description" rows="2" placeholder="What needs to be done?"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="action-item-assignee">Assigned To</label>
+                            <select id="action-item-assignee"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="action-item-due-date">Due Date</label>
+                            <input type="date" id="action-item-due-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="action-item-related-gc">Related GC Motion (Optional)</label>
+                            <select id="action-item-related-gc">
+                                <option value="">None</option>
+                            </select>
+                        </div>
+                        <input type="hidden" id="action-item-edit-id">
+                        <button id="action-item-btn" class="btn" onclick="handleActionItemSubmit()">Add Action Item</button>
+                        <button id="action-item-cancel-btn" class="btn secondary" onclick="cancelActionItemEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
+
+                        <h4 class="mt-4">Active Action Items</h4>
+                        <table id="action-items-table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Assigned To</th>
+                                    <th>Due Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="action-items-body"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Historical Analysis & Search -->
+                    <div class="box mt-4">
+                        <h3>Group Conscience History & Analysis</h3>
+                        <div class="form-group">
+                            <label for="gc-search">Search GC History</label>
+                            <input type="text" id="gc-search" placeholder="Search by motion, submitter, or status..." oninput="searchGCHistory()">
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-filter-status">Filter by Status</label>
+                            <select id="gc-filter-status" onchange="searchGCHistory()">
+                                <option value="">All</option>
+                                <option value="passed">Passed</option>
+                                <option value="failed">Failed</option>
+                                <option value="tabled">Tabled</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-filter-date-from">From Date</label>
+                            <input type="date" id="gc-filter-date-from" onchange="searchGCHistory()">
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-filter-date-to">To Date</label>
+                            <input type="date" id="gc-filter-date-to" onchange="searchGCHistory()">
+                        </div>
+
+                        <h4 class="mt-4">Search Results</h4>
+                        <table id="gc-history-search-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Motion</th>
+                                    <th>Status</th>
+                                    <th>Votes</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gc-history-search-body"></tbody>
+                        </table>
+
+                        <h4 class="mt-4">Statistics</h4>
+                        <div id="gc-stats" style="padding: 1rem; background: #2c3e50; border-radius: 6px;">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                                <div>
+                                    <strong style="color: #3498db;">Total Motions:</strong>
+                                    <div id="stat-total-motions">0</div>
+                                </div>
+                                <div>
+                                    <strong style="color: #2ecc71;">Passed:</strong>
+                                    <div id="stat-passed-motions">0</div>
+                                </div>
+                                <div>
+                                    <strong style="color: #e74c3c;">Failed:</strong>
+                                    <div id="stat-failed-motions">0</div>
+                                </div>
+                                <div>
+                                    <strong style="color: #f39c12;">Tabled:</strong>
+                                    <div id="stat-tabled-motions">0</div>
+                                </div>
+                                <div>
+                                    <strong style="color: #3498db;">Pass Rate:</strong>
+                                    <div id="stat-pass-rate">0%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="box mt-4">
                         <h3>Record Meeting Audio</h3>
@@ -1741,6 +1913,45 @@
     </main>
 
     <!-- Member Roster Modal -->
+    <!-- GC Details Modal with Discussion/Comments -->
+    <div id="gc-details-modal" class="modal">
+        <div class="box" style="width: 90%; max-width: 900px; max-height: 90vh; overflow-y: auto; background: #2c3e50; color: #ecf0f1; border: 1px solid #3498db;">
+            <span class="modal-close" onclick="closeGCDetailsModal()">&times;</span>
+            <h2 style="color: #3498db;">Motion Details & Discussion</h2>
+            <div id="gc-details-content" style="margin: 1rem 0;">
+                <!-- Motion details will be inserted here -->
+            </div>
+
+            <div style="margin-top: 2rem;">
+                <h3 style="color: #3498db; margin-bottom: 1rem;">Discussion & Comments</h3>
+                <div id="gc-comments-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem; padding: 0.5rem; background: #34495e; border-radius: 6px;">
+                    <!-- Comments will be listed here -->
+                </div>
+
+                <div class="form-group">
+                    <label for="gc-comment-text">Add Comment</label>
+                    <textarea id="gc-comment-text" rows="3" placeholder="Add your comment or discussion note..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="gc-comment-author">Your Name</label>
+                    <input type="text" id="gc-comment-author" placeholder="Name">
+                </div>
+                <div class="form-group">
+                    <label for="gc-comment-type">Comment Type</label>
+                    <select id="gc-comment-type">
+                        <option value="discussion">Discussion Note</option>
+                        <option value="amendment">Proposed Amendment</option>
+                        <option value="clarification">Clarification</option>
+                        <option value="support">Support Statement</option>
+                        <option value="concern">Concern/Opposition</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="addGCComment()">Add Comment</button>
+                <button class="btn secondary" onclick="closeGCDetailsModal()" style="margin-left: 0.5rem;">Close</button>
+            </div>
+        </div>
+    </div>
+
     <div id="roster-modal" class="modal">
         <div class="box" style="width: 90%; max-width: 1200px; max-height: 90vh; overflow-y: auto; background: #2c3e50; color: #ecf0f1; border: 1px solid #3498db;">
             <span class="modal-close" onclick="closeRosterModal()">&times;</span>
@@ -1836,7 +2047,15 @@ const storage = {
     getGroupConscienceLog() { return JSON.parse(localStorage.getItem('groupConscienceLog') || '[]'); },
     saveGroupConscienceLog(log) { localStorage.setItem('groupConscienceLog', JSON.stringify(log)); },
     getLiveGCItems() { return JSON.parse(localStorage.getItem('liveGCItems') || '[]'); },
-    saveLiveGCItems(items) { localStorage.setItem('liveGCItems', JSON.stringify(items)); }
+    saveLiveGCItems(items) { localStorage.setItem('liveGCItems', JSON.stringify(items)); },
+    getProposedAgendaItems() { return JSON.parse(localStorage.getItem('proposedAgendaItems') || '[]'); },
+    saveProposedAgendaItems(items) { localStorage.setItem('proposedAgendaItems', JSON.stringify(items)); },
+    getGCComments() { return JSON.parse(localStorage.getItem('gcComments') || '[]'); },
+    saveGCComments(comments) { localStorage.setItem('gcComments', JSON.stringify(comments)); },
+    getGCActionItems() { return JSON.parse(localStorage.getItem('gcActionItems') || '[]'); },
+    saveGCActionItems(actions) { localStorage.setItem('gcActionItems', JSON.stringify(actions)); },
+    getGCSettings() { return JSON.parse(localStorage.getItem('gcSettings') || '{"quorumPercentage": 50, "quorumMinimum": 5}'); },
+    saveGCSettings(settings) { localStorage.setItem('gcSettings', JSON.stringify(settings)); }
 };
 // Initialize default data on first load
 function initDefaults() {
@@ -1898,6 +2117,18 @@ function initDefaults() {
     }
     if (!localStorage.getItem('liveGCItems')) {
         storage.saveLiveGCItems([]);
+    }
+    if (!localStorage.getItem('proposedAgendaItems')) {
+        storage.saveProposedAgendaItems([]);
+    }
+    if (!localStorage.getItem('gcComments')) {
+        storage.saveGCComments([]);
+    }
+    if (!localStorage.getItem('gcActionItems')) {
+        storage.saveGCActionItems([]);
+    }
+    if (!localStorage.getItem('gcSettings')) {
+        storage.saveGCSettings({ quorumPercentage: 50, quorumMinimum: 5 });
     }
 }
 function handleEventSubmit() {
@@ -2744,13 +2975,19 @@ function addGCLog() {
         }
     });
 
+    const votesFor = parseInt(document.getElementById('gc-votes-for')?.value || 0);
+    const votesAgainst = parseInt(document.getElementById('gc-votes-against')?.value || 0);
+    const votesAbstain = parseInt(document.getElementById('gc-votes-abstain')?.value || 0);
+
     const log = {
         id: genId(),
         date: document.getElementById('gc-date').value,
         item: document.getElementById('gc-item').value.trim(),
         submittedBy: document.getElementById('gc-submitted-by').value.trim(),
         status: document.getElementById('gc-status').value,
-        votes: document.getElementById('gc-votes').value.trim(),
+        votesFor,
+        votesAgainst,
+        votesAbstain,
         attendees: Array.from(document.getElementById('gc-attendees').selectedOptions).map(opt => opt.value),
         servantReports: servantReports,
     };
@@ -2787,13 +3024,22 @@ function updateGCLogTable() {
         const isCurrentMonth = logMonth === currentMonth && logYear === currentYear;
         const tbody = isCurrentMonth ? currentTbody : previousTbody;
 
+        const votesFor = log.votesFor || 0;
+        const votesAgainst = log.votesAgainst || 0;
+        const votesAbstain = log.votesAbstain || 0;
+        const votesDisplay = (votesFor || votesAgainst || votesAbstain)
+            ? `${votesFor}-${votesAgainst}-${votesAbstain}`
+            : (log.votes || 'N/A');
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${logDate.toLocaleDateString()}</td>
             <td>${log.item.substring(0, 50)}${log.item.length > 50 ? '...' : ''}</td>
             <td>${log.submittedBy || 'N/A'}</td>
-            <td>${log.status}</td>
+            <td style="color: ${log.status === 'passed' ? '#2ecc71' : log.status === 'failed' ? '#e74c3c' : '#f39c12'};">${log.status.toUpperCase()}</td>
+            <td>${votesDisplay}</td>
             <td>
+                <button class="btn" onclick="openGCDetailsModal('${log.id}')" style="margin-right: 5px;">View</button>
                 <button class="btn" onclick="editGCLog('${log.id}')" style="margin-right: 5px;">Edit</button>
                 <button class="btn secondary" onclick="deleteGCLog('${log.id}')">Delete</button>
             </td>
@@ -2802,10 +3048,10 @@ function updateGCLogTable() {
     });
 
     if (currentTbody.innerHTML === '') {
-        currentTbody.innerHTML = '<tr><td colspan="5">No entries for the current month.</td></tr>';
+        currentTbody.innerHTML = '<tr><td colspan="6">No entries for the current month.</td></tr>';
     }
     if (previousTbody.innerHTML === '') {
-        previousTbody.innerHTML = '<tr><td colspan="5">No entries for previous months.</td></tr>';
+        previousTbody.innerHTML = '<tr><td colspan="6">No entries for previous months.</td></tr>';
     }
 }
 
@@ -2819,7 +3065,14 @@ function editGCLog(id) {
     document.getElementById('gc-item').value = log.item;
     document.getElementById('gc-submitted-by').value = log.submittedBy;
     document.getElementById('gc-status').value = log.status;
-    document.getElementById('gc-votes').value = log.votes;
+
+    // Populate new vote fields (or fall back to old format)
+    if (document.getElementById('gc-votes-for')) {
+        document.getElementById('gc-votes-for').value = log.votesFor || 0;
+        document.getElementById('gc-votes-against').value = log.votesAgainst || 0;
+        document.getElementById('gc-votes-abstain').value = log.votesAbstain || 0;
+        updateVotePercentages();
+    }
 
     // Handle populating the multi-select dropdown
     const attendees = log.attendees || [];
@@ -2873,13 +3126,19 @@ function updateGCLog(id) {
         }
     });
 
+    const votesFor = parseInt(document.getElementById('gc-votes-for')?.value || 0);
+    const votesAgainst = parseInt(document.getElementById('gc-votes-against')?.value || 0);
+    const votesAbstain = parseInt(document.getElementById('gc-votes-abstain')?.value || 0);
+
     const log = {
         id,
         date: document.getElementById('gc-date').value,
         item: document.getElementById('gc-item').value.trim(),
         submittedBy: document.getElementById('gc-submitted-by').value.trim(),
         status: document.getElementById('gc-status').value,
-        votes: document.getElementById('gc-votes').value.trim(),
+        votesFor,
+        votesAgainst,
+        votesAbstain,
         attendees: Array.from(document.getElementById('gc-attendees').selectedOptions).map(opt => opt.value),
         servantReports: servantReports,
     };
@@ -2902,12 +3161,19 @@ function cancelGCEdit() {
     document.getElementById('gc-item').value = '';
     document.getElementById('gc-submitted-by').value = '';
     document.getElementById('gc-status').value = 'passed';
-    document.getElementById('gc-votes').value = '';
+
+    // Clear new vote fields
+    if (document.getElementById('gc-votes-for')) {
+        document.getElementById('gc-votes-for').value = '';
+        document.getElementById('gc-votes-against').value = '';
+        document.getElementById('gc-votes-abstain').value = '';
+        updateVotePercentages();
+    }
+
     document.getElementById('gc-attendees').value = '';
     document.querySelectorAll('.servant-report-input').forEach(input => input.value = '');
     document.getElementById('gc-servant-reports-legacy-container').style.display = 'none';
     document.getElementById('gc-servant-reports-legacy').value = '';
-
 
     document.getElementById('gc-form-title').textContent = 'Log Group Conscience Item';
     document.getElementById('gc-form-btn').textContent = 'Add GC Entry';
@@ -2997,6 +3263,552 @@ function deleteLiveGCItem(id) {
     storage.saveLiveGCItems(items);
     showToast('Item deleted.', 'info');
     updateLiveGCTable();
+}
+
+// ========== FEATURE 1: Pre-GC Submission System ==========
+function addProposedAgendaItem() {
+    const title = document.getElementById('proposed-item-title').value.trim();
+    const description = document.getElementById('proposed-item-description').value.trim();
+    const submitter = document.getElementById('proposed-item-submitter').value.trim();
+
+    if (!title || !description || !submitter) {
+        showToast('Please fill in all fields for the agenda item.', 'error');
+        return;
+    }
+
+    const items = storage.getProposedAgendaItems();
+    items.push({
+        id: genId(),
+        title,
+        description,
+        submitter,
+        dateSubmitted: new Date().toISOString().split('T')[0],
+        status: 'pending',
+        discussionNotes: ''
+    });
+    storage.saveProposedAgendaItems(items);
+    showToast('Agenda item submitted successfully!', 'success');
+
+    document.getElementById('proposed-item-title').value = '';
+    document.getElementById('proposed-item-description').value = '';
+    document.getElementById('proposed-item-submitter').value = '';
+
+    updateProposedAgendaTable();
+}
+
+function updateProposedAgendaTable() {
+    const tbody = document.getElementById('proposed-agenda-body');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    const items = storage.getProposedAgendaItems().sort((a, b) => new Date(b.dateSubmitted) - new Date(a.dateSubmitted));
+
+    items.forEach(item => {
+        const tr = document.createElement('tr');
+        const statusColor = item.status === 'converted' ? '#2ecc71' : item.status === 'discussed' ? '#f39c12' : '#3498db';
+        tr.innerHTML = `
+            <td>${item.title}</td>
+            <td>${item.submitter}</td>
+            <td>${new Date(item.dateSubmitted).toLocaleDateString()}</td>
+            <td style="color: ${statusColor};">${item.status.charAt(0).toUpperCase() + item.status.slice(1)}</td>
+            <td>
+                <button class="btn" onclick="viewProposedAgendaItem('${item.id}')" style="margin-right: 5px;">View</button>
+                <button class="btn secondary" onclick="deleteProposedAgendaItem('${item.id}')">Delete</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    if (items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">No proposed agenda items.</td></tr>';
+    }
+}
+
+function viewProposedAgendaItem(id) {
+    const items = storage.getProposedAgendaItems();
+    const item = items.find(i => i.id === id);
+    if (!item) return;
+
+    alert(`Title: ${item.title}\n\nDescription: ${item.description}\n\nSubmitted by: ${item.submitter}\nDate: ${new Date(item.dateSubmitted).toLocaleDateString()}\nStatus: ${item.status}`);
+}
+
+function deleteProposedAgendaItem(id) {
+    if (!confirm('Delete this proposed agenda item?')) return;
+    let items = storage.getProposedAgendaItems();
+    items = items.filter(i => i.id !== id);
+    storage.saveProposedAgendaItems(items);
+    showToast('Proposed agenda item deleted.', 'info');
+    updateProposedAgendaTable();
+}
+
+// ========== FEATURE 2: Voting Transparency & Quorum ==========
+function updateVotePercentages() {
+    const votesFor = parseInt(document.getElementById('gc-votes-for')?.value || 0);
+    const votesAgainst = parseInt(document.getElementById('gc-votes-against')?.value || 0);
+    const votesAbstain = parseInt(document.getElementById('gc-votes-abstain')?.value || 0);
+    const totalVotes = votesFor + votesAgainst + votesAbstain;
+
+    document.getElementById('total-votes').textContent = totalVotes;
+
+    if (totalVotes > 0) {
+        const percentFor = ((votesFor / totalVotes) * 100).toFixed(1);
+        const percentAgainst = ((votesAgainst / totalVotes) * 100).toFixed(1);
+        const percentAbstain = ((votesAbstain / totalVotes) * 100).toFixed(1);
+
+        document.getElementById('percent-for').textContent = percentFor + '%';
+        document.getElementById('percent-against').textContent = percentAgainst + '%';
+        document.getElementById('percent-abstain').textContent = percentAbstain + '%';
+    } else {
+        document.getElementById('percent-for').textContent = '0%';
+        document.getElementById('percent-against').textContent = '0%';
+        document.getElementById('percent-abstain').textContent = '0%';
+    }
+
+    updateQuorumStatus();
+}
+
+function updateQuorumStatus() {
+    const attendees = document.getElementById('gc-attendees').selectedOptions.length;
+    const totalMembers = storage.getMembers().length;
+    const settings = storage.getGCSettings();
+
+    const quorumByPercentage = Math.ceil((totalMembers * settings.quorumPercentage) / 100);
+    const quorumRequired = Math.max(quorumByPercentage, settings.quorumMinimum);
+
+    const quorumStatus = document.getElementById('quorum-status');
+    if (!quorumStatus) return;
+
+    if (attendees >= quorumRequired) {
+        quorumStatus.innerHTML = `<strong style="color: #2ecc71;">✓ Quorum Met:</strong> ${attendees} of ${totalMembers} members (${quorumRequired} required)`;
+    } else {
+        quorumStatus.innerHTML = `<strong style="color: #e74c3c;">✗ No Quorum:</strong> ${attendees} of ${totalMembers} members (${quorumRequired} required)`;
+    }
+}
+
+function saveGCSettings() {
+    const percentage = parseInt(document.getElementById('quorum-percentage').value) || 50;
+    const minimum = parseInt(document.getElementById('quorum-minimum').value) || 5;
+
+    if (percentage < 1 || percentage > 100) {
+        showToast('Quorum percentage must be between 1 and 100.', 'error');
+        return;
+    }
+
+    if (minimum < 1) {
+        showToast('Minimum quorum must be at least 1.', 'error');
+        return;
+    }
+
+    storage.saveGCSettings({ quorumPercentage: percentage, quorumMinimum: minimum });
+    showToast('GC settings saved successfully!', 'success');
+}
+
+function loadGCSettings() {
+    const settings = storage.getGCSettings();
+    const percentageInput = document.getElementById('quorum-percentage');
+    const minimumInput = document.getElementById('quorum-minimum');
+
+    if (percentageInput) percentageInput.value = settings.quorumPercentage;
+    if (minimumInput) minimumInput.value = settings.quorumMinimum;
+}
+
+// ========== FEATURE 3: Action Items & Follow-Up Tracking ==========
+function handleActionItemSubmit() {
+    const editId = document.getElementById('action-item-edit-id').value;
+    if (editId) {
+        updateActionItem(editId);
+    } else {
+        addActionItem();
+    }
+}
+
+function addActionItem() {
+    const description = document.getElementById('action-item-description').value.trim();
+    const assignee = document.getElementById('action-item-assignee').value;
+    const dueDate = document.getElementById('action-item-due-date').value;
+    const relatedGCId = document.getElementById('action-item-related-gc').value;
+
+    if (!description || !assignee || !dueDate) {
+        showToast('Please fill in all required fields.', 'error');
+        return;
+    }
+
+    const actions = storage.getGCActionItems();
+    actions.push({
+        id: genId(),
+        description,
+        assignee,
+        dueDate,
+        relatedGCId,
+        status: 'pending',
+        createdDate: new Date().toISOString().split('T')[0],
+        completedDate: null
+    });
+
+    storage.saveGCActionItems(actions);
+    showToast('Action item added!', 'success');
+    cancelActionItemEdit();
+    updateActionItemsTable();
+}
+
+function updateActionItem(id) {
+    const actions = storage.getGCActionItems();
+    const index = actions.findIndex(a => a.id === id);
+    if (index === -1) return;
+
+    const description = document.getElementById('action-item-description').value.trim();
+    const assignee = document.getElementById('action-item-assignee').value;
+    const dueDate = document.getElementById('action-item-due-date').value;
+    const relatedGCId = document.getElementById('action-item-related-gc').value;
+
+    if (!description || !assignee || !dueDate) {
+        showToast('Please fill in all required fields.', 'error');
+        return;
+    }
+
+    actions[index] = {
+        ...actions[index],
+        description,
+        assignee,
+        dueDate,
+        relatedGCId
+    };
+
+    storage.saveGCActionItems(actions);
+    showToast('Action item updated!', 'success');
+    cancelActionItemEdit();
+    updateActionItemsTable();
+}
+
+function cancelActionItemEdit() {
+    document.getElementById('action-item-edit-id').value = '';
+    document.getElementById('action-item-description').value = '';
+    document.getElementById('action-item-assignee').value = '';
+    document.getElementById('action-item-due-date').value = '';
+    document.getElementById('action-item-related-gc').value = '';
+
+    document.getElementById('action-item-btn').textContent = 'Add Action Item';
+    document.getElementById('action-item-cancel-btn').style.display = 'none';
+}
+
+function updateActionItemsTable() {
+    const tbody = document.getElementById('action-items-body');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    const actions = storage.getGCActionItems().filter(a => a.status !== 'completed').sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+
+    actions.forEach(action => {
+        const tr = document.createElement('tr');
+        const today = new Date().toISOString().split('T')[0];
+        const isOverdue = action.dueDate < today;
+        const dueDateColor = isOverdue ? '#e74c3c' : '#ecf0f1';
+
+        const statusOptions = ['pending', 'in-progress', 'completed']
+            .map(s => `<option value="${s}" ${s === action.status ? 'selected' : ''}>${s.charAt(0).toUpperCase() + s.slice(1).replace('-', ' ')}</option>`)
+            .join('');
+
+        tr.innerHTML = `
+            <td>${action.description.substring(0, 50)}${action.description.length > 50 ? '...' : ''}</td>
+            <td>${action.assignee}</td>
+            <td style="color: ${dueDateColor};">${new Date(action.dueDate).toLocaleDateString()}${isOverdue ? ' (OVERDUE)' : ''}</td>
+            <td>
+                <select onchange="updateActionItemStatus('${action.id}', this.value)" style="background: #34495e; color: #ecf0f1; border: 1px solid #7f8c8d; border-radius: 4px; padding: 0.25rem;">
+                    ${statusOptions}
+                </select>
+            </td>
+            <td>
+                <button class="btn" onclick="editActionItem('${action.id}')" style="margin-right: 5px;">Edit</button>
+                <button class="btn secondary" onclick="deleteActionItem('${action.id}')">Delete</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    if (actions.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">No active action items.</td></tr>';
+    }
+
+    populateActionItemDropdowns();
+}
+
+function editActionItem(id) {
+    const actions = storage.getGCActionItems();
+    const action = actions.find(a => a.id === id);
+    if (!action) return;
+
+    document.getElementById('action-item-edit-id').value = action.id;
+    document.getElementById('action-item-description').value = action.description;
+    document.getElementById('action-item-assignee').value = action.assignee;
+    document.getElementById('action-item-due-date').value = action.dueDate;
+    document.getElementById('action-item-related-gc').value = action.relatedGCId || '';
+
+    document.getElementById('action-item-btn').textContent = 'Update Action Item';
+    document.getElementById('action-item-cancel-btn').style.display = 'inline-block';
+}
+
+function updateActionItemStatus(id, newStatus) {
+    const actions = storage.getGCActionItems();
+    const index = actions.findIndex(a => a.id === id);
+    if (index === -1) return;
+
+    actions[index].status = newStatus;
+    if (newStatus === 'completed') {
+        actions[index].completedDate = new Date().toISOString().split('T')[0];
+    }
+
+    storage.saveGCActionItems(actions);
+    showToast('Action item status updated!', 'success');
+    updateActionItemsTable();
+}
+
+function deleteActionItem(id) {
+    if (!confirm('Delete this action item?')) return;
+    let actions = storage.getGCActionItems();
+    actions = actions.filter(a => a.id !== id);
+    storage.saveGCActionItems(actions);
+    showToast('Action item deleted.', 'info');
+    updateActionItemsTable();
+}
+
+function populateActionItemDropdowns() {
+    const assigneeSelect = document.getElementById('action-item-assignee');
+    const relatedGCSelect = document.getElementById('action-item-related-gc');
+
+    if (assigneeSelect) {
+        const currentValue = assigneeSelect.value;
+        assigneeSelect.innerHTML = '<option value="">Select member...</option>';
+        const members = storage.getMembers().sort((a, b) => a.name.localeCompare(b.name));
+        members.forEach(m => {
+            const option = document.createElement('option');
+            option.value = m.name;
+            option.textContent = m.name;
+            assigneeSelect.appendChild(option);
+        });
+        if (currentValue) assigneeSelect.value = currentValue;
+    }
+
+    if (relatedGCSelect) {
+        const currentValue = relatedGCSelect.value;
+        relatedGCSelect.innerHTML = '<option value="">None</option>';
+        const gcLogs = storage.getGroupConscienceLog().sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 20);
+        gcLogs.forEach(log => {
+            const option = document.createElement('option');
+            option.value = log.id;
+            option.textContent = `${new Date(log.date).toLocaleDateString()} - ${log.item.substring(0, 50)}`;
+            relatedGCSelect.appendChild(option);
+        });
+        if (currentValue) relatedGCSelect.value = currentValue;
+    }
+}
+
+// ========== FEATURE 4: Discussion Threading & Comments ==========
+let currentGCIdForComments = null;
+
+function openGCDetailsModal(id) {
+    currentGCIdForComments = id;
+    const logs = storage.getGroupConscienceLog();
+    const log = logs.find(l => l.id === id);
+    if (!log) return;
+
+    const votesFor = log.votesFor || 0;
+    const votesAgainst = log.votesAgainst || 0;
+    const votesAbstain = log.votesAbstain || 0;
+    const totalVotes = votesFor + votesAgainst + votesAbstain;
+
+    let votesDisplay = '';
+    if (totalVotes > 0) {
+        const percentFor = ((votesFor / totalVotes) * 100).toFixed(1);
+        const percentAgainst = ((votesAgainst / totalVotes) * 100).toFixed(1);
+        const percentAbstain = ((votesAbstain / totalVotes) * 100).toFixed(1);
+        votesDisplay = `
+            <div style="margin-top: 0.5rem;">
+                <strong>For:</strong> ${votesFor} (${percentFor}%) |
+                <strong>Against:</strong> ${votesAgainst} (${percentAgainst}%) |
+                <strong>Abstain:</strong> ${votesAbstain} (${percentAbstain}%)
+            </div>
+        `;
+    } else if (log.votes) {
+        votesDisplay = `<div style="margin-top: 0.5rem;"><strong>Votes:</strong> ${log.votes}</div>`;
+    }
+
+    const attendeesList = Array.isArray(log.attendees) ? log.attendees.join(', ') : (log.attendees || 'N/A');
+
+    const detailsContent = document.getElementById('gc-details-content');
+    detailsContent.innerHTML = `
+        <div style="background: #34495e; padding: 1rem; border-radius: 6px;">
+            <div><strong>Date:</strong> ${new Date(log.date).toLocaleDateString()}</div>
+            <div style="margin-top: 0.5rem;"><strong>Motion:</strong> ${log.item}</div>
+            <div style="margin-top: 0.5rem;"><strong>Submitted By:</strong> ${log.submittedBy || 'N/A'}</div>
+            <div style="margin-top: 0.5rem;"><strong>Status:</strong> <span style="color: ${log.status === 'passed' ? '#2ecc71' : log.status === 'failed' ? '#e74c3c' : '#f39c12'};">${log.status.toUpperCase()}</span></div>
+            ${votesDisplay}
+            <div style="margin-top: 0.5rem;"><strong>Members Present:</strong> ${attendeesList}</div>
+        </div>
+    `;
+
+    loadGCComments(id);
+    document.getElementById('gc-details-modal').style.display = 'flex';
+}
+
+function closeGCDetailsModal() {
+    document.getElementById('gc-details-modal').style.display = 'none';
+    currentGCIdForComments = null;
+    document.getElementById('gc-comment-text').value = '';
+    document.getElementById('gc-comment-author').value = '';
+}
+
+function loadGCComments(gcId) {
+    const commentsList = document.getElementById('gc-comments-list');
+    const allComments = storage.getGCComments();
+    const comments = allComments.filter(c => c.gcId === gcId).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    if (comments.length === 0) {
+        commentsList.innerHTML = '<div style="text-align: center; opacity: 0.6; padding: 1rem;">No comments yet.</div>';
+        return;
+    }
+
+    commentsList.innerHTML = comments.map(comment => {
+        const typeColors = {
+            discussion: '#3498db',
+            amendment: '#f39c12',
+            clarification: '#9b59b6',
+            support: '#2ecc71',
+            concern: '#e74c3c'
+        };
+        const typeColor = typeColors[comment.type] || '#7f8c8d';
+
+        return `
+            <div style="background: #2c3e50; padding: 0.75rem; border-radius: 4px; margin-bottom: 0.5rem; border-left: 4px solid ${typeColor};">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div>
+                        <strong>${comment.author}</strong>
+                        <span style="font-size: 0.8rem; opacity: 0.7; margin-left: 0.5rem;">${new Date(comment.timestamp).toLocaleString()}</span>
+                        <span style="background: ${typeColor}; padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.7rem; margin-left: 0.5rem;">${comment.type}</span>
+                    </div>
+                    <button onclick="deleteGCComment('${comment.id}')" style="background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 1.2rem;">&times;</button>
+                </div>
+                <div style="margin-top: 0.5rem;">${comment.text}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+function addGCComment() {
+    if (!currentGCIdForComments) return;
+
+    const text = document.getElementById('gc-comment-text').value.trim();
+    const author = document.getElementById('gc-comment-author').value.trim();
+    const type = document.getElementById('gc-comment-type').value;
+
+    if (!text || !author) {
+        showToast('Please provide both comment text and your name.', 'error');
+        return;
+    }
+
+    const comments = storage.getGCComments();
+    comments.push({
+        id: genId(),
+        gcId: currentGCIdForComments,
+        text,
+        author,
+        type,
+        timestamp: new Date().toISOString()
+    });
+
+    storage.saveGCComments(comments);
+    showToast('Comment added!', 'success');
+
+    document.getElementById('gc-comment-text').value = '';
+    document.getElementById('gc-comment-author').value = '';
+
+    loadGCComments(currentGCIdForComments);
+}
+
+function deleteGCComment(id) {
+    if (!confirm('Delete this comment?')) return;
+    let comments = storage.getGCComments();
+    comments = comments.filter(c => c.id !== id);
+    storage.saveGCComments(comments);
+    showToast('Comment deleted.', 'info');
+    if (currentGCIdForComments) {
+        loadGCComments(currentGCIdForComments);
+    }
+}
+
+// ========== FEATURE 5: Historical Analysis & Search ==========
+function searchGCHistory() {
+    const searchText = document.getElementById('gc-search')?.value.toLowerCase() || '';
+    const filterStatus = document.getElementById('gc-filter-status')?.value || '';
+    const dateFrom = document.getElementById('gc-filter-date-from')?.value || '';
+    const dateTo = document.getElementById('gc-filter-date-to')?.value || '';
+
+    let logs = storage.getGroupConscienceLog();
+
+    if (searchText) {
+        logs = logs.filter(log =>
+            log.item.toLowerCase().includes(searchText) ||
+            (log.submittedBy && log.submittedBy.toLowerCase().includes(searchText))
+        );
+    }
+
+    if (filterStatus) {
+        logs = logs.filter(log => log.status === filterStatus);
+    }
+
+    if (dateFrom) {
+        logs = logs.filter(log => log.date >= dateFrom);
+    }
+
+    if (dateTo) {
+        logs = logs.filter(log => log.date <= dateTo);
+    }
+
+    logs.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    const tbody = document.getElementById('gc-history-search-body');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    logs.forEach(log => {
+        const tr = document.createElement('tr');
+        const votesFor = log.votesFor || 0;
+        const votesAgainst = log.votesAgainst || 0;
+        const votesAbstain = log.votesAbstain || 0;
+        const votesDisplay = (votesFor || votesAgainst || votesAbstain)
+            ? `${votesFor}-${votesAgainst}-${votesAbstain}`
+            : (log.votes || 'N/A');
+
+        tr.innerHTML = `
+            <td>${new Date(log.date).toLocaleDateString()}</td>
+            <td>${log.item.substring(0, 60)}${log.item.length > 60 ? '...' : ''}</td>
+            <td style="color: ${log.status === 'passed' ? '#2ecc71' : log.status === 'failed' ? '#e74c3c' : '#f39c12'};">${log.status.toUpperCase()}</td>
+            <td>${votesDisplay}</td>
+            <td>
+                <button class="btn" onclick="openGCDetailsModal('${log.id}')">View Details</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    if (logs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">No results found.</td></tr>';
+    }
+
+    updateGCStatistics();
+}
+
+function updateGCStatistics() {
+    const logs = storage.getGroupConscienceLog();
+    const total = logs.length;
+    const passed = logs.filter(l => l.status === 'passed').length;
+    const failed = logs.filter(l => l.status === 'failed').length;
+    const tabled = logs.filter(l => l.status === 'tabled').length;
+    const passRate = total > 0 ? ((passed / total) * 100).toFixed(1) : 0;
+
+    document.getElementById('stat-total-motions').textContent = total;
+    document.getElementById('stat-passed-motions').textContent = passed;
+    document.getElementById('stat-failed-motions').textContent = failed;
+    document.getElementById('stat-tabled-motions').textContent = tabled;
+    document.getElementById('stat-pass-rate').textContent = passRate + '%';
 }
 
 
@@ -3999,6 +4811,13 @@ function init() {
     populateMemberDropdowns();
     renderServantReportInputs();
     setupAudioRecorder();
+
+    // Initialize new GC features
+    updateProposedAgendaTable();
+    loadGCSettings();
+    updateActionItemsTable();
+    searchGCHistory();
+    updateGCStatistics();
 
     // Back to Top button logic
     const mainEl = document.querySelector('main');
