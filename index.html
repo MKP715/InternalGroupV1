@@ -11,6 +11,8 @@
     <!-- PDF Generation Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- Link to the custom favicon logo -->
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <style>
@@ -648,6 +650,9 @@
             <li data-section="gallery-section">Gallery</li>
             <li data-section="history-section">History</li>
             <li data-section="chairperson-section">Chairperson's Corner</li>
+            <li data-section="analytics-section">Analytics</li>
+            <li data-section="library-section">Library</li>
+            <li data-section="accessibility-section">Accessibility</li>
             <li data-section="settings-section">Settings</li>
         </ul>
     </nav>
@@ -2268,6 +2273,274 @@
             </div>
         </section>
 
+        <!-- Analytics Dashboard Section -->
+        <section id="analytics-section">
+            <h2>Analytics Dashboard</h2>
+            <p class="mb-4">Track group engagement, attendance trends, and participation metrics.</p>
+
+            <!-- Attendance Trends -->
+            <div class="box mb-4">
+                <h3>Attendance Trends Over Time</h3>
+                <div class="form-group">
+                    <label for="analytics-time-range">Time Range</label>
+                    <select id="analytics-time-range" onchange="refreshAnalytics()">
+                        <option value="30">Last 30 Days</option>
+                        <option value="60">Last 60 Days</option>
+                        <option value="90" selected>Last 90 Days</option>
+                        <option value="180">Last 6 Months</option>
+                        <option value="365">Last Year</option>
+                    </select>
+                </div>
+                <canvas id="attendance-chart" style="max-height: 300px;"></canvas>
+            </div>
+
+            <!-- Active Member Engagement -->
+            <div class="box mb-4">
+                <h3>Active Member Engagement</h3>
+                <div id="engagement-metrics" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <!-- Metrics will be inserted here -->
+                </div>
+            </div>
+
+            <!-- GC Participation Rates -->
+            <div class="box mb-4">
+                <h3>Group Conscience Participation Rates</h3>
+                <div id="gc-participation-stats">
+                    <!-- Stats will be inserted here -->
+                </div>
+                <canvas id="gc-participation-chart" style="max-height: 250px; margin-top: 1rem;"></canvas>
+            </div>
+
+            <!-- Service Position Engagement -->
+            <div class="box mb-4">
+                <h3>Service Position Engagement</h3>
+                <div id="service-engagement-stats">
+                    <!-- Stats will be inserted here -->
+                </div>
+            </div>
+
+            <!-- Recent Activity Summary -->
+            <div class="box">
+                <h3>Recent Activity Summary</h3>
+                <div id="activity-summary">
+                    <!-- Activity summary will be inserted here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Literature Library Section -->
+        <section id="library-section">
+            <h2>Literature Library</h2>
+            <p class="mb-4">Manage group-owned literature, lending system, and reading schedules.</p>
+
+            <!-- Add New Literature -->
+            <div class="box mb-4">
+                <h3>Add New Literature</h3>
+                <div id="add-literature-form" style="display: none;">
+                    <div class="form-group">
+                        <label for="lit-title">Title *</label>
+                        <input type="text" id="lit-title" placeholder="Book or pamphlet title" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="lit-type">Type</label>
+                        <select id="lit-type">
+                            <option value="book">Book</option>
+                            <option value="pamphlet">Pamphlet</option>
+                            <option value="workbook">Workbook</option>
+                            <option value="guidebook">Guidebook</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="lit-format">Format</label>
+                        <select id="lit-format">
+                            <option value="physical">Physical Copy</option>
+                            <option value="digital">Digital (PDF/eBook)</option>
+                            <option value="both">Both Physical & Digital</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="lit-copies">Number of Copies</label>
+                        <input type="number" id="lit-copies" min="1" value="1" />
+                    </div>
+                    <div class="form-group">
+                        <label for="lit-location">Location/Shelf</label>
+                        <input type="text" id="lit-location" placeholder="Where is it stored?" />
+                    </div>
+                    <div class="form-group">
+                        <label for="lit-notes">Notes</label>
+                        <textarea id="lit-notes" rows="2" placeholder="Any additional notes..."></textarea>
+                    </div>
+                    <button class="btn" onclick="saveLiterature()">Save Literature</button>
+                    <button class="btn secondary" onclick="toggleLiteratureForm()">Cancel</button>
+                </div>
+                <button class="btn" onclick="toggleLiteratureForm()" id="show-lit-form-btn">Add New Literature</button>
+            </div>
+
+            <!-- Library Catalog -->
+            <div class="box mb-4">
+                <h3>Library Catalog</h3>
+                <div style="margin-bottom: 1rem;">
+                    <input type="text" id="library-search" placeholder="Search library..." onkeyup="renderLibraryCatalog()" />
+                </div>
+                <div id="library-catalog">
+                    <!-- Catalog items will be listed here -->
+                </div>
+            </div>
+
+            <!-- Lending System -->
+            <div class="box mb-4">
+                <h3>Current Checkouts</h3>
+                <div id="current-checkouts">
+                    <!-- Active checkouts will be listed here -->
+                </div>
+            </div>
+
+            <!-- Reading Schedules -->
+            <div class="box">
+                <h3>Reading Schedules</h3>
+                <button class="btn mb-3" onclick="toggleReadingScheduleForm()">Create New Reading Schedule</button>
+                <div id="add-reading-schedule-form" style="display: none; margin-bottom: 1rem; padding: 1rem; background: #34495e; border-radius: 6px;">
+                    <div class="form-group">
+                        <label for="schedule-name">Schedule Name *</label>
+                        <input type="text" id="schedule-name" placeholder="e.g., Big Book Study Group" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="schedule-book">Book/Literature</label>
+                        <select id="schedule-book">
+                            <!-- Will be populated from library -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="schedule-start">Start Date</label>
+                        <input type="date" id="schedule-start" />
+                    </div>
+                    <div class="form-group">
+                        <label for="schedule-frequency">Frequency</label>
+                        <select id="schedule-frequency">
+                            <option value="weekly">Weekly</option>
+                            <option value="biweekly">Bi-weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="schedule-notes">Notes/Reading Plan</label>
+                        <textarea id="schedule-notes" rows="3" placeholder="Chapters, pages, or topics per session..."></textarea>
+                    </div>
+                    <button class="btn" onclick="saveReadingSchedule()">Create Schedule</button>
+                    <button class="btn secondary" onclick="toggleReadingScheduleForm()">Cancel</button>
+                </div>
+                <div id="reading-schedules-list">
+                    <!-- Reading schedules will be listed here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Accessibility Features Section -->
+        <section id="accessibility-section">
+            <h2>Accessibility Settings</h2>
+            <p class="mb-4">Customize your viewing experience for better accessibility.</p>
+
+            <!-- Dark Mode Toggle -->
+            <div class="box mb-4">
+                <h3>Theme Settings</h3>
+                <div class="form-group">
+                    <label for="theme-mode">Color Theme</label>
+                    <select id="theme-mode" onchange="changeTheme()">
+                        <option value="dark">Dark Mode (Default)</option>
+                        <option value="light">Light Mode</option>
+                        <option value="high-contrast">High Contrast</option>
+                    </select>
+                </div>
+                <p style="font-size: 0.9rem; color: #95a5a6; margin-top: 0.5rem;">
+                    Choose a theme that works best for your eyes and environment.
+                </p>
+            </div>
+
+            <!-- Font Size Controls -->
+            <div class="box mb-4">
+                <h3>Font Size</h3>
+                <div class="form-group">
+                    <label for="font-size-slider">Text Size: <span id="font-size-display">100%</span></label>
+                    <input type="range" id="font-size-slider" min="80" max="150" value="100" step="10"
+                           style="width: 100%;" oninput="changeFontSize(this.value)" />
+                </div>
+                <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                    <button class="btn secondary" onclick="changeFontSize(80)">Small</button>
+                    <button class="btn secondary" onclick="changeFontSize(100)">Medium</button>
+                    <button class="btn secondary" onclick="changeFontSize(120)">Large</button>
+                    <button class="btn secondary" onclick="changeFontSize(150)">Extra Large</button>
+                </div>
+                <p style="font-size: 0.9rem; color: #95a5a6; margin-top: 1rem;">
+                    Sample text: The quick brown fox jumps over the lazy dog. 0123456789
+                </p>
+            </div>
+
+            <!-- Screen Reader Optimization -->
+            <div class="box mb-4">
+                <h3>Screen Reader Optimization</h3>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="screen-reader-mode" onchange="toggleScreenReaderMode()" />
+                        Enable Screen Reader Optimizations
+                    </label>
+                </div>
+                <p style="font-size: 0.9rem; color: #95a5a6; margin-top: 0.5rem;">
+                    This mode adds enhanced ARIA labels, skip navigation links, and improved semantic structure for screen readers.
+                </p>
+            </div>
+
+            <!-- Additional Accessibility Options -->
+            <div class="box mb-4">
+                <h3>Additional Options</h3>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="reduce-animations" onchange="toggleReduceAnimations()" />
+                        Reduce Animations
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="focus-indicators" onchange="toggleFocusIndicators()" />
+                        Enhanced Focus Indicators
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="dyslexia-font" onchange="toggleDyslexiaFont()" />
+                        Use Dyslexia-Friendly Font
+                    </label>
+                </div>
+            </div>
+
+            <!-- Keyboard Shortcuts Reference -->
+            <div class="box">
+                <h3>Keyboard Shortcuts</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="text-align: left; padding: 0.5rem; border-bottom: 1px solid #3498db;">Action</th>
+                            <th style="text-align: left; padding: 0.5rem; border-bottom: 1px solid #3498db;">Shortcut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.5rem;">Navigate sections</td>
+                            <td style="padding: 0.5rem;"><kbd>Tab</kbd> / <kbd>Shift+Tab</kbd></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.5rem;">Activate button/link</td>
+                            <td style="padding: 0.5rem;"><kbd>Enter</kbd> or <kbd>Space</kbd></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.5rem;">Close modal</td>
+                            <td style="padding: 0.5rem;"><kbd>Esc</kbd></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
         <!-- Settings Section -->
         <section id="settings-section">
             <h2>Settings & Data Management</h2>
@@ -2400,6 +2673,18 @@ function goToSection(sectionId) {
     // If navigating to the schedule, render the calendar
     if (sectionId === 'schedule-section') {
         renderCalendar();
+    }
+
+    // If navigating to analytics, refresh the dashboard
+    if (sectionId === 'analytics-section') {
+        refreshAnalytics();
+    }
+
+    // If navigating to library, refresh the views
+    if (sectionId === 'library-section') {
+        renderLibraryCatalog();
+        renderCurrentCheckouts();
+        renderReadingSchedules();
     }
 }
 // Toggle form visibility
@@ -6277,6 +6562,13 @@ function init() {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('expense-date').value = today;
 
+    // Initialize new nice-to-have features
+    refreshAnalytics();
+    renderLibraryCatalog();
+    renderCurrentCheckouts();
+    renderReadingSchedules();
+    loadAccessibilitySettings();
+
     // Back to Top button logic
     const mainEl = document.querySelector('main');
     const backToTopBtn = document.getElementById('back-to-top-btn');
@@ -6294,6 +6586,841 @@ function init() {
         mainEl.scrollTo({ top: 0, behavior: 'smooth' });
     });
 }
+
+// ============================================
+// ANALYTICS DASHBOARD FUNCTIONS
+// ============================================
+
+let attendanceChart = null;
+let gcParticipationChart = null;
+
+function refreshAnalytics() {
+    renderAttendanceTrends();
+    renderEngagementMetrics();
+    renderGCParticipation();
+    renderServiceEngagement();
+    renderActivitySummary();
+}
+
+function renderAttendanceTrends() {
+    const days = parseInt(document.getElementById('analytics-time-range').value);
+    const events = JSON.parse(localStorage.getItem('events') || '[]');
+
+    // Calculate date range
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+
+    // Filter events in date range
+    const relevantEvents = events.filter(e => {
+        const eventDate = new Date(e.date);
+        return eventDate >= startDate && eventDate <= endDate;
+    });
+
+    // Group by week
+    const weeklyData = {};
+    relevantEvents.forEach(event => {
+        const eventDate = new Date(event.date);
+        const weekStart = new Date(eventDate);
+        weekStart.setDate(eventDate.getDate() - eventDate.getDay());
+        const weekKey = weekStart.toISOString().split('T')[0];
+
+        if (!weeklyData[weekKey]) {
+            weeklyData[weekKey] = { count: 0, totalAttendance: 0 };
+        }
+        weeklyData[weekKey].count++;
+        weeklyData[weekKey].totalAttendance += (event.attendees || []).length;
+    });
+
+    const labels = Object.keys(weeklyData).sort();
+    const attendanceData = labels.map(key => weeklyData[key].totalAttendance);
+    const eventCounts = labels.map(key => weeklyData[key].count);
+
+    const ctx = document.getElementById('attendance-chart').getContext('2d');
+
+    if (attendanceChart) {
+        attendanceChart.destroy();
+    }
+
+    attendanceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels.map(date => new Date(date).toLocaleDateString()),
+            datasets: [{
+                label: 'Total Attendance',
+                data: attendanceData,
+                borderColor: '#3498db',
+                backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    labels: { color: '#ecf0f1' }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: '#ecf0f1' },
+                    grid: { color: 'rgba(236, 240, 241, 0.1)' }
+                },
+                y: {
+                    ticks: { color: '#ecf0f1' },
+                    grid: { color: 'rgba(236, 240, 241, 0.1)' },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+function renderEngagementMetrics() {
+    const members = JSON.parse(localStorage.getItem('members') || '[]');
+    const events = JSON.parse(localStorage.getItem('events') || '[]');
+    const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+    const gcMotions = JSON.parse(localStorage.getItem('groupConscienceMotions') || '[]');
+
+    const totalMembers = members.length;
+    const activeMembers = members.filter(m => m.isServant ||
+        events.some(e => (e.attendees || []).includes(m.id))).length;
+    const engagementRate = totalMembers > 0 ?
+        ((activeMembers / totalMembers) * 100).toFixed(1) : 0;
+
+    const recentMessages = messages.filter(m => {
+        const msgDate = new Date(m.timestamp);
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        return msgDate >= thirtyDaysAgo;
+    }).length;
+
+    const html = `
+        <div style="background: #34495e; padding: 1rem; border-radius: 6px; text-align: center;">
+            <div style="font-size: 2rem; color: #3498db; font-weight: bold;">${totalMembers}</div>
+            <div style="color: #95a5a6;">Total Members</div>
+        </div>
+        <div style="background: #34495e; padding: 1rem; border-radius: 6px; text-align: center;">
+            <div style="font-size: 2rem; color: #2ecc71; font-weight: bold;">${activeMembers}</div>
+            <div style="color: #95a5a6;">Active Members</div>
+        </div>
+        <div style="background: #34495e; padding: 1rem; border-radius: 6px; text-align: center;">
+            <div style="font-size: 2rem; color: #e74c3c; font-weight: bold;">${engagementRate}%</div>
+            <div style="color: #95a5a6;">Engagement Rate</div>
+        </div>
+        <div style="background: #34495e; padding: 1rem; border-radius: 6px; text-align: center;">
+            <div style="font-size: 2rem; color: #f39c12; font-weight: bold;">${recentMessages}</div>
+            <div style="color: #95a5a6;">Messages (30d)</div>
+        </div>
+    `;
+
+    document.getElementById('engagement-metrics').innerHTML = html;
+}
+
+function renderGCParticipation() {
+    const gcMotions = JSON.parse(localStorage.getItem('groupConscienceMotions') || '[]');
+    const members = JSON.parse(localStorage.getItem('members') || '[]');
+
+    const totalMotions = gcMotions.length;
+    const votedMotions = gcMotions.filter(m => m.status === 'approved' || m.status === 'rejected').length;
+    const pendingMotions = gcMotions.filter(m => m.status === 'open').length;
+
+    // Calculate participation
+    let totalVotes = 0;
+    let totalPossibleVotes = 0;
+
+    gcMotions.forEach(motion => {
+        if (motion.votes) {
+            totalVotes += motion.votes.yes + motion.votes.no + motion.votes.abstain;
+            totalPossibleVotes += members.length;
+        }
+    });
+
+    const participationRate = totalPossibleVotes > 0 ?
+        ((totalVotes / totalPossibleVotes) * 100).toFixed(1) : 0;
+
+    const statsHtml = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+            <div style="background: #34495e; padding: 1rem; border-radius: 6px; text-align: center;">
+                <div style="font-size: 1.5rem; color: #3498db; font-weight: bold;">${totalMotions}</div>
+                <div style="color: #95a5a6; font-size: 0.9rem;">Total Motions</div>
+            </div>
+            <div style="background: #34495e; padding: 1rem; border-radius: 6px; text-align: center;">
+                <div style="font-size: 1.5rem; color: #2ecc71; font-weight: bold;">${votedMotions}</div>
+                <div style="color: #95a5a6; font-size: 0.9rem;">Voted On</div>
+            </div>
+            <div style="background: #34495e; padding: 1rem; border-radius: 6px; text-align: center;">
+                <div style="font-size: 1.5rem; color: #f39c12; font-weight: bold;">${pendingMotions}</div>
+                <div style="color: #95a5a6; font-size: 0.9rem;">Pending</div>
+            </div>
+            <div style="background: #34495e; padding: 1rem; border-radius: 6px; text-align: center;">
+                <div style="font-size: 1.5rem; color: #e74c3c; font-weight: bold;">${participationRate}%</div>
+                <div style="color: #95a5a6; font-size: 0.9rem;">Participation</div>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('gc-participation-stats').innerHTML = statsHtml;
+
+    // Create chart
+    const ctx = document.getElementById('gc-participation-chart').getContext('2d');
+
+    if (gcParticipationChart) {
+        gcParticipationChart.destroy();
+    }
+
+    const approved = gcMotions.filter(m => m.status === 'approved').length;
+    const rejected = gcMotions.filter(m => m.status === 'rejected').length;
+    const open = gcMotions.filter(m => m.status === 'open').length;
+
+    gcParticipationChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Approved', 'Rejected', 'Open'],
+            datasets: [{
+                data: [approved, rejected, open],
+                backgroundColor: ['#2ecc71', '#e74c3c', '#f39c12']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    labels: { color: '#ecf0f1' }
+                }
+            }
+        }
+    });
+}
+
+function renderServiceEngagement() {
+    const positions = JSON.parse(localStorage.getItem('servicePositions') || '[]');
+
+    const filled = positions.filter(p => p.holder && p.holder.trim() !== '').length;
+    const vacant = positions.length - filled;
+    const fillRate = positions.length > 0 ?
+        ((filled / positions.length) * 100).toFixed(1) : 0;
+
+    const html = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+            <div style="background: #34495e; padding: 1rem; border-radius: 6px; text-align: center;">
+                <div style="font-size: 1.5rem; color: #3498db; font-weight: bold;">${positions.length}</div>
+                <div style="color: #95a5a6; font-size: 0.9rem;">Total Positions</div>
+            </div>
+            <div style="background: #34495e; padding: 1rem; border-radius: 6px; text-align: center;">
+                <div style="font-size: 1.5rem; color: #2ecc71; font-weight: bold;">${filled}</div>
+                <div style="color: #95a5a6; font-size: 0.9rem;">Filled</div>
+            </div>
+            <div style="background: #34495e; padding: 1rem; border-radius: 6px; text-align: center;">
+                <div style="font-size: 1.5rem; color: #e74c3c; font-weight: bold;">${vacant}</div>
+                <div style="color: #95a5a6; font-size: 0.9rem;">Vacant</div>
+            </div>
+            <div style="background: #34495e; padding: 1rem; border-radius: 6px; text-align: center;">
+                <div style="font-size: 1.5rem; color: #f39c12; font-weight: bold;">${fillRate}%</div>
+                <div style="color: #95a5a6; font-size: 0.9rem;">Fill Rate</div>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('service-engagement-stats').innerHTML = html;
+}
+
+function renderActivitySummary() {
+    const events = JSON.parse(localStorage.getItem('events') || '[]');
+    const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+    const announcements = JSON.parse(localStorage.getItem('announcements') || '[]');
+    const gcMotions = JSON.parse(localStorage.getItem('groupConscienceMotions') || '[]');
+
+    const now = new Date();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(now.getDate() - 7);
+
+    const recentEvents = events.filter(e => new Date(e.date) >= sevenDaysAgo).length;
+    const recentMessages = messages.filter(m => new Date(m.timestamp) >= sevenDaysAgo).length;
+    const recentAnnouncements = announcements.filter(a => new Date(a.timestamp) >= sevenDaysAgo).length;
+    const recentMotions = gcMotions.filter(m => m.createdAt && new Date(m.createdAt) >= sevenDaysAgo).length;
+
+    const html = `
+        <div style="background: #34495e; padding: 1rem; border-radius: 6px;">
+            <h4 style="color: #3498db; margin-bottom: 0.75rem;">Last 7 Days</h4>
+            <ul style="list-style: none; padding: 0;">
+                <li style="padding: 0.5rem 0; border-bottom: 1px solid #2c3e50;">
+                    <i class="fas fa-calendar-alt" style="color: #3498db; margin-right: 0.5rem;"></i>
+                    <strong>${recentEvents}</strong> events scheduled
+                </li>
+                <li style="padding: 0.5rem 0; border-bottom: 1px solid #2c3e50;">
+                    <i class="fas fa-comment" style="color: #2ecc71; margin-right: 0.5rem;"></i>
+                    <strong>${recentMessages}</strong> messages sent
+                </li>
+                <li style="padding: 0.5rem 0; border-bottom: 1px solid #2c3e50;">
+                    <i class="fas fa-bullhorn" style="color: #f39c12; margin-right: 0.5rem;"></i>
+                    <strong>${recentAnnouncements}</strong> announcements posted
+                </li>
+                <li style="padding: 0.5rem 0;">
+                    <i class="fas fa-vote-yea" style="color: #e74c3c; margin-right: 0.5rem;"></i>
+                    <strong>${recentMotions}</strong> GC motions created
+                </li>
+            </ul>
+        </div>
+    `;
+
+    document.getElementById('activity-summary').innerHTML = html;
+}
+
+// ============================================
+// LITERATURE LIBRARY FUNCTIONS
+// ============================================
+
+function toggleLiteratureForm() {
+    const form = document.getElementById('add-literature-form');
+    const btn = document.getElementById('show-lit-form-btn');
+    const isVisible = form.style.display === 'block';
+    form.style.display = isVisible ? 'none' : 'block';
+    btn.style.display = isVisible ? 'block' : 'none';
+}
+
+function saveLiterature() {
+    const title = document.getElementById('lit-title').value.trim();
+    if (!title) {
+        showToast('Please enter a title', 'error');
+        return;
+    }
+
+    const literature = {
+        id: genId(),
+        title: title,
+        type: document.getElementById('lit-type').value,
+        format: document.getElementById('lit-format').value,
+        copies: parseInt(document.getElementById('lit-copies').value) || 1,
+        location: document.getElementById('lit-location').value.trim(),
+        notes: document.getElementById('lit-notes').value.trim(),
+        available: parseInt(document.getElementById('lit-copies').value) || 1,
+        checkouts: [],
+        addedDate: new Date().toISOString()
+    };
+
+    const library = JSON.parse(localStorage.getItem('library') || '[]');
+    library.push(literature);
+    localStorage.setItem('library', JSON.stringify(library));
+
+    // Clear form
+    document.getElementById('lit-title').value = '';
+    document.getElementById('lit-type').value = 'book';
+    document.getElementById('lit-format').value = 'physical';
+    document.getElementById('lit-copies').value = '1';
+    document.getElementById('lit-location').value = '';
+    document.getElementById('lit-notes').value = '';
+
+    toggleLiteratureForm();
+    renderLibraryCatalog();
+    renderCurrentCheckouts();
+    updateReadingScheduleBookSelect();
+    showToast('Literature added successfully!', 'success');
+}
+
+function renderLibraryCatalog() {
+    const library = JSON.parse(localStorage.getItem('library') || '[]');
+    const searchTerm = document.getElementById('library-search').value.toLowerCase();
+
+    const filtered = library.filter(item =>
+        item.title.toLowerCase().includes(searchTerm) ||
+        item.type.toLowerCase().includes(searchTerm) ||
+        (item.notes && item.notes.toLowerCase().includes(searchTerm))
+    );
+
+    if (filtered.length === 0) {
+        document.getElementById('library-catalog').innerHTML =
+            '<p style="color: #95a5a6; text-align: center;">No literature items found.</p>';
+        return;
+    }
+
+    const html = filtered.map(item => `
+        <div style="background: #34495e; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="flex: 1;">
+                    <h4 style="color: #3498db; margin-bottom: 0.5rem;">${item.title}</h4>
+                    <p style="color: #95a5a6; font-size: 0.9rem; margin-bottom: 0.25rem;">
+                        <i class="fas fa-book"></i> ${item.type} |
+                        <i class="fas fa-file-alt"></i> ${item.format}
+                    </p>
+                    <p style="color: #95a5a6; font-size: 0.9rem; margin-bottom: 0.25rem;">
+                        <i class="fas fa-clone"></i> ${item.available} of ${item.copies} available
+                        ${item.location ? ` | <i class="fas fa-map-marker-alt"></i> ${item.location}` : ''}
+                    </p>
+                    ${item.notes ? `<p style="color: #ecf0f1; font-size: 0.9rem; margin-top: 0.5rem;">${item.notes}</p>` : ''}
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    ${item.available > 0 ?
+                        `<button class="btn" onclick="checkoutLiterature('${item.id}')">Check Out</button>` :
+                        `<span style="color: #e74c3c; font-size: 0.9rem;">All checked out</span>`
+                    }
+                    <button class="btn secondary" onclick="editLiterature('${item.id}')">Edit</button>
+                    <button class="btn secondary" onclick="deleteLiterature('${item.id}')">Delete</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    document.getElementById('library-catalog').innerHTML = html;
+}
+
+function checkoutLiterature(litId) {
+    const members = JSON.parse(localStorage.getItem('members') || '[]');
+    const memberName = prompt('Member name checking out:');
+    if (!memberName || memberName.trim() === '') return;
+
+    const dueDate = prompt('Due date (YYYY-MM-DD):',
+        new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]);
+    if (!dueDate) return;
+
+    const library = JSON.parse(localStorage.getItem('library') || '[]');
+    const item = library.find(i => i.id === litId);
+
+    if (!item || item.available <= 0) {
+        showToast('Item not available', 'error');
+        return;
+    }
+
+    const checkout = {
+        id: genId(),
+        literatureId: litId,
+        literatureTitle: item.title,
+        memberName: memberName.trim(),
+        checkoutDate: new Date().toISOString().split('T')[0],
+        dueDate: dueDate,
+        returned: false
+    };
+
+    if (!item.checkouts) item.checkouts = [];
+    item.checkouts.push(checkout);
+    item.available--;
+
+    localStorage.setItem('library', JSON.stringify(library));
+    renderLibraryCatalog();
+    renderCurrentCheckouts();
+    showToast('Item checked out successfully!', 'success');
+}
+
+function returnLiterature(checkoutId) {
+    const library = JSON.parse(localStorage.getItem('library') || '[]');
+
+    library.forEach(item => {
+        if (item.checkouts) {
+            const checkout = item.checkouts.find(c => c.id === checkoutId);
+            if (checkout && !checkout.returned) {
+                checkout.returned = true;
+                checkout.returnDate = new Date().toISOString().split('T')[0];
+                item.available++;
+            }
+        }
+    });
+
+    localStorage.setItem('library', JSON.stringify(library));
+    renderLibraryCatalog();
+    renderCurrentCheckouts();
+    showToast('Item returned successfully!', 'success');
+}
+
+function renderCurrentCheckouts() {
+    const library = JSON.parse(localStorage.getItem('library') || '[]');
+    const allCheckouts = [];
+
+    library.forEach(item => {
+        if (item.checkouts) {
+            item.checkouts.forEach(checkout => {
+                if (!checkout.returned) {
+                    allCheckouts.push({...checkout, item: item});
+                }
+            });
+        }
+    });
+
+    if (allCheckouts.length === 0) {
+        document.getElementById('current-checkouts').innerHTML =
+            '<p style="color: #95a5a6; text-align: center;">No items currently checked out.</p>';
+        return;
+    }
+
+    const html = allCheckouts.map(checkout => {
+        const dueDate = new Date(checkout.dueDate);
+        const today = new Date();
+        const isOverdue = dueDate < today;
+
+        return `
+            <div style="background: #34495e; padding: 1rem; border-radius: 6px; margin-bottom: 0.75rem; border-left: 4px solid ${isOverdue ? '#e74c3c' : '#3498db'};">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="color: #3498db; margin-bottom: 0.25rem;">${checkout.literatureTitle}</h4>
+                        <p style="color: #ecf0f1; font-size: 0.9rem;">
+                            <i class="fas fa-user"></i> ${checkout.memberName}
+                        </p>
+                        <p style="color: #95a5a6; font-size: 0.85rem;">
+                            Checked out: ${checkout.checkoutDate} |
+                            Due: ${checkout.dueDate}
+                            ${isOverdue ? '<span style="color: #e74c3c; margin-left: 0.5rem; font-weight: bold;">OVERDUE</span>' : ''}
+                        </p>
+                    </div>
+                    <button class="btn" onclick="returnLiterature('${checkout.id}')">Mark Returned</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    document.getElementById('current-checkouts').innerHTML = html;
+}
+
+function editLiterature(litId) {
+    const library = JSON.parse(localStorage.getItem('library') || '[]');
+    const item = library.find(i => i.id === litId);
+    if (!item) return;
+
+    document.getElementById('lit-title').value = item.title;
+    document.getElementById('lit-type').value = item.type;
+    document.getElementById('lit-format').value = item.format;
+    document.getElementById('lit-copies').value = item.copies;
+    document.getElementById('lit-location').value = item.location || '';
+    document.getElementById('lit-notes').value = item.notes || '';
+
+    // Delete old and will save as new
+    deleteLiterature(litId, true);
+    toggleLiteratureForm();
+}
+
+function deleteLiterature(litId, silent = false) {
+    if (!silent && !confirm('Are you sure you want to delete this literature item?')) return;
+
+    let library = JSON.parse(localStorage.getItem('library') || '[]');
+    library = library.filter(i => i.id !== litId);
+    localStorage.setItem('library', JSON.stringify(library));
+
+    renderLibraryCatalog();
+    renderCurrentCheckouts();
+    updateReadingScheduleBookSelect();
+    if (!silent) showToast('Literature deleted', 'success');
+}
+
+function toggleReadingScheduleForm() {
+    const form = document.getElementById('add-reading-schedule-form');
+    const isVisible = form.style.display === 'block';
+    form.style.display = isVisible ? 'none' : 'block';
+    if (!isVisible) {
+        updateReadingScheduleBookSelect();
+    }
+}
+
+function updateReadingScheduleBookSelect() {
+    const library = JSON.parse(localStorage.getItem('library') || '[]');
+    const select = document.getElementById('schedule-book');
+
+    select.innerHTML = '<option value="">Select a book...</option>' +
+        library.map(item => `<option value="${item.id}">${item.title}</option>`).join('');
+}
+
+function saveReadingSchedule() {
+    const name = document.getElementById('schedule-name').value.trim();
+    if (!name) {
+        showToast('Please enter a schedule name', 'error');
+        return;
+    }
+
+    const schedule = {
+        id: genId(),
+        name: name,
+        bookId: document.getElementById('schedule-book').value,
+        startDate: document.getElementById('schedule-start').value,
+        frequency: document.getElementById('schedule-frequency').value,
+        notes: document.getElementById('schedule-notes').value.trim(),
+        createdDate: new Date().toISOString(),
+        active: true
+    };
+
+    const schedules = JSON.parse(localStorage.getItem('readingSchedules') || '[]');
+    schedules.push(schedule);
+    localStorage.setItem('readingSchedules', JSON.stringify(schedules));
+
+    // Clear form
+    document.getElementById('schedule-name').value = '';
+    document.getElementById('schedule-book').value = '';
+    document.getElementById('schedule-start').value = '';
+    document.getElementById('schedule-frequency').value = 'weekly';
+    document.getElementById('schedule-notes').value = '';
+
+    toggleReadingScheduleForm();
+    renderReadingSchedules();
+    showToast('Reading schedule created!', 'success');
+}
+
+function renderReadingSchedules() {
+    const schedules = JSON.parse(localStorage.getItem('readingSchedules') || '[]');
+    const library = JSON.parse(localStorage.getItem('library') || '[]');
+
+    if (schedules.length === 0) {
+        document.getElementById('reading-schedules-list').innerHTML =
+            '<p style="color: #95a5a6; text-align: center;">No reading schedules yet.</p>';
+        return;
+    }
+
+    const html = schedules.map(schedule => {
+        const book = library.find(b => b.id === schedule.bookId);
+        const bookTitle = book ? book.title : 'Book not found';
+
+        return `
+            <div style="background: #34495e; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div style="flex: 1;">
+                        <h4 style="color: #3498db; margin-bottom: 0.5rem;">${schedule.name}</h4>
+                        <p style="color: #ecf0f1; font-size: 0.9rem; margin-bottom: 0.25rem;">
+                            <i class="fas fa-book"></i> ${bookTitle}
+                        </p>
+                        <p style="color: #95a5a6; font-size: 0.9rem; margin-bottom: 0.25rem;">
+                            <i class="fas fa-calendar"></i> Start: ${schedule.startDate || 'Not set'} |
+                            <i class="fas fa-redo"></i> ${schedule.frequency}
+                        </p>
+                        ${schedule.notes ? `<p style="color: #ecf0f1; font-size: 0.9rem; margin-top: 0.5rem; font-style: italic;">${schedule.notes}</p>` : ''}
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn secondary" onclick="toggleScheduleActive('${schedule.id}')">
+                            ${schedule.active ? 'Deactivate' : 'Activate'}
+                        </button>
+                        <button class="btn secondary" onclick="deleteReadingSchedule('${schedule.id}')">Delete</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    document.getElementById('reading-schedules-list').innerHTML = html;
+}
+
+function toggleScheduleActive(scheduleId) {
+    const schedules = JSON.parse(localStorage.getItem('readingSchedules') || '[]');
+    const schedule = schedules.find(s => s.id === scheduleId);
+    if (schedule) {
+        schedule.active = !schedule.active;
+        localStorage.setItem('readingSchedules', JSON.stringify(schedules));
+        renderReadingSchedules();
+        showToast(`Schedule ${schedule.active ? 'activated' : 'deactivated'}`, 'success');
+    }
+}
+
+function deleteReadingSchedule(scheduleId) {
+    if (!confirm('Delete this reading schedule?')) return;
+
+    let schedules = JSON.parse(localStorage.getItem('readingSchedules') || '[]');
+    schedules = schedules.filter(s => s.id !== scheduleId);
+    localStorage.setItem('readingSchedules', JSON.stringify(schedules));
+
+    renderReadingSchedules();
+    showToast('Schedule deleted', 'success');
+}
+
+// ============================================
+// ACCESSIBILITY FUNCTIONS
+// ============================================
+
+function changeTheme() {
+    const theme = document.getElementById('theme-mode').value;
+    const body = document.body;
+    const nav = document.querySelector('nav');
+    const boxes = document.querySelectorAll('.box');
+
+    // Remove existing theme classes
+    body.classList.remove('light-theme', 'high-contrast-theme');
+
+    if (theme === 'light') {
+        body.style.background = '#ecf0f1';
+        body.style.color = '#2c3e50';
+        if (nav) {
+            nav.style.background = '#bdc3c7';
+            nav.style.color = '#2c3e50';
+        }
+        document.querySelectorAll('h1, h2, h3').forEach(h => {
+            h.style.color = '#2980b9';
+        });
+        boxes.forEach(box => {
+            box.style.background = '#ffffff';
+            box.style.color = '#2c3e50';
+        });
+    } else if (theme === 'high-contrast') {
+        body.style.background = '#000000';
+        body.style.color = '#ffffff';
+        if (nav) {
+            nav.style.background = '#1a1a1a';
+            nav.style.color = '#ffffff';
+        }
+        document.querySelectorAll('h1, h2, h3').forEach(h => {
+            h.style.color = '#ffff00';
+        });
+        boxes.forEach(box => {
+            box.style.background = '#1a1a1a';
+            box.style.color = '#ffffff';
+        });
+    } else {
+        // Default dark theme
+        body.style.background = '#2c3e50';
+        body.style.color = '#ecf0f1';
+        if (nav) {
+            nav.style.background = '#34495e';
+            nav.style.color = '#ecf0f1';
+        }
+        document.querySelectorAll('h1, h2, h3').forEach(h => {
+            h.style.color = '#3498db';
+        });
+        boxes.forEach(box => {
+            box.style.background = '#34495e';
+            box.style.color = '#ecf0f1';
+        });
+    }
+
+    localStorage.setItem('theme', theme);
+    showToast('Theme changed', 'success');
+}
+
+function changeFontSize(size) {
+    document.documentElement.style.fontSize = size + '%';
+    document.getElementById('font-size-slider').value = size;
+    document.getElementById('font-size-display').textContent = size + '%';
+    localStorage.setItem('fontSize', size);
+    showToast('Font size updated', 'success');
+}
+
+function toggleScreenReaderMode() {
+    const enabled = document.getElementById('screen-reader-mode').checked;
+
+    if (enabled) {
+        // Add skip navigation link
+        const skipNav = document.createElement('a');
+        skipNav.href = '#main-content';
+        skipNav.textContent = 'Skip to main content';
+        skipNav.id = 'skip-nav';
+        skipNav.style.cssText = 'position: absolute; left: -9999px; z-index: 999; padding: 1em; background: #3498db; color: white; text-decoration: none;';
+        skipNav.addEventListener('focus', function() {
+            this.style.left = '0';
+        });
+        skipNav.addEventListener('blur', function() {
+            this.style.left = '-9999px';
+        });
+        document.body.insertBefore(skipNav, document.body.firstChild);
+
+        // Add main content ID
+        const main = document.querySelector('main');
+        if (main) main.id = 'main-content';
+
+        // Add ARIA labels to navigation
+        const navItems = document.querySelectorAll('nav li');
+        navItems.forEach(item => {
+            const section = item.getAttribute('data-section');
+            if (section) {
+                item.setAttribute('role', 'button');
+                item.setAttribute('aria-label', `Navigate to ${item.textContent}`);
+                item.setAttribute('tabindex', '0');
+            }
+        });
+
+        showToast('Screen reader optimizations enabled', 'success');
+    } else {
+        // Remove skip nav
+        const skipNav = document.getElementById('skip-nav');
+        if (skipNav) skipNav.remove();
+
+        showToast('Screen reader optimizations disabled', 'success');
+    }
+
+    localStorage.setItem('screenReaderMode', enabled);
+}
+
+function toggleReduceAnimations() {
+    const enabled = document.getElementById('reduce-animations').checked;
+
+    if (enabled) {
+        const style = document.createElement('style');
+        style.id = 'reduce-animations-style';
+        style.textContent = `
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        `;
+        document.head.appendChild(style);
+    } else {
+        const style = document.getElementById('reduce-animations-style');
+        if (style) style.remove();
+    }
+
+    localStorage.setItem('reduceAnimations', enabled);
+    showToast(`Animations ${enabled ? 'reduced' : 'restored'}`, 'success');
+}
+
+function toggleFocusIndicators() {
+    const enabled = document.getElementById('focus-indicators').checked;
+
+    if (enabled) {
+        const style = document.createElement('style');
+        style.id = 'focus-indicators-style';
+        style.textContent = `
+            *:focus {
+                outline: 3px solid #3498db !important;
+                outline-offset: 2px !important;
+            }
+        `;
+        document.head.appendChild(style);
+    } else {
+        const style = document.getElementById('focus-indicators-style');
+        if (style) style.remove();
+    }
+
+    localStorage.setItem('focusIndicators', enabled);
+    showToast(`Focus indicators ${enabled ? 'enhanced' : 'normal'}`, 'success');
+}
+
+function toggleDyslexiaFont() {
+    const enabled = document.getElementById('dyslexia-font').checked;
+
+    if (enabled) {
+        // Use Comic Sans as a more dyslexia-friendly alternative
+        document.body.style.fontFamily = 'Comic Sans MS, Verdana, sans-serif';
+    } else {
+        document.body.style.fontFamily = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+    }
+
+    localStorage.setItem('dyslexiaFont', enabled);
+    showToast(`Dyslexia-friendly font ${enabled ? 'enabled' : 'disabled'}`, 'success');
+}
+
+function loadAccessibilitySettings() {
+    // Load theme
+    const theme = localStorage.getItem('theme') || 'dark';
+    document.getElementById('theme-mode').value = theme;
+    changeTheme();
+
+    // Load font size
+    const fontSize = localStorage.getItem('fontSize') || '100';
+    changeFontSize(parseInt(fontSize));
+
+    // Load screen reader mode
+    const screenReaderMode = localStorage.getItem('screenReaderMode') === 'true';
+    document.getElementById('screen-reader-mode').checked = screenReaderMode;
+    if (screenReaderMode) toggleScreenReaderMode();
+
+    // Load reduce animations
+    const reduceAnimations = localStorage.getItem('reduceAnimations') === 'true';
+    document.getElementById('reduce-animations').checked = reduceAnimations;
+    if (reduceAnimations) toggleReduceAnimations();
+
+    // Load focus indicators
+    const focusIndicators = localStorage.getItem('focusIndicators') === 'true';
+    document.getElementById('focus-indicators').checked = focusIndicators;
+    if (focusIndicators) toggleFocusIndicators();
+
+    // Load dyslexia font
+    const dyslexiaFont = localStorage.getItem('dyslexiaFont') === 'true';
+    document.getElementById('dyslexia-font').checked = dyslexiaFont;
+    if (dyslexiaFont) toggleDyslexiaFont();
+}
+
 document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
