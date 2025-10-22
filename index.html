@@ -6,13 +6,15 @@
     <title>Rowlett Group Home</title>
     <!-- Link to the custom favicon logo -->
     <!-- Include Tailwind CSS for utility classes and Font Awesome for icons -->
-    <script type="text/javascript" nonce="6a1ecf93e9ea40d69745a521409" src="//local.adguard.org?ts=1756309701836&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile-FWN5RSYCJYXFxtPJuZcVXR%26ts%3D487864%26p%3Dfs%26cid%3D1%26sig%3D7ff30eeb1ec578f48096db98306ce9016bf2e3d0dab442c691f75906ada342cb&amp;app=chrome.exe&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1"></script><script type="text/javascript" nonce="6a1ecf93e9ea40d69745a521409" src="//local.adguard.org?ts=1756309701836&amp;name=AdGuard%20Extra&amp;name=AdGuard%20Popup%20Blocker&amp;type=user-script"></script><script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- PDF Generation Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <!-- Chart.js for Analytics -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- DOMPurify for XSS Protection -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js"></script>
     <!-- Link to the custom favicon logo -->
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <style>
@@ -795,10 +797,10 @@
             <div class="grid grid-cols-2">
                 <div class="box">
                     <h3>Upcoming Meetings</h3>
-                    <a href="zoommtg://zoom.us/join?action=join&confno=89039357234&pwd=dGFobXpwY04yalVZQ1RySlRCcitsUT09" class="btn" style="display: block; text-align: center; margin-bottom: 1rem;">
+                    <a id="zoom-meeting-btn" href="#" class="btn" style="display: none; text-align: center; margin-bottom: 1rem;">
                         <i class="fas fa-video"></i> Start Zoom Meeting
                     </a>
-                    <p style="font-size: 0.8rem; text-align: center; margin-bottom: 1rem;">(Requires Zoom to be installed)</p>
+                    <p id="zoom-meeting-note" style="font-size: 0.8rem; text-align: center; margin-bottom: 1rem; display: none;">(Requires Zoom to be installed)</p>
                     <ul id="home-upcoming-events"></ul>
                     <button class="btn" onclick="goToSection('schedule-section')">View Full Schedule</button>
                 </div>
@@ -817,10 +819,10 @@
                     <div id="home-latest-photos" style="display:flex; gap:0.5rem; overflow-x: auto;"></div>
                     <button class="btn" onclick="goToSection('gallery-section')">Browse Gallery</button>
                 </div>
-                <div class="box" style="text-align: center;">
+                <div id="qr-code-box" class="box" style="text-align: center; display: none;">
                     <h3>7th Tradition</h3>
-                    <img id="qr-code-img" src="https://via.placeholder.com/250" alt="QR Code Placeholder" style="width: 250px; height: 250px; margin: auto; border-radius: 8px;">
-                    <p class="mt-2">For questions, please contact Nathan D at 214-000-0000.</p>
+                    <img id="qr-code-img" src="" alt="7th Tradition QR Code" style="width: 250px; height: 250px; margin: auto; border-radius: 8px;">
+                    <p id="qr-code-contact" class="mt-2"></p>
                 </div>
             </div>
         </section>
@@ -2749,6 +2751,30 @@
             <h2>Settings & Data Management</h2>
 
             <div class="box mb-4">
+                <h3>Group Settings</h3>
+                <p class="mb-2">Configure your group's information and meeting details.</p>
+                <div class="form-group">
+                    <label for="group-qr-code-url">7th Tradition QR Code URL</label>
+                    <input type="text" id="group-qr-code-url" placeholder="Enter QR code image URL (Venmo/PayPal/CashApp QR code)" />
+                    <small style="font-size: 0.75rem; opacity: 0.8;">Upload your QR code to an image hosting service and paste the URL here, or leave blank to hide.</small>
+                </div>
+                <div class="form-group">
+                    <label for="group-zoom-link">Zoom Meeting Link</label>
+                    <input type="text" id="group-zoom-link" placeholder="zoommtg://zoom.us/join?action=join&confno=XXXXX&pwd=XXXXX" />
+                    <small style="font-size: 0.75rem; opacity: 0.8;">Your Zoom meeting link. Leave blank to hide the Zoom button.</small>
+                </div>
+                <div class="form-group">
+                    <label for="group-contact-name">Treasurer/Contact Name</label>
+                    <input type="text" id="group-contact-name" placeholder="e.g., Nathan D" />
+                </div>
+                <div class="form-group">
+                    <label for="group-contact-phone">Treasurer/Contact Phone</label>
+                    <input type="tel" id="group-contact-phone" placeholder="e.g., 214-555-1234" />
+                </div>
+                <button class="btn" onclick="saveGroupSettings()">Save Group Settings</button>
+            </div>
+
+            <div class="box mb-4">
                 <h3>User Identity</h3>
                 <p class="mb-2">Set your name for messages and read receipts.</p>
                 <div class="form-group">
@@ -2780,6 +2806,26 @@
                 <button class="btn" onclick="createBackupSnapshot()">Create Backup Snapshot Now</button>
                 <button class="btn secondary" onclick="viewBackupHistory()">View Backup History</button>
                 <div id="backup-history" style="margin-top: 1rem;"></div>
+            </div>
+
+            <div class="box mb-4">
+                <h3>Storage Usage Monitor</h3>
+                <p class="mb-2">Track your browser's localStorage usage to prevent data loss.</p>
+                <div style="padding: 1rem; background: #2c3e50; border-radius: 6px; margin-bottom: 1rem;">
+                    <div style="margin-bottom: 0.5rem;">
+                        <strong>Used:</strong> <span id="storage-used">0</span> KB / <span id="storage-limit">~5,000</span> KB
+                    </div>
+                    <div class="vote-progress-bar-bg" style="height: 30px; margin-bottom: 0.5rem;">
+                        <div id="storage-progress-bar" class="vote-progress-bar-fill" style="width: 0%; background: linear-gradient(90deg, #27ae60, #2ecc71);"></div>
+                    </div>
+                    <div id="storage-warning" style="display: none; color: #f39c12; font-weight: bold;">
+                        <i class="fas fa-exclamation-triangle"></i> Warning: Storage is over 80% full. Consider exporting and clearing old data.
+                    </div>
+                    <div id="storage-critical" style="display: none; color: #e74c3c; font-weight: bold;">
+                        <i class="fas fa-exclamation-circle"></i> Critical: Storage is nearly full! Export data immediately to prevent loss.
+                    </div>
+                </div>
+                <button class="btn secondary" onclick="checkStorageUsage()">Refresh Storage Info</button>
             </div>
 
             <div class="box">
@@ -2864,6 +2910,32 @@
 function genId() {
     return Date.now().toString() + Math.random().toString(36).substring(2);
 }
+
+// Sanitize user input to prevent XSS attacks
+function sanitizeInput(input) {
+    if (typeof input !== 'string') return input;
+    // Use DOMPurify if available, otherwise basic escaping
+    if (typeof DOMPurify !== 'undefined') {
+        return DOMPurify.sanitize(input, { ALLOWED_TAGS: [] });
+    }
+    // Fallback: basic HTML entity encoding
+    const div = document.createElement('div');
+    div.textContent = input;
+    return div.innerHTML;
+}
+
+// Sanitize HTML content (for rich text that needs some HTML)
+function sanitizeHTML(html) {
+    if (typeof html !== 'string') return html;
+    if (typeof DOMPurify !== 'undefined') {
+        return DOMPurify.sanitize(html, {
+            ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'br', 'p', 'ul', 'ol', 'li'],
+            ALLOWED_ATTR: []
+        });
+    }
+    return sanitizeInput(html);
+}
+
 // Navigate to a given section and update nav active states
 function goToSection(sectionId) {
     document.querySelectorAll('main section').forEach(sec => sec.classList.remove('active'));
@@ -6953,6 +7025,72 @@ function generateYoYChart() {
 
 // ========== BACKUP & SYNC FUNCTIONS ==========
 
+// Group Settings Functions
+function saveGroupSettings() {
+    const settings = {
+        qrCodeUrl: document.getElementById('group-qr-code-url').value.trim(),
+        zoomLink: document.getElementById('group-zoom-link').value.trim(),
+        contactName: document.getElementById('group-contact-name').value.trim(),
+        contactPhone: document.getElementById('group-contact-phone').value.trim()
+    };
+    localStorage.setItem('groupSettings', JSON.stringify(settings));
+    applyGroupSettings();
+    showToast('Group settings saved!', 'success');
+}
+
+function loadGroupSettings() {
+    const settings = JSON.parse(localStorage.getItem('groupSettings') || '{}');
+    const qrInput = document.getElementById('group-qr-code-url');
+    const zoomInput = document.getElementById('group-zoom-link');
+    const nameInput = document.getElementById('group-contact-name');
+    const phoneInput = document.getElementById('group-contact-phone');
+
+    if (qrInput) qrInput.value = settings.qrCodeUrl || '';
+    if (zoomInput) zoomInput.value = settings.zoomLink || '';
+    if (nameInput) nameInput.value = settings.contactName || '';
+    if (phoneInput) phoneInput.value = settings.contactPhone || '';
+
+    applyGroupSettings();
+}
+
+function applyGroupSettings() {
+    const settings = JSON.parse(localStorage.getItem('groupSettings') || '{}');
+
+    // Update QR Code
+    const qrBox = document.getElementById('qr-code-box');
+    const qrImg = document.getElementById('qr-code-img');
+    const qrContact = document.getElementById('qr-code-contact');
+
+    if (settings.qrCodeUrl) {
+        qrImg.src = settings.qrCodeUrl;
+        qrBox.style.display = 'block';
+
+        // Update contact info
+        if (settings.contactName && settings.contactPhone) {
+            qrContact.textContent = `For questions, please contact ${settings.contactName} at ${settings.contactPhone}.`;
+        } else if (settings.contactName) {
+            qrContact.textContent = `For questions, please contact ${settings.contactName}.`;
+        } else {
+            qrContact.textContent = '';
+        }
+    } else {
+        qrBox.style.display = 'none';
+    }
+
+    // Update Zoom Button
+    const zoomBtn = document.getElementById('zoom-meeting-btn');
+    const zoomNote = document.getElementById('zoom-meeting-note');
+
+    if (settings.zoomLink) {
+        zoomBtn.href = settings.zoomLink;
+        zoomBtn.style.display = 'block';
+        zoomNote.style.display = 'block';
+    } else {
+        zoomBtn.style.display = 'none';
+        zoomNote.style.display = 'none';
+    }
+}
+
 function saveCurrentUser() {
     const name = document.getElementById('current-user-name').value.trim();
     if (!name) {
@@ -7089,6 +7227,53 @@ function deleteBackup(backupId) {
 
     showToast('Backup deleted', 'success');
     viewBackupHistory();
+}
+
+// Storage Usage Monitoring
+function checkStorageUsage() {
+    try {
+        // Calculate total size of localStorage
+        let totalSize = 0;
+        for (let key in localStorage) {
+            if (localStorage.hasOwnProperty(key)) {
+                totalSize += localStorage[key].length + key.length;
+            }
+        }
+
+        // Convert to KB
+        const sizeInKB = (totalSize / 1024).toFixed(2);
+        const estimatedLimit = 5120; // Most browsers allow ~5MB (5120 KB)
+        const percentage = (totalSize / (estimatedLimit * 1024)) * 100;
+
+        // Update UI
+        document.getElementById('storage-used').textContent = sizeInKB;
+        const progressBar = document.getElementById('storage-progress-bar');
+        progressBar.style.width = Math.min(percentage, 100) + '%';
+
+        // Change color based on usage
+        const warningDiv = document.getElementById('storage-warning');
+        const criticalDiv = document.getElementById('storage-critical');
+
+        warningDiv.style.display = 'none';
+        criticalDiv.style.display = 'none';
+
+        if (percentage > 90) {
+            progressBar.style.background = 'linear-gradient(90deg, #c0392b, #e74c3c)';
+            criticalDiv.style.display = 'block';
+        } else if (percentage > 80) {
+            progressBar.style.background = 'linear-gradient(90deg, #d68910, #f39c12)';
+            warningDiv.style.display = 'block';
+        } else {
+            progressBar.style.background = 'linear-gradient(90deg, #27ae60, #2ecc71)';
+        }
+
+        progressBar.textContent = percentage.toFixed(1) + '%';
+
+        return {sizeInKB, percentage};
+    } catch (e) {
+        console.error('Error checking storage:', e);
+        return null;
+    }
 }
 
 function exportForCloud() {
@@ -7280,6 +7465,7 @@ function init() {
     refreshGCTrends();
 
     // Initialize new features
+    loadGroupSettings();
     loadCurrentUser();
     populateMessageRecipients();
     showMessages('inbox');
@@ -7303,6 +7489,7 @@ function init() {
     renderCurrentCheckouts();
     renderReadingSchedules();
     loadAccessibilitySettings();
+    checkStorageUsage();
 
     // Check for upcoming GC meetings and show notifications
     setTimeout(() => checkUpcomingGCMeetings(), 2000); // Delay 2 seconds for better UX
