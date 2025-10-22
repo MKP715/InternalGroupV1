@@ -110,7 +110,8 @@
             z-index: 1000;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
-        nav li:hover .dropdown-menu {
+        nav li:hover .dropdown-menu,
+        nav li.dropdown-open .dropdown-menu {
             display: block;
         }
         .dropdown-menu li {
@@ -898,8 +899,8 @@
             <li class="has-dropdown">
                 Meetings
                 <ul class="dropdown-menu">
-                    <li data-section="companion-section">Meeting Companion</li>
                     <li data-section="schedule-section">Schedule & Calendar</li>
+                    <li data-section="companion-section">Meeting Companion</li>
                     <li data-section="format-rotation-section">Format Rotation</li>
                     <li data-section="commitment-board-section">Commitment Board</li>
                     <li data-section="secretary-section">Secretary Functions</li>
@@ -917,53 +918,53 @@
             </li>
 
             <li class="has-dropdown">
-                Service
+                Service & Sponsorship
                 <ul class="dropdown-menu">
                     <li data-section="service-positions-section">Service Positions</li>
                     <li data-section="sponsorship-section">Sponsorship Tracking</li>
-                    <li data-section="district-area-section">District/Area</li>
+                    <li data-section="district-area-section">District/Area Committee</li>
                 </ul>
             </li>
 
             <li class="has-dropdown">
-                Finances
+                Treasury
                 <ul class="dropdown-menu">
                     <li data-section="finance-section">Financial Reports</li>
                     <li data-section="prudent-reserve-section">Prudent Reserve</li>
                     <li data-section="seventh-tradition-section">7th Tradition Analysis</li>
+                    <li data-section="chip-inventory-section">Chip Inventory</li>
                 </ul>
             </li>
 
             <li class="has-dropdown">
                 Fellowship
                 <ul class="dropdown-menu">
-                    <li data-section="birthdays-section">Birthdays</li>
+                    <li data-section="birthdays-section">Birthdays & Anniversaries</li>
                     <li data-section="messaging-section">Messages</li>
-                    <li data-section="gallery-section">Gallery</li>
-                    <li data-section="chip-inventory-section">Chip Inventory</li>
+                    <li data-section="gallery-section">Photo Gallery</li>
+                    <li data-section="announcements-section">Announcements</li>
                 </ul>
             </li>
 
             <li class="has-dropdown">
                 Resources
                 <ul class="dropdown-menu">
-                    <li data-section="library-section">Library</li>
-                    <li data-section="templates-section">Templates</li>
-                    <li data-section="announcements-section">Announcements</li>
-                    <li data-section="history-section">History</li>
+                    <li data-section="library-section">AA Literature Library</li>
+                    <li data-section="templates-section">Document Templates</li>
+                    <li data-section="history-section">Group History</li>
                 </ul>
             </li>
 
             <li class="has-dropdown">
-                Reports
+                Reports & Analytics
                 <ul class="dropdown-menu">
-                    <li data-section="analytics-section">Analytics</li>
+                    <li data-section="analytics-section">Group Analytics</li>
                     <li data-section="chairperson-section">Chairperson Reports</li>
                 </ul>
             </li>
 
             <li class="has-dropdown">
-                Settings
+                <i class="fas fa-cog"></i>
                 <ul class="dropdown-menu">
                     <li data-section="settings-section">General Settings</li>
                     <li data-section="accessibility-section">Accessibility</li>
@@ -6746,11 +6747,46 @@ function initCalendarNav() {
 }
 // Navigation click handlers
 function initNav() {
-    document.querySelectorAll('nav li').forEach(li => {
-        li.addEventListener('click', () => {
+    // Handle clicks on menu items with sections
+    document.querySelectorAll('nav li[data-section]').forEach(li => {
+        li.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent event bubbling to parent dropdown
             const target = li.getAttribute('data-section');
-            goToSection(target);
+            if (target) {
+                goToSection(target);
+                // Close all dropdowns after navigation
+                document.querySelectorAll('nav li.has-dropdown').forEach(dd => {
+                    dd.classList.remove('dropdown-open');
+                });
+            }
         });
+    });
+
+    // Handle clicks on dropdown parent items to toggle open/close
+    document.querySelectorAll('nav li.has-dropdown').forEach(parent => {
+        parent.addEventListener('click', (e) => {
+            // Only toggle if clicking on the parent itself, not dropdown children
+            if (e.target === parent || (!e.target.hasAttribute('data-section') && e.target.closest('.has-dropdown') === parent)) {
+                e.stopPropagation();
+                // Close other dropdowns
+                document.querySelectorAll('nav li.has-dropdown').forEach(dd => {
+                    if (dd !== parent) {
+                        dd.classList.remove('dropdown-open');
+                    }
+                });
+                // Toggle this dropdown
+                parent.classList.toggle('dropdown-open');
+            }
+        });
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('nav')) {
+            document.querySelectorAll('nav li.has-dropdown').forEach(dd => {
+                dd.classList.remove('dropdown-open');
+            });
+        }
     });
 }
 
