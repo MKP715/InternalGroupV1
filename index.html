@@ -5370,7 +5370,7 @@ function updateLiveGCTable() {
                 </select>
             </td>
             <td>
-                <button class="btn secondary" onclick="deleteLiveGCItem('${item.id}')">Delete</button>
+                <button class="btn secondary" data-action="delete-live-gc" data-id="${escapeAttribute(item.id)}">Delete</button>
             </td>
         `;
         tbody.appendChild(tr);
@@ -5447,8 +5447,8 @@ function updateProposedAgendaTable() {
             <td>${new Date(item.dateSubmitted).toLocaleDateString()}</td>
             <td style="color: ${statusColor};">${item.status.charAt(0).toUpperCase() + item.status.slice(1)}</td>
             <td>
-                <button class="btn" onclick="viewProposedAgendaItem('${item.id}')" style="margin-right: 5px;">View</button>
-                <button class="btn secondary" onclick="deleteProposedAgendaItem('${item.id}')">Delete</button>
+                <button class="btn" data-action="view-proposed" data-id="${escapeAttribute(item.id)}" style="margin-right: 5px;">View</button>
+                <button class="btn secondary" data-action="delete-proposed" data-id="${escapeAttribute(item.id)}">Delete</button>
             </td>
         `;
         tbody.appendChild(tr);
@@ -5686,8 +5686,8 @@ function updateActionItemsTable() {
                 </select>
             </td>
             <td>
-                <button class="btn" onclick="editActionItem('${action.id}')" style="margin-right: 5px;">Edit</button>
-                <button class="btn secondary" onclick="deleteActionItem('${action.id}')">Delete</button>
+                <button class="btn" data-action="edit-action" data-id="${escapeAttribute(action.id)}" style="margin-right: 5px;">Edit</button>
+                <button class="btn secondary" data-action="delete-action" data-id="${escapeAttribute(action.id)}">Delete</button>
             </td>
         `;
         tbody.appendChild(tr);
@@ -5894,14 +5894,14 @@ function loadGCComments(gcId) {
                         <span style="font-size: 0.75rem; opacity: 0.7; margin-left: 0.5rem;">${new Date(amendment.timestamp).toLocaleString()}</span>
                         ${statusBadge}
                     </div>
-                    <div style="margin-bottom: 0.5rem;">${amendment.text}</div>
+                    <div style="margin-bottom: 0.5rem;">${escapeHtml(amendment.text)}</div>
                     ${!amendment.status ? `
                         <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-                            <button class="btn" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;" onclick="updateAmendmentStatus('${amendment.id}', 'adopted')">Mark Adopted</button>
-                            <button class="btn secondary" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;" onclick="updateAmendmentStatus('${amendment.id}', 'rejected')">Mark Rejected</button>
+                            <button class="btn" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;" data-action="update-amendment" data-id="${escapeAttribute(amendment.id)}" data-status="adopted">Mark Adopted</button>
+                            <button class="btn secondary" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;" data-action="update-amendment" data-id="${escapeAttribute(amendment.id)}" data-status="rejected">Mark Rejected</button>
                         </div>
                     ` : ''}
-                    <button class="btn secondary" style="font-size: 0.75rem; padding: 0.3rem 0.6rem; margin-top: 0.5rem;" onclick="deleteGCComment('${amendment.id}')">Delete</button>
+                    <button class="btn secondary" style="font-size: 0.75rem; padding: 0.3rem 0.6rem; margin-top: 0.5rem;" data-action="delete-comment" data-id="${escapeAttribute(amendment.id)}">Delete</button>
                 </div>
             `;
         });
@@ -5928,9 +5928,9 @@ function loadGCComments(gcId) {
                         <span style="font-size: 0.8rem; opacity: 0.7; margin-left: 0.5rem;">${new Date(comment.timestamp).toLocaleString()}</span>
                         <span style="background: ${typeColor}; padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.7rem; margin-left: 0.5rem;">${comment.type}</span>
                     </div>
-                    <button onclick="deleteGCComment('${comment.id}')" style="background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 1.2rem;">&times;</button>
+                    <button data-action="delete-comment" data-id="${escapeAttribute(comment.id)}" style="background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 1.2rem;">&times;</button>
                 </div>
-                <div style="margin-top: 0.5rem;">${comment.text}</div>
+                <div style="margin-top: 0.5rem;">${escapeHtml(comment.text)}</div>
             </div>
         `;
         });
@@ -6042,7 +6042,7 @@ function searchGCHistory() {
             <td style="color: ${log.status === 'passed' ? '#2ecc71' : log.status === 'failed' ? '#e74c3c' : '#f39c12'};">${log.status.toUpperCase()}</td>
             <td>${votesDisplay}</td>
             <td>
-                <button class="btn" onclick="openGCDetailsModal('${log.id}')">View Details</button>
+                <button class="btn" data-action="view-gc" data-id="${escapeAttribute(log.id)}">View Details</button>
             </td>
         `;
         tbody.appendChild(tr);
@@ -7319,8 +7319,8 @@ function renderRosterTable() {
             <td>${member.email || ''}</td>
             <td>${member.isServant ? 'Yes' : 'No'}</td>
             <td>
-                <button class="btn" onclick="editMemberFromRoster('${member.id}')">Edit</button>
-                <button class="btn secondary" onclick="deleteMemberAndRefreshRoster('${member.id}')">Delete</button>
+                <button class="btn" data-action="edit-member-roster" data-id="${escapeAttribute(member.id)}">Edit</button>
+                <button class="btn secondary" data-action="delete-member-roster" data-id="${escapeAttribute(member.id)}">Delete</button>
             </td>
         `;
         tbody.appendChild(tr);
@@ -7734,7 +7734,7 @@ function updateServicePositionsTable() {
             <td>${pos.startDate ? new Date(pos.startDate).toLocaleDateString() : 'N/A'}</td>
             <td>${endDate} ${termStatus}</td>
             <td>
-                <button class="btn secondary" onclick="deleteServicePosition('${pos.id}')">Delete</button>
+                <button class="btn secondary" data-action="delete-position" data-id="${escapeAttribute(pos.id)}">Delete</button>
             </td>
         `;
 
@@ -7887,7 +7887,7 @@ function updateNominationsList() {
             <p><strong>Nominee:</strong> ${nom.nominee}</p>
             <p><strong>Nominated by:</strong> ${nom.nominatedBy}</p>
             <p><strong>Date:</strong> ${new Date(nom.date).toLocaleDateString()}</p>
-            <button class="btn secondary" onclick="deleteNomination('${nom.id}')">Remove</button>
+            <button class="btn secondary" data-action="delete-nomination" data-id="${escapeAttribute(nom.id)}">Remove</button>
         `;
         container.appendChild(card);
     });
@@ -8011,7 +8011,7 @@ function updateBudgetTable() {
             <td>$${spent.toFixed(2)}</td>
             <td style="color: ${remaining < 0 ? '#e74c3c' : '#2ecc71'}">$${remaining.toFixed(2)}</td>
             <td>
-                <button class="btn secondary" onclick="deleteBudgetCategory('${cat.id}')">Delete</button>
+                <button class="btn secondary" data-action="delete-budget-category" data-id="${escapeAttribute(cat.id)}">Delete</button>
             </td>
         `;
 
@@ -8084,7 +8084,7 @@ function updateExpensesTable() {
             <td>${exp.description}</td>
             <td>$${exp.amount.toFixed(2)}</td>
             <td>
-                <button class="btn secondary" onclick="deleteExpense('${exp.id}')">Delete</button>
+                <button class="btn secondary" data-action="delete-expense" data-id="${escapeAttribute(exp.id)}">Delete</button>
             </td>
         `;
 
@@ -8368,8 +8368,8 @@ function viewBackupHistory() {
                     <span style="font-size: 0.85rem; color: #95a5a6;">${new Date(backup.date).toLocaleString()}</span>
                 </div>
                 <div>
-                    <button class="btn" onclick="restoreBackup('${backup.id}')">Restore</button>
-                    <button class="btn secondary" onclick="deleteBackup('${backup.id}')" style="margin-left: 8px;">Delete</button>
+                    <button class="btn" data-action="restore-backup" data-id="${escapeAttribute(backup.id)}">Restore</button>
+                    <button class="btn secondary" data-action="delete-backup" data-id="${escapeAttribute(backup.id)}" style="margin-left: 8px;">Delete</button>
                 </div>
             </div>
         `;
@@ -9076,11 +9076,11 @@ function renderLibraryCatalog() {
                 </div>
                 <div style="display: flex; gap: 0.5rem;">
                     ${item.available > 0 ?
-                        `<button class="btn" onclick="checkoutLiterature('${item.id}')">Check Out</button>` :
+                        `<button class="btn" data-action="checkout-literature" data-id="${escapeAttribute(item.id)}">Check Out</button>` :
                         `<span style="color: #e74c3c; font-size: 0.9rem;">All checked out</span>`
                     }
-                    <button class="btn secondary" onclick="editLiterature('${item.id}')">Edit</button>
-                    <button class="btn secondary" onclick="deleteLiterature('${item.id}')">Delete</button>
+                    <button class="btn secondary" data-action="edit-literature" data-id="${escapeAttribute(item.id)}">Edit</button>
+                    <button class="btn secondary" data-action="delete-literature" data-id="${escapeAttribute(item.id)}">Delete</button>
                 </div>
             </div>
         </div>
@@ -9185,7 +9185,7 @@ function renderCurrentCheckouts() {
                             ${isOverdue ? '<span style="color: #e74c3c; margin-left: 0.5rem; font-weight: bold;">OVERDUE</span>' : ''}
                         </p>
                     </div>
-                    <button class="btn" onclick="returnLiterature('${checkout.id}')">Mark Returned</button>
+                    <button class="btn" data-action="return-literature" data-id="${escapeAttribute(checkout.id)}">Mark Returned</button>
                 </div>
             </div>
         `;
@@ -9304,10 +9304,10 @@ function renderReadingSchedules() {
                         ${schedule.notes ? `<p style="color: #ecf0f1; font-size: 0.9rem; margin-top: 0.5rem; font-style: italic;">${schedule.notes}</p>` : ''}
                     </div>
                     <div style="display: flex; gap: 0.5rem;">
-                        <button class="btn secondary" onclick="toggleScheduleActive('${schedule.id}')">
+                        <button class="btn secondary" data-action="toggle-schedule" data-id="${escapeAttribute(schedule.id)}">
                             ${schedule.active ? 'Deactivate' : 'Activate'}
                         </button>
-                        <button class="btn secondary" onclick="deleteReadingSchedule('${schedule.id}')">Delete</button>
+                        <button class="btn secondary" data-action="delete-schedule" data-id="${escapeAttribute(schedule.id)}">Delete</button>
                     </div>
                 </div>
             </div>
@@ -9553,17 +9553,72 @@ document.addEventListener('click', function(e) {
 
     const action = btn.dataset.action;
     const id = btn.dataset.id;
+    const status = btn.dataset.status; // For actions that need additional data
 
     switch(action) {
+        // Group Conscience
         case 'view-gc': openGCDetailsModal(id); break;
         case 'edit-gc': editGCLog(id); break;
         case 'delete-gc': deleteGCLog(id); break;
+        case 'delete-live-gc': deleteLiveGCItem(id); break;
+        case 'view-proposed': viewProposedAgendaItem(id); break;
+        case 'delete-proposed': deleteProposedAgendaItem(id); break;
+        case 'edit-action': editActionItem(id); break;
+        case 'delete-action': deleteActionItem(id); break;
+        case 'update-amendment': updateAmendmentStatus(id, status); break;
+        case 'delete-comment': deleteGCComment(id); break;
+        case 'view-chain': viewMotionChain(id); break;
+        case 'update-gc-status': updateGCItemStatus(id, status); break;
+        case 'remove-gc-item': removeGCItem(id); break;
+
+        // Events & Members
         case 'edit-event': editEvent(id); break;
         case 'delete-event': deleteEvent(id); break;
         case 'edit-member': editMember(id); break;
         case 'delete-member': deleteMember(id); break;
+        case 'edit-member-roster': editMemberFromRoster(id); break;
+        case 'delete-member-roster': deleteMemberAndRefreshRoster(id); break;
+
+        // Chairperson
         case 'edit-chairperson': editChairpersonLog(id); break;
         case 'delete-chairperson': deleteChairpersonLog(id); break;
+
+        // Service & Nominations
+        case 'delete-position': deleteServicePosition(id); break;
+        case 'delete-nomination': deleteNomination(id); break;
+
+        // Budget & Expenses
+        case 'delete-budget-category': deleteBudgetCategory(id); break;
+        case 'delete-expense': deleteExpense(id); break;
+
+        // Backups
+        case 'restore-backup': restoreBackup(id); break;
+        case 'delete-backup': deleteBackup(id); break;
+
+        // Literature
+        case 'checkout-literature': checkoutLiterature(id); break;
+        case 'edit-literature': editLiterature(id); break;
+        case 'delete-literature': deleteLiterature(id); break;
+        case 'return-literature': returnLiterature(id); break;
+
+        // Reading Schedules
+        case 'toggle-schedule': toggleScheduleActive(id); break;
+        case 'delete-schedule': deleteReadingSchedule(id); break;
+
+        // Format & Commitments
+        case 'edit-format': editFormat(id); break;
+        case 'delete-format': deleteFormat(id); break;
+        case 'edit-commitment': editCommitment(id); break;
+        case 'delete-commitment': deleteCommitment(id); break;
+
+        // Attendance
+        case 'delete-attendance': deleteAttendance(id); break;
+
+        // Bylaws
+        case 'view-bylaw': viewByLaw(id); break;
+
+        // Sponsorships
+        case 'delete-sponsorship': deleteSponsorship(id); break;
     }
 });
 
@@ -9627,8 +9682,8 @@ function loadFormatRotationTable() {
             <td>${DOMPurify.sanitize(format.name)}</td>
             <td>${DOMPurify.sanitize(format.description)}</td>
             <td>
-                <button class="btn secondary" onclick="editFormat('${format.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Edit</button>
-                <button class="btn secondary" onclick="deleteFormat('${format.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.85rem; margin-left: 0.25rem;">Delete</button>
+                <button class="btn secondary" data-action="edit-format" data-id="${escapeAttribute(format.id)}" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Edit</button>
+                <button class="btn secondary" data-action="delete-format" data-id="${escapeAttribute(format.id)}" style="padding: 0.25rem 0.5rem; font-size: 0.85rem; margin-left: 0.25rem;">Delete</button>
             </td>
         `;
     });
@@ -9756,8 +9811,8 @@ function loadCommitmentTable() {
             <td>${DOMPurify.sanitize(commitment.role)}</td>
             <td>${DOMPurify.sanitize(commitment.member)}</td>
             <td>
-                <button class="btn secondary" onclick="editCommitment('${commitment.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Edit</button>
-                <button class="btn secondary" onclick="deleteCommitment('${commitment.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.85rem; margin-left: 0.25rem;">Delete</button>
+                <button class="btn secondary" data-action="edit-commitment" data-id="${escapeAttribute(commitment.id)}" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Edit</button>
+                <button class="btn secondary" data-action="delete-commitment" data-id="${escapeAttribute(commitment.id)}" style="padding: 0.25rem 0.5rem; font-size: 0.85rem; margin-left: 0.25rem;">Delete</button>
             </td>
         `;
     });
@@ -9860,7 +9915,7 @@ function loadAttendanceHistory() {
             <td>${entry.visitors}</td>
             <td>${entry.total}</td>
             <td>
-                <button class="btn secondary" onclick="deleteAttendance('${entry.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Delete</button>
+                <button class="btn secondary" data-action="delete-attendance" data-id="${escapeAttribute(entry.id)}" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Delete</button>
             </td>
         `;
     });
@@ -9973,7 +10028,7 @@ function displayGCDecisions(decisions) {
     let html = '';
     decisions.forEach(d => {
         html += `
-            <div class="box mb-2" style="cursor: pointer;" onclick="viewMotionChain('${d.id}')">
+            <div class="box mb-2" style="cursor: pointer;" data-action="view-chain" data-id="${escapeAttribute(d.id)}">
                 <div><strong>${new Date(d.date).toLocaleDateString()}</strong></div>
                 <div>${DOMPurify.sanitize(d.item)}</div>
                 <div style="font-size: 0.85rem; color: #95a5a6;">
@@ -10199,7 +10254,7 @@ function loadByLawsHistory() {
             <td>${DOMPurify.sanitize(bylaw.version)}</td>
             <td>${new Date(bylaw.effectiveDate).toLocaleDateString()}</td>
             <td>
-                <button class="btn secondary" onclick="viewByLaw('${bylaw.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">View</button>
+                <button class="btn secondary" data-action="view-bylaw" data-id="${escapeAttribute(bylaw.id)}" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">View</button>
             </td>
         `;
     });
@@ -10228,7 +10283,7 @@ function loadCurrentByLaws() {
             <div class="box mb-2">
                 <h4>${DOMPurify.sanitize(b.title)}</h4>
                 <div style="font-size: 0.85rem; color: #95a5a6;">Version ${DOMPurify.sanitize(b.version)} - Effective ${new Date(b.effectiveDate).toLocaleDateString()}</div>
-                <button class="btn secondary mt-2" onclick="viewByLaw('${b.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">View Full Document</button>
+                <button class="btn secondary mt-2" data-action="view-bylaw" data-id="${escapeAttribute(b.id)}" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">View Full Document</button>
             </div>
         `;
     });
@@ -10306,7 +10361,7 @@ function loadSponsorshipTable() {
             <td>${new Date(s.startDate).toLocaleDateString()}</td>
             <td>${s.currentStep ? 'Step ' + s.currentStep : 'N/A'}</td>
             <td>
-                <button class="btn secondary" onclick="deleteSponsorship('${s.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Delete</button>
+                <button class="btn secondary" data-action="delete-sponsorship" data-id="${escapeAttribute(s.id)}" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Delete</button>
             </td>
         `;
     });
@@ -10654,8 +10709,8 @@ function loadLiveGCQueue() {
             <td>${DOMPurify.sanitize(item.item)}</td>
             <td>${item.status}</td>
             <td>
-                <button class="btn secondary" onclick="updateGCItemStatus('${item.id}', 'discussed')" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Mark Discussed</button>
-                <button class="btn secondary" onclick="removeGCItem('${item.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.85rem; margin-left: 0.25rem;">Remove</button>
+                <button class="btn secondary" data-action="update-gc-status" data-id="${escapeAttribute(item.id)}" data-status="discussed" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Mark Discussed</button>
+                <button class="btn secondary" data-action="remove-gc-item" data-id="${escapeAttribute(item.id)}" style="padding: 0.25rem 0.5rem; font-size: 0.85rem; margin-left: 0.25rem;">Remove</button>
             </td>
         `;
     });
