@@ -3961,6 +3961,77 @@ function showToast(message, type = 'info') { // type can be 'info', 'success', o
         });
     }, 3000); // Toast disappears after 3 seconds
 }
+
+// Input validation utilities
+function validateEmail(email) {
+    if (!email) return true; // Empty email is allowed
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+function validatePhone(phone) {
+    if (!phone) return true; // Empty phone is allowed
+    // Accepts formats: 123-456-7890, (123) 456-7890, 123.456.7890, 1234567890
+    const phoneRegex = /^[\d\s\-\(\)\.]+$/;
+    return phoneRegex.test(phone) && phone.replace(/\D/g, '').length >= 10;
+}
+
+// HTML/attribute escaping utilities
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function escapeAttribute(value) {
+    if (typeof value !== 'string') value = String(value);
+    return value.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// LocalStorage quota monitoring utilities
+function getLocalStorageSize() {
+    let total = 0;
+    for (let key in localStorage) {
+        if (localStorage.hasOwnProperty(key)) {
+            total += localStorage[key].length + key.length;
+        }
+    }
+    return total;
+}
+
+function checkLocalStorageQuota() {
+    try {
+        const currentSize = getLocalStorageSize();
+        const estimatedLimit = 5 * 1024 * 1024; // 5MB typical limit
+        const usagePercent = (currentSize / estimatedLimit) * 100;
+
+        if (usagePercent > 90) {
+            showToast(`Warning: localStorage is ${usagePercent.toFixed(1)}% full. Consider exporting and archiving old data.`, 'error');
+            return false;
+        } else if (usagePercent > 75) {
+            showToast(`Notice: localStorage is ${usagePercent.toFixed(1)}% full.`, 'warning');
+        }
+        return true;
+    } catch (e) {
+        showToast('Error checking storage quota: ' + e.message, 'error');
+        return false;
+    }
+}
+
+function safeLocalStorageSet(key, value) {
+    try {
+        localStorage.setItem(key, value);
+        return true;
+    } catch (e) {
+        if (e.name === 'QuotaExceededError' || e.code === 22) {
+            const sizeKB = (getLocalStorageSize() / 1024).toFixed(2);
+            showToast(`Storage quota exceeded! Current usage: ${sizeKB}KB. Please export and delete old data.`, 'error');
+            return false;
+        }
+        throw e;
+    }
+}
+
 // Storage wrappers using localStorage
 const storage = {
     getEvents() { return JSON.parse(localStorage.getItem('events') || '[]'); },
@@ -3970,7 +4041,12 @@ const storage = {
     getAnnouncements() { return JSON.parse(localStorage.getItem('announcements') || '[]'); },
     saveAnnouncements(a) { localStorage.setItem('announcements', JSON.stringify(a)); },
     getPhotos() { return JSON.parse(localStorage.getItem('photos') || '[]'); },
-    savePhotos(p) { localStorage.setItem('photos', JSON.stringify(p)); },
+    savePhotos(p) {
+        const jsonStr = JSON.stringify(p);
+        if (!safeLocalStorageSet('photos', jsonStr)) {
+            throw new Error('Failed to save photos due to storage quota exceeded');
+        }
+    },
     getChairpersonLog() { return JSON.parse(localStorage.getItem('chairpersonLog') || '[]'); },
     saveChairpersonLog(log) { localStorage.setItem('chairpersonLog', JSON.stringify(log)); },
     getGroupConscienceLog() { return JSON.parse(localStorage.getItem('groupConscienceLog') || '[]'); },
@@ -4002,7 +4078,37 @@ const storage = {
     getAnnouncementReadReceipts() { return JSON.parse(localStorage.getItem('announcementReadReceipts') || '{}'); },
     saveAnnouncementReadReceipts(receipts) { localStorage.setItem('announcementReadReceipts', JSON.stringify(receipts)); },
     getCurrentUser() { return localStorage.getItem('currentUser') || 'Anonymous'; },
-    saveCurrentUser(user) { localStorage.setItem('currentUser', user); }
+    saveCurrentUser(user) { localStorage.setItem('currentUser', user); },
+
+    // Backward compatibility: Import birthdays from old format
+    saveBirthdays(birthdays) {
+        const existingMembers = this.getMembers();
+        birthdays.forEach(b => {
+            const existingIndex = existingMembers.findIndex(m => m.id === b.id);
+            if (existingIndex >= 0) {
+                // Update existing member's birthday
+                existingMembers[existingIndex].birthday = b.birthday;
+                if (b.phone) existingMembers[existingIndex].phone = b.phone;
+                if (b.email) existingMembers[existingIndex].email = b.email;
+            } else {
+                // Add new member
+                existingMembers.push({
+                    id: b.id || genId(),
+                    name: b.name,
+                    birthday: b.birthday,
+                    phone: b.phone || '',
+                    email: b.email || '',
+                    homegroup: 'Yes',
+                    sponsor: '',
+                    city: '',
+                    isServant: false,
+                    servantPosition: '',
+                    servantSince: ''
+                });
+            }
+        });
+        this.saveMembers(existingMembers);
+    }
 };
 // Initialize default data on first load
 function initDefaults() {
@@ -4275,7 +4381,7 @@ function updateEventsTable() {
         const tr = document.createElement('tr');
         const dateStr = item.occurDate.toLocaleDateString();
         const timeStr = item.occurDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        tr.innerHTML = `<td>${dateStr}</td><td>${item.event.title}</td><td>${item.event.category || 'General'}</td><td>${timeStr}</td><td>${item.event.speaker || ''}</td><td>${item.event.chair || ''}</td><td><button class="btn" onclick="editEvent('${item.event.id}')" style="margin-right: 5px;">Edit</button><button class="btn secondary" onclick="deleteEvent('${item.event.id}')">Delete</button></td>`;
+        tr.innerHTML = `<td>${escapeHtml(dateStr)}</td><td>${escapeHtml(item.event.title)}</td><td>${escapeHtml(item.event.category || 'General')}</td><td>${escapeHtml(timeStr)}</td><td>${escapeHtml(item.event.speaker || '')}</td><td>${escapeHtml(item.event.chair || '')}</td><td><button class="btn" data-action="edit-event" data-id="${escapeAttribute(item.event.id)}" style="margin-right: 5px;">Edit</button><button class="btn secondary" data-action="delete-event" data-id="${escapeAttribute(item.event.id)}">Delete</button></td>`;
         tbody.appendChild(tr);
     });
     if (occ.length === 0) {
@@ -4349,9 +4455,21 @@ function updateMember() {
 
     const name = document.getElementById('member-name').value.trim();
     const bdate = document.getElementById('member-birthday').value;
+    const email = document.getElementById('member-email').value.trim();
+    const phone = document.getElementById('member-phone').value.trim();
 
     if (!name || !bdate) {
         showToast('Please provide both name and sobriety date.', 'error');
+        return;
+    }
+
+    if (!validateEmail(email)) {
+        showToast('Please enter a valid email address (e.g., user@example.com).', 'error');
+        return;
+    }
+
+    if (!validatePhone(phone)) {
+        showToast('Please enter a valid phone number with at least 10 digits.', 'error');
         return;
     }
 
@@ -4363,8 +4481,8 @@ function updateMember() {
             id,
             name,
             birthday: bdate,
-            phone: document.getElementById('member-phone').value.trim(),
-            email: document.getElementById('member-email').value.trim(),
+            phone: phone,
+            email: email,
             homegroup: document.getElementById('member-homegroup').value.trim(),
             sponsor: document.getElementById('member-sponsor').value.trim(),
             city: document.getElementById('member-city').value.trim(),
@@ -4388,17 +4506,31 @@ function updateMember() {
 function addMember() {
     const name = document.getElementById('member-name').value.trim();
     const bdate = document.getElementById('member-birthday').value;
+    const email = document.getElementById('member-email').value.trim();
+    const phone = document.getElementById('member-phone').value.trim();
+
     if (!name || !bdate) {
         showToast('Please provide both name and sobriety date.', 'error');
         return;
     }
+
+    if (!validateEmail(email)) {
+        showToast('Please enter a valid email address (e.g., user@example.com).', 'error');
+        return;
+    }
+
+    if (!validatePhone(phone)) {
+        showToast('Please enter a valid phone number with at least 10 digits.', 'error');
+        return;
+    }
+
     const members = storage.getMembers();
     members.push({
         id: genId(),
         name,
         birthday: bdate,
-        phone: document.getElementById('member-phone').value.trim(),
-        email: document.getElementById('member-email').value.trim(),
+        phone: phone,
+        email: email,
         homegroup: document.getElementById('member-homegroup').value.trim(),
         sponsor: document.getElementById('member-sponsor').value.trim(),
         city: document.getElementById('member-city').value.trim(),
@@ -4534,14 +4666,14 @@ function updateBirthdaysTable() {
         const soberTimeStr = `${soberTime.years}y ${soberTime.months}m ${soberTime.days}d`;
 
         tr.innerHTML = `
-            <td>${m.name}</td>
-            <td>${md}</td>
-            <td>${displayDateStr}</td>
-            <td>${years}</td>
-            <td>${soberTimeStr}</td>
+            <td>${escapeHtml(m.name)}</td>
+            <td>${escapeHtml(md)}</td>
+            <td>${escapeHtml(displayDateStr)}</td>
+            <td>${escapeHtml(String(years))}</td>
+            <td>${escapeHtml(soberTimeStr)}</td>
             <td>
-                <button class="btn" onclick="editMember('${m.id}')" style="margin-right: 5px;">Edit</button>
-                <button class="btn secondary" onclick="deleteMember('${m.id}')">Delete</button>
+                <button class="btn" data-action="edit-member" data-id="${escapeAttribute(m.id)}" style="margin-right: 5px;">Edit</button>
+                <button class="btn secondary" data-action="delete-member" data-id="${escapeAttribute(m.id)}">Delete</button>
             </td>`;
         tbody.appendChild(tr);
     });
@@ -4758,6 +4890,13 @@ function uploadPhotos() {
         showToast('Select one or more images to upload.', 'error');
         return;
     }
+
+    // Check storage quota before uploading
+    if (!checkLocalStorageQuota()) {
+        showToast('Cannot upload photos: storage quota warning. Please free up space.', 'error');
+        return;
+    }
+
     const tags = tagsInput.value.split(',').map(tag => tag.trim()).filter(tag => tag);
     const photos = storage.getPhotos();
     let remaining = files.length;
@@ -4767,12 +4906,16 @@ function uploadPhotos() {
             photos.push({ src: e.target.result, tags: tags });
             remaining--;
             if (remaining === 0) {
-                storage.savePhotos(photos);
-                showToast(`${files.length} photo(s) uploaded!`, 'success');
-                input.value = '';
-                tagsInput.value = '';
-                updateGallery();
-                updateHome();
+                try {
+                    storage.savePhotos(photos);
+                    showToast(`${files.length} photo(s) uploaded!`, 'success');
+                    input.value = '';
+                    tagsInput.value = '';
+                    updateGallery();
+                    updateHome();
+                } catch (err) {
+                    showToast('Failed to save photos: ' + err.message, 'error');
+                }
             }
         };
         reader.readAsDataURL(file);
@@ -4856,15 +4999,15 @@ function updateChairpersonLogTable() {
         const tr = document.createElement('tr');
         const timeStr = entry.time ? new Date('1970-01-01T' + entry.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'N/A';
         tr.innerHTML = `
-            <td>${new Date(entry.date).toLocaleDateString()}</td>
-            <td>${timeStr}</td>
-            <td>${entry.chairperson || 'N/A'}</td>
-            <td>${entry.headcount}</td>
-            <td>$${entry.tradition.toFixed(2)}</td>
-            <td>$${entry.orangeCan.toFixed(2)}</td>
+            <td>${escapeHtml(new Date(entry.date).toLocaleDateString())}</td>
+            <td>${escapeHtml(timeStr)}</td>
+            <td>${escapeHtml(entry.chairperson || 'N/A')}</td>
+            <td>${escapeHtml(String(entry.headcount))}</td>
+            <td>$${escapeHtml(entry.tradition.toFixed(2))}</td>
+            <td>$${escapeHtml(entry.orangeCan.toFixed(2))}</td>
             <td>
-                <button class="btn" onclick="editChairpersonLog('${entry.id}')" style="margin-right: 5px;">Edit</button>
-                <button class="btn secondary" onclick="deleteChairpersonLog('${entry.id}')">Delete</button>
+                <button class="btn" data-action="edit-chairperson" data-id="${escapeAttribute(entry.id)}" style="margin-right: 5px;">Edit</button>
+                <button class="btn secondary" data-action="delete-chairperson" data-id="${escapeAttribute(entry.id)}">Delete</button>
             </td>
         `;
         tbody.appendChild(tr);
@@ -5026,15 +5169,15 @@ function updateGCLogTable() {
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${logDate.toLocaleDateString()}</td>
-            <td>${log.item.substring(0, 50)}${log.item.length > 50 ? '...' : ''}</td>
-            <td>${log.submittedBy || 'N/A'}</td>
-            <td style="color: ${log.status === 'passed' ? '#2ecc71' : log.status === 'failed' ? '#e74c3c' : '#f39c12'};">${log.status.toUpperCase()}</td>
-            <td>${votesDisplay}</td>
+            <td>${escapeHtml(logDate.toLocaleDateString())}</td>
+            <td>${escapeHtml(log.item.substring(0, 50))}${log.item.length > 50 ? '...' : ''}</td>
+            <td>${escapeHtml(log.submittedBy || 'N/A')}</td>
+            <td style="color: ${log.status === 'passed' ? '#2ecc71' : log.status === 'failed' ? '#e74c3c' : '#f39c12'};">${escapeHtml(log.status.toUpperCase())}</td>
+            <td>${escapeHtml(votesDisplay)}</td>
             <td>
-                <button class="btn" onclick="openGCDetailsModal('${log.id}')" style="margin-right: 5px;">View</button>
-                <button class="btn" onclick="editGCLog('${log.id}')" style="margin-right: 5px;">Edit</button>
-                <button class="btn secondary" onclick="deleteGCLog('${log.id}')">Delete</button>
+                <button class="btn" data-action="view-gc" data-id="${escapeAttribute(log.id)}" style="margin-right: 5px;">View</button>
+                <button class="btn" data-action="edit-gc" data-id="${escapeAttribute(log.id)}" style="margin-right: 5px;">Edit</button>
+                <button class="btn secondary" data-action="delete-gc" data-id="${escapeAttribute(log.id)}">Delete</button>
             </td>
         `;
         tbody.appendChild(tr);
@@ -7009,16 +7152,32 @@ async function searchDictionary() {
         return;
     }
     resultsContainer.innerHTML = '<p>Searching...</p>';
+
+    // Create abort controller for timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
     try {
-        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`, {
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
         if (!response.ok) {
             throw new Error('Word not found. Please check your spelling.');
         }
         const data = await response.json();
         displayDictionaryResults(data);
     } catch (error) {
-        resultsContainer.innerHTML = `<p style="color: #e74c3c;">${error.message}</p>`;
-        showToast(error.message, 'error');
+        clearTimeout(timeoutId);
+        let errorMsg = 'An error occurred while searching.';
+        if (error.name === 'AbortError') {
+            errorMsg = 'Search timed out. Please check your internet connection and try again.';
+        } else if (error.message) {
+            errorMsg = error.message;
+        }
+        resultsContainer.innerHTML = `<p style="color: #e74c3c;">${escapeHtml(errorMsg)}</p>`;
+        showToast(errorMsg, 'error');
     }
 }
 
@@ -7032,30 +7191,44 @@ function displayDictionaryResults(data) {
     }
 
     const entry = data[0]; // Displaying the first entry found
-    let html = `<h3>${entry.word} <span style="font-size: 1rem; color: #bdc3c7;">${entry.phonetic || ''}</span></h3>`;
+    let html = `<h3>${escapeHtml(entry.word)} <span style="font-size: 1rem; color: #bdc3c7;">${escapeHtml(entry.phonetic || '')}</span></h3>`;
 
-    entry.meanings.forEach(meaning => {
-        html += `<h4 style="color: #3498db; margin-top: 1rem;">${meaning.partOfSpeech}</h4>`;
-        html += '<ul style="list-style-type: disc; padding-left: 20px;">';
-        meaning.definitions.forEach(def => {
-            html += `<li>${def.definition}`;
-            if (def.example) {
-                html += `<br><em style="color: #95a5a6;">Example: "${def.example}"</em>`;
+    if (entry.meanings && Array.isArray(entry.meanings)) {
+        entry.meanings.forEach(meaning => {
+            html += `<h4 style="color: #3498db; margin-top: 1rem;">${escapeHtml(meaning.partOfSpeech)}</h4>`;
+            html += '<ul style="list-style-type: disc; padding-left: 20px;">';
+            if (meaning.definitions && Array.isArray(meaning.definitions)) {
+                meaning.definitions.forEach(def => {
+                    html += `<li>${escapeHtml(def.definition)}`;
+                    if (def.example) {
+                        html += `<br><em style="color: #95a5a6;">Example: "${escapeHtml(def.example)}"</em>`;
+                    }
+                    html += '</li>';
+                });
             }
-            html += '</li>';
+            html += '</ul>';
         });
-        html += '</ul>';
-    });
+    }
 
-    // Add audio for pronunciation if available
-    const phoneticWithAudio = entry.phonetics.find(p => p.audio);
-    if (phoneticWithAudio && phoneticWithAudio.audio) {
-        html += `<div style="margin-top: 1rem;">
-                    <p>Pronunciation:</p>
-                    <audio controls src="${phoneticWithAudio.audio}" style="width: 100%;">
-                        Your browser does not support the audio element.
-                    </audio>
-                 </div>`;
+    // Add audio for pronunciation if available (sanitize URL)
+    if (entry.phonetics && Array.isArray(entry.phonetics)) {
+        const phoneticWithAudio = entry.phonetics.find(p => p.audio);
+        if (phoneticWithAudio && phoneticWithAudio.audio) {
+            // Validate that audio URL is from trusted domain
+            try {
+                const audioUrl = new URL(phoneticWithAudio.audio);
+                if (audioUrl.protocol === 'https:' && audioUrl.hostname.endsWith('dictionaryapi.dev')) {
+                    html += `<div style="margin-top: 1rem;">
+                                <p>Pronunciation:</p>
+                                <audio controls src="${escapeAttribute(phoneticWithAudio.audio)}" style="width: 100%;">
+                                    Your browser does not support the audio element.
+                                </audio>
+                             </div>`;
+                }
+            } catch (e) {
+                // Invalid URL, skip audio
+            }
+        }
     }
 
     resultsContainer.innerHTML = html;
@@ -7586,15 +7759,39 @@ function deleteServicePosition(id) {
 
 function calculateEndDate(startDate, termMonths) {
     const start = new Date(startDate);
-    const end = new Date(start);
-    end.setMonth(end.getMonth() + termMonths);
+    // Safe date math: add months by calculating total months then reconstructing date
+    const startYear = start.getFullYear();
+    const startMonth = start.getMonth();
+    const startDay = start.getDate();
+
+    const totalMonths = startYear * 12 + startMonth + termMonths;
+    const endYear = Math.floor(totalMonths / 12);
+    const endMonth = totalMonths % 12;
+
+    // Create end date, handling month-end overflow (e.g., Jan 31 + 1 month = Feb 28/29)
+    const end = new Date(endYear, endMonth, 1);
+    const maxDay = new Date(endYear, endMonth + 1, 0).getDate();
+    end.setDate(Math.min(startDay, maxDay));
+
     return end.toLocaleDateString();
 }
 
 function calculateDaysRemaining(startDate, termMonths) {
     const start = new Date(startDate);
-    const end = new Date(start);
-    end.setMonth(end.getMonth() + termMonths);
+    // Safe date math: add months by calculating total months then reconstructing date
+    const startYear = start.getFullYear();
+    const startMonth = start.getMonth();
+    const startDay = start.getDate();
+
+    const totalMonths = startYear * 12 + startMonth + termMonths;
+    const endYear = Math.floor(totalMonths / 12);
+    const endMonth = totalMonths % 12;
+
+    // Create end date, handling month-end overflow
+    const end = new Date(endYear, endMonth, 1);
+    const maxDay = new Date(endYear, endMonth + 1, 0).getDate();
+    end.setDate(Math.min(startDay, maxDay));
+
     const today = new Date();
     const diffTime = end - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -9348,6 +9545,27 @@ function loadAccessibilitySettings() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
+// Event delegation for data-action buttons (prevents template literal injection)
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+
+    const action = btn.dataset.action;
+    const id = btn.dataset.id;
+
+    switch(action) {
+        case 'view-gc': openGCDetailsModal(id); break;
+        case 'edit-gc': editGCLog(id); break;
+        case 'delete-gc': deleteGCLog(id); break;
+        case 'edit-event': editEvent(id); break;
+        case 'delete-event': deleteEvent(id); break;
+        case 'edit-member': editMember(id); break;
+        case 'delete-member': deleteMember(id); break;
+        case 'edit-chairperson': editChairpersonLog(id); break;
+        case 'delete-chairperson': deleteChairpersonLog(id); break;
+    }
+});
 
 // ========================================
 // NEW FEATURES - JavaScript Functions
