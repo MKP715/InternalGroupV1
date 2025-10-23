@@ -1061,6 +1061,8 @@
                     <li data-section="participation-analytics-section">Participation Analytics</li>
                     <li data-section="financial-health-section">Financial Health</li>
                     <li data-section="decision-impact-section">Decision Impact</li>
+                    <li onclick="displayExecutiveDashboard()" style="border-top: 1px solid #7f8c8d; margin-top: 0.5rem; padding-top: 0.5rem;"><i class="fas fa-tachometer-alt"></i> Executive Dashboard</li>
+                    <li onclick="openGSRDashboard()"><i class="fas fa-handshake"></i> GSR Dashboard</li>
                 </ul>
             </li>
 
@@ -1070,7 +1072,14 @@
                     <li data-section="literature-inventory-section">Literature Inventory</li>
                     <li data-section="history-section">Group History</li>
                     <li data-section="templates-section">Document Templates</li>
+                    <li onclick="displayTraditionOfMonth()" style="border-top: 1px solid #7f8c8d; margin-top: 0.5rem; padding-top: 0.5rem;"><i class="fas fa-book-open"></i> Tradition of the Month</li>
+                    <li onclick="scheduleGroupInventory()"><i class="fas fa-tasks"></i> Schedule Group Inventory</li>
                 </ul>
+            </li>
+
+            <!-- P4-2: Universal Search -->
+            <li onclick="displayUniversalSearch()" style="cursor: pointer; position: relative;" title="Universal Search">
+                <i class="fas fa-search"></i>
             </li>
 
             <!-- P2-2: Notification Center -->
@@ -1130,6 +1139,35 @@
                     <h3>7th Tradition</h3>
                     <img id="qr-code-img" src="" alt="7th Tradition QR Code" style="width: 250px; height: 250px; margin: auto; border-radius: 8px;">
                     <p id="qr-code-contact" class="mt-2"></p>
+                </div>
+                <div class="box">
+                    <h3>Leadership Tools</h3>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; min-height: 60px;">
+                        <button class="btn" onclick="displayExecutiveDashboard()" style="font-size: 0.9rem;">
+                            <i class="fas fa-tachometer-alt"></i> Executive Dashboard
+                        </button>
+                        <button class="btn" onclick="openGSRDashboard()" style="font-size: 0.9rem;">
+                            <i class="fas fa-handshake"></i> GSR Dashboard
+                        </button>
+                        <button class="btn" onclick="displayTraditionOfMonth()" style="font-size: 0.9rem;">
+                            <i class="fas fa-book-open"></i> Tradition of the Month
+                        </button>
+                    </div>
+                </div>
+                <div class="box">
+                    <h3>Quick Actions</h3>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; min-height: 60px;">
+                        <button class="btn" onclick="displayUniversalSearch()" style="font-size: 0.9rem;">
+                            <i class="fas fa-search"></i> Universal Search
+                        </button>
+                        <button class="btn" onclick="scheduleGroupInventory()" style="font-size: 0.9rem;">
+                            <i class="fas fa-tasks"></i> Schedule Group Inventory
+                        </button>
+                        <button class="btn" onclick="showNotificationCenter()" style="font-size: 0.9rem;">
+                            <i class="fas fa-bell"></i> Notification Center
+                            <span id="home-notification-badge" style="display: none; background: #e74c3c; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; font-weight: bold; margin-left: 0.5rem;">0</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -10634,6 +10672,7 @@ function dismissNotification(notificationId) {
 function updateNotificationBadge() {
     const unread = getUnreadNotifications();
     const badge = document.getElementById('notification-badge');
+    const homeBadge = document.getElementById('home-notification-badge');
 
     if (badge) {
         if (unread.length > 0) {
@@ -10641,6 +10680,15 @@ function updateNotificationBadge() {
             badge.style.display = 'inline-block';
         } else {
             badge.style.display = 'none';
+        }
+    }
+
+    if (homeBadge) {
+        if (unread.length > 0) {
+            homeBadge.textContent = unread.length > 99 ? '99+' : unread.length;
+            homeBadge.style.display = 'inline';
+        } else {
+            homeBadge.style.display = 'none';
         }
     }
 }
@@ -11258,6 +11306,825 @@ function checkMemberEngagement() {
             actionLink: 'analytics-section'
         });
     }
+}
+
+// ========== P3-1: TRADITION OF THE MONTH FOCUS ==========
+
+function getTraditionOfMonth() {
+    const today = new Date();
+    const month = today.getMonth(); // 0-11
+    const tradition = (month % 12) + 1; // 1-12
+    return tradition;
+}
+
+function getTraditionDetails(traditionNumber) {
+    const traditions = {
+        1: {
+            title: "Our common welfare should come first; personal recovery depends upon A.A. unity.",
+            description: "Unity is essential. Without it, we have nothing. Group unity must come before personal desires.",
+            reflectionQuestions: [
+                "How does our group practice unity?",
+                "Are there any actions threatening group unity?",
+                "How can we better support each other's recovery?"
+            ]
+        },
+        2: {
+            title: "For our group purpose there is but one ultimate authority—a loving God as He may express Himself in our group conscience. Our leaders are but trusted servants; they do not govern.",
+            description: "Group conscience, not individuals, guides us. Leaders serve rather than govern.",
+            reflectionQuestions: [
+                "Do we truly seek group conscience or just majority vote?",
+                "Are our trusted servants serving or governing?",
+                "How do we listen for God's will in our decisions?"
+            ]
+        },
+        3: {
+            title: "The only requirement for A.A. membership is a desire to stop drinking.",
+            description: "No barriers to membership. Anyone who wants to stop drinking is welcome.",
+            reflectionQuestions: [
+                "Do we make everyone feel welcome?",
+                "Are there any unwritten requirements we've created?",
+                "How do we receive newcomers?"
+            ]
+        },
+        4: {
+            title: "Each group should be autonomous except in matters affecting other groups or A.A. as a whole.",
+            description: "Freedom to operate as we see fit, with responsibility to the fellowship.",
+            reflectionQuestions: [
+                "Are we exercising our autonomy responsibly?",
+                "Do our actions affect other groups or AA as a whole?",
+                "Are we following AA principles in our autonomy?"
+            ]
+        },
+        5: {
+            title: "Each group has but one primary purpose—to carry its message to the alcoholic who still suffers.",
+            description: "Our primary purpose guides all decisions. Everything else is secondary.",
+            reflectionQuestions: [
+                "Is carrying the message our top priority?",
+                "Are we diluting our primary purpose?",
+                "How effectively are we reaching the suffering alcoholic?"
+            ]
+        },
+        6: {
+            title: "An A.A. group ought never endorse, finance, or lend the A.A. name to any related facility or outside enterprise.",
+            description: "We maintain our independence and avoid outside affiliations.",
+            reflectionQuestions: [
+                "Are we keeping AA separate from other organizations?",
+                "Do we avoid endorsements?",
+                "Are our relationships with facilities appropriate?"
+            ]
+        },
+        7: {
+            title: "Every A.A. group ought to be fully self-supporting, declining outside contributions.",
+            description: "We pay our own way. Self-support maintains our independence.",
+            reflectionQuestions: [
+                "Are we fully self-supporting?",
+                "Do we meet our financial obligations?",
+                "Are we generous with our contributions?"
+            ]
+        },
+        8: {
+            title: "Alcoholics Anonymous should remain forever nonprofessional, but our service centers may employ special workers.",
+            description: "We carry the message freely. No payment for 12th step work.",
+            reflectionQuestions: [
+                "Do we maintain our nonprofessional status?",
+                "Are there any conflicts of interest?",
+                "Do we give freely what was freely given to us?"
+            ]
+        },
+        9: {
+            title: "A.A., as such, ought never be organized; but we may create service boards or committees directly responsible to those they serve.",
+            description: "Minimal organization. Service structures serve, not govern.",
+            reflectionQuestions: [
+                "Are our service structures servant, not master?",
+                "Do we avoid over-organization?",
+                "Are committees responsible to the group?"
+            ]
+        },
+        10: {
+            title: "Alcoholics Anonymous has no opinion on outside issues; hence the A.A. name ought never be drawn into public controversy.",
+            description: "We stay focused on our primary purpose and avoid controversy.",
+            reflectionQuestions: [
+                "Do we avoid outside issues?",
+                "Have we drawn AA into any controversies?",
+                "Do we maintain public neutrality?"
+            ]
+        },
+        11: {
+            title: "Our public relations policy is based on attraction rather than promotion; we need always maintain personal anonymity at the level of press, radio, and films.",
+            description: "Attraction not promotion. Anonymity protects the fellowship.",
+            reflectionQuestions: [
+                "Do we practice attraction rather than promotion?",
+                "Are we protecting anonymity in public?",
+                "How is our group attractive to newcomers?"
+            ]
+        },
+        12: {
+            title: "Anonymity is the spiritual foundation of all our traditions, ever reminding us to place principles before personalities.",
+            description: "Anonymity keeps us humble and focused on principles.",
+            reflectionQuestions: [
+                "Do we practice principles before personalities?",
+                "How does anonymity protect our fellowship?",
+                "Are we humble in our service?"
+            ]
+        }
+    };
+
+    return traditions[traditionNumber] || traditions[1];
+}
+
+function displayTraditionOfMonth() {
+    const traditionNum = getTraditionOfMonth();
+    const tradition = getTraditionDetails(traditionNum);
+
+    const modal = document.createElement('div');
+    modal.id = 'tradition-modal';
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 1rem;';
+
+    const content = document.createElement('div');
+    content.style.cssText = 'background: #34495e; padding: 2rem; border-radius: 8px; max-width: 700px; max-height: 90vh; overflow-y: auto; width: 100%;';
+
+    content.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="color: #3498db; margin: 0;">Tradition ${traditionNum} - ${new Date().toLocaleString('default', { month: 'long' })}</h2>
+            <button onclick="closeTraditionModal()" style="background: #e74c3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Close</button>
+        </div>
+
+        <div style="background: #2c3e50; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid #3498db;">
+            <p style="color: #ecf0f1; font-size: 1.1rem; font-style: italic; line-height: 1.6;">
+                "${tradition.title}"
+            </p>
+        </div>
+
+        <div style="background: #2c3e50; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+            <h3 style="color: #3498db; margin: 0 0 1rem 0;">Understanding This Tradition</h3>
+            <p style="color: #ecf0f1; line-height: 1.6;">${tradition.description}</p>
+        </div>
+
+        <div style="background: #2c3e50; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+            <h3 style="color: #3498db; margin: 0 0 1rem 0;">Reflection Questions</h3>
+            <ul style="color: #ecf0f1; line-height: 1.8; padding-left: 1.5rem;">
+                ${tradition.reflectionQuestions.map(q => `<li style="margin-bottom: 0.5rem;">${q}</li>`).join('')}
+            </ul>
+        </div>
+
+        <div style="margin-top: 1.5rem; text-align: center;">
+            <button onclick="scheduleGroupInventory(${traditionNum})" style="background: #2ecc71; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer;">
+                Schedule Group Inventory on This Tradition
+            </button>
+        </div>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+
+    modal.onclick = (e) => {
+        if (e.target === modal) closeTraditionModal();
+    };
+}
+
+function closeTraditionModal() {
+    const modal = document.getElementById('tradition-modal');
+    if (modal) modal.remove();
+}
+
+// ========== P3-2: GROUP INVENTORY WORKFLOW ==========
+
+function scheduleGroupInventory(traditionNumber = null) {
+    const modal = document.createElement('div');
+    modal.id = 'inventory-schedule-modal';
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10001; display: flex; align-items: center; justify-content: center; padding: 1rem;';
+
+    const content = document.createElement('div');
+    content.style.cssText = 'background: #34495e; padding: 2rem; border-radius: 8px; max-width: 600px; width: 100%;';
+
+    const inventoryTypes = [
+        {value: 'traditions', label: '12 Traditions Inventory', duration: '2-3 hours'},
+        {value: 'concepts', label: '12 Concepts Inventory', duration: '2-3 hours'},
+        {value: 'format', label: 'Meeting Format Inventory', duration: '1-2 hours'},
+        {value: 'service', label: 'Service Structure Inventory', duration: '1-2 hours'},
+        {value: 'custom', label: 'Custom Group Inventory', duration: 'Varies'}
+    ];
+
+    content.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="color: #3498db; margin: 0;">Schedule Group Inventory</h2>
+            <button onclick="closeInventoryScheduleModal()" style="background: #e74c3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Close</button>
+        </div>
+
+        <div class="form-group">
+            <label>Inventory Type</label>
+            <select id="inventory-type" onchange="updateInventoryPreview()">
+                ${inventoryTypes.map(t => `
+                    <option value="${t.value}" ${traditionNumber && t.value === 'traditions' ? 'selected' : ''}>
+                        ${t.label} (${t.duration})
+                    </option>
+                `).join('')}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Scheduled Date</label>
+            <input type="date" id="inventory-date" />
+        </div>
+
+        <div class="form-group">
+            <label>Facilitator</label>
+            <input type="text" id="inventory-facilitator" placeholder="Who will lead the inventory?" />
+        </div>
+
+        <div id="inventory-preview" style="background: #2c3e50; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+            <h4 style="color: #3498db; margin: 0 0 0.5rem 0;">Inventory Preview</h4>
+            <p style="color: #ecf0f1; font-size: 0.9rem;">Select a type to see details</p>
+        </div>
+
+        <div style="margin-top: 1.5rem; text-align: center;">
+            <button onclick="createInventorySchedule()" style="background: #2ecc71; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; margin-right: 0.5rem;">
+                Schedule Inventory
+            </button>
+            <button onclick="closeInventoryScheduleModal()" style="background: #95a5a6; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer;">
+                Cancel
+            </button>
+        </div>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+
+    const nextMonth = new Date();
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    document.getElementById('inventory-date').value = nextMonth.toISOString().split('T')[0];
+
+    updateInventoryPreview();
+}
+
+function updateInventoryPreview() {
+    const type = document.getElementById('inventory-type')?.value;
+    const preview = document.getElementById('inventory-preview');
+
+    if (!type || !preview) return;
+
+    const inventoryContent = {
+        traditions: {
+            title: '12 Traditions Inventory',
+            description: 'A comprehensive review of how well the group follows each of the 12 Traditions.',
+            questions: ['Are we unified as a group?', 'Do leaders serve or govern?', 'Is anyone excluded?', 'Are we autonomous responsibly?']
+        },
+        concepts: {
+            title: '12 Concepts Inventory',
+            description: 'Review of service structure and leadership principles.',
+            questions: ['Is authority properly placed?', 'Do we respect the right of decision?', 'Is participation encouraged?']
+        },
+        format: {
+            title: 'Meeting Format Inventory',
+            description: 'Evaluate meeting structure, timing, and effectiveness.',
+            questions: ['Is our format effective?', 'Do we follow the format consistently?', 'Is there time for everyone to share?']
+        },
+        service: {
+            title: 'Service Structure Inventory',
+            description: 'Review service positions, rotation, and effectiveness.',
+            questions: ['Are all positions filled?', 'Is rotation happening?', 'Are servants supported?']
+        },
+        custom: {
+            title: 'Custom Group Inventory',
+            description: 'Create your own inventory questions based on group needs.',
+            questions: ['Define your own questions', 'Address specific group concerns']
+        }
+    };
+
+    const content = inventoryContent[type];
+
+    preview.innerHTML = `
+        <h4 style="color: #3498db; margin: 0 0 0.5rem 0;">${content.title}</h4>
+        <p style="color: #ecf0f1; font-size: 0.9rem; margin-bottom: 0.75rem;">${content.description}</p>
+        <p style="color: #95a5a6; font-size: 0.85rem;"><strong>Sample Questions:</strong></p>
+        <ul style="color: #95a5a6; font-size: 0.85rem; padding-left: 1.5rem;">
+            ${content.questions.map(q => `<li>${q}</li>`).join('')}
+        </ul>
+    `;
+}
+
+function createInventorySchedule() {
+    const type = document.getElementById('inventory-type').value;
+    const date = document.getElementById('inventory-date').value;
+    const facilitator = document.getElementById('inventory-facilitator').value.trim();
+
+    if (!date) {
+        showToast('Please select a date', 'error');
+        return;
+    }
+
+    const inventories = JSON.parse(localStorage.getItem('groupInventories') || '[]');
+
+    const inventory = {
+        id: genId(),
+        type: type,
+        date: date,
+        facilitator: facilitator,
+        status: 'scheduled',
+        createdDate: new Date().toISOString(),
+        results: null,
+        actionItems: []
+    };
+
+    inventories.push(inventory);
+    localStorage.setItem('groupInventories', JSON.stringify(inventories));
+
+    createNotification({
+        type: 'group-inventory',
+        title: 'Group Inventory Scheduled',
+        message: `${type.charAt(0).toUpperCase() + type.slice(1)} inventory scheduled for ${new Date(date).toLocaleDateString()}`,
+        priority: 'high',
+        actionLink: 'inventory-scheduler-section'
+    });
+
+    logAuditEntry('create', 'group-inventory', inventory.id, {type, date, facilitator}, 'Group inventory scheduled');
+
+    showToast('Group inventory scheduled successfully!', 'success');
+    closeInventoryScheduleModal();
+    closeTraditionModal();
+}
+
+function closeInventoryScheduleModal() {
+    const modal = document.getElementById('inventory-schedule-modal');
+    if (modal) modal.remove();
+}
+
+// ========== P3-3: GSR/DCM COMMUNICATION TOOLS ==========
+
+function openGSRDashboard() {
+    const modal = document.createElement('div');
+    modal.id = 'gsr-dashboard-modal';
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 1rem;';
+
+    const districtMotions = JSON.parse(localStorage.getItem('districtMotions') || '[]');
+    const pendingMotions = districtMotions.filter(m => m.status === 'pending');
+
+    const content = document.createElement('div');
+    content.style.cssText = 'background: #34495e; padding: 2rem; border-radius: 8px; max-width: 900px; width: 100%; max-height: 90vh; overflow-y: auto;';
+
+    content.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="color: #3498db; margin: 0;">GSR Dashboard</h2>
+            <button onclick="closeGSRDashboard()" style="background: #e74c3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Close</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+            <div style="background: #2c3e50; padding: 1.5rem; border-radius: 8px; text-align: center;">
+                <h3 style="color: #f39c12; margin: 0; font-size: 2rem;">${pendingMotions.length}</h3>
+                <p style="color: #95a5a6; margin: 0.5rem 0 0 0; font-size: 0.9rem;">Pending District Motions</p>
+            </div>
+            <div style="background: #2c3e50; padding: 1.5rem; border-radius: 8px; text-align: center;">
+                <h3 style="color: #3498db; margin: 0; font-size: 1.5rem;">${new Date().toLocaleDateString('default', {month: 'long'})}</h3>
+                <p style="color: #95a5a6; margin: 0.5rem 0 0 0; font-size: 0.9rem;">District Meeting</p>
+            </div>
+            <div style="background: #2c3e50; padding: 1.5rem; border-radius: 8px; text-align: center;">
+                <h3 style="color: #2ecc71; margin: 0; font-size: 2rem;">Active</h3>
+                <p style="color: #95a5a6; margin: 0.5rem 0 0 0; font-size: 0.9rem;">GSR Status</p>
+            </div>
+        </div>
+
+        <div style="background: #2c3e50; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+            <h3 style="color: #3498db; margin: 0 0 1rem 0;">Quick Actions</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <button onclick="generateGSRReport()" style="background: #2ecc71; color: white; border: none; padding: 0.75rem; border-radius: 4px; cursor: pointer;">
+                    <i class="fas fa-file-alt"></i> Generate GSR Report
+                </button>
+                <button onclick="displayTraditionOfMonth()" style="background: #9b59b6; color: white; border: none; padding: 0.75rem; border-radius: 4px; cursor: pointer;">
+                    <i class="fas fa-book"></i> Tradition of Month
+                </button>
+            </div>
+        </div>
+
+        <div style="background: #2c3e50; padding: 1.5rem; border-radius: 8px;">
+            <h3 style="color: #3498db; margin: 0 0 1rem 0;">Pending District Motions</h3>
+            ${pendingMotions.length === 0 ?
+                '<p style="color: #95a5a6; text-align: center;">No pending motions</p>' :
+                pendingMotions.map(m => `
+                    <div style="background: #34495e; padding: 1rem; border-radius: 6px; margin-bottom: 0.75rem;">
+                        <h4 style="color: #3498db; margin: 0 0 0.5rem 0;">${escapeHtml(m.title || 'District Motion')}</h4>
+                        <p style="color: #ecf0f1; font-size: 0.9rem; margin: 0 0 0.5rem 0;">${escapeHtml(m.description || '')}</p>
+                        <small style="color: #95a5a6;">Due: ${m.deadline ? new Date(m.deadline).toLocaleDateString() : 'TBD'}</small>
+                    </div>
+                `).join('')
+            }
+        </div>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+
+    modal.onclick = (e) => {
+        if (e.target === modal) closeGSRDashboard();
+    };
+}
+
+function closeGSRDashboard() {
+    const modal = document.getElementById('gsr-dashboard-modal');
+    if (modal) modal.remove();
+}
+
+function generateGSRReport() {
+    const gcLogs = storage.getGroupConscienceLog();
+    const recentGC = gcLogs.filter(log => {
+        const logDate = new Date(log.date);
+        const monthsAgo = new Date();
+        monthsAgo.setMonth(monthsAgo.getMonth() - 1);
+        return logDate >= monthsAgo;
+    });
+
+    const chairpersonLogs = storage.getChairpersonLog();
+    const recentMeetings = chairpersonLogs.filter(log => {
+        const logDate = new Date(log.date);
+        const monthsAgo = new Date();
+        monthsAgo.setMonth(monthsAgo.getMonth() - 1);
+        return logDate >= monthsAgo;
+    });
+
+    const totalContributions = recentMeetings.reduce((sum, log) => sum + (parseFloat(log.tradition) || 0), 0);
+    const avgAttendance = recentMeetings.length > 0
+        ? Math.round(recentMeetings.reduce((sum, log) => sum + (parseInt(log.headcount) || 0), 0) / recentMeetings.length)
+        : 0;
+
+    const report = `
+GSR MONTHLY REPORT
+${new Date().toLocaleDateString('default', { month: 'long', year: 'numeric' })}
+
+GROUP INFORMATION:
+- Meetings This Month: ${recentMeetings.length}
+- Average Attendance: ${avgAttendance}
+- Total 7th Tradition: $${totalContributions.toFixed(2)}
+
+GROUP CONSCIENCE ACTIVITY:
+- Motions Voted: ${recentGC.length}
+- Passed: ${recentGC.filter(m => m.status === 'passed').length}
+- Failed: ${recentGC.filter(m => m.status === 'failed').length}
+- Tabled: ${recentGC.filter(m => m.status === 'tabled').length}
+
+KEY DECISIONS:
+${recentGC.slice(0, 5).map(m => `- ${m.item} (${m.status})`).join('\n')}
+
+GROUP HEALTH:
+Our group is ${avgAttendance >= 10 ? 'strong and growing' : 'stable'}.
+
+Respectfully submitted,
+[GSR Name]
+${new Date().toLocaleDateString()}
+    `;
+
+    const blob = new Blob([report], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `gsr-report-${new Date().toISOString().split('T')[0]}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    showToast('GSR report generated and downloaded', 'success');
+    logAuditEntry('export', 'gsr-report', genId(), null, 'GSR report generated');
+}
+
+// ========== P4-1: EXECUTIVE DASHBOARD ==========
+
+function displayExecutiveDashboard() {
+    const members = storage.getMembers();
+    const positions = storage.getServicePositions();
+    const gcLogs = storage.getGroupConscienceLog();
+    const expenses = storage.getExpenses();
+    const chairpersonLogs = storage.getChairpersonLog();
+
+    // Calculate metrics
+    const filledPositions = positions.filter(p => p.currentHolder && p.currentHolder !== '').length;
+    const totalPositions = positions.length;
+    const positionFillRate = totalPositions > 0 ? Math.round((filledPositions / totalPositions) * 100) : 0;
+
+    const recentGC = gcLogs.filter(log => {
+        const logDate = new Date(log.date);
+        const monthsAgo = new Date();
+        monthsAgo.setMonth(monthsAgo.getMonth() - 1);
+        return logDate >= monthsAgo;
+    });
+
+    const recentMeetings = chairpersonLogs.filter(log => {
+        const logDate = new Date(log.date);
+        const monthsAgo = new Date();
+        monthsAgo.setMonth(monthsAgo.getMonth() - 1);
+        return logDate >= monthsAgo;
+    });
+
+    const avgAttendance = recentMeetings.length > 0
+        ? Math.round(recentMeetings.reduce((sum, log) => sum + (parseInt(log.headcount) || 0), 0) / recentMeetings.length)
+        : 0;
+
+    const totalIncome = recentMeetings.reduce((sum, log) => sum + (parseFloat(log.tradition) || 0), 0);
+
+    const recentExpenses = expenses.filter(e => {
+        const expDate = new Date(e.date);
+        const monthsAgo = new Date();
+        monthsAgo.setMonth(monthsAgo.getMonth() - 1);
+        return expDate >= monthsAgo;
+    });
+
+    const totalExpenses = recentExpenses.reduce((sum, e) => sum + e.amount, 0);
+    const currentBalance = parseFloat(localStorage.getItem('treasurerBalance') || 0);
+
+    const engagementMetrics = getGroupEngagementMetrics();
+
+    const unreadNotifications = getUnreadNotifications();
+
+    const modal = document.createElement('div');
+    modal.id = 'exec-dashboard-modal';
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 1rem;';
+
+    const content = document.createElement('div');
+    content.style.cssText = 'background: #34495e; padding: 2rem; border-radius: 8px; max-width: 1200px; width: 100%; max-height: 90vh; overflow-y: auto;';
+
+    content.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="color: #3498db; margin: 0;">Executive Dashboard</h2>
+            <button onclick="closeExecutiveDashboard()" style="background: #e74c3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Close</button>
+        </div>
+
+        <!-- Key Metrics Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+            <div style="background: #2c3e50; padding: 1.5rem; border-radius: 8px; text-align: center; border-left: 4px solid #3498db;">
+                <h3 style="color: #3498db; margin: 0; font-size: 2rem;">${members.length}</h3>
+                <p style="color: #95a5a6; margin: 0.5rem 0 0 0; font-size: 0.9rem;">Active Members</p>
+            </div>
+            <div style="background: #2c3e50; padding: 1.5rem; border-radius: 8px; text-align: center; border-left: 4px solid ${avgAttendance >= 10 ? '#2ecc71' : '#f39c12'};">
+                <h3 style="color: ${avgAttendance >= 10 ? '#2ecc71' : '#f39c12'}; margin: 0; font-size: 2rem;">${avgAttendance}</h3>
+                <p style="color: #95a5a6; margin: 0.5rem 0 0 0; font-size: 0.9rem;">Avg Attendance</p>
+            </div>
+            <div style="background: #2c3e50; padding: 1.5rem; border-radius: 8px; text-align: center; border-left: 4px solid ${positionFillRate >= 80 ? '#2ecc71' : '#e74c3c'};">
+                <h3 style="color: ${positionFillRate >= 80 ? '#2ecc71' : '#e74c3c'}; margin: 0; font-size: 2rem;">${positionFillRate}%</h3>
+                <p style="color: #95a5a6; margin: 0.5rem 0 0 0; font-size: 0.9rem;">Positions Filled</p>
+            </div>
+            <div style="background: #2c3e50; padding: 1.5rem; border-radius: 8px; text-align: center; border-left: 4px solid ${currentBalance > 0 ? '#2ecc71' : '#e74c3c'};">
+                <h3 style="color: ${currentBalance > 0 ? '#2ecc71' : '#e74c3c'}; margin: 0; font-size: 2rem;">$${currentBalance.toFixed(0)}</h3>
+                <p style="color: #95a5a6; margin: 0.5rem 0 0 0; font-size: 0.9rem;">Current Balance</p>
+            </div>
+            <div style="background: #2c3e50; padding: 1.5rem; border-radius: 8px; text-align: center; border-left: 4px solid ${engagementMetrics.averageScore >= 60 ? '#2ecc71' : '#e74c3c'};">
+                <h3 style="color: ${engagementMetrics.averageScore >= 60 ? '#2ecc71' : '#e74c3c'}; margin: 0; font-size: 2rem;">${engagementMetrics.averageScore}%</h3>
+                <p style="color: #95a5a6; margin: 0.5rem 0 0 0; font-size: 0.9rem;">Engagement Score</p>
+            </div>
+            <div style="background: #2c3e50; padding: 1.5rem; border-radius: 8px; text-align: center; border-left: 4px solid ${unreadNotifications.length > 0 ? '#f39c12' : '#95a5a6'};">
+                <h3 style="color: ${unreadNotifications.length > 0 ? '#f39c12' : '#95a5a6'}; margin: 0; font-size: 2rem;">${unreadNotifications.length}</h3>
+                <p style="color: #95a5a6; margin: 0.5rem 0 0 0; font-size: 0.9rem;">Pending Items</p>
+            </div>
+        </div>
+
+        <!-- Financial Summary -->
+        <div style="background: #2c3e50; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+            <h3 style="color: #3498db; margin: 0 0 1rem 0;">Financial Health (Last 30 Days)</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                <div>
+                    <p style="margin: 0; color: #95a5a6; font-size: 0.9rem;">Income</p>
+                    <p style="margin: 0.25rem 0 0 0; color: #2ecc71; font-size: 1.5rem; font-weight: bold;">$${totalIncome.toFixed(2)}</p>
+                </div>
+                <div>
+                    <p style="margin: 0; color: #95a5a6; font-size: 0.9rem;">Expenses</p>
+                    <p style="margin: 0.25rem 0 0 0; color: #e74c3c; font-size: 1.5rem; font-weight: bold;">$${totalExpenses.toFixed(2)}</p>
+                </div>
+                <div>
+                    <p style="margin: 0; color: #95a5a6; font-size: 0.9rem;">Net</p>
+                    <p style="margin: 0.25rem 0 0 0; color: ${(totalIncome - totalExpenses) >= 0 ? '#2ecc71' : '#e74c3c'}; font-size: 1.5rem; font-weight: bold;">
+                        ${(totalIncome - totalExpenses) >= 0 ? '+' : ''}$${(totalIncome - totalExpenses).toFixed(2)}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div style="background: #2c3e50; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+            <h3 style="color: #3498db; margin: 0 0 1rem 0;">Recent Group Conscience</h3>
+            ${recentGC.length === 0 ?
+                '<p style="color: #95a5a6;">No recent GC activity</p>' :
+                recentGC.slice(0, 3).map(gc => `
+                    <div style="padding: 0.75rem 0; border-bottom: 1px solid #34495e;">
+                        <p style="margin: 0; color: #ecf0f1;">${escapeHtml(gc.item.substring(0, 80))}${gc.item.length > 80 ? '...' : ''}</p>
+                        <small style="color: ${gc.status === 'passed' ? '#2ecc71' : gc.status === 'failed' ? '#e74c3c' : '#f39c12'};">
+                            ${gc.status.toUpperCase()} - ${new Date(gc.date).toLocaleDateString()}
+                        </small>
+                    </div>
+                `).join('')
+            }
+        </div>
+
+        <!-- Quick Actions -->
+        <div style="background: #2c3e50; padding: 1.5rem; border-radius: 8px;">
+            <h3 style="color: #3498db; margin: 0 0 1rem 0;">Quick Actions</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                <button onclick="displayTreasurerReport()" style="background: #2ecc71; color: white; border: none; padding: 0.75rem; border-radius: 4px; cursor: pointer;">
+                    <i class="fas fa-file-invoice-dollar"></i><br>Treasurer Report
+                </button>
+                <button onclick="generateGSRReport()" style="background: #3498db; color: white; border: none; padding: 0.75rem; border-radius: 4px; cursor: pointer;">
+                    <i class="fas fa-file-alt"></i><br>GSR Report
+                </button>
+                <button onclick="displayEngagementDashboard()" style="background: #9b59b6; color: white; border: none; padding: 0.75rem; border-radius: 4px; cursor: pointer;">
+                    <i class="fas fa-chart-line"></i><br>Engagement
+                </button>
+                <button onclick="displayTraditionOfMonth()" style="background: #e67e22; color: white; border: none; padding: 0.75rem; border-radius: 4px; cursor: pointer;">
+                    <i class="fas fa-book"></i><br>Tradition
+                </button>
+            </div>
+        </div>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+
+    modal.onclick = (e) => {
+        if (e.target === modal) closeExecutiveDashboard();
+    };
+}
+
+function closeExecutiveDashboard() {
+    const modal = document.getElementById('exec-dashboard-modal');
+    if (modal) modal.remove();
+}
+
+// ========== P4-2: UNIVERSAL SEARCH ==========
+
+function performUniversalSearch(query) {
+    if (!query || query.trim().length < 2) {
+        return { results: [], totalCount: 0 };
+    }
+
+    const searchTerm = query.toLowerCase().trim();
+    const results = [];
+
+    // Search Members
+    const members = storage.getMembers();
+    members.forEach(m => {
+        if (m.name?.toLowerCase().includes(searchTerm) ||
+            m.email?.toLowerCase().includes(searchTerm) ||
+            m.phone?.toLowerCase().includes(searchTerm)) {
+            results.push({
+                type: 'member',
+                title: m.name,
+                description: `${m.email || ''} ${m.phone || ''}`,
+                section: 'birthdays-section',
+                id: m.id
+            });
+        }
+    });
+
+    // Search GC Motions
+    const gcLogs = storage.getGroupConscienceLog();
+    gcLogs.forEach(gc => {
+        if (gc.item?.toLowerCase().includes(searchTerm) ||
+            gc.submittedBy?.toLowerCase().includes(searchTerm)) {
+            results.push({
+                type: 'gc-motion',
+                title: gc.item.substring(0, 100),
+                description: `${gc.status} - ${new Date(gc.date).toLocaleDateString()}`,
+                section: 'home-section',
+                id: gc.id
+            });
+        }
+    });
+
+    // Search Service Positions
+    const positions = storage.getServicePositions();
+    positions.forEach(p => {
+        if (p.name?.toLowerCase().includes(searchTerm) ||
+            p.currentHolder?.toLowerCase().includes(searchTerm) ||
+            p.description?.toLowerCase().includes(searchTerm)) {
+            results.push({
+                type: 'service-position',
+                title: p.name,
+                description: `Held by: ${p.currentHolder || 'Vacant'}`,
+                section: 'service-positions-section',
+                id: p.id
+            });
+        }
+    });
+
+    // Search Events
+    const events = storage.getEvents();
+    events.forEach(e => {
+        if (e.title?.toLowerCase().includes(searchTerm) ||
+            e.description?.toLowerCase().includes(searchTerm) ||
+            e.location?.toLowerCase().includes(searchTerm)) {
+            results.push({
+                type: 'event',
+                title: e.title,
+                description: `${new Date(e.date).toLocaleDateString()} - ${e.location || ''}`,
+                section: 'schedule-section',
+                id: e.id
+            });
+        }
+    });
+
+    // Search Expenses
+    const expenses = storage.getExpenses();
+    expenses.forEach(exp => {
+        if (exp.description?.toLowerCase().includes(searchTerm) ||
+            exp.category?.toLowerCase().includes(searchTerm)) {
+            results.push({
+                type: 'expense',
+                title: exp.description,
+                description: `$${exp.amount.toFixed(2)} - ${exp.category}`,
+                section: 'finance-section',
+                id: exp.id
+            });
+        }
+    });
+
+    return {
+        results: results,
+        totalCount: results.length
+    };
+}
+
+function displayUniversalSearch() {
+    const modal = document.createElement('div');
+    modal.id = 'universal-search-modal';
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: flex-start; justify-content: center; padding-top: 3rem;';
+
+    const content = document.createElement('div');
+    content.style.cssText = 'background: #34495e; padding: 2rem; border-radius: 8px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto;';
+
+    content.innerHTML = `
+        <div style="margin-bottom: 1.5rem;">
+            <input type="text" id="universal-search-input" placeholder="Search everything..."
+                   style="width: 100%; padding: 1rem; font-size: 1.1rem; border: 2px solid #3498db; border-radius: 6px; background: #2c3e50; color: #ecf0f1;"
+                   oninput="updateUniversalSearchResults()" />
+        </div>
+        <div id="universal-search-results" style="min-height: 200px;">
+            <p style="color: #95a5a6; text-align: center;">Type to search across all data...</p>
+        </div>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+
+    // Focus input
+    setTimeout(() => {
+        document.getElementById('universal-search-input')?.focus();
+    }, 100);
+
+    modal.onclick = (e) => {
+        if (e.target === modal) closeUniversalSearch();
+    };
+
+    // Close on Escape key
+    document.addEventListener('keydown', function escapeHandler(e) {
+        if (e.key === 'Escape') {
+            closeUniversalSearch();
+            document.removeEventListener('keydown', escapeHandler);
+        }
+    });
+}
+
+function updateUniversalSearchResults() {
+    const query = document.getElementById('universal-search-input')?.value || '';
+    const resultsDiv = document.getElementById('universal-search-results');
+
+    if (!resultsDiv) return;
+
+    if (query.trim().length < 2) {
+        resultsDiv.innerHTML = '<p style="color: #95a5a6; text-align: center;">Type at least 2 characters to search...</p>';
+        return;
+    }
+
+    const searchResults = performUniversalSearch(query);
+
+    if (searchResults.totalCount === 0) {
+        resultsDiv.innerHTML = '<p style="color: #95a5a6; text-align: center;">No results found</p>';
+        return;
+    }
+
+    const typeColors = {
+        'member': '#2ecc71',
+        'gc-motion': '#3498db',
+        'service-position': '#9b59b6',
+        'event': '#f39c12',
+        'expense': '#e74c3c'
+    };
+
+    resultsDiv.innerHTML = `
+        <p style="color: #95a5a6; margin-bottom: 1rem;">${searchResults.totalCount} result${searchResults.totalCount !== 1 ? 's' : ''} found</p>
+        ${searchResults.results.map(r => `
+            <div onclick="goToSection('${r.section}'); closeUniversalSearch();"
+                 style="background: #2c3e50; padding: 1rem; border-radius: 6px; margin-bottom: 0.75rem; cursor: pointer; border-left: 4px solid ${typeColors[r.type]};"
+                 onmouseover="this.style.background='#34495e'" onmouseout="this.style.background='#2c3e50'">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <span style="background: ${typeColors[r.type]}; color: white; padding: 0.25rem 0.5rem; border-radius: 3px; font-size: 0.75rem;">
+                        ${r.type.toUpperCase()}
+                    </span>
+                    <div style="flex: 1;">
+                        <h4 style="color: #ecf0f1; margin: 0; font-size: 0.95rem;">${escapeHtml(r.title)}</h4>
+                        <p style="color: #95a5a6; margin: 0.25rem 0 0 0; font-size: 0.85rem;">${escapeHtml(r.description)}</p>
+                    </div>
+                </div>
+            </div>
+        `).join('')}
+    `;
+}
+
+function closeUniversalSearch() {
+    const modal = document.getElementById('universal-search-modal');
+    if (modal) modal.remove();
 }
 
 // ========== FINANCE FUNCTIONS ==========
