@@ -7726,7 +7726,22 @@ function deleteGCComment(id) {
 }
 
 // ========== FEATURE 5: Historical Analysis & Search ==========
+// Debounce timer for search
+let searchGCHistoryTimer = null;
+
 function searchGCHistory() {
+    // Clear any pending search
+    if (searchGCHistoryTimer) {
+        clearTimeout(searchGCHistoryTimer);
+    }
+
+    // Debounce search by 300ms
+    searchGCHistoryTimer = setTimeout(() => {
+        performGCHistorySearch();
+    }, 300);
+}
+
+function performGCHistorySearch() {
     const searchText = document.getElementById('gc-search')?.value.toLowerCase() || '';
     const filterStatus = document.getElementById('gc-filter-status')?.value || '';
     const dateFrom = document.getElementById('gc-filter-date-from')?.value || '';
@@ -7757,10 +7772,21 @@ function searchGCHistory() {
 
     const tbody = document.getElementById('gc-history-search-body');
     if (!tbody) return;
+
+    // Clear ALL existing rows - multiple methods to ensure it's cleared
+    while (tbody.firstChild) {
+        tbody.removeChild(tbody.firstChild);
+    }
     tbody.innerHTML = '';
 
-    logs.forEach(log => {
-        const tr = document.createElement('tr');
+    if (logs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">No results found.</td></tr>';
+        updateGCStatistics();
+        return;
+    }
+
+    // Build all HTML first, then set once
+    const rows = logs.map(log => {
         const votesFor = log.votesFor || 0;
         const votesAgainst = log.votesAgainst || 0;
         const votesAbstain = log.votesAbstain || 0;
@@ -7768,22 +7794,20 @@ function searchGCHistory() {
             ? `${votesFor}-${votesAgainst}-${votesAbstain}`
             : (log.votes || 'N/A');
 
-        tr.innerHTML = `
-            <td>${new Date(log.date).toLocaleDateString()}</td>
-            <td>${log.item.substring(0, 60)}${log.item.length > 60 ? '...' : ''}</td>
-            <td style="color: ${log.status === 'passed' ? '#2ecc71' : log.status === 'failed' ? '#e74c3c' : '#f39c12'};">${log.status.toUpperCase()}</td>
-            <td>${votesDisplay}</td>
-            <td>
-                <button class="btn" data-action="view-gc" data-id="${escapeAttribute(log.id)}">View Details</button>
-            </td>
+        return `
+            <tr>
+                <td>${new Date(log.date).toLocaleDateString()}</td>
+                <td>${escapeHtml(log.item.substring(0, 60))}${log.item.length > 60 ? '...' : ''}</td>
+                <td style="color: ${log.status === 'passed' ? '#2ecc71' : log.status === 'failed' ? '#e74c3c' : '#f39c12'};">${log.status.toUpperCase()}</td>
+                <td>${votesDisplay}</td>
+                <td>
+                    <button class="btn" data-action="view-gc" data-id="${escapeAttribute(log.id)}">View Details</button>
+                </td>
+            </tr>
         `;
-        tbody.appendChild(tr);
-    });
+    }).join('');
 
-    if (logs.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5">No results found.</td></tr>';
-    }
-
+    tbody.innerHTML = rows;
     updateGCStatistics();
 }
 
@@ -10498,7 +10522,7 @@ function init() {
     updateProposedAgendaTable();
     loadGCSettings();
     updateActionItemsTable();
-    searchGCHistory();
+    performGCHistorySearch(); // Call direct function to avoid debounce on init
     updateGCStatistics();
     refreshGCTrends();
 
