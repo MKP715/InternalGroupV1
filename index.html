@@ -1221,6 +1221,21 @@
                     </div>
                     <div class="box">
                         <h3 id="gc-form-title">Log Group Conscience Item</h3>
+
+                        <!-- P0-1: Workflow Status Indicator -->
+                        <div class="form-group" style="background: #34495e; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+                            <label for="gc-workflow-status">Motion Workflow Status</label>
+                            <select id="gc-workflow-status" onchange="toggleGCWorkflowSections()">
+                                <option value="draft">Draft - Motion being prepared</option>
+                                <option value="research">Research Period - Members reviewing & asking questions</option>
+                                <option value="voting">Ready for Vote - Research complete</option>
+                                <option value="decided" selected>Decided - Vote complete</option>
+                            </select>
+                            <small style="font-size: 0.75rem; opacity: 0.8; display: block; margin-top: 0.5rem;">
+                                Select workflow stage to enable appropriate fields below
+                            </small>
+                        </div>
+
                         <div class="form-group">
                             <label for="gc-date">Date</label>
                             <input type="date" id="gc-date">
@@ -1233,8 +1248,28 @@
                             <label for="gc-submitted-by">Submitted By</label>
                             <input type="text" id="gc-submitted-by" placeholder="Name">
                         </div>
+
+                        <!-- P0-1: Research Period Dates -->
+                        <div id="gc-research-period-section" style="display: none; background: #2c3e50; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border-left: 4px solid #3498db;">
+                            <h4 style="color: #3498db; margin-bottom: 0.75rem;">Research Period Configuration</h4>
+                            <div class="form-group">
+                                <label for="gc-research-start">Research Period Start Date</label>
+                                <input type="date" id="gc-research-start">
+                                <small style="font-size: 0.75rem; opacity: 0.8; display: block; margin-top: 0.25rem;">
+                                    When members can start reviewing and asking questions
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="gc-research-end">Research Period End Date (Vote Date)</label>
+                                <input type="date" id="gc-research-end">
+                                <small style="font-size: 0.75rem; opacity: 0.8; display: block; margin-top: 0.25rem;">
+                                    Research ends; vote will occur on this date
+                                </small>
+                            </div>
+                        </div>
+
                         <div class="form-group">
-                            <label for="gc-status">Status</label>
+                            <label for="gc-status">Final Decision Status</label>
                             <select id="gc-status">
                                 <option value="passed">Passed</option>
                                 <option value="failed">Failed</option>
@@ -6831,6 +6866,246 @@ function deleteChairpersonLog(id) {
 }
 
 // Group Conscience Log Functions
+
+// ========== P0-1: ENHANCED INFORMED GROUP CONSCIENCE ==========
+
+// Toggle visibility of workflow sections based on status
+function toggleGCWorkflowSections() {
+    const status = document.getElementById('gc-workflow-status')?.value || 'decided';
+    const researchSection = document.getElementById('gc-research-period-section');
+    const votingSection = document.getElementById('gc-voting-section');
+
+    // Show research period fields for research and voting stages
+    if (researchSection) {
+        researchSection.style.display = (status === 'research' || status === 'voting') ? 'block' : 'none';
+    }
+
+    // Show voting fields only for decided status
+    if (votingSection) {
+        const voteFields = ['gc-votes-for', 'gc-votes-against', 'gc-votes-abstain', 'gc-attendees'];
+        const shouldShow = (status === 'decided');
+        voteFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.closest('.form-group').style.display = shouldShow ? 'block' : 'none';
+            }
+        });
+    }
+}
+
+// Get current user name from storage
+function getCurrentUserName() {
+    return localStorage.getItem('currentUser') || 'Anonymous';
+}
+
+// Add question to a GC motion during research period
+function addGCQuestion(gcId) {
+    const questionText = prompt('Enter your question about this motion:');
+    if (!questionText || !questionText.trim()) return;
+
+    const logs = storage.getGroupConscienceLog();
+    const log = logs.find(l => l.id === gcId);
+
+    if (!log) {
+        showToast('Motion not found', 'error');
+        return;
+    }
+
+    // Check if in research period
+    const today = new Date().toISOString().split('T')[0];
+    if (log.workflowStatus !== 'research' && log.workflowStatus !== 'draft') {
+        showToast('Research period has ended for this motion', 'error');
+        return;
+    }
+
+    if (!log.questions) log.questions = [];
+
+    const question = {
+        id: genId(),
+        memberId: getCurrentUserName(), // In production, use actual member ID
+        memberName: getCurrentUserName(),
+        question: questionText.trim(),
+        answer: null,
+        answeredBy: null,
+        answeredDate: null,
+        askedDate: new Date().toISOString()
+    };
+
+    log.questions.push(question);
+    storage.saveGroupConscienceLog(logs);
+    showToast('Question submitted successfully', 'success');
+
+    // Refresh display
+    if (typeof viewGCDetailsModal === 'function') {
+        openGCDetailsModal(gcId);
+    }
+}
+
+// Answer a question on a GC motion
+function answerGCQuestion(gcId, questionId) {
+    const answerText = prompt('Enter your answer:');
+    if (!answerText || !answerText.trim()) return;
+
+    const logs = storage.getGroupConscienceLog();
+    const log = logs.find(l => l.id === gcId);
+
+    if (!log || !log.questions) {
+        showToast('Question not found', 'error');
+        return;
+    }
+
+    const question = log.questions.find(q => q.id === questionId);
+    if (!question) {
+        showToast('Question not found', 'error');
+        return;
+    }
+
+    question.answer = answerText.trim();
+    question.answeredBy = getCurrentUserName();
+    question.answeredDate = new Date().toISOString();
+
+    storage.saveGroupConscienceLog(logs);
+    showToast('Answer posted successfully', 'success');
+
+    // Refresh display
+    if (typeof openGCDetailsModal === 'function') {
+        openGCDetailsModal(gcId);
+    }
+}
+
+// Mark motion as reviewed by current user
+function markGCReviewed(gcId) {
+    const logs = storage.getGroupConscienceLog();
+    const log = logs.find(l => l.id === gcId);
+
+    if (!log) {
+        showToast('Motion not found', 'error');
+        return;
+    }
+
+    if (!log.reviewedBy) log.reviewedBy = [];
+
+    const userId = getCurrentUserName();
+    if (!log.reviewedBy.includes(userId)) {
+        log.reviewedBy.push(userId);
+        storage.saveGroupConscienceLog(logs);
+        showToast('Marked as reviewed. Thank you for staying informed!', 'success');
+
+        // Refresh display
+        if (typeof openGCDetailsModal === 'function') {
+            openGCDetailsModal(gcId);
+        }
+    } else {
+        showToast('You have already reviewed this motion', 'info');
+    }
+}
+
+// Calculate review completion percentage
+function getReviewCompletionPercentage(log) {
+    if (!log.reviewedBy || log.reviewedBy.length === 0) return 0;
+
+    const members = storage.getMembers();
+    if (members.length === 0) return 0;
+
+    return Math.round((log.reviewedBy.length / members.length) * 100);
+}
+
+// Check if research period is active
+function isResearchPeriodActive(log) {
+    if (!log.researchPeriodStart || !log.researchPeriodEnd) return false;
+
+    const today = new Date().toISOString().split('T')[0];
+    return today >= log.researchPeriodStart && today <= log.researchPeriodEnd;
+}
+
+// Get days remaining in research period
+function getDaysRemainingInResearch(log) {
+    if (!log.researchPeriodEnd) return null;
+
+    const today = new Date();
+    const endDate = new Date(log.researchPeriodEnd);
+    const diffTime = endDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    return diffDays;
+}
+
+// ========== P0-2: MINORITY OPINION PROTECTION ==========
+
+// Prompt for minority opinion if significant dissent
+function promptMinorityOpinion(gcId) {
+    const logs = storage.getGroupConscienceLog();
+    const log = logs.find(l => l.id === gcId);
+
+    if (!log) return;
+
+    // Check if minority percentage >= 33%
+    if (log.minorityPercentage < 33) {
+        return; // No need for minority opinion
+    }
+
+    const shouldRecord = confirm(
+        `This motion passed with ${log.minorityPercentage.toFixed(1)}% voting against.\n\n` +
+        `In the spirit of unity and informed group conscience, would members of the minority ` +
+        `like to record their concerns for the group's consideration?`
+    );
+
+    if (!shouldRecord) return;
+
+    const opinionText = prompt(
+        'Please share the minority viewpoint:\n\n' +
+        '(This will be attached to the motion for the group to consider)'
+    );
+
+    if (!opinionText || !opinionText.trim()) return;
+
+    log.minorityOpinion = {
+        text: opinionText.trim(),
+        submittedBy: getCurrentUserName(),
+        submittedDate: new Date().toISOString(),
+        signatories: [getCurrentUserName()]
+    };
+
+    storage.saveGroupConscienceLog(logs);
+    showToast('Minority opinion recorded. The group will revisit this in 6 months.', 'success');
+
+    // Refresh display
+    if (typeof openGCDetailsModal === 'function') {
+        openGCDetailsModal(gcId);
+    }
+}
+
+// Add signatory to minority opinion
+function signMinorityOpinion(gcId) {
+    const logs = storage.getGroupConscienceLog();
+    const log = logs.find(l => l.id === gcId);
+
+    if (!log || !log.minorityOpinion) {
+        showToast('No minority opinion exists for this motion', 'error');
+        return;
+    }
+
+    const userName = getCurrentUserName();
+    if (!log.minorityOpinion.signatories) {
+        log.minorityOpinion.signatories = [];
+    }
+
+    if (!log.minorityOpinion.signatories.includes(userName)) {
+        log.minorityOpinion.signatories.push(userName);
+        storage.saveGroupConscienceLog(logs);
+        showToast('Your support for this viewpoint has been recorded', 'success');
+
+        // Refresh display
+        if (typeof openGCDetailsModal === 'function') {
+            openGCDetailsModal(gcId);
+        }
+    } else {
+        showToast('You have already signed this opinion', 'info');
+    }
+}
+
+// ========== END P0 ENHANCEMENTS ==========
+
 function handleGCLogSubmit() {
     const editId = document.getElementById('gc-edit-id').value;
     if (editId) {
@@ -6857,6 +7132,7 @@ function addGCLog() {
     const votesAgainst = parseInt(document.getElementById('gc-votes-against')?.value || 0);
     const votesAbstain = parseInt(document.getElementById('gc-votes-abstain')?.value || 0);
 
+    // Enhanced data structure for informed group conscience
     const log = {
         id: genId(),
         date: document.getElementById('gc-date').value,
@@ -6868,11 +7144,41 @@ function addGCLog() {
         votesAbstain,
         attendees: Array.from(document.getElementById('gc-attendees').selectedOptions).map(opt => opt.value),
         servantReports: servantReports,
+
+        // P0-1: Enhanced Informed Group Conscience fields
+        workflowStatus: document.getElementById('gc-workflow-status')?.value || 'decided', // draft, research, voting, decided
+        researchPeriodStart: document.getElementById('gc-research-start')?.value || null,
+        researchPeriodEnd: document.getElementById('gc-research-end')?.value || null,
+        questions: [], // Array of {id, memberId, memberName, question, answer, answeredBy, answeredDate}
+        reviewedBy: [], // Array of member IDs who reviewed materials
+        createdDate: new Date().toISOString(),
+
+        // P0-2: Minority Opinion Protection (structure ready)
+        minorityOpinion: null, // {text, submittedBy, submittedDate, signatories[]}
+        minorityPercentage: 0, // Calculated from votes
+        requiresFollowUp: false, // Auto-set if minority >= 33%
+        followUpDate: null, // 6 months from decision if significant dissent
     };
 
     if (!log.date || !log.item) {
         showToast('Please provide at least a date and an item/motion.', 'error');
         return;
+    }
+
+    // Calculate minority percentage if votes exist
+    const totalVotes = votesFor + votesAgainst + votesAbstain;
+    if (totalVotes > 0) {
+        const minority = Math.max(votesFor, votesAgainst); // Higher of for/against
+        const majority = Math.min(votesFor, votesAgainst);
+        log.minorityPercentage = totalVotes > 0 ? ((minority > majority ? votesAgainst : votesFor) / totalVotes * 100) : 0;
+
+        // Check if requires follow-up (minority >= 33%)
+        if (log.minorityPercentage >= 33 && log.status === 'passed') {
+            log.requiresFollowUp = true;
+            const followUp = new Date(log.date);
+            followUp.setMonth(followUp.getMonth() + 6);
+            log.followUpDate = followUp.toISOString().split('T')[0];
+        }
     }
 
     const logs = storage.getGroupConscienceLog();
@@ -6909,10 +7215,58 @@ function updateGCLogTable() {
             ? `${votesFor}-${votesAgainst}-${votesAbstain}`
             : (log.votes || 'N/A');
 
+        // P0-1: Workflow status badge
+        const workflowStatus = log.workflowStatus || 'decided';
+        const statusBadges = {
+            'draft': '<span style="background: #95a5a6; padding: 2px 8px; border-radius: 3px; font-size: 0.75rem; margin-left: 5px;">DRAFT</span>',
+            'research': '<span style="background: #3498db; padding: 2px 8px; border-radius: 3px; font-size: 0.75rem; margin-left: 5px;">RESEARCH</span>',
+            'voting': '<span style="background: #f39c12; padding: 2px 8px; border-radius: 3px; font-size: 0.75rem; margin-left: 5px;">VOTING</span>',
+            'decided': ''
+        };
+
+        // P0-1: Research period indicator
+        let researchInfo = '';
+        if (log.researchPeriodEnd && isResearchPeriodActive(log)) {
+            const daysLeft = getDaysRemainingInResearch(log);
+            researchInfo = `<br><small style="color: #3498db;">Research ends in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}</small>`;
+        }
+
+        // P0-1: Review completion percentage
+        let reviewBadge = '';
+        if (workflowStatus === 'research' || workflowStatus === 'voting') {
+            const reviewPct = getReviewCompletionPercentage(log);
+            const reviewColor = reviewPct >= 75 ? '#2ecc71' : reviewPct >= 50 ? '#f39c12' : '#e74c3c';
+            reviewBadge = `<br><small style="color: ${reviewColor};">${reviewPct}% reviewed</small>`;
+        }
+
+        // P0-2: Minority opinion indicator
+        let minorityBadge = '';
+        if (log.minorityOpinion) {
+            const sigCount = log.minorityOpinion.signatories ? log.minorityOpinion.signatories.length : 0;
+            minorityBadge = `<br><small style="color: #e67e22;"><i class="fas fa-comment-alt"></i> Minority opinion (${sigCount} signatories)</small>`;
+        } else if (log.requiresFollowUp && log.followUpDate) {
+            minorityBadge = `<br><small style="color: #f39c12;"><i class="fas fa-clock"></i> Follow-up: ${log.followUpDate}</small>`;
+        }
+
+        // P0-1: Q&A indicator
+        let qaInfo = '';
+        if (log.questions && log.questions.length > 0) {
+            const answered = log.questions.filter(q => q.answer).length;
+            const qaColor = answered === log.questions.length ? '#2ecc71' : '#f39c12';
+            qaInfo = `<br><small style="color: ${qaColor};"><i class="fas fa-question-circle"></i> ${answered}/${log.questions.length} questions answered</small>`;
+        }
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${escapeHtml(logDate.toLocaleDateString())}</td>
-            <td>${escapeHtml(log.item.substring(0, 50))}${log.item.length > 50 ? '...' : ''}</td>
+            <td>
+                ${escapeHtml(log.item.substring(0, 50))}${log.item.length > 50 ? '...' : ''}
+                ${statusBadges[workflowStatus]}
+                ${researchInfo}
+                ${reviewBadge}
+                ${qaInfo}
+                ${minorityBadge}
+            </td>
             <td>${escapeHtml(log.submittedBy || 'N/A')}</td>
             <td style="color: ${log.status === 'passed' ? '#2ecc71' : log.status === 'failed' ? '#e74c3c' : '#f39c12'};">${escapeHtml(log.status.toUpperCase())}</td>
             <td>${escapeHtml(votesDisplay)}</td>
@@ -10064,6 +10418,234 @@ function deleteBudgetCategory(id) {
     populateExpenseCategories();
     showToast('Category deleted', 'success');
 }
+
+// ========== P0-3: MONTHLY TREASURER REPORT AUTOMATION ==========
+
+function generateMonthlyTreasurerReport(month) {
+    // month format: YYYY-MM
+    const targetMonth = month || new Date().toISOString().substring(0, 7);
+    const [year, monthNum] = targetMonth.split('-');
+    const monthName = new Date(year, parseInt(monthNum) - 1, 1).toLocaleString('default', { month: 'long' });
+
+    // Get all financial data
+    const expenses = storage.getExpenses();
+    const categories = storage.getBudgetCategories();
+    const chairpersonLogs = storage.getChairpersonLog();
+
+    // Filter data for target month
+    const monthExpenses = expenses.filter(e => e.date.substring(0, 7) === targetMonth);
+    const monthLogs = chairpersonLogs.filter(log => log.date.substring(0, 7) === targetMonth);
+
+    // Calculate 7th Tradition contributions
+    const contributions = monthLogs.reduce((sum, log) => sum + (parseFloat(log.tradition) || 0), 0);
+    const orangeCan = monthLogs.reduce((sum, log) => sum + (parseFloat(log.orangeCan) || 0), 0);
+    const totalIncome = contributions + orangeCan;
+
+    // Calculate expenses by category
+    const expensesByCategory = {};
+    let totalExpenses = 0;
+
+    categories.forEach(cat => {
+        const catExpenses = monthExpenses.filter(e => e.category === cat.category);
+        const spent = catExpenses.reduce((sum, e) => sum + e.amount, 0);
+        expensesByCategory[cat.category] = {
+            budgeted: cat.monthlyBudget,
+            spent: spent,
+            remaining: cat.monthlyBudget - spent
+        };
+        totalExpenses += spent;
+    });
+
+    // Calculate net (income - expenses)
+    const netChange = totalIncome - totalExpenses;
+
+    // Get previous month balance (from settings or calculate)
+    const prevMonthBalance = parseFloat(localStorage.getItem('treasurerBalance')) || 0;
+    const currentBalance = prevMonthBalance + netChange;
+
+    // Calculate prudent reserve status
+    const avgMonthlyExpenses = totalExpenses || calculateAvgMonthlyExpenses(3); // Use 3-month average
+    const prudentReserve = avgMonthlyExpenses * 3; // 3 months operating expenses
+    const reserveStatus = currentBalance >= prudentReserve ? 'Healthy' : 'Below Target';
+    const reserveMonths = avgMonthlyExpenses > 0 ? (currentBalance / avgMonthlyExpenses).toFixed(1) : 'N/A';
+
+    // Generate report HTML
+    const report = `
+<div style="padding: 2rem; background: #2c3e50; color: #ecf0f1; font-family: Arial, sans-serif;">
+    <h1 style="color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 1rem;">
+        Treasurer's Report - ${monthName} ${year}
+    </h1>
+
+    <!-- Summary Section -->
+    <div style="background: #34495e; padding: 1.5rem; border-radius: 8px; margin: 2rem 0;">
+        <h2 style="color: #3498db; margin-bottom: 1rem;">Financial Summary</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div>
+                <p style="margin: 0.5rem 0;"><strong>Beginning Balance:</strong> $${prevMonthBalance.toFixed(2)}</p>
+                <p style="margin: 0.5rem 0; color: #2ecc71;"><strong>Total Income:</strong> $${totalIncome.toFixed(2)}</p>
+                <p style="margin: 0.5rem 0; color: #e74c3c;"><strong>Total Expenses:</strong> $${totalExpenses.toFixed(2)}</p>
+                <p style="margin: 0.5rem 0; border-top: 1px solid #7f8c8d; padding-top: 0.5rem;">
+                    <strong>Net Change:</strong>
+                    <span style="color: ${netChange >= 0 ? '#2ecc71' : '#e74c3c'}">
+                        ${netChange >= 0 ? '+' : ''}$${netChange.toFixed(2)}
+                    </span>
+                </p>
+                <p style="margin: 0.5rem 0; font-size: 1.2rem; font-weight: bold; color: #3498db;">
+                    <strong>Ending Balance:</strong> $${currentBalance.toFixed(2)}
+                </p>
+            </div>
+            <div>
+                <p style="margin: 0.5rem 0;"><strong>7th Tradition:</strong> $${contributions.toFixed(2)}</p>
+                <p style="margin: 0.5rem 0;"><strong>Orange Can:</strong> $${orangeCan.toFixed(2)}</p>
+                <p style="margin: 0.5rem 0;"><strong>Meetings This Month:</strong> ${monthLogs.length}</p>
+                <p style="margin: 0.5rem 0;"><strong>Avg per Meeting:</strong> $${monthLogs.length > 0 ? (contributions / monthLogs.length).toFixed(2) : '0.00'}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prudent Reserve Status -->
+    <div style="background: ${reserveStatus === 'Healthy' ? '#27ae60' : '#e67e22'}; padding: 1.5rem; border-radius: 8px; margin: 2rem 0;">
+        <h3 style="margin: 0; color: white;">Prudent Reserve Status: ${reserveStatus}</h3>
+        <p style="margin: 0.5rem 0 0 0; color: white;">
+            Current balance covers <strong>${reserveMonths} months</strong> of operating expenses
+            (Target: 3 months = $${prudentReserve.toFixed(2)})
+        </p>
+    </div>
+
+    <!-- Budget vs Actual -->
+    <div style="background: #34495e; padding: 1.5rem; border-radius: 8px; margin: 2rem 0;">
+        <h2 style="color: #3498db; margin-bottom: 1rem;">Budget vs. Actual</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #2c3e50;">
+                    <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #3498db;">Category</th>
+                    <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid #3498db;">Budgeted</th>
+                    <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid #3498db;">Spent</th>
+                    <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid #3498db;">Remaining</th>
+                    <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid #3498db;">% Used</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${Object.entries(expensesByCategory).map(([cat, data]) => {
+                    const pctUsed = data.budgeted > 0 ? ((data.spent / data.budgeted) * 100) : 0;
+                    const statusColor = pctUsed > 100 ? '#e74c3c' : pctUsed > 80 ? '#f39c12' : '#2ecc71';
+                    return `
+                    <tr style="border-bottom: 1px solid #7f8c8d;">
+                        <td style="padding: 0.75rem;">${cat}</td>
+                        <td style="padding: 0.75rem; text-align: right;">$${data.budgeted.toFixed(2)}</td>
+                        <td style="padding: 0.75rem; text-align: right;">$${data.spent.toFixed(2)}</td>
+                        <td style="padding: 0.75rem; text-align: right; color: ${data.remaining < 0 ? '#e74c3c' : '#2ecc71'};">
+                            $${data.remaining.toFixed(2)}
+                        </td>
+                        <td style="padding: 0.75rem; text-align: right; color: ${statusColor}; font-weight: bold;">
+                            ${pctUsed.toFixed(0)}%
+                        </td>
+                    </tr>`;
+                }).join('')}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Concerns & Recommendations -->
+    ${generateTreasurerConcerns(expensesByCategory, currentBalance, prudentReserve, contributions, prevMonthBalance)}
+
+    <!-- Footer -->
+    <div style="margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #7f8c8d; text-align: center; color: #95a5a6;">
+        <p>Generated by AA Group Conscience Management System</p>
+        <p>Report Date: ${new Date().toLocaleDateString()}</p>
+    </div>
+</div>`;
+
+    // Save current balance for next month
+    localStorage.setItem('treasurerBalance', currentBalance.toString());
+
+    return report;
+}
+
+function generateTreasurerConcerns(expensesByCategory, currentBalance, prudentReserve, contributions, prevMonthBalance) {
+    const concerns = [];
+
+    // Check reserve status
+    if (currentBalance < prudentReserve) {
+        const shortfall = prudentReserve - currentBalance;
+        concerns.push(`<li><strong>Low Reserve:</strong> Current balance is $${shortfall.toFixed(2)} below the prudent reserve target.</li>`);
+    }
+
+    // Check overbudget categories
+    const overbudget = Object.entries(expensesByCategory).filter(([cat, data]) => data.remaining < 0);
+    if (overbudget.length > 0) {
+        concerns.push(`<li><strong>Over Budget:</strong> ${overbudget.length} categor${overbudget.length === 1 ? 'y is' : 'ies are'} over budget: ${overbudget.map(([cat]) => cat).join(', ')}</li>`);
+    }
+
+    // Check declining contributions
+    if (prevMonthBalance > 0 && contributions < (prevMonthBalance * 0.1)) {
+        concerns.push(`<li><strong>Low Contributions:</strong> This month's contributions are significantly lower than expected based on previous balance.</li>`);
+    }
+
+    if (concerns.length === 0) {
+        return `
+        <div style="background: #27ae60; padding: 1.5rem; border-radius: 8px; margin: 2rem 0;">
+            <h3 style="margin: 0; color: white;"><i class="fas fa-check-circle"></i> No Concerns</h3>
+            <p style="margin: 0.5rem 0 0 0; color: white;">Financial health is good. All categories within budget and prudent reserve is maintained.</p>
+        </div>`;
+    }
+
+    return `
+    <div style="background: #e67e22; padding: 1.5rem; border-radius: 8px; margin: 2rem 0;">
+        <h3 style="margin: 0 0 1rem 0; color: white;"><i class="fas fa-exclamation-triangle"></i> Concerns & Recommendations</h3>
+        <ul style="margin: 0; padding-left: 1.5rem; color: white;">
+            ${concerns.join('')}
+        </ul>
+    </div>`;
+}
+
+function calculateAvgMonthlyExpenses(months) {
+    const expenses = storage.getExpenses();
+    const today = new Date();
+    const cutoffDate = new Date(today.getFullYear(), today.getMonth() - months, 1);
+
+    const recentExpenses = expenses.filter(e => new Date(e.date) >= cutoffDate);
+    const total = recentExpenses.reduce((sum, e) => sum + e.amount, 0);
+
+    return total / months;
+}
+
+function displayTreasurerReport() {
+    const month = prompt('Enter month (YYYY-MM) or leave blank for current month:', new Date().toISOString().substring(0, 7));
+    if (month === null) return; // Cancelled
+
+    const report = generateMonthlyTreasurerReport(month || undefined);
+
+    // Display in modal or new window
+    const reportWindow = window.open('', 'Treasurer Report', 'width=800,height=600');
+    reportWindow.document.write(report);
+    reportWindow.document.close();
+}
+
+function exportTreasurerReportPDF() {
+    const month = prompt('Enter month (YYYY-MM) or leave blank for current month:', new Date().toISOString().substring(0, 7));
+    if (month === null) return;
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const report = generateMonthlyTreasurerReport(month || undefined);
+
+    // Convert HTML to PDF (simplified - in production use html2pdf or similar)
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = report;
+    const text = tempDiv.innerText;
+
+    const lines = doc.splitTextToSize(text, 180);
+    doc.text(lines, 15, 15);
+
+    const filename = `treasurer-report-${month || new Date().toISOString().substring(0, 7)}.pdf`;
+    doc.save(filename);
+
+    showToast('Treasurer report exported to PDF', 'success');
+}
+
+// ========== END P0-3 ==========
 
 function addExpense() {
     const date = document.getElementById('expense-date').value;
