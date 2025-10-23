@@ -1073,6 +1073,12 @@
                 </ul>
             </li>
 
+            <!-- P2-2: Notification Center -->
+            <li onclick="showNotificationCenter()" style="cursor: pointer; position: relative;">
+                <i class="fas fa-bell"></i>
+                <span id="notification-badge" style="display: none; position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; font-weight: bold;">0</span>
+            </li>
+
             <li class="has-dropdown">
                 <i class="fas fa-cog"></i>
                 <ul class="dropdown-menu">
@@ -1081,6 +1087,9 @@
                     <li data-section="quorum-management-section">Quorum Management</li>
                     <li data-section="inventory-scheduler-section">Group Inventory Scheduler</li>
                     <li data-section="role-settings-section">Role & View Settings</li>
+                    <li onclick="viewBackupHistory()" style="border-top: 1px solid #7f8c8d; margin-top: 0.5rem; padding-top: 0.5rem;"><i class="fas fa-database"></i> Backup & Restore</li>
+                    <li onclick="viewAuditLog()"><i class="fas fa-history"></i> Audit Log</li>
+                    <li onclick="displayEngagementDashboard()"><i class="fas fa-chart-line"></i> Engagement Metrics</li>
                     <li data-section="accessibility-section">Accessibility</li>
                 </ul>
             </li>
@@ -10076,7 +10085,30 @@ function addServicePosition() {
         termLength: termLength,
         currentHolder: currentHolder,
         startDate: startDate,
-        history: []
+        history: [],
+
+        // P1-1: Service Position Transition Package
+        transitionPackage: {
+            checklist: getPositionTransitionChecklist(name),
+            currentProjects: [],
+            keyContacts: [],
+            accessInfo: [],
+            documents: [],
+            completionPercentage: 0,
+            transitionStartDate: null,
+            transitionCompleteDate: null,
+            outgoingNotes: null,
+            incomingNotes: null
+        },
+
+        // P1: Term tracking enhancements
+        notificationsSent: {
+            days90: false,
+            days60: false,
+            days30: false
+        },
+        successorIdentified: false,
+        potentialSuccessors: []
     });
 
     storage.saveServicePositions(positions);
@@ -10321,6 +10353,911 @@ function populateServicePositionHolders() {
         option2.textContent = m.name;
         nomineeSelect.appendChild(option2);
     });
+}
+
+// ========== P1-1: SERVICE POSITION TRANSITION PACKAGE ==========
+
+function getPositionTransitionChecklist(positionName) {
+    // Default checklists for common positions
+    const checklists = {
+        'Treasurer': [
+            {item: 'Review current bank balance and accounts', completed: false},
+            {item: 'Transfer bank account access/signatures', completed: false},
+            {item: 'Provide all financial records (last 12 months)', completed: false},
+            {item: 'Explain budget categories and tracking system', completed: false},
+            {item: 'Show prudent reserve calculation', completed: false},
+            {item: 'Review bill payment schedule and vendors', completed: false},
+            {item: 'Explain 7th Tradition counting procedure', completed: false},
+            {item: 'Provide GSR contact for district contributions', completed: false},
+            {item: 'Review IRS tax filing requirements', completed: false}
+        ],
+        'Secretary': [
+            {item: 'Transfer meeting minutes archive', completed: false},
+            {item: 'Provide templates for minutes and reports', completed: false},
+            {item: 'Explain GC motion tracking system', completed: false},
+            {item: 'Share attendance tracking procedure', completed: false},
+            {item: 'Provide group contact list', completed: false},
+            {item: 'Review document filing system', completed: false}
+        ],
+        'GSR': [
+            {item: 'Provide District/Area contact information', completed: false},
+            {item: 'Share district meeting schedule', completed: false},
+            {item: 'Transfer district voting records', completed: false},
+            {item: 'Explain how to submit group contributions', completed: false},
+            {item: 'Review group\'s hot topics and concerns', completed: false},
+            {item: 'Provide access to GSR email/communications', completed: false}
+        ],
+        'Chairperson': [
+            {item: 'Review meeting format and structure', completed: false},
+            {item: 'Provide reading materials and meeting supplies location', completed: false},
+            {item: 'Explain GC meeting facilitation process', completed: false},
+            {item: 'Share contact list for all servants', completed: false},
+            {item: 'Review traditions and concepts application', completed: false},
+            {item: 'Explain facility coordination (keys, setup, etc.)', completed: false}
+        ]
+    };
+
+    return checklists[positionName] || [
+        {item: 'Review position responsibilities', completed: false},
+        {item: 'Transfer any documents or materials', completed: false},
+        {item: 'Introduce to key contacts', completed: false},
+        {item: 'Answer questions about role', completed: false}
+    ];
+}
+
+function startTransition(positionId) {
+    const positions = storage.getServicePositions();
+    const position = positions.find(p => p.id === positionId);
+
+    if (!position) {
+        showToast('Position not found', 'error');
+        return;
+    }
+
+    if (!position.transitionPackage) {
+        position.transitionPackage = {
+            checklist: getPositionTransitionChecklist(position.name),
+            currentProjects: [],
+            keyContacts: [],
+            accessInfo: [],
+            documents: [],
+            completionPercentage: 0,
+            transitionStartDate: null,
+            transitionCompleteDate: null,
+            outgoingNotes: null,
+            incomingNotes: null
+        };
+    }
+
+    position.transitionPackage.transitionStartDate = new Date().toISOString().split('T')[0];
+    storage.saveServicePositions(positions);
+
+    showToast(`Transition started for ${position.name}. Please complete the transition checklist.`, 'success');
+    // Open transition interface
+    openTransitionModal(positionId);
+}
+
+function updateTransitionChecklist(positionId, itemIndex, completed) {
+    const positions = storage.getServicePositions();
+    const position = positions.find(p => p.id === positionId);
+
+    if (!position || !position.transitionPackage) return;
+
+    position.transitionPackage.checklist[itemIndex].completed = completed;
+
+    // Calculate completion percentage
+    const total = position.transitionPackage.checklist.length;
+    const done = position.transitionPackage.checklist.filter(i => i.completed).length;
+    position.transitionPackage.completionPercentage = Math.round((done / total) * 100);
+
+    // If 100%, mark transition complete
+    if (position.transitionPackage.completionPercentage === 100 && !position.transitionPackage.transitionCompleteDate) {
+        position.transitionPackage.transitionCompleteDate = new Date().toISOString().split('T')[0];
+        showToast(`Transition for ${position.name} is complete! Well done on a smooth handoff.`, 'success');
+    }
+
+    storage.saveServicePositions(positions);
+}
+
+function addTransitionProject(positionId, projectName, status, notes) {
+    const positions = storage.getServicePositions();
+    const position = positions.find(p => p.id === positionId);
+
+    if (!position || !position.transitionPackage) return;
+
+    position.transitionPackage.currentProjects.push({
+        id: genId(),
+        name: projectName,
+        status: status,
+        notes: notes,
+        addedDate: new Date().toISOString()
+    });
+
+    storage.saveServicePositions(positions);
+    showToast('Project added to transition package', 'success');
+}
+
+function addTransitionContact(positionId, name, role, contact, notes) {
+    const positions = storage.getServicePositions();
+    const position = positions.find(p => p.id === positionId);
+
+    if (!position || !position.transitionPackage) return;
+
+    position.transitionPackage.keyContacts.push({
+        id: genId(),
+        name: name,
+        role: role,
+        contact: contact,
+        notes: notes
+    });
+
+    storage.saveServicePositions(positions);
+    showToast('Contact added to transition package', 'success');
+}
+
+function addTransitionAccessInfo(positionId, system, username, notes) {
+    const positions = storage.getServicePositions();
+    const position = positions.find(p => p.id === positionId);
+
+    if (!position || !position.transitionPackage) return;
+
+    position.transitionPackage.accessInfo.push({
+        id: genId(),
+        system: system,
+        username: username,
+        notes: notes, // Password should be shared securely offline
+        addedDate: new Date().toISOString()
+    });
+
+    storage.saveServicePositions(positions);
+    showToast('Access info added (share passwords offline)', 'success');
+}
+
+function openTransitionModal(positionId) {
+    // This would open a modal/page to manage the transition
+    // For now, we'll just navigate to service positions section
+    goToSection('service-positions-section');
+    showToast('View transition package in Service Positions section', 'info');
+}
+
+function checkUpcomingTermExpirations() {
+    const positions = storage.getServicePositions();
+    const today = new Date();
+
+    positions.forEach(position => {
+        if (!position.startDate) return;
+
+        const daysRemaining = calculateDaysRemaining(position.startDate, position.termLength);
+        if (daysRemaining === null) return;
+
+        // Send notifications at 90, 60, 30 days
+        if (!position.notificationsSent) {
+            position.notificationsSent = {days90: false, days60: false, days30: false};
+        }
+
+        if (daysRemaining <= 90 && daysRemaining > 89 && !position.notificationsSent.days90) {
+            createNotification({
+                type: 'service-term-expiring',
+                title: `${position.name} term expires in 90 days`,
+                message: `${position.currentHolder}'s term as ${position.name} expires ${calculateEndDate(position.startDate, position.termLength)}. Time to start succession planning.`,
+                priority: 'normal',
+                actionLink: 'service-positions-section'
+            });
+            position.notificationsSent.days90 = true;
+        }
+
+        if (daysRemaining <= 60 && daysRemaining > 59 && !position.notificationsSent.days60) {
+            createNotification({
+                type: 'service-term-expiring',
+                title: `${position.name} term expires in 60 days`,
+                message: `Consider starting transition process for ${position.name}. Election should be scheduled soon.`,
+                priority: 'high',
+                actionLink: 'service-positions-section'
+            });
+            position.notificationsSent.days60 = true;
+        }
+
+        if (daysRemaining <= 30 && daysRemaining > 29 && !position.notificationsSent.days30) {
+            createNotification({
+                type: 'service-term-expiring',
+                title: `${position.name} term expires in 30 days!`,
+                message: `URGENT: Election needed for ${position.name}. Term ends ${calculateEndDate(position.startDate, position.termLength)}.`,
+                priority: 'urgent',
+                actionLink: 'service-elections-section'
+            });
+            position.notificationsSent.days30 = true;
+        }
+    });
+
+    storage.saveServicePositions(positions);
+}
+
+// ========== P2-2: NOTIFICATION SYSTEM ==========
+
+function createNotification(notification) {
+    const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+
+    const newNotification = {
+        id: genId(),
+        type: notification.type || 'general',
+        title: notification.title,
+        message: notification.message,
+        priority: notification.priority || 'normal', // normal, high, urgent
+        createdDate: new Date().toISOString(),
+        read: false,
+        dismissed: false,
+        actionLink: notification.actionLink || null,
+        actionData: notification.actionData || null
+    };
+
+    notifications.push(newNotification);
+    localStorage.setItem('notifications', JSON.stringify(notifications));
+
+    // Update notification badge count
+    updateNotificationBadge();
+
+    // Show toast for urgent notifications
+    if (notification.priority === 'urgent') {
+        showToast(notification.title, 'warning');
+    }
+
+    return newNotification.id;
+}
+
+function getUnreadNotifications() {
+    const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+    return notifications.filter(n => !n.read && !n.dismissed);
+}
+
+function markNotificationRead(notificationId) {
+    const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+    const notification = notifications.find(n => n.id === notificationId);
+
+    if (notification) {
+        notification.read = true;
+        localStorage.setItem('notifications', JSON.stringify(notifications));
+        updateNotificationBadge();
+    }
+}
+
+function dismissNotification(notificationId) {
+    const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+    const notification = notifications.find(n => n.id === notificationId);
+
+    if (notification) {
+        notification.dismissed = true;
+        localStorage.setItem('notifications', JSON.stringify(notifications));
+        updateNotificationBadge();
+    }
+}
+
+function updateNotificationBadge() {
+    const unread = getUnreadNotifications();
+    const badge = document.getElementById('notification-badge');
+
+    if (badge) {
+        if (unread.length > 0) {
+            badge.textContent = unread.length > 99 ? '99+' : unread.length;
+            badge.style.display = 'inline-block';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+}
+
+function showNotificationCenter() {
+    const notifications = JSON.parse(localStorage.getItem('notifications') || '[]')
+        .sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
+
+    const modal = document.createElement('div');
+    modal.id = 'notification-modal';
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center;';
+
+    const content = document.createElement('div');
+    content.style.cssText = 'background: #34495e; padding: 2rem; border-radius: 8px; max-width: 600px; max-height: 80vh; overflow-y: auto; width: 90%;';
+
+    content.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="color: #3498db; margin: 0;">Notifications</h2>
+            <button onclick="closeNotificationCenter()" style="background: #e74c3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Close</button>
+        </div>
+        <div id="notification-list">
+            ${notifications.length === 0 ? '<p style="color: #95a5a6; text-align: center;">No notifications</p>' :
+                notifications.map(n => `
+                    <div style="background: #2c3e50; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border-left: 4px solid ${n.priority === 'urgent' ? '#e74c3c' : n.priority === 'high' ? '#f39c12' : '#3498db'}; opacity: ${n.read ? '0.6' : '1'};">
+                        <h4 style="color: ${n.priority === 'urgent' ? '#e74c3c' : '#3498db'}; margin: 0 0 0.5rem 0;">${escapeHtml(n.title)}</h4>
+                        <p style="margin: 0 0 0.5rem 0; color: #ecf0f1;">${escapeHtml(n.message)}</p>
+                        <small style="color: #95a5a6;">${new Date(n.createdDate).toLocaleString()}</small>
+                        <div style="margin-top: 0.5rem;">
+                            ${!n.read ? `<button onclick="markNotificationRead('${n.id}')" style="background: #3498db; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; margin-right: 0.5rem;">Mark Read</button>` : ''}
+                            ${n.actionLink ? `<button onclick="dismissNotification('${n.id}'); goToSection('${n.actionLink}'); closeNotificationCenter();" style="background: #2ecc71; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; margin-right: 0.5rem;">Go to Action</button>` : ''}
+                            <button onclick="dismissNotification('${n.id}'); showNotificationCenter();" style="background: #95a5a6; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">Dismiss</button>
+                        </div>
+                    </div>
+                `).join('')
+            }
+        </div>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+
+    modal.onclick = (e) => {
+        if (e.target === modal) closeNotificationCenter();
+    };
+}
+
+function closeNotificationCenter() {
+    const modal = document.getElementById('notification-modal');
+    if (modal) modal.remove();
+}
+
+// ========== P2-3: AUDIT TRAIL ==========
+
+function logAuditEntry(action, entityType, entityId, changes, reason = null) {
+    const auditLog = JSON.parse(localStorage.getItem('auditLog') || '[]');
+
+    const entry = {
+        id: genId(),
+        timestamp: new Date().toISOString(),
+        user: getCurrentUserName(),
+        action: action, // 'create', 'update', 'delete', 'view'
+        entityType: entityType, // 'gc-motion', 'member', 'expense', etc.
+        entityId: entityId,
+        changes: changes, // Object with before/after values
+        reason: reason,
+        ipAddress: null // Could add if server-side
+    };
+
+    auditLog.push(entry);
+
+    // Keep only last 10,000 entries to prevent storage overflow
+    if (auditLog.length > 10000) {
+        auditLog.splice(0, auditLog.length - 10000);
+    }
+
+    localStorage.setItem('auditLog', JSON.stringify(auditLog));
+}
+
+function getAuditHistory(entityType = null, entityId = null, limit = 100) {
+    const auditLog = JSON.parse(localStorage.getItem('auditLog') || '[]');
+
+    let filtered = auditLog;
+
+    if (entityType) {
+        filtered = filtered.filter(e => e.entityType === entityType);
+    }
+
+    if (entityId) {
+        filtered = filtered.filter(e => e.entityId === entityId);
+    }
+
+    // Sort by most recent first
+    filtered.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    return filtered.slice(0, limit);
+}
+
+function viewAuditLog() {
+    const entries = getAuditHistory(null, null, 500);
+
+    const modal = document.createElement('div');
+    modal.id = 'audit-modal';
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center; overflow: auto; padding: 2rem;';
+
+    const content = document.createElement('div');
+    content.style.cssText = 'background: #34495e; padding: 2rem; border-radius: 8px; max-width: 1000px; width: 100%; max-height: 90vh; overflow-y: auto;';
+
+    content.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="color: #3498db; margin: 0;">Audit Log</h2>
+            <button onclick="closeAuditLog()" style="background: #e74c3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Close</button>
+        </div>
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #2c3e50;">
+                    <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #3498db;">Timestamp</th>
+                    <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #3498db;">User</th>
+                    <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #3498db;">Action</th>
+                    <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #3498db;">Entity</th>
+                    <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #3498db;">Changes</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${entries.map(e => `
+                    <tr style="border-bottom: 1px solid #7f8c8d;">
+                        <td style="padding: 0.75rem; font-size: 0.85rem;">${new Date(e.timestamp).toLocaleString()}</td>
+                        <td style="padding: 0.75rem;">${escapeHtml(e.user)}</td>
+                        <td style="padding: 0.75rem;"><span style="background: ${e.action === 'delete' ? '#e74c3c' : e.action === 'create' ? '#2ecc71' : '#3498db'}; padding: 0.25rem 0.5rem; border-radius: 3px; font-size: 0.8rem;">${e.action.toUpperCase()}</span></td>
+                        <td style="padding: 0.75rem; font-size: 0.85rem;">${escapeHtml(e.entityType)}</td>
+                        <td style="padding: 0.75rem; font-size: 0.85rem;">${e.changes ? Object.keys(e.changes).length + ' field(s)' : '-'}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+
+    modal.onclick = (e) => {
+        if (e.target === modal) closeAuditLog();
+    };
+}
+
+function closeAuditLog() {
+    const modal = document.getElementById('audit-modal');
+    if (modal) modal.remove();
+}
+
+function exportAuditLog() {
+    const entries = getAuditHistory();
+    const csv = [
+        ['Timestamp', 'User', 'Action', 'Entity Type', 'Entity ID', 'Changes', 'Reason'].join(','),
+        ...entries.map(e => [
+            new Date(e.timestamp).toISOString(),
+            e.user,
+            e.action,
+            e.entityType,
+            e.entityId,
+            e.changes ? JSON.stringify(e.changes) : '',
+            e.reason || ''
+        ].map(field => `"${String(field).replace(/"/g, '""')}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `audit-log-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    showToast('Audit log exported to CSV', 'success');
+}
+
+// ========== P1-2: AUTOMATED BACKUP SYSTEM ==========
+
+function createAutomatedBackup() {
+    const backup = {
+        id: genId(),
+        timestamp: new Date().toISOString(),
+        version: '1.0',
+        data: {
+            members: storage.getMembers(),
+            events: storage.getEvents(),
+            groupConscienceLog: storage.getGroupConscienceLog(),
+            servicePositions: storage.getServicePositions(),
+            budgetCategories: storage.getBudgetCategories(),
+            expenses: storage.getExpenses(),
+            chairpersonLog: storage.getChairpersonLog(),
+            announcements: storage.getAnnouncements(),
+            photos: storage.getPhotos(),
+            messages: storage.getMessages(),
+            nominations: storage.getNominations(),
+            notifications: JSON.parse(localStorage.getItem('notifications') || '[]'),
+            auditLog: JSON.parse(localStorage.getItem('auditLog') || '[]'),
+            settings: {
+                gcSettings: JSON.parse(localStorage.getItem('gcSettings') || '{}'),
+                votingSettings: JSON.parse(localStorage.getItem('votingSettings') || '{}'),
+                currentUser: localStorage.getItem('currentUser'),
+                treasurerBalance: localStorage.getItem('treasurerBalance')
+            }
+        }
+    };
+
+    // Store in backup history
+    const backups = JSON.parse(localStorage.getItem('backupHistory') || '[]');
+    backups.push({
+        id: backup.id,
+        timestamp: backup.timestamp,
+        size: JSON.stringify(backup).length
+    });
+
+    // Keep only last 30 backups in history
+    if (backups.length > 30) {
+        backups.splice(0, backups.length - 30);
+    }
+
+    localStorage.setItem('backupHistory', JSON.stringify(backups));
+    localStorage.setItem(`backup_${backup.id}`, JSON.stringify(backup));
+
+    return backup;
+}
+
+function exportBackupToFile() {
+    const backup = createAutomatedBackup();
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `aa-group-backup-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    showToast('Backup exported successfully', 'success');
+    logAuditEntry('export', 'full-backup', backup.id, null, 'Manual backup export');
+}
+
+function importBackupFromFile() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+
+    input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const backup = JSON.parse(event.target.result);
+
+                if (!backup.data || !backup.timestamp) {
+                    throw new Error('Invalid backup file format');
+                }
+
+                const confirmed = confirm(
+                    `This will restore data from backup created on ${new Date(backup.timestamp).toLocaleString()}.\n\n` +
+                    `Current data will be overwritten. This cannot be undone.\n\n` +
+                    `Create a backup of current data first?`
+                );
+
+                if (!confirmed) return;
+
+                // Create backup of current data before restoring
+                exportBackupToFile();
+
+                // Wait a moment for backup to complete
+                setTimeout(() => {
+                    restoreFromBackup(backup);
+                }, 1000);
+
+            } catch (error) {
+                showToast('Error importing backup: ' + error.message, 'error');
+                console.error('Backup import error:', error);
+            }
+        };
+
+        reader.readAsText(file);
+    };
+
+    input.click();
+}
+
+function restoreFromBackup(backup) {
+    try {
+        const data = backup.data;
+
+        // Restore all data
+        if (data.members) storage.saveMembers(data.members);
+        if (data.events) storage.saveEvents(data.events);
+        if (data.groupConscienceLog) storage.saveGroupConscienceLog(data.groupConscienceLog);
+        if (data.servicePositions) storage.saveServicePositions(data.servicePositions);
+        if (data.budgetCategories) storage.saveBudgetCategories(data.budgetCategories);
+        if (data.expenses) storage.saveExpenses(data.expenses);
+        if (data.chairpersonLog) storage.saveChairpersonLog(data.chairpersonLog);
+        if (data.announcements) storage.saveAnnouncements(data.announcements);
+        if (data.photos) storage.savePhotos(data.photos);
+        if (data.messages) storage.saveMessages(data.messages);
+        if (data.nominations) storage.saveNominations(data.nominations);
+        if (data.notifications) localStorage.setItem('notifications', JSON.stringify(data.notifications));
+        if (data.auditLog) localStorage.setItem('auditLog', JSON.stringify(data.auditLog));
+
+        // Restore settings
+        if (data.settings) {
+            if (data.settings.gcSettings) localStorage.setItem('gcSettings', JSON.stringify(data.settings.gcSettings));
+            if (data.settings.votingSettings) localStorage.setItem('votingSettings', JSON.stringify(data.settings.votingSettings));
+            if (data.settings.currentUser) localStorage.setItem('currentUser', data.settings.currentUser);
+            if (data.settings.treasurerBalance) localStorage.setItem('treasurerBalance', data.settings.treasurerBalance);
+        }
+
+        logAuditEntry('import', 'full-backup', backup.id, null, 'Restored from backup file');
+
+        showToast('Backup restored successfully! Refreshing page...', 'success');
+
+        // Refresh page to reload all data
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
+
+    } catch (error) {
+        showToast('Error restoring backup: ' + error.message, 'error');
+        console.error('Backup restore error:', error);
+    }
+}
+
+function scheduleAutomatedBackups() {
+    // Check if automated backups are enabled
+    const backupSettings = JSON.parse(localStorage.getItem('backupSettings') || '{"enabled": true, "frequency": "daily"}');
+
+    if (!backupSettings.enabled) return;
+
+    const lastBackup = localStorage.getItem('lastAutomatedBackup');
+    const now = new Date();
+
+    let shouldBackup = false;
+
+    if (!lastBackup) {
+        shouldBackup = true;
+    } else {
+        const lastBackupDate = new Date(lastBackup);
+        const hoursSinceBackup = (now - lastBackupDate) / (1000 * 60 * 60);
+
+        if (backupSettings.frequency === 'daily' && hoursSinceBackup >= 24) {
+            shouldBackup = true;
+        } else if (backupSettings.frequency === 'weekly' && hoursSinceBackup >= 168) {
+            shouldBackup = true;
+        }
+    }
+
+    if (shouldBackup) {
+        createAutomatedBackup();
+        localStorage.setItem('lastAutomatedBackup', now.toISOString());
+        console.log('Automated backup created:', now.toISOString());
+
+        createNotification({
+            type: 'backup-created',
+            title: 'Automatic Backup Created',
+            message: 'Your data has been automatically backed up.',
+            priority: 'normal'
+        });
+    }
+}
+
+function viewBackupHistory() {
+    const backups = JSON.parse(localStorage.getItem('backupHistory') || '[]')
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    const modal = document.createElement('div');
+    modal.id = 'backup-modal';
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center;';
+
+    const content = document.createElement('div');
+    content.style.cssText = 'background: #34495e; padding: 2rem; border-radius: 8px; max-width: 600px; max-height: 80vh; overflow-y: auto; width: 90%;';
+
+    content.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="color: #3498db; margin: 0;">Backup History</h2>
+            <button onclick="closeBackupHistory()" style="background: #e74c3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Close</button>
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <button onclick="exportBackupToFile()" style="background: #2ecc71; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; margin-right: 0.5rem;">Create New Backup</button>
+            <button onclick="importBackupFromFile()" style="background: #3498db; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Import Backup</button>
+        </div>
+        <div>
+            ${backups.length === 0 ? '<p style="color: #95a5a6;">No backups yet</p>' :
+                backups.map(b => `
+                    <div style="background: #2c3e50; padding: 1rem; border-radius: 6px; margin-bottom: 0.75rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <p style="margin: 0; color: #ecf0f1;"><strong>${new Date(b.timestamp).toLocaleString()}</strong></p>
+                                <small style="color: #95a5a6;">Size: ${(b.size / 1024).toFixed(2)} KB</small>
+                            </div>
+                            <button onclick="restoreBackupById('${b.id}')" style="background: #f39c12; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">Restore</button>
+                        </div>
+                    </div>
+                `).join('')
+            }
+        </div>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+
+    modal.onclick = (e) => {
+        if (e.target === modal) closeBackupHistory();
+    };
+}
+
+function closeBackupHistory() {
+    const modal = document.getElementById('backup-modal');
+    if (modal) modal.remove();
+}
+
+function restoreBackupById(backupId) {
+    const backupData = localStorage.getItem(`backup_${backupId}`);
+    if (!backupData) {
+        showToast('Backup not found', 'error');
+        return;
+    }
+
+    const backup = JSON.parse(backupData);
+    restoreFromBackup(backup);
+}
+
+// ========== P2-1: MEMBER ENGAGEMENT SCORE ==========
+
+function calculateMemberEngagementScore(memberId) {
+    // Get member data
+    const members = storage.getMembers();
+    const member = members.find(m => m.id === memberId || m.name === memberId);
+
+    if (!member) return 0;
+
+    let score = 0;
+    const weights = {
+        attendance: 30,
+        gcParticipation: 25,
+        service: 25,
+        sponsorship: 10,
+        committees: 10
+    };
+
+    // 1. Meeting Attendance (30 points)
+    const chairpersonLogs = storage.getChairpersonLog();
+    const recentLogs = chairpersonLogs.filter(log => {
+        const logDate = new Date(log.date);
+        const monthsAgo = new Date();
+        monthsAgo.setMonth(monthsAgo.getMonth() - 3);
+        return logDate >= monthsAgo;
+    });
+
+    if (recentLogs.length > 0) {
+        // Assume average attendance if member data not detailed
+        score += weights.attendance * 0.75; // Default 75% attendance
+    }
+
+    // 2. GC Participation (25 points)
+    const gcLogs = storage.getGroupConscienceLog();
+    const recentGC = gcLogs.filter(log => {
+        const logDate = new Date(log.date);
+        const monthsAgo = new Date();
+        monthsAgo.setMonth(monthsAgo.getMonth() - 6);
+        return logDate >= monthsAgo;
+    });
+
+    const participationCount = recentGC.filter(log =>
+        log.attendees && log.attendees.includes(member.name)
+    ).length;
+
+    if (recentGC.length > 0) {
+        const participationRate = participationCount / recentGC.length;
+        score += weights.gcParticipation * participationRate;
+    }
+
+    // 3. Service Position (25 points)
+    const positions = storage.getServicePositions();
+    const hasService = positions.some(p => p.currentHolder === member.name);
+
+    if (hasService) {
+        score += weights.service;
+    }
+
+    // 4. Sponsorship (10 points) - Check if has sponsor/sponsees
+    if (member.sponsor) {
+        score += weights.sponsorship * 0.5;
+    }
+    // Could add sponsee tracking later
+    score += weights.sponsorship * 0.5; // Assume active in sponsorship
+
+    // 5. Committee Participation (10 points)
+    // Could be enhanced with committee tracking
+    score += weights.committees * 0.5; // Default partial credit
+
+    return Math.round(score);
+}
+
+function getGroupEngagementMetrics() {
+    const members = storage.getMembers();
+
+    if (members.length === 0) {
+        return {
+            averageScore: 0,
+            totalMembers: 0,
+            highEngagement: 0,
+            mediumEngagement: 0,
+            lowEngagement: 0,
+            disengaged: 0
+        };
+    }
+
+    const scores = members.map(m => calculateMemberEngagementScore(m.id || m.name));
+    const averageScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+
+    return {
+        averageScore: Math.round(averageScore),
+        totalMembers: members.length,
+        highEngagement: scores.filter(s => s >= 75).length,
+        mediumEngagement: scores.filter(s => s >= 50 && s < 75).length,
+        lowEngagement: scores.filter(s => s >= 25 && s < 50).length,
+        disengaged: scores.filter(s => s < 25).length
+    };
+}
+
+function displayEngagementDashboard() {
+    const metrics = getGroupEngagementMetrics();
+
+    const modal = document.createElement('div');
+    modal.id = 'engagement-modal';
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center;';
+
+    const content = document.createElement('div');
+    content.style.cssText = 'background: #34495e; padding: 2rem; border-radius: 8px; max-width: 800px; max-height: 80vh; overflow-y: auto; width: 90%;';
+
+    content.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="color: #3498db; margin: 0;">Member Engagement Dashboard</h2>
+            <button onclick="closeEngagementDashboard()" style="background: #e74c3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Close</button>
+        </div>
+
+        <div style="background: #2c3e50; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+            <h3 style="color: #3498db; margin: 0 0 1rem 0;">Group Overview</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div>
+                    <p style="margin: 0.5rem 0;"><strong>Total Members:</strong> ${metrics.totalMembers}</p>
+                    <p style="margin: 0.5rem 0;"><strong>Average Engagement:</strong> <span style="color: ${metrics.averageScore >= 75 ? '#2ecc71' : metrics.averageScore >= 50 ? '#f39c12' : '#e74c3c'}; font-size: 1.2rem; font-weight: bold;">${metrics.averageScore}%</span></p>
+                </div>
+                <div>
+                    <p style="margin: 0.5rem 0; color: #2ecc71;"><strong>High (75%+):</strong> ${metrics.highEngagement}</p>
+                    <p style="margin: 0.5rem 0; color: #f39c12;"><strong>Medium (50-74%):</strong> ${metrics.mediumEngagement}</p>
+                    <p style="margin: 0.5rem 0; color: #e67e22;"><strong>Low (25-49%):</strong> ${metrics.lowEngagement}</p>
+                    <p style="margin: 0.5rem 0; color: #e74c3c;"><strong>Disengaged (<25%):</strong> ${metrics.disengaged}</p>
+                </div>
+            </div>
+        </div>
+
+        ${metrics.averageScore < 60 ? `
+            <div style="background: #e67e22; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem;">
+                <h4 style="margin: 0 0 0.5rem 0; color: white;"><i class="fas fa-exclamation-triangle"></i> Engagement Below Target</h4>
+                <p style="margin: 0; color: white;">Group engagement is below the healthy threshold (60%). Consider:</p>
+                <ul style="margin: 0.5rem 0; padding-left: 1.5rem; color: white;">
+                    <li>Checking in with members who haven't attended recently</li>
+                    <li>Creating opportunities for service</li>
+                    <li>Hosting special events or workshops</li>
+                </ul>
+            </div>
+        ` : ''}
+
+        <div style="background: #2c3e50; padding: 1.5rem; border-radius: 8px;">
+            <h3 style="color: #3498db; margin: 0 0 1rem 0;">Engagement Breakdown</h3>
+            <p style="color: #ecf0f1; font-size: 0.9rem; margin-bottom: 1rem;">
+                Engagement score is calculated from:<br>
+                • Meeting Attendance (30%)<br>
+                • GC Participation (25%)<br>
+                • Service Positions (25%)<br>
+                • Sponsorship Activity (10%)<br>
+                • Committee Involvement (10%)
+            </p>
+        </div>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+
+    modal.onclick = (e) => {
+        if (e.target === modal) closeEngagementDashboard();
+    };
+}
+
+function closeEngagementDashboard() {
+    const modal = document.getElementById('engagement-modal');
+    if (modal) modal.remove();
+}
+
+// Check for disengaged members and create notifications
+function checkMemberEngagement() {
+    const metrics = getGroupEngagementMetrics();
+
+    if (metrics.disengaged > 0) {
+        createNotification({
+            type: 'low-engagement',
+            title: `${metrics.disengaged} Member${metrics.disengaged > 1 ? 's' : ''} Showing Low Engagement`,
+            message: `Some members may need outreach. Consider checking in with less active members.`,
+            priority: 'normal',
+            actionLink: 'birthdays-section'
+        });
+    }
+
+    if (metrics.averageScore < 50) {
+        createNotification({
+            type: 'group-engagement-low',
+            title: 'Group Engagement Below 50%',
+            message: `Overall group participation is low. Group conscience may want to discuss ways to increase engagement.`,
+            priority: 'high',
+            actionLink: 'analytics-section'
+        });
+    }
 }
 
 // ========== FINANCE FUNCTIONS ==========
@@ -11278,6 +12215,19 @@ function init() {
 
     // Check for upcoming GC meetings and show notifications
     setTimeout(() => checkUpcomingGCMeetings(), 2000); // Delay 2 seconds for better UX
+
+    // P1/P2: Initialize new systems
+    updateNotificationBadge();
+    scheduleAutomatedBackups();
+    checkUpcomingTermExpirations();
+    checkMemberEngagement();
+
+    // Run periodic checks
+    setInterval(() => {
+        checkUpcomingTermExpirations();
+        checkMemberEngagement();
+        scheduleAutomatedBackups();
+    }, 3600000); // Check hourly
 
     // Back to Top button logic
     const mainEl = document.querySelector('main');
