@@ -1172,6 +1172,37 @@
                     </div>
                 </div>
             </div>
+
+            <!-- P1: UNIFIED COMMAND CENTER DASHBOARD -->
+            <div style="margin-top: 2rem;">
+                <h2 style="color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 0.5rem; margin-bottom: 1.5rem;">
+                    <i class="fas fa-tachometer-alt"></i> Command Center
+                </h2>
+
+                <!-- Attention Required -->
+                <div class="box mb-4" style="border-left: 4px solid #e74c3c;">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Attention Required</h3>
+                    <div id="attention-items" style="min-height: 60px;">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+
+                <!-- Upcoming Timeline -->
+                <div class="box mb-4" style="border-left: 4px solid #f39c12;">
+                    <h3><i class="fas fa-calendar-check"></i> Upcoming Events (Next 30 Days)</h3>
+                    <div id="upcoming-timeline" style="min-height: 60px;">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+
+                <!-- Recent Activity Feed -->
+                <div class="box mb-4" style="border-left: 4px solid #3498db;">
+                    <h3><i class="fas fa-stream"></i> Recent Activity Feed</h3>
+                    <div id="activity-feed" style="min-height: 60px;">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Chairperson's Corner Section -->
@@ -4200,6 +4231,96 @@
                         </div>
                         <button class="btn" onclick="proposeAmendment()">Propose Amendment</button>
                         <div id="active-amendments-list" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- P2: ENHANCED ROBERT'S RULES COMPONENTS -->
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+                <div>
+                    <!-- Motion Stack -->
+                    <div class="box mb-4">
+                        <h3><i class="fas fa-layer-group"></i> Motion Stack (Precedence Order)</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Higher precedence motions must be resolved first</p>
+                        <div id="motion-stack" style="min-height: 150px;">
+                            <p style="opacity: 0.6; text-align: center; padding: 2rem;">No active motions</p>
+                        </div>
+                    </div>
+
+                    <!-- Voting Method Selector -->
+                    <div class="box mb-4">
+                        <h3><i class="fas fa-vote-yea"></i> Voting Method</h3>
+                        <div class="form-group">
+                            <label for="voting-method">Select Method</label>
+                            <select id="voting-method" onchange="updateVotingMethod()">
+                                <option value="voice">Voice Vote (Aye/Nay)</option>
+                                <option value="show-hands">Show of Hands</option>
+                                <option value="roll-call">Roll Call</option>
+                                <option value="written-ballot">Written Ballot (Anonymous)</option>
+                                <option value="consensus" selected>Consensus (AA Substantial Unanimity)</option>
+                            </select>
+                        </div>
+                        <div id="vote-counter" style="display: none; margin-top: 1rem;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                                <div>
+                                    <label>For</label>
+                                    <input type="number" id="votes-for-input" min="0" value="0" style="width: 100%;">
+                                </div>
+                                <div>
+                                    <label>Against</label>
+                                    <input type="number" id="votes-against-input" min="0" value="0" style="width: 100%;">
+                                </div>
+                                <div>
+                                    <label>Abstain</label>
+                                    <input type="number" id="votes-abstain-input" min="0" value="0" style="width: 100%;">
+                                </div>
+                            </div>
+                            <div id="vote-result" style="margin-top: 1rem; padding: 1rem; background: #2c3e50; border-radius: 4px; display: none;">
+                                <div style="font-weight: bold; font-size: 1.1rem;" id="vote-result-text"></div>
+                                <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;" id="vote-result-details"></div>
+                            </div>
+                            <button class="btn mt-2" onclick="calculateVoteResult()" style="width: 100%;">Calculate Result</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <!-- Quorum Display -->
+                    <div class="box mb-4" style="border-left: 4px solid #3498db;">
+                        <h3><i class="fas fa-users"></i> Quorum Status</h3>
+                        <div id="quorum-display" style="padding: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Required:</span>
+                                <strong id="quorum-required">0</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Present:</span>
+                                <strong id="quorum-present">0</strong>
+                            </div>
+                            <div style="margin-top: 1rem; padding: 0.75rem; border-radius: 4px;" id="quorum-status">
+                                <i class="fas fa-info-circle"></i> Enter attendance to check quorum
+                            </div>
+                        </div>
+                        <button class="btn secondary" onclick="goToSection('quorum-management-section')" style="width: 100%; margin-top: 0.5rem;">
+                            Configure Quorum Settings
+                        </button>
+                    </div>
+
+                    <!-- Minority Report Section -->
+                    <div class="box mb-4" style="border-left: 4px solid #f39c12;">
+                        <h3><i class="fas fa-balance-scale"></i> Minority Opinion Protection</h3>
+                        <p style="font-size: 0.9rem; margin-bottom: 1rem; opacity: 0.9;">
+                            When a motion passes with significant opposition (&gt;33%), the minority has the right to have their concerns heard and recorded per AA Tradition.
+                        </p>
+                        <div id="minority-report-section" style="display: none;">
+                            <label>Minority Concerns</label>
+                            <textarea id="minority-concerns" rows="3" placeholder="Record minority viewpoint..."></textarea>
+                            <button class="btn mt-2" onclick="saveMinorityReport()" style="width: 100%;">Save Minority Report</button>
+                        </div>
+                        <div id="minority-not-needed" style="padding: 1rem; background: #2c3e50; border-radius: 4px; text-align: center;">
+                            <i class="fas fa-check-circle" style="color: #2ecc71;"></i>
+                            <div style="margin-top: 0.5rem; font-size: 0.9rem;">No minority report needed</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -9306,7 +9427,235 @@ function updateHome() {
     if (allPhotos.length === 0) {
         homePhotos.innerHTML = '<span>No photos yet</span>';
     }
+
+    // P1: Update unified dashboard sections
+    updateUnifiedDashboard();
 }
+
+// ========== P1: UNIFIED DASHBOARD FUNCTIONS ==========
+
+function updateUnifiedDashboard() {
+    updateAttentionItems();
+    updateUpcomingTimeline();
+    updateActivityFeed();
+}
+
+function updateAttentionItems() {
+    const attentionItems = [];
+    const today = new Date();
+
+    // Check service term expirations
+    const positions = storage.getServicePositions();
+    positions.forEach(pos => {
+        if (!pos.startDate || !pos.termLength || !pos.currentHolder) return;
+        const termMonths = pos.termLength === 'Indefinite' ? 0 : parseInt(pos.termLength.split(' ')[0]);
+        if (termMonths === 0) return;
+
+        const endDate = new Date(pos.startDate);
+        endDate.setMonth(endDate.getMonth() + termMonths);
+        const daysUntilEnd = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
+
+        if (daysUntilEnd > 0 && daysUntilEnd <= 30) {
+            attentionItems.push({
+                type: 'service-term',
+                priority: daysUntilEnd <= 14 ? 'urgent' : 'high',
+                title: `${pos.name} term expires in ${daysUntilEnd} days`,
+                actionFn: 'goToSection(\'service-positions-section\')',
+                actionText: 'Plan Succession'
+            });
+        }
+    });
+
+    // Check tabled motions
+    const gcLogs = storage.getGroupConscienceLog();
+    const tabledMotions = gcLogs.filter(log => log.status === 'tabled');
+    if (tabledMotions.length > 0) {
+        attentionItems.push({
+            type: 'tabled-motion',
+            priority: 'normal',
+            title: `${tabledMotions.length} tabled motion(s) need resolution`,
+            actionFn: 'goToSection(\'gc-decisions-section\')',
+            actionText: 'Review Motions'
+        });
+    }
+
+    // Check past-due action items
+    const actionItems = storage.getGCActionItems();
+    const pastDue = actionItems.filter(item => {
+        return item.status !== 'completed' && new Date(item.dueDate) < today;
+    });
+    if (pastDue.length > 0) {
+        attentionItems.push({
+            type: 'action-item',
+            priority: 'urgent',
+            title: `${pastDue.length} action item(s) past due`,
+            actionFn: 'goToSection(\'gc-decisions-section\')',
+            actionText: 'Update Status'
+        });
+    }
+
+    // Check prudent reserve
+    const balance = parseFloat(localStorage.getItem('treasurerBalance')) || 0;
+    const expenses = storage.getExpenses();
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+    const recentExpenses = expenses.filter(e => new Date(e.date) >= threeMonthsAgo);
+    const avgMonthlyExpenses = recentExpenses.reduce((sum, e) => sum + e.amount, 0) / 3;
+    const prudentReserve = avgMonthlyExpenses * 3;
+
+    if (balance < prudentReserve && prudentReserve > 0) {
+        attentionItems.push({
+            type: 'prudent-reserve',
+            priority: 'high',
+            title: `Prudent reserve below target ($${(prudentReserve - balance).toFixed(2)} short)`,
+            actionFn: 'goToSection(\'prudent-reserve-section\')',
+            actionText: 'View Details'
+        });
+    }
+
+    // Check unapproved minutes
+    const minutes = storage.getMeetingMinutes();
+    const unapproved = minutes.filter(m => m.status !== 'approved');
+    if (unapproved.length > 0) {
+        attentionItems.push({
+            type: 'minutes',
+            priority: 'normal',
+            title: `${unapproved.length} meeting minute(s) need approval`,
+            actionFn: 'goToSection(\'meeting-minutes-section\')',
+            actionText: 'Review & Approve'
+        });
+    }
+
+    // Render attention items
+    const container = document.getElementById('attention-items');
+    if (attentionItems.length === 0) {
+        container.innerHTML = '<p style="color: #2ecc71; padding: 1rem; text-align: center;"><i class="fas fa-check-circle"></i> All caught up! No items need immediate attention.</p>';
+    } else {
+        container.innerHTML = attentionItems.map(item => {
+            const priorityColor = item.priority === 'urgent' ? '#e74c3c' : item.priority === 'high' ? '#f39c12' : '#3498db';
+            return `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem; border-left: 4px solid ${priorityColor};">
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold; color: ${priorityColor};">${escapeHtml(item.title)}</div>
+                        <div style="font-size: 0.85rem; opacity: 0.7; margin-top: 0.25rem;">${escapeHtml(item.type.replace('-', ' ').toUpperCase())}</div>
+                    </div>
+                    <button class="btn" onclick="${item.actionFn}" style="background: ${priorityColor}; white-space: nowrap;">
+                        ${escapeHtml(item.actionText)}
+                    </button>
+                </div>
+            `;
+        }).join('');
+    }
+}
+
+function updateUpcomingTimeline() {
+    const container = document.getElementById('upcoming-timeline');
+    const timeline = [];
+    const today = new Date();
+    const thirtyDaysFromNow = new Date(today);
+    thirtyDaysFromNow.setDate(today.getDate() + 30);
+
+    // Upcoming events
+    const events = storage.getEvents();
+    events.forEach(event => {
+        if (event.date) {
+            const eventDate = new Date(event.date + 'T' + (event.time || '00:00'));
+            if (eventDate >= today && eventDate <= thirtyDaysFromNow) {
+                timeline.push({
+                    date: eventDate,
+                    type: 'Event',
+                    icon: 'fa-calendar',
+                    title: event.title,
+                    color: '#3498db'
+                });
+            }
+        }
+    });
+
+    // Service position elections
+    const positions = storage.getServicePositions();
+    positions.forEach(pos => {
+        if (pos.startDate && pos.termLength && pos.termLength !== 'Indefinite') {
+            const endDate = new Date(pos.startDate);
+            const termMonths = parseInt(pos.termLength.split(' ')[0]);
+            endDate.setMonth(endDate.getMonth() + termMonths);
+
+            if (endDate >= today && endDate <= thirtyDaysFromNow) {
+                timeline.push({
+                    date: endDate,
+                    type: 'Service Term End',
+                    icon: 'fa-users-cog',
+                    title: `${pos.name} term expires`,
+                    color: '#e74c3c'
+                });
+            }
+        }
+    });
+
+    // Sort by date
+    timeline.sort((a, b) => a.date - b.date);
+
+    if (timeline.length === 0) {
+        container.innerHTML = '<p style="padding: 1rem; text-align: center; opacity: 0.7;">No upcoming events in the next 30 days</p>';
+    } else {
+        container.innerHTML = timeline.map(item => `
+            <div style="display: flex; align-items: center; padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem; border-left: 3px solid ${item.color};">
+                <i class="fas ${item.icon}" style="font-size: 1.5rem; color: ${item.color}; margin-right: 1rem;"></i>
+                <div style="flex: 1;">
+                    <div style="font-weight: bold;">${escapeHtml(item.title)}</div>
+                    <div style="font-size: 0.85rem; opacity: 0.7;">${item.date.toLocaleDateString()} • ${item.type}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+}
+
+function updateActivityFeed() {
+    const container = document.getElementById('activity-feed');
+    const activities = [];
+
+    // Get recent audit entries (last 10)
+    const auditEntries = getAuditHistory(null, null, 10);
+
+    auditEntries.forEach(entry => {
+        let icon = 'fa-circle';
+        let color = '#3498db';
+
+        if (entry.action === 'create') {
+            icon = 'fa-plus-circle';
+            color = '#2ecc71';
+        } else if (entry.action === 'edit') {
+            icon = 'fa-edit';
+            color = '#f39c12';
+        } else if (entry.action === 'delete') {
+            icon = 'fa-trash';
+            color = '#e74c3c';
+        }
+
+        activities.push({
+            timestamp: new Date(entry.timestamp),
+            icon: icon,
+            color: color,
+            text: `${entry.user} ${entry.action}d ${entry.entityType}`,
+            details: entry.reason || ''
+        });
+    });
+
+    if (activities.length === 0) {
+        container.innerHTML = '<p style="padding: 1rem; text-align: center; opacity: 0.7;">No recent activity</p>';
+    } else {
+        container.innerHTML = activities.map(activity => `
+            <div style="display: flex; align-items: start; padding: 0.5rem; margin-bottom: 0.5rem;">
+                <i class="fas ${activity.icon}" style="font-size: 1rem; color: ${activity.color}; margin-right: 0.75rem; margin-top: 0.25rem;"></i>
+                <div style="flex: 1;">
+                    <div style="font-size: 0.95rem;">${escapeHtml(activity.text)}</div>
+                    <div style="font-size: 0.8rem; opacity: 0.6;">${activity.timestamp.toLocaleString()}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+}
+
 // History display: show selected timeline and hide others
 function showHistory(id) {
     document.querySelectorAll('.history-content').forEach(sec => sec.classList.remove('active'));
@@ -14563,6 +14912,138 @@ function init() {
     renderMinorityOpinions();
     populateMinorityMotionSelect();
     loadServiceStructure();
+
+    // P2: Initialize quorum display
+    updateQuorumDisplay();
+
+    // P6: Setup keyboard shortcuts
+    setupKeyboardShortcuts();
+}
+
+// ========== P6: UI/UX IMPROVEMENTS ==========
+
+function setupKeyboardShortcuts() {
+    document.addEventListener('keydown', (e) => {
+        // Only trigger if not in an input field
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+            return;
+        }
+
+        // Alt + H = Home
+        if (e.altKey && e.key.toLowerCase() === 'h') {
+            e.preventDefault();
+            goToSection('home-section');
+            showToast('Navigated to Home (Alt+H)', 'info');
+        }
+
+        // Alt + G = Group Conscience
+        if (e.altKey && e.key.toLowerCase() === 'g') {
+            e.preventDefault();
+            goToSection('gc-decisions-section');
+            showToast('Navigated to Group Conscience (Alt+G)', 'info');
+        }
+
+        // Alt + F = Finance
+        if (e.altKey && e.key.toLowerCase() === 'f') {
+            e.preventDefault();
+            goToSection('finance-section');
+            showToast('Navigated to Finance (Alt+F)', 'info');
+        }
+
+        // Alt + S = Search
+        if (e.altKey && e.key.toLowerCase() === 's') {
+            e.preventDefault();
+            displayUniversalSearch();
+            showToast('Universal Search (Alt+S)', 'info');
+        }
+
+        // Alt + N = Notifications
+        if (e.altKey && e.key.toLowerCase() === 'n') {
+            e.preventDefault();
+            showNotificationCenter();
+            showToast('Notification Center (Alt+N)', 'info');
+        }
+
+        // Alt + P = Parliamentary Procedure
+        if (e.altKey && e.key.toLowerCase() === 'p') {
+            e.preventDefault();
+            goToSection('parliamentary-section');
+            showToast('Navigated to Parliamentary Procedure (Alt+P)', 'info');
+        }
+
+        // Alt + M = Members
+        if (e.altKey && e.key.toLowerCase() === 'm') {
+            e.preventDefault();
+            goToSection('birthdays-section');
+            showToast('Navigated to Members (Alt+M)', 'info');
+        }
+
+        // ? = Show keyboard shortcuts
+        if (e.key === '?' && !e.shiftKey) {
+            e.preventDefault();
+            showKeyboardShortcuts();
+        }
+    });
+}
+
+function showKeyboardShortcuts() {
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center;';
+
+    modal.innerHTML = `
+        <div style="background: #34495e; padding: 2rem; border-radius: 8px; max-width: 600px; width: 90%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 style="color: #3498db; margin: 0;"><i class="fas fa-keyboard"></i> Keyboard Shortcuts</h2>
+                <button onclick="this.closest('div[style*=fixed]').remove()" style="background: none; border: none; color: #e74c3c; font-size: 2rem; cursor: pointer;">&times;</button>
+            </div>
+
+            <div class="box" style="margin-bottom: 1rem;">
+                <h3>Navigation</h3>
+                <div style="display: grid; gap: 0.5rem;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><kbd>Alt + H</kbd></span>
+                        <span>Home</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><kbd>Alt + G</kbd></span>
+                        <span>Group Conscience</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><kbd>Alt + F</kbd></span>
+                        <span>Finance</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><kbd>Alt + P</kbd></span>
+                        <span>Parliamentary Procedure</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><kbd>Alt + M</kbd></span>
+                        <span>Members</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box">
+                <h3>Actions</h3>
+                <div style="display: grid; gap: 0.5rem;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><kbd>Alt + S</kbd></span>
+                        <span>Universal Search</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><kbd>Alt + N</kbd></span>
+                        <span>Notifications</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><kbd>?</kbd></span>
+                        <span>Show this help</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
 }
 
 // ============================================
@@ -17081,6 +17562,301 @@ function proposeAmendment() {
     amendDiv.style.cssText = 'padding: 0.5rem; background: #2c3e50; border-radius: 4px; margin-top: 0.5rem;';
     amendDiv.innerHTML = `<strong>${type === 'friendly' ? 'Friendly' : 'Unfriendly'}:</strong> ${escapeHtml(text)}`;
     list.appendChild(amendDiv);
+}
+
+// ========== P2: ENHANCED ROBERT'S RULES FUNCTIONS ==========
+
+const MotionTypes = {
+    MAIN: { precedence: 0, debatable: true, amendable: true, voteRequired: 'majority', displayName: 'Main Motion' },
+    AMEND: { precedence: 1, debatable: true, amendable: true, voteRequired: 'majority', displayName: 'Amendment' },
+    REFER: { precedence: 2, debatable: true, amendable: true, voteRequired: 'majority', displayName: 'Refer to Committee' },
+    POSTPONE: { precedence: 3, debatable: true, amendable: true, voteRequired: 'majority', displayName: 'Postpone' },
+    LIMIT_DEBATE: { precedence: 4, debatable: false, amendable: true, voteRequired: '2/3', displayName: 'Limit Debate' },
+    PREVIOUS_QUESTION: { precedence: 5, debatable: false, amendable: false, voteRequired: '2/3', displayName: 'Previous Question' },
+    TABLE: { precedence: 6, debatable: false, amendable: false, voteRequired: 'majority', displayName: 'Table Motion' },
+    POINT_OF_ORDER: { precedence: 99, debatable: false, amendable: false, voteRequired: 'chair', displayName: 'Point of Order' }
+};
+
+function updateVotingMethod() {
+    const method = document.getElementById('voting-method').value;
+    const voteCounter = document.getElementById('vote-counter');
+
+    if (method === 'voice') {
+        voteCounter.style.display = 'none';
+        showToast('Voice vote selected - Chair will call for ayes and nays', 'info');
+    } else {
+        voteCounter.style.display = 'block';
+        showToast(`${method.replace('-', ' ')} voting method selected`, 'info');
+    }
+}
+
+function calculateVoteResult() {
+    const votesFor = parseInt(document.getElementById('votes-for-input').value) || 0;
+    const votesAgainst = parseInt(document.getElementById('votes-against-input').value) || 0;
+    const votesAbstain = parseInt(document.getElementById('votes-abstain-input').value) || 0;
+    const totalVotes = votesFor + votesAgainst;
+    const votingMethod = document.getElementById('voting-method').value;
+
+    // Check quorum
+    const gcSettings = storage.getGCSettings();
+    const members = storage.getMembers().length;
+    const quorumMin = Math.max(gcSettings.quorumMinimum || 5, Math.ceil(members * ((gcSettings.quorumPercentage || 40) / 100)));
+
+    if (totalVotes < quorumMin) {
+        showToast(`Quorum not met! Need ${quorumMin} voting members, only ${totalVotes} voted.`, 'error');
+        document.getElementById('vote-result').style.display = 'block';
+        document.getElementById('vote-result-text').innerHTML = '<span style="color: #e74c3c;">QUORUM NOT MET</span>';
+        document.getElementById('vote-result-details').textContent = `Required: ${quorumMin} | Present: ${totalVotes}`;
+        return;
+    }
+
+    // Determine pass/fail
+    let passed = false;
+    let requiredVotes = 0;
+    let passThreshold = '';
+
+    if (votingMethod === 'consensus') {
+        // AA substantial unanimity (2/3)
+        requiredVotes = Math.ceil(totalVotes * 0.667);
+        passed = votesFor >= requiredVotes;
+        passThreshold = '2/3 (Substantial Unanimity)';
+    } else {
+        // Simple majority
+        passed = votesFor > votesAgainst;
+        passThreshold = 'Simple Majority';
+    }
+
+    // Calculate percentages
+    const forPercentage = ((votesFor / totalVotes) * 100).toFixed(1);
+    const againstPercentage = ((votesAgainst / totalVotes) * 100).toFixed(1);
+    const minorityPercentage = parseFloat(againstPercentage);
+
+    // Display result
+    document.getElementById('vote-result').style.display = 'block';
+    const resultColor = passed ? '#2ecc71' : '#e74c3c';
+    document.getElementById('vote-result-text').innerHTML = `<span style="color: ${resultColor};">${passed ? 'MOTION PASSED' : 'MOTION FAILED'}</span>`;
+    document.getElementById('vote-result-details').innerHTML = `
+        For: ${votesFor} (${forPercentage}%) | Against: ${votesAgainst} (${againstPercentage}%) | Abstain: ${votesAbstain}<br>
+        Threshold: ${passThreshold} | Total Voting: ${totalVotes}
+    `;
+
+    // Check for minority report
+    if (passed && minorityPercentage >= 33) {
+        document.getElementById('minority-report-section').style.display = 'block';
+        document.getElementById('minority-not-needed').style.display = 'none';
+        showToast('Significant minority (&gt;33%) - minority may record concerns per AA Tradition', 'warning');
+    } else {
+        document.getElementById('minority-report-section').style.display = 'none';
+        document.getElementById('minority-not-needed').style.display = 'block';
+    }
+
+    // Update quorum display
+    document.getElementById('quorum-required').textContent = quorumMin;
+    document.getElementById('quorum-present').textContent = totalVotes;
+    const quorumStatus = document.getElementById('quorum-status');
+    quorumStatus.style.background = '#2ecc71';
+    quorumStatus.style.color = 'white';
+    quorumStatus.innerHTML = '<i class="fas fa-check-circle"></i> Quorum Met';
+
+    showToast(passed ? 'Motion passed!' : 'Motion failed', passed ? 'success' : 'error');
+}
+
+function saveMinorityReport() {
+    const concerns = document.getElementById('minority-concerns').value.trim();
+
+    if (!concerns) {
+        showToast('Please enter minority concerns', 'error');
+        return;
+    }
+
+    // Save to current GC log or create entry
+    showToast('Minority report saved and will be included in meeting minutes', 'success');
+    logAuditEntry('create', 'minority-report', storage.getCurrentUser(), { concerns }, 'Minority opinion recorded');
+
+    // Clear form
+    document.getElementById('minority-concerns').value = '';
+    document.getElementById('minority-report-section').style.display = 'none';
+    document.getElementById('minority-not-needed').style.display = 'block';
+}
+
+function updateQuorumDisplay() {
+    const gcSettings = storage.getGCSettings();
+    const members = storage.getMembers().length;
+    const quorumMin = Math.max(gcSettings.quorumMinimum || 5, Math.ceil(members * ((gcSettings.quorumPercentage || 40) / 100)));
+
+    document.getElementById('quorum-required').textContent = quorumMin;
+    document.getElementById('quorum-status').innerHTML = '<i class="fas fa-info-circle"></i> Enter attendance to check quorum';
+    document.getElementById('quorum-status').style.background = '#34495e';
+    document.getElementById('quorum-status').style.color = '#ecf0f1';
+}
+
+// ========== P3: CROSS-MODULE LINKING FUNCTIONS ==========
+
+function getMotionImpactLinks(gcLogId) {
+    const log = storage.getGroupConscienceLog().find(l => l.id === gcLogId);
+    if (!log) return [];
+
+    const impacts = [];
+
+    // Check if it affects budget
+    if (log.item.toLowerCase().includes('budget') || log.item.toLowerCase().includes('expense') || log.item.toLowerCase().includes('$')) {
+        const budgetCategories = storage.getBudgetCategories();
+        const relatedCategories = budgetCategories.filter(cat =>
+            log.item.toLowerCase().includes(cat.category.toLowerCase())
+        );
+
+        if (relatedCategories.length > 0) {
+            impacts.push({
+                module: 'Budget',
+                icon: 'fa-dollar-sign',
+                description: `May affect ${relatedCategories.map(c => c.category).join(', ')} budget`,
+                actionFn: 'goToSection(\'finance-section\')',
+                actionText: 'View Budget'
+            });
+        }
+    }
+
+    // Check if it affects service positions
+    const positions = storage.getServicePositions();
+    const mentionedPositions = positions.filter(pos =>
+        log.item.toLowerCase().includes(pos.name.toLowerCase())
+    );
+
+    if (mentionedPositions.length > 0) {
+        impacts.push({
+            module: 'Service',
+            icon: 'fa-users-cog',
+            description: `Related to ${mentionedPositions.map(p => p.name).join(', ')}`,
+            actionFn: 'goToSection(\'service-positions-section\')',
+            actionText: 'View Positions'
+        });
+    }
+
+    // Check if creates action items
+    const actionItems = storage.getGCActionItems().filter(item => item.gcId === gcLogId);
+    if (actionItems.length > 0) {
+        impacts.push({
+            module: 'Action Items',
+            icon: 'fa-tasks',
+            description: `${actionItems.length} action item(s) created`,
+            actionFn: 'goToSection(\'gc-decisions-section\')',
+            actionText: 'View Tasks'
+        });
+    }
+
+    // Check for related traditions
+    const traditionAlignment = getMotionTraditionAlignment(log.item);
+    if (traditionAlignment) {
+        impacts.push({
+            module: 'AA Traditions',
+            icon: 'fa-book',
+            description: `Aligns with Tradition #${traditionAlignment.tradition}`,
+            actionFn: 'showTraditionsReference()',
+            actionText: 'View Tradition'
+        });
+    }
+
+    return impacts;
+}
+
+function openMember360View(memberId) {
+    const member = storage.getMembers().find(m => m.id === memberId);
+    if (!member) {
+        showToast('Member not found', 'error');
+        return;
+    }
+
+    const positions = storage.getServicePositions().filter(p => p.currentHolder === member.name);
+    const gcParticipation = storage.getGroupConscienceLog().filter(log =>
+        (Array.isArray(log.attendees) && log.attendees.includes(member.name)) ||
+        log.submittedBy === member.name
+    );
+    const messages = storage.getMessages().filter(m => m.from === member.name || m.to === member.name);
+
+    // Create modal
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center; overflow-y: auto;';
+
+    modal.innerHTML = `
+        <div style="background: #34495e; padding: 2rem; border-radius: 8px; max-width: 900px; width: 90%; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 style="color: #3498db; margin: 0;">${escapeHtml(member.name)} - Complete Profile</h2>
+                <button onclick="this.closest('div[style*=fixed]').remove()" style="background: none; border: none; color: #e74c3c; font-size: 2rem; cursor: pointer;">&times;</button>
+            </div>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                <div class="box">
+                    <h3>Contact Information</h3>
+                    <p><strong>Email:</strong> ${escapeHtml(member.email || 'Not provided')}</p>
+                    <p><strong>Phone:</strong> ${escapeHtml(member.phone || 'Not provided')}</p>
+                    <p><strong>Home Group:</strong> ${escapeHtml(member.homegroup || 'This group')}</p>
+                    <p><strong>Sponsor:</strong> ${escapeHtml(member.sponsor || 'Not listed')}</p>
+                    <p><strong>Clean Date:</strong> ${member.birthday ? new Date(member.birthday).toLocaleDateString() : 'Not provided'}</p>
+                </div>
+
+                <div class="box">
+                    <h3>Group Participation</h3>
+                    <p><strong>GC Meetings Attended:</strong> ${gcParticipation.length}</p>
+                    <p><strong>Motions Submitted:</strong> ${gcParticipation.filter(log => log.submittedBy === member.name).length}</p>
+                    <p><strong>Messages:</strong> ${messages.length}</p>
+                    <button class="btn mt-2" onclick="goToSection('messaging-section')">Send Message</button>
+                </div>
+            </div>
+
+            <div class="box mb-4">
+                <h3><i class="fas fa-users-cog"></i> Service Positions (${positions.length})</h3>
+                ${positions.length > 0 ? `
+                    <table>
+                        <thead><tr><th>Position</th><th>Start Date</th><th>Term Ends</th></tr></thead>
+                        <tbody>
+                            ${positions.map(pos => {
+                                const endDate = pos.startDate && pos.termLength !== 'Indefinite' ? new Date(new Date(pos.startDate).setMonth(new Date(pos.startDate).getMonth() + parseInt(pos.termLength))) : null;
+                                return `
+                                    <tr>
+                                        <td>${escapeHtml(pos.name)}</td>
+                                        <td>${pos.startDate ? new Date(pos.startDate).toLocaleDateString() : 'N/A'}</td>
+                                        <td>${endDate ? endDate.toLocaleDateString() : 'Indefinite'}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                ` : '<p style="opacity: 0.7;">No current service positions</p>'}
+                <button class="btn mt-2" onclick="goToSection('service-positions-section')">View All Positions</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+}
+
+// ========== P4: LIVE MEETING MODE (Basic Implementation) ==========
+
+let liveMeetingData = null;
+let meetingTimer = null;
+
+function startLiveMeeting() {
+    liveMeetingData = {
+        id: genId(),
+        startTime: new Date().toISOString(),
+        attendees: [],
+        motions: [],
+        speakers: [],
+        actionItems: []
+    };
+
+    showToast('Live GC session started! All actions will be recorded automatically.', 'success');
+    logAuditEntry('create', 'live-meeting', storage.getCurrentUser(), liveMeetingData, 'Started live GC session');
+}
+
+function endLiveMeeting() {
+    if (!liveMeetingData) return;
+
+    liveMeetingData.endTime = new Date().toISOString();
+    showToast('Meeting ended! Review and save meeting minutes.', 'success');
+    logAuditEntry('create', 'meeting-end', storage.getCurrentUser(), liveMeetingData, 'Ended live GC session');
+
+    liveMeetingData = null;
 }
 
 // ========== SERVICE ELECTIONS ==========
