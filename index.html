@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="Rowlett Group AA - Internal Group Conscience Management Tool">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Rowlett Group Home</title>
     <!-- Link to the custom favicon logo -->
     <!-- Include Tailwind CSS for utility classes and Font Awesome for icons -->
@@ -68,7 +70,13 @@
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
-            margin-right: 4rem;
+            margin-right: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            nav ul {
+                margin-right: 4rem;
+            }
         }
         nav li {
             cursor: pointer;
@@ -159,7 +167,13 @@
             gap: 1rem;
         }
         .grid-cols-2 {
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width: 640px) {
+            .grid-cols-2 {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
         }
         .box {
             background: #34495e; /* Wet Asphalt */
@@ -174,11 +188,30 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 1rem;
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
         }
+
+        @media (min-width: 768px) {
+            table {
+                display: table;
+                white-space: normal;
+            }
+        }
+
         th, td {
             padding: 0.5rem;
             border-bottom: 1px solid #7f8c8d; /* Silver-Gray */
             text-align: left;
+            min-width: 80px;
+        }
+
+        @media (max-width: 640px) {
+            th, td {
+                padding: 0.3rem;
+                font-size: 0.85rem;
+            }
         }
         th {
             background: #2c3e50; /* Dark Slate Gray */
@@ -195,6 +228,17 @@
             transition: all 0.2s;
             text-decoration: none;
             display: inline-block;
+            font-size: 0.9rem;
+            min-height: 44px;
+            min-width: 44px;
+            touch-action: manipulation;
+        }
+
+        @media (max-width: 640px) {
+            .btn {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.85rem;
+            }
         }
         .btn:hover {
             background: #2980b9;
@@ -220,6 +264,7 @@
         .form-group label {
             display: block;
             margin-bottom: 0.25rem;
+            font-weight: 500;
         }
         .form-group input,
         .form-group select,
@@ -230,6 +275,15 @@
             border-radius: 4px;
             background: #34495e; /* Wet Asphalt */
             color: #ecf0f1; /* Silver */
+            font-size: 16px;
+            min-height: 44px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: 2px solid #3498db;
+            outline-offset: 2px;
         }
 
         /* Specific style for the roster search input to ensure visibility */
@@ -268,10 +322,19 @@
             background-color: rgba(0,0,0,0.8);
             justify-content: center;
             align-items: center;
+            padding: 1rem;
         }
         .modal-content {
-            max-width: 80%;
-            max-height: 80%;
+            max-width: 95%;
+            max-height: 90%;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .modal-content {
+                max-width: 80%;
+                max-height: 80%;
+            }
         }
         .modal-close {
             position: absolute;
@@ -5402,27 +5465,68 @@ function showToast(message, type = 'info') { // type can be 'info', 'success', o
 // Input validation utilities
 function validateEmail(email) {
     if (!email) return true; // Empty email is allowed
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    // Improved email regex - RFC 5322 compliant with reasonable restrictions
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
+    // Additional checks
+    if (email.length > 254) return false; // RFC 5321 maximum length
+    if (!emailRegex.test(email)) return false;
+
+    // Ensure TLD is at least 2 characters
+    const parts = email.split('@');
+    if (parts.length !== 2) return false;
+    const domain = parts[1];
+    const domainParts = domain.split('.');
+    const tld = domainParts[domainParts.length - 1];
+
+    return tld.length >= 2;
 }
 
 function validatePhone(phone) {
     if (!phone) return true; // Empty phone is allowed
-    // Accepts formats: 123-456-7890, (123) 456-7890, 123.456.7890, 1234567890
-    const phoneRegex = /^[\d\s\-\(\)\.]+$/;
-    return phoneRegex.test(phone) && phone.replace(/\D/g, '').length >= 10;
+    // Accepts formats: 123-456-7890, (123) 456-7890, 123.456.7890, 1234567890, +1-123-456-7890
+    const phoneRegex = /^[\d\s\-\(\)\.\+]+$/;
+    const digits = phone.replace(/\D/g, '');
+
+    // Phone must have 10-15 digits (supports international)
+    return phoneRegex.test(phone) && digits.length >= 10 && digits.length <= 15;
 }
 
 // HTML/attribute escaping utilities
 function escapeHtml(text) {
+    if (text === null || text === undefined) return '';
     const div = document.createElement('div');
-    div.textContent = text;
+    div.textContent = String(text);
     return div.innerHTML;
 }
 
 function escapeAttribute(value) {
+    if (value === null || value === undefined) return '';
     if (typeof value !== 'string') value = String(value);
     return value.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// Enhanced sanitization using DOMPurify (for rich content if needed)
+function sanitizeHtml(dirty) {
+    if (typeof DOMPurify === 'undefined') {
+        console.warn('DOMPurify not loaded, falling back to basic escaping');
+        return escapeHtml(dirty);
+    }
+    return DOMPurify.sanitize(dirty, {
+        ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'br', 'p', 'ul', 'ol', 'li'],
+        ALLOWED_ATTR: []
+    });
+}
+
+// Safe number parsing with validation
+function parseIntSafe(value, defaultValue = 0) {
+    const parsed = parseInt(value, 10);
+    return isNaN(parsed) ? defaultValue : parsed;
+}
+
+function parseFloatSafe(value, defaultValue = 0.0) {
+    const parsed = parseFloat(value);
+    return isNaN(parsed) ? defaultValue : parsed;
 }
 
 // LocalStorage quota monitoring utilities
@@ -6607,17 +6711,21 @@ function openModal(index, photos) {
     if (currentPhotoList.length === 0) return;
 
     const modal = document.getElementById('photo-modal');
-    modal.style.display = "flex";
-
-    updateModalContent();
-
-    document.addEventListener('keydown', handleModalKeys);
+    if (modal) {
+        modal.style.display = "flex";
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        updateModalContent();
+        document.addEventListener('keydown', handleModalKeys);
+    }
 }
 
 function closeModal() {
     const modal = document.getElementById('photo-modal');
-    modal.style.display = "none";
-    document.removeEventListener('keydown', handleModalKeys);
+    if (modal) {
+        modal.style.display = "none";
+        document.body.style.overflow = ''; // Restore scrolling
+        document.removeEventListener('keydown', handleModalKeys);
+    }
 }
 // Photo uploading
 function uploadPhotos() {
@@ -7216,58 +7324,65 @@ function deleteProposedAgendaItem(id) {
 
 // ========== FEATURE 2: Voting Transparency & Quorum ==========
 function updateVotePercentages() {
-    const votesFor = parseInt(document.getElementById('gc-votes-for')?.value || 0);
-    const votesAgainst = parseInt(document.getElementById('gc-votes-against')?.value || 0);
-    const votesAbstain = parseInt(document.getElementById('gc-votes-abstain')?.value || 0);
+    const votesFor = parseIntSafe(document.getElementById('gc-votes-for')?.value, 0);
+    const votesAgainst = parseIntSafe(document.getElementById('gc-votes-against')?.value, 0);
+    const votesAbstain = parseIntSafe(document.getElementById('gc-votes-abstain')?.value, 0);
     const totalVotes = votesFor + votesAgainst + votesAbstain;
 
-    document.getElementById('total-votes').textContent = totalVotes;
+    // Safety: Update total votes display
+    const totalVotesEl = document.getElementById('total-votes');
+    if (totalVotesEl) totalVotesEl.textContent = totalVotes;
 
-    // Update vote counts
-    if (document.getElementById('votes-for-count')) {
-        document.getElementById('votes-for-count').textContent = votesFor;
-    }
-    if (document.getElementById('votes-against-count')) {
-        document.getElementById('votes-against-count').textContent = votesAgainst;
-    }
-    if (document.getElementById('votes-abstain-count')) {
-        document.getElementById('votes-abstain-count').textContent = votesAbstain;
-    }
+    // Update vote counts safely
+    const votesForCountEl = document.getElementById('votes-for-count');
+    const votesAgainstCountEl = document.getElementById('votes-against-count');
+    const votesAbstainCountEl = document.getElementById('votes-abstain-count');
 
+    if (votesForCountEl) votesForCountEl.textContent = votesFor;
+    if (votesAgainstCountEl) votesAgainstCountEl.textContent = votesAgainst;
+    if (votesAbstainCountEl) votesAbstainCountEl.textContent = votesAbstain;
+
+    // Calculate percentages safely (avoid division by zero)
     if (totalVotes > 0) {
         const percentFor = ((votesFor / totalVotes) * 100).toFixed(1);
         const percentAgainst = ((votesAgainst / totalVotes) * 100).toFixed(1);
         const percentAbstain = ((votesAbstain / totalVotes) * 100).toFixed(1);
 
-        document.getElementById('percent-for').textContent = percentFor + '%';
-        document.getElementById('percent-against').textContent = percentAgainst + '%';
-        document.getElementById('percent-abstain').textContent = percentAbstain + '%';
+        // Update percentage displays
+        const percentForEl = document.getElementById('percent-for');
+        const percentAgainstEl = document.getElementById('percent-against');
+        const percentAbstainEl = document.getElementById('percent-abstain');
+
+        if (percentForEl) percentForEl.textContent = percentFor + '%';
+        if (percentAgainstEl) percentAgainstEl.textContent = percentAgainst + '%';
+        if (percentAbstainEl) percentAbstainEl.textContent = percentAbstain + '%';
 
         // Update progress bars
-        if (document.getElementById('progress-bar-for')) {
-            document.getElementById('progress-bar-for').style.width = percentFor + '%';
-        }
-        if (document.getElementById('progress-bar-against')) {
-            document.getElementById('progress-bar-against').style.width = percentAgainst + '%';
-        }
-        if (document.getElementById('progress-bar-abstain')) {
-            document.getElementById('progress-bar-abstain').style.width = percentAbstain + '%';
-        }
+        const progressBarFor = document.getElementById('progress-bar-for');
+        const progressBarAgainst = document.getElementById('progress-bar-against');
+        const progressBarAbstain = document.getElementById('progress-bar-abstain');
+
+        if (progressBarFor) progressBarFor.style.width = percentFor + '%';
+        if (progressBarAgainst) progressBarAgainst.style.width = percentAgainst + '%';
+        if (progressBarAbstain) progressBarAbstain.style.width = percentAbstain + '%';
     } else {
-        document.getElementById('percent-for').textContent = '0%';
-        document.getElementById('percent-against').textContent = '0%';
-        document.getElementById('percent-abstain').textContent = '0%';
+        // Reset to zero when no votes
+        const percentForEl = document.getElementById('percent-for');
+        const percentAgainstEl = document.getElementById('percent-against');
+        const percentAbstainEl = document.getElementById('percent-abstain');
+
+        if (percentForEl) percentForEl.textContent = '0%';
+        if (percentAgainstEl) percentAgainstEl.textContent = '0%';
+        if (percentAbstainEl) percentAbstainEl.textContent = '0%';
 
         // Reset progress bars
-        if (document.getElementById('progress-bar-for')) {
-            document.getElementById('progress-bar-for').style.width = '0%';
-        }
-        if (document.getElementById('progress-bar-against')) {
-            document.getElementById('progress-bar-against').style.width = '0%';
-        }
-        if (document.getElementById('progress-bar-abstain')) {
-            document.getElementById('progress-bar-abstain').style.width = '0%';
-        }
+        const progressBarFor = document.getElementById('progress-bar-for');
+        const progressBarAgainst = document.getElementById('progress-bar-against');
+        const progressBarAbstain = document.getElementById('progress-bar-abstain');
+
+        if (progressBarFor) progressBarFor.style.width = '0%';
+        if (progressBarAgainst) progressBarAgainst.style.width = '0%';
+        if (progressBarAbstain) progressBarAbstain.style.width = '0%';
     }
 
     updateQuorumStatus();
@@ -7588,14 +7703,24 @@ function openGCDetailsModal(id) {
     `;
 
     loadGCComments(id);
-    document.getElementById('gc-details-modal').style.display = 'flex';
+    const modal = document.getElementById('gc-details-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    }
 }
 
 function closeGCDetailsModal() {
-    document.getElementById('gc-details-modal').style.display = 'none';
+    const modal = document.getElementById('gc-details-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = ''; // Restore scrolling
+    }
     currentGCIdForComments = null;
-    document.getElementById('gc-comment-text').value = '';
-    document.getElementById('gc-comment-author').value = '';
+    const commentText = document.getElementById('gc-comment-text');
+    const commentAuthor = document.getElementById('gc-comment-author');
+    if (commentText) commentText.value = '';
+    if (commentAuthor) commentAuthor.value = '';
 }
 
 function loadGCComments(gcId) {
@@ -8449,14 +8574,37 @@ function importData() {
         return;
     }
 
-    if (!confirm('Are you sure you want to import this data? This will overwrite existing data.')) {
+    // Validate file size (max 50MB to prevent memory issues)
+    if (file.size > 50 * 1024 * 1024) {
+        showToast('File is too large (max 50MB). Please contact support.', 'error');
+        return;
+    }
+
+    // Validate file type
+    if (!file.name.endsWith('.json')) {
+        showToast('Please select a valid JSON backup file.', 'error');
+        return;
+    }
+
+    if (!confirm('⚠️ IMPORTANT: This will overwrite ALL existing data!\n\nMake sure you have a current backup before proceeding.\n\nContinue with import?')) {
         return;
     }
 
     const reader = new FileReader();
+    reader.onerror = function() {
+        showToast('Failed to read file. Please try again.', 'error');
+    };
+
     reader.onload = function(event) {
         try {
             const data = JSON.parse(event.target.result);
+
+            // Validate backup format
+            if (!data.version || !data.exportDate) {
+                if (!confirm('This backup file may be from an older version or corrupted.\n\nAttempt to import anyway?')) {
+                    return;
+                }
+            }
             let imported = false;
 
             // Import all data types
@@ -8509,17 +8657,93 @@ function importData() {
             if (data.serviceStructure) { storage.saveServiceStructure(data.serviceStructure); imported = true; }
 
             if (imported) {
-                showToast('Data imported successfully! The page will now reload.', 'success');
-                setTimeout(() => location.reload(), 1500);
+                // Store successful import timestamp
+                localStorage.setItem('lastImportDate', new Date().toISOString());
+                showToast('✓ Data imported successfully! The page will reload in 2 seconds...', 'success');
+                setTimeout(() => location.reload(), 2000);
             } else {
                 showToast('The selected file does not contain valid data to import.', 'error');
             }
         } catch (e) {
-            showToast('Failed to parse JSON file. Ensure it is a valid backup file.', 'error');
+            showToast('❌ Failed to import: ' + (e.message || 'Invalid JSON format'), 'error');
             console.error('Import error:', e);
         }
     };
     reader.readAsText(file);
+}
+
+// ========== AUTO-BACKUP SYSTEM ==========
+function checkAndPromptBackup() {
+    try {
+        const lastBackup = localStorage.getItem('lastBackupDate');
+        const lastBackupDate = lastBackup ? new Date(lastBackup) : null;
+        const now = new Date();
+
+        // Prompt for backup every 7 days
+        if (!lastBackupDate || (now - lastBackupDate) / (1000 * 60 * 60 * 24) >= 7) {
+            const daysSinceBackup = lastBackupDate ?
+                Math.floor((now - lastBackupDate) / (1000 * 60 * 60 * 24)) : 'never';
+
+            if (confirm(`⚠️ BACKUP REMINDER\n\nLast backup: ${daysSinceBackup === 'never' ? 'Never' : daysSinceBackup + ' days ago'}\n\nWould you like to create a backup now?\n\nRecommended: Backup every 7 days to prevent data loss.`)) {
+                quickBackup();
+            }
+        }
+    } catch (e) {
+        console.error('Backup check error:', e);
+    }
+}
+
+function quickBackup() {
+    try {
+        exportData('all');
+        localStorage.setItem('lastBackupDate', new Date().toISOString());
+        showToast('✓ Backup created successfully! Keep this file safe.', 'success');
+    } catch (e) {
+        showToast('❌ Backup failed: ' + e.message, 'error');
+        console.error('Backup error:', e);
+    }
+}
+
+// Auto-save to sessionStorage for crash recovery
+function autoSaveToSession() {
+    try {
+        const criticalData = {
+            timestamp: new Date().toISOString(),
+            members: storage.getMembers(),
+            groupConscienceLog: storage.getGroupConscienceLog(),
+            chairpersonLog: storage.getChairpersonLog()
+        };
+        sessionStorage.setItem('autoSaveBackup', JSON.stringify(criticalData));
+    } catch (e) {
+        console.warn('Auto-save failed:', e);
+    }
+}
+
+// Check for crash recovery
+function checkCrashRecovery() {
+    try {
+        const autoSave = sessionStorage.getItem('autoSaveBackup');
+        if (autoSave) {
+            const data = JSON.parse(autoSave);
+            const saveTime = new Date(data.timestamp);
+            const minutesAgo = (new Date() - saveTime) / 1000 / 60;
+
+            // If auto-save is recent (within 1 hour), offer recovery
+            if (minutesAgo < 60) {
+                if (confirm(`🔄 CRASH RECOVERY AVAILABLE\n\nAuto-saved data found from ${minutesAgo.toFixed(0)} minutes ago.\n\nWould you like to restore it?`)) {
+                    if (data.members) storage.saveMembers(data.members);
+                    if (data.groupConscienceLog) storage.saveGroupConscienceLog(data.groupConscienceLog);
+                    if (data.chairpersonLog) storage.saveChairpersonLog(data.chairpersonLog);
+                    showToast('✓ Data restored from auto-save', 'success');
+                    sessionStorage.removeItem('autoSaveBackup');
+                    return true;
+                }
+            }
+        }
+    } catch (e) {
+        console.error('Crash recovery check failed:', e);
+    }
+    return false;
 }
 
 function resetApplication() {
@@ -9144,12 +9368,20 @@ let rosterSortColumn = 'name';
 let rosterSortDirection = 'asc';
 
 function openRosterModal() {
-    document.getElementById('roster-modal').style.display = 'flex';
-    renderRosterTable();
+    const modal = document.getElementById('roster-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        renderRosterTable();
+    }
 }
 
 function closeRosterModal() {
-    document.getElementById('roster-modal').style.display = 'none';
+    const modal = document.getElementById('roster-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = ''; // Restore scrolling
+    }
 }
 
 function sortRosterBy(column) {
@@ -10546,6 +10778,16 @@ function init() {
     updateBudgetTable();
     updateExpensesTable();
     filterTemplates('all');
+
+    // Initialize backup and recovery systems
+    checkCrashRecovery();
+    setTimeout(() => checkAndPromptBackup(), 3000); // Check backup after 3 seconds
+
+    // Setup auto-save every 5 minutes
+    setInterval(autoSaveToSession, 5 * 60 * 1000);
+
+    // Initial auto-save
+    autoSaveToSession();
 
     // Set default date for expense logging to today
     const today = new Date().toISOString().split('T')[0];
