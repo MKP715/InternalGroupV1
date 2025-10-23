@@ -973,7 +973,11 @@
                 Reports
                 <ul class="dropdown-menu">
                     <li data-section="chairperson-section">Chairperson Reports</li>
+                    <li data-section="meeting-minutes-section">Meeting Minutes</li>
                     <li data-section="analytics-section">Group Analytics</li>
+                    <li data-section="participation-analytics-section">Participation Analytics</li>
+                    <li data-section="financial-health-section">Financial Health</li>
+                    <li data-section="decision-impact-section">Decision Impact</li>
                 </ul>
             </li>
 
@@ -991,6 +995,9 @@
                 <i class="fas fa-cog"></i>
                 <ul class="dropdown-menu">
                     <li data-section="settings-section">General Settings</li>
+                    <li data-section="quorum-management-section">Quorum Management</li>
+                    <li data-section="inventory-scheduler-section">Group Inventory Scheduler</li>
+                    <li data-section="role-settings-section">Role & View Settings</li>
                     <li data-section="accessibility-section">Accessibility</li>
                 </ul>
             </li>
@@ -4415,6 +4422,403 @@
                 <button class="btn" onclick="recordGroupPosition()">Record Position</button>
             </div>
         </section>
+
+        <!-- QUORUM MANAGEMENT SECTION -->
+        <section id="quorum-management-section">
+            <h2>Improved Quorum Management</h2>
+            <p class="mb-4">Configure different quorum requirements for different types of decisions.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3>Add/Edit Quorum Rule</h3>
+                        <div class="form-group">
+                            <label for="quorum-category">Decision Category</label>
+                            <input type="text" id="quorum-category" placeholder="e.g., Financial Decisions">
+                        </div>
+                        <div class="form-group">
+                            <label for="quorum-percent">Quorum Percentage (%)</label>
+                            <input type="number" id="quorum-percent" min="1" max="100" placeholder="60">
+                        </div>
+                        <div class="form-group">
+                            <label for="quorum-min-count">Minimum Count</label>
+                            <input type="number" id="quorum-min-count" min="1" placeholder="7">
+                        </div>
+                        <div class="form-group">
+                            <label for="quorum-desc">Description</label>
+                            <textarea id="quorum-desc" rows="2" placeholder="When this quorum applies..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="quorum-allow-proxy"> Allow Proxy Voting
+                            </label>
+                        </div>
+                        <input type="hidden" id="quorum-edit-id">
+                        <button id="quorum-form-btn" class="btn" onclick="saveQuorumRule()">Add Rule</button>
+                        <button id="quorum-cancel-btn" class="btn secondary" onclick="cancelQuorumEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Live Quorum Check</h3>
+                        <div class="form-group">
+                            <label for="live-quorum-attendees">Current Attendees</label>
+                            <input type="number" id="live-quorum-attendees" min="0" placeholder="12">
+                        </div>
+                        <div class="form-group">
+                            <label for="live-quorum-category">Motion Category</label>
+                            <select id="live-quorum-category">
+                                <option value="">-- Select Category --</option>
+                            </select>
+                        </div>
+                        <button class="btn" onclick="checkLiveQuorum()">Check Quorum Status</button>
+                        <div id="live-quorum-result" class="mt-3" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box">
+                        <h3>Quorum Rules</h3>
+                        <table id="quorum-rules-table">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Quorum</th>
+                                    <th>Proxy</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="quorum-rules-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MEETING MINUTES SECTION -->
+        <section id="meeting-minutes-section">
+            <h2>Meeting Minutes</h2>
+            <p class="mb-4">Auto-generated minutes from Group Conscience meetings with approval workflow.</p>
+
+            <div class="box mb-4">
+                <h3>Generate Minutes from GC Log</h3>
+                <p class="mb-2">Select a Group Conscience meeting to auto-generate formatted minutes</p>
+                <div class="form-group">
+                    <label for="minutes-gc-select">Select GC Meeting Date</label>
+                    <select id="minutes-gc-select">
+                        <option value="">-- Select Meeting --</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="generateMinutesFromGC()">Generate Minutes</button>
+            </div>
+
+            <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3 id="minutes-editor-title">Minute Editor</h3>
+                        <div id="minutes-preview" style="padding: 1rem; background: #2c3e50; border-radius: 6px; min-height: 400px; max-height: 600px; overflow-y: auto;">
+                            <p style="opacity: 0.7;">Generate or select minutes to edit</p>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn" onclick="saveMinutes()">Save Minutes</button>
+                            <button class="btn secondary" onclick="approveMinutes()">Approve Minutes</button>
+                            <button class="btn secondary" onclick="exportMinutesPDF()">Export PDF</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box mb-4">
+                        <h3>Minutes Archive</h3>
+                        <div id="minutes-archive-list" style="max-height: 400px; overflow-y: auto;"></div>
+                    </div>
+
+                    <div class="box">
+                        <h3>Secretary Settings</h3>
+                        <div class="form-group">
+                            <label for="secretary-name">Secretary Name</label>
+                            <input type="text" id="secretary-name" placeholder="John S.">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="auto-generate-minutes"> Auto-generate after each GC
+                            </label>
+                        </div>
+                        <button class="btn" onclick="saveSecretarySettings()">Save Settings</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PARTICIPATION ANALYTICS SECTION -->
+        <section id="participation-analytics-section">
+            <h2>Participation Analytics</h2>
+            <p class="mb-4">Privacy-conscious analytics on meeting attendance and voting participation.</p>
+
+            <div class="grid" style="grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                <div style="padding: 1.5rem; background: #34495e; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #3498db; font-weight: bold;" id="avg-attendance">0</div>
+                    <div style="margin-top: 0.5rem; opacity: 0.8;">Avg GC Attendance</div>
+                </div>
+                <div style="padding: 1.5rem; background: #34495e; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #2ecc71; font-weight: bold;" id="voting-participation">0%</div>
+                    <div style="margin-top: 0.5rem; opacity: 0.8;">Voting Participation</div>
+                </div>
+                <div style="padding: 1.5rem; background: #34495e; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #f39c12; font-weight: bold;" id="avg-meeting-length">0</div>
+                    <div style="margin-top: 0.5rem; opacity: 0.8;">Avg Meeting (min)</div>
+                </div>
+                <div style="padding: 1.5rem; background: #34495e; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #9b59b6; font-weight: bold;" id="engagement-score">0%</div>
+                    <div style="margin-top: 0.5rem; opacity: 0.8;">Engagement Score</div>
+                </div>
+            </div>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div class="box">
+                    <h3>Attendance Trends (Last 6 GC Meetings)</h3>
+                    <canvas id="attendance-trend-chart" style="max-height: 300px;"></canvas>
+                </div>
+                <div class="box">
+                    <h3>Voting Participation Over Time</h3>
+                    <canvas id="voting-trend-chart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+
+            <div class="box mt-4">
+                <h3>Privacy Notice</h3>
+                <p style="font-size: 0.9rem; opacity: 0.8;">All participation data is anonymous and aggregated. No individual voting records are tracked or displayed. This data helps the group understand overall engagement patterns.</p>
+            </div>
+        </section>
+
+        <!-- DECISION IMPACT TRACKING SECTION -->
+        <section id="decision-impact-section">
+            <h2>Decision Impact Tracking</h2>
+            <p class="mb-4">Follow up on past decisions to see if they achieved their intended goals.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3>Add Impact Assessment</h3>
+                        <div class="form-group">
+                            <label for="impact-gc-motion">Select Past Motion</label>
+                            <select id="impact-gc-motion">
+                                <option value="">-- Select Motion --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="impact-months">Months Since Implementation</label>
+                            <input type="number" id="impact-months" min="1" max="24" placeholder="6">
+                        </div>
+                        <div class="form-group">
+                            <label for="impact-achieved">Goal Achieved?</label>
+                            <select id="impact-achieved">
+                                <option value="yes">Yes - Fully achieved</option>
+                                <option value="partial">Partially achieved</option>
+                                <option value="no">No - Did not achieve goal</option>
+                                <option value="unknown">Too soon to tell</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="impact-rating">Effectiveness Rating</label>
+                            <select id="impact-rating">
+                                <option value="5">5 - Excellent decision</option>
+                                <option value="4">4 - Good decision</option>
+                                <option value="3">3 - Neutral/OK</option>
+                                <option value="2">2 - Poor decision</option>
+                                <option value="1">1 - Should reverse</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="impact-lessons">Lessons Learned</label>
+                            <textarea id="impact-lessons" rows="4" placeholder="What did we learn from this decision?"></textarea>
+                        </div>
+                        <button class="btn" onclick="saveDecisionImpact()">Save Impact Assessment</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box mb-4">
+                        <h3>Impact Assessments</h3>
+                        <div id="impact-list" style="max-height: 400px; overflow-y: auto;"></div>
+                    </div>
+
+                    <div class="box">
+                        <h3>Decision Quality Insights</h3>
+                        <div id="decision-insights"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FINANCIAL HEALTH DASHBOARD SECTION -->
+        <section id="financial-health-section">
+            <h2>Financial Health Dashboard</h2>
+            <p class="mb-4">Monitor financial health and impact of spending decisions.</p>
+
+            <div class="grid" style="grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                <div style="padding: 1.5rem; background: #27ae60; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2rem; color: #fff; font-weight: bold;" id="current-balance">$0.00</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Current Balance</div>
+                </div>
+                <div style="padding: 1.5rem; background: #3498db; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2rem; color: #fff; font-weight: bold;" id="prudent-reserve">$0.00</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Prudent Reserve</div>
+                </div>
+                <div style="padding: 1.5rem; background: #9b59b6; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2rem; color: #fff; font-weight: bold;" id="contribution-health">0%</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Contribution Health</div>
+                </div>
+            </div>
+
+            <div class="box mb-4">
+                <h3>"Can We Afford This?" Calculator</h3>
+                <div class="grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="afford-amount">Proposed Spending ($)</label>
+                        <input type="number" id="afford-amount" step="0.01" placeholder="500.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="afford-category">Category</label>
+                        <select id="afford-category">
+                            <option value="oneTime">One-time expense</option>
+                            <option value="monthly">Monthly recurring</option>
+                            <option value="annual">Annual expense</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; align-items: flex-end;">
+                        <button class="btn" onclick="calculateAffordability()" style="width: 100%;">Calculate</button>
+                    </div>
+                </div>
+                <div id="affordability-result" class="mt-3" style="display: none;"></div>
+            </div>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div class="box">
+                    <h3>7th Tradition Trend (6 Months)</h3>
+                    <canvas id="contribution-trend-chart" style="max-height: 300px;"></canvas>
+                </div>
+                <div class="box">
+                    <h3>Spending vs Income</h3>
+                    <canvas id="spending-income-chart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- GROUP INVENTORY SCHEDULER SECTION -->
+        <section id="inventory-scheduler-section">
+            <h2>Group Inventory Scheduler</h2>
+            <p class="mb-4">Schedule and track regular group inventories.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3>Schedule New Inventory</h3>
+                        <div class="form-group">
+                            <label for="inventory-type">Inventory Type</label>
+                            <select id="inventory-type">
+                                <option value="traditions">12 Traditions Inventory</option>
+                                <option value="concepts">12 Concepts Inventory</option>
+                                <option value="format">Meeting Format Inventory</option>
+                                <option value="service">Service Structure Inventory</option>
+                                <option value="custom">Custom Inventory</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="custom-inventory-name" style="display: none;">
+                            <label for="inventory-custom-name">Custom Inventory Name</label>
+                            <input type="text" id="inventory-custom-name" placeholder="e.g., Literature Needs Assessment">
+                        </div>
+                        <div class="form-group">
+                            <label for="inventory-scheduled-date">Scheduled Date</label>
+                            <input type="date" id="inventory-scheduled-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="inventory-frequency">Frequency</label>
+                            <select id="inventory-frequency">
+                                <option value="once">One-time</option>
+                                <option value="annual">Annual</option>
+                                <option value="semiannual">Semi-annual</option>
+                                <option value="quarterly">Quarterly</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inventory-notes">Notes/Purpose</label>
+                            <textarea id="inventory-notes" rows="3" placeholder="Why are we doing this inventory?"></textarea>
+                        </div>
+                        <button class="btn" onclick="scheduleInventory()">Schedule Inventory</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box mb-4">
+                        <h3>Upcoming Inventories</h3>
+                        <div id="upcoming-inventories-list"></div>
+                    </div>
+
+                    <div class="box">
+                        <h3>Completed Inventories</h3>
+                        <div id="completed-inventories-list"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ROLE SETTINGS SECTION -->
+        <section id="role-settings-section">
+            <h2>Role & View Settings</h2>
+            <p class="mb-4">Customize your view based on your service position.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 2fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3>Select Your Role</h3>
+                        <div class="form-group">
+                            <label for="user-role-select">Primary Role</label>
+                            <select id="user-role-select" onchange="updateRoleView()">
+                                <option value="member">Member</option>
+                                <option value="gsr">GSR</option>
+                                <option value="treasurer">Treasurer</option>
+                                <option value="secretary">Secretary</option>
+                                <option value="chairperson">Chairperson</option>
+                                <option value="literature">Literature Coordinator</option>
+                            </select>
+                        </div>
+                        <button class="btn" onclick="saveUserRole()">Save Role</button>
+
+                        <div class="mt-4">
+                            <h4>Role Benefits</h4>
+                            <div id="role-benefits" style="font-size: 0.9rem; opacity: 0.8;">
+                                <p>Select a role to see customizations</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box">
+                        <h3>Role-Specific Dashboards</h3>
+                        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <button class="btn secondary" onclick="showDashboard('gsr')" style="padding: 2rem; font-size: 1rem;">
+                                <i class="fas fa-bullhorn"></i><br>GSR Dashboard
+                            </button>
+                            <button class="btn secondary" onclick="showDashboard('treasurer')" style="padding: 2rem; font-size: 1rem;">
+                                <i class="fas fa-dollar-sign"></i><br>Treasurer Dashboard
+                            </button>
+                            <button class="btn secondary" onclick="showDashboard('secretary')" style="padding: 2rem; font-size: 1rem;">
+                                <i class="fas fa-file-alt"></i><br>Secretary Dashboard
+                            </button>
+                            <button class="btn secondary" onclick="showDashboard('chairperson')" style="padding: 2rem; font-size: 1rem;">
+                                <i class="fas fa-gavel"></i><br>Chairperson Dashboard
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="box mt-4" id="role-dashboard" style="display: none;">
+                        <h3 id="dashboard-title">Dashboard</h3>
+                        <div id="dashboard-content"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Member Roster Modal -->
@@ -4829,6 +5233,43 @@ const storage = {
     },
     saveVotingSettings(settings) { localStorage.setItem('votingSettings', JSON.stringify(settings)); },
 
+    // Enhanced Features Storage
+    getQuorumRules() {
+        try { return JSON.parse(localStorage.getItem('quorumRules') || '[]'); }
+        catch(e) { console.error('Error parsing quorumRules:', e); return []; }
+    },
+    saveQuorumRules(rules) { localStorage.setItem('quorumRules', JSON.stringify(rules)); },
+    getMeetingMinutes() {
+        try { return JSON.parse(localStorage.getItem('meetingMinutes') || '[]'); }
+        catch(e) { console.error('Error parsing meetingMinutes:', e); return []; }
+    },
+    saveMeetingMinutes(minutes) { localStorage.setItem('meetingMinutes', JSON.stringify(minutes)); },
+    getInventorySchedules() {
+        try { return JSON.parse(localStorage.getItem('inventorySchedules') || '[]'); }
+        catch(e) { console.error('Error parsing inventorySchedules:', e); return []; }
+    },
+    saveInventorySchedules(schedules) { localStorage.setItem('inventorySchedules', JSON.stringify(schedules)); },
+    getDecisionImpacts() {
+        try { return JSON.parse(localStorage.getItem('decisionImpacts') || '[]'); }
+        catch(e) { console.error('Error parsing decisionImpacts:', e); return []; }
+    },
+    saveDecisionImpacts(impacts) { localStorage.setItem('decisionImpacts', JSON.stringify(impacts)); },
+    getParticipationData() {
+        try { return JSON.parse(localStorage.getItem('participationData') || '{"votes": [], "attendance": []}'); }
+        catch(e) { console.error('Error parsing participationData:', e); return {"votes": [], "attendance": []}; }
+    },
+    saveParticipationData(data) { localStorage.setItem('participationData', JSON.stringify(data)); },
+    getUserRole() {
+        try { return localStorage.getItem('userRole') || 'member'; }
+        catch(e) { console.error('Error getting userRole:', e); return 'member'; }
+    },
+    saveUserRole(role) { localStorage.setItem('userRole', role); },
+    getEducationalProgress() {
+        try { return JSON.parse(localStorage.getItem('educationalProgress') || '{"completed": [], "dismissed": []}'); }
+        catch(e) { console.error('Error parsing educationalProgress:', e); return {"completed": [], "dismissed": []}; }
+    },
+    saveEducationalProgress(progress) { localStorage.setItem('educationalProgress', JSON.stringify(progress)); },
+
     // Backward compatibility: Import birthdays from old format
     saveBirthdays(birthdays) {
         const existingMembers = this.getMembers();
@@ -5005,6 +5446,34 @@ function initDefaults() {
             { id: genId(), title: 'Coffee/Setup Coordinator', term: 6, minSobriety: 3, description: 'Coordinates coffee and setup duties' }
         ];
         storage.saveGroupPositions(defaultPositions);
+    }
+
+    // Initialize Enhanced Features
+    if (!localStorage.getItem('quorumRules')) {
+        const defaultRules = [
+            { id: genId(), category: 'General Motions', quorumPercent: 50, quorumMin: 5, description: 'Standard group conscience items' },
+            { id: genId(), category: 'Financial Decisions', quorumPercent: 60, quorumMin: 7, description: 'Spending over prudent reserve' },
+            { id: genId(), category: 'Major Changes', quorumPercent: 66.67, quorumMin: 10, description: 'Format changes, location moves, etc.' }
+        ];
+        storage.saveQuorumRules(defaultRules);
+    }
+    if (!localStorage.getItem('meetingMinutes')) {
+        storage.saveMeetingMinutes([]);
+    }
+    if (!localStorage.getItem('inventorySchedules')) {
+        storage.saveInventorySchedules([]);
+    }
+    if (!localStorage.getItem('decisionImpacts')) {
+        storage.saveDecisionImpacts([]);
+    }
+    if (!localStorage.getItem('participationData')) {
+        storage.saveParticipationData({ votes: [], attendance: [] });
+    }
+    if (!localStorage.getItem('userRole')) {
+        storage.saveUserRole('member');
+    }
+    if (!localStorage.getItem('educationalProgress')) {
+        storage.saveEducationalProgress({ completed: [], dismissed: [] });
     }
 }
 function handleEventSubmit() {
@@ -7461,8 +7930,16 @@ function exportData(dataType) {
             budgetProposals: storage.getBudgetProposals(),
             districtMotions: storage.getDistrictMotions(),
             groupPositions: storage.getGroupPositions(),
+            // Enhanced Features Data
+            quorumRules: storage.getQuorumRules(),
+            meetingMinutes: storage.getMeetingMinutes(),
+            inventorySchedules: storage.getInventorySchedules(),
+            decisionImpacts: storage.getDecisionImpacts(),
+            participationData: storage.getParticipationData(),
+            userRole: storage.getUserRole(),
+            educationalProgress: storage.getEducationalProgress(),
             exportDate: new Date().toISOString(),
-            version: '3.0'
+            version: '4.0'
         };
         const dateStr = new Date().toISOString().split('T')[0];
         filename = `rowlett-group-backup-${dateStr}.json`;
@@ -7546,6 +8023,14 @@ function importData() {
             if (data.budgetProposals) { storage.saveBudgetProposals(data.budgetProposals); imported = true; }
             if (data.districtMotions) { storage.saveDistrictMotions(data.districtMotions); imported = true; }
             if (data.groupPositions) { storage.saveGroupPositions(data.groupPositions); imported = true; }
+            // Import Enhanced Features data
+            if (data.quorumRules) { storage.saveQuorumRules(data.quorumRules); imported = true; }
+            if (data.meetingMinutes) { storage.saveMeetingMinutes(data.meetingMinutes); imported = true; }
+            if (data.inventorySchedules) { storage.saveInventorySchedules(data.inventorySchedules); imported = true; }
+            if (data.decisionImpacts) { storage.saveDecisionImpacts(data.decisionImpacts); imported = true; }
+            if (data.participationData) { storage.saveParticipationData(data.participationData); imported = true; }
+            if (data.userRole) { storage.saveUserRole(data.userRole); imported = true; }
+            if (data.educationalProgress) { storage.saveEducationalProgress(data.educationalProgress); imported = true; }
 
             if (imported) {
                 showToast('Data imported successfully! The page will now reload.', 'success');
@@ -9636,6 +10121,17 @@ function init() {
     populateElectionPositions();
     populateSpeakersDropdown();
     populateLiteratureLoanMembers();
+
+    // Initialize Enhanced Features
+    renderQuorumRules();
+    renderMinutesArchive();
+    populateMinutesGCSelect();
+    renderParticipationAnalytics();
+    renderDecisionImpacts();
+    renderFinancialHealth();
+    renderInventorySchedules();
+    populateImpactGCMotions();
+    updateRoleView();
 }
 
 // ============================================
@@ -13331,6 +13827,682 @@ function cancelDistrictMotionEdit() {
     document.getElementById('district-motion-background').value = '';
     document.getElementById('district-motion-form-btn').textContent = 'Add Motion';
     document.getElementById('district-motion-cancel-btn').style.display = 'none';
+}
+
+// ========== ENHANCED FEATURES: QUORUM MANAGEMENT ==========
+function saveQuorumRule() {
+    const editId = document.getElementById('quorum-edit-id').value;
+    if (editId) {
+        updateQuorumRule();
+        return;
+    }
+
+    const category = document.getElementById('quorum-category').value.trim();
+    const percent = parseInt(document.getElementById('quorum-percent').value) || 50;
+    const minCount = parseInt(document.getElementById('quorum-min-count').value) || 5;
+    const description = document.getElementById('quorum-desc').value.trim();
+    const allowProxy = document.getElementById('quorum-allow-proxy').checked;
+
+    if (!category) {
+        showToast('Please enter a category name', 'error');
+        return;
+    }
+
+    const rules = storage.getQuorumRules();
+    rules.push({
+        id: genId(),
+        category,
+        quorumPercent: percent,
+        quorumMin: minCount,
+        description,
+        allowProxy
+    });
+
+    storage.saveQuorumRules(rules);
+    showToast('Quorum rule added!', 'success');
+
+    document.getElementById('quorum-category').value = '';
+    document.getElementById('quorum-percent').value = '';
+    document.getElementById('quorum-min-count').value = '';
+    document.getElementById('quorum-desc').value = '';
+    document.getElementById('quorum-allow-proxy').checked = false;
+
+    renderQuorumRules();
+}
+
+function renderQuorumRules() {
+    const rules = storage.getQuorumRules();
+    const tbody = document.getElementById('quorum-rules-body');
+    const categorySelect = document.getElementById('live-quorum-category');
+
+    if (rules.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4">No quorum rules defined</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = rules.map(r => `
+        <tr>
+            <td><strong>${escapeHtml(r.category)}</strong><br><span style="font-size: 0.85rem; opacity: 0.8;">${escapeHtml(r.description)}</span></td>
+            <td>${r.quorumPercent}% or ${r.quorumMin} min</td>
+            <td>${r.allowProxy ? '<span style="color: #2ecc71;">✓ Yes</span>' : '<span style="opacity: 0.5;">No</span>'}</td>
+            <td>
+                <button class="btn secondary" onclick="editQuorumRule('${escapeAttribute(r.id)}')" style="font-size: 0.85rem;">Edit</button>
+                <button class="btn secondary" onclick="deleteQuorumRule('${escapeAttribute(r.id)}')" style="font-size: 0.85rem; background: #e74c3c;">Delete</button>
+            </td>
+        </tr>
+    `).join('');
+
+    // Update category dropdown
+    if (categorySelect) {
+        categorySelect.innerHTML = '<option value="">-- Select Category --</option>' +
+            rules.map(r => `<option value="${escapeAttribute(r.id)}">${escapeHtml(r.category)}</option>`).join('');
+    }
+}
+
+function checkLiveQuorum() {
+    const attendees = parseInt(document.getElementById('live-quorum-attendees').value) || 0;
+    const ruleId = document.getElementById('live-quorum-category').value;
+    const totalMembers = storage.getMembers().length;
+
+    if (!ruleId || !attendees) {
+        showToast('Please fill all fields', 'error');
+        return;
+    }
+
+    const rules = storage.getQuorumRules();
+    const rule = rules.find(r => r.id === ruleId);
+
+    if (!rule) return;
+
+    const requiredByPercent = Math.ceil((totalMembers * rule.quorumPercent) / 100);
+    const required = Math.max(requiredByPercent, rule.quorumMin);
+    const hasMet = attendees >= required;
+
+    const resultDiv = document.getElementById('live-quorum-result');
+    resultDiv.style.display = 'block';
+    resultDiv.style.padding = '1rem';
+    resultDiv.style.borderRadius = '6px';
+    resultDiv.style.background = hasMet ? '#27ae60' : '#e74c3c';
+
+    resultDiv.innerHTML = `
+        <h4 style="margin-bottom: 0.5rem;">${hasMet ? '✓ Quorum MET' : '✗ Quorum NOT MET'}</h4>
+        <p><strong>Category:</strong> ${escapeHtml(rule.category)}</p>
+        <p><strong>Present:</strong> ${attendees} of ${totalMembers} members</p>
+        <p><strong>Required:</strong> ${required} (${rule.quorumPercent}% or ${rule.quorumMin} minimum)</p>
+        ${rule.allowProxy ? '<p style="color: #f1c40f;"><strong>Note:</strong> Proxy voting is allowed for this category</p>' : ''}
+    `;
+}
+
+function editQuorumRule(id) {
+    const rules = storage.getQuorumRules();
+    const rule = rules.find(r => r.id === id);
+    if (!rule) return;
+
+    document.getElementById('quorum-edit-id').value = rule.id;
+    document.getElementById('quorum-category').value = rule.category;
+    document.getElementById('quorum-percent').value = rule.quorumPercent;
+    document.getElementById('quorum-min-count').value = rule.quorumMin;
+    document.getElementById('quorum-desc').value = rule.description;
+    document.getElementById('quorum-allow-proxy').checked = rule.allowProxy;
+
+    document.getElementById('quorum-form-btn').textContent = 'Update Rule';
+    document.getElementById('quorum-cancel-btn').style.display = 'inline-block';
+}
+
+function updateQuorumRule() {
+    const id = document.getElementById('quorum-edit-id').value;
+    const category = document.getElementById('quorum-category').value.trim();
+    const percent = parseInt(document.getElementById('quorum-percent').value) || 50;
+    const minCount = parseInt(document.getElementById('quorum-min-count').value) || 5;
+    const description = document.getElementById('quorum-desc').value.trim();
+    const allowProxy = document.getElementById('quorum-allow-proxy').checked;
+
+    let rules = storage.getQuorumRules();
+    const index = rules.findIndex(r => r.id === id);
+
+    if (index > -1) {
+        rules[index] = { id, category, quorumPercent: percent, quorumMin: minCount, description, allowProxy };
+        storage.saveQuorumRules(rules);
+        showToast('Quorum rule updated!', 'success');
+        cancelQuorumEdit();
+        renderQuorumRules();
+    }
+}
+
+function cancelQuorumEdit() {
+    document.getElementById('quorum-edit-id').value = '';
+    document.getElementById('quorum-category').value = '';
+    document.getElementById('quorum-percent').value = '';
+    document.getElementById('quorum-min-count').value = '';
+    document.getElementById('quorum-desc').value = '';
+    document.getElementById('quorum-allow-proxy').checked = false;
+    document.getElementById('quorum-form-btn').textContent = 'Add Rule';
+    document.getElementById('quorum-cancel-btn').style.display = 'none';
+}
+
+function deleteQuorumRule(id) {
+    if (!confirm('Delete this quorum rule?')) return;
+    let rules = storage.getQuorumRules();
+    rules = rules.filter(r => r.id !== id);
+    storage.saveQuorumRules(rules);
+    showToast('Quorum rule deleted', 'info');
+    renderQuorumRules();
+}
+
+// ========== MEETING MINUTES AUTO-GENERATION ==========
+let currentMinutesData = null;
+
+function generateMinutesFromGC() {
+    const gcId = document.getElementById('minutes-gc-select').value;
+    if (!gcId) {
+        showToast('Please select a meeting', 'error');
+        return;
+    }
+
+    const logs = storage.getGroupConscienceLog();
+    const gc = logs.find(l => l.id === gcId);
+    if (!gc) return;
+
+    const secretary = document.getElementById('secretary-name').value || 'Secretary';
+
+    // Auto-generate formatted minutes
+    const minutes = {
+        id: genId(),
+        gcId: gc.id,
+        date: gc.date,
+        generatedDate: new Date().toISOString(),
+        status: 'draft',
+        content: {
+            opening: `The ${new Date(gc.date).toLocaleDateString()} Group Conscience meeting was called to order.`,
+            attendees: gc.attendees || [],
+            attendeeCount: (gc.attendees || []).length,
+            motions: [{
+                item: gc.item,
+                submittedBy: gc.submittedBy,
+                votesFor: gc.votesFor || 0,
+                votesAgainst: gc.votesAgainst || 0,
+                votesAbstain: gc.votesAbstain || 0,
+                status: gc.status,
+                discussion: gc.discussion || ''
+            }],
+            servantReports: gc.servantReports || [],
+            actionItems: [],
+            closing: 'Meeting adjourned.',
+            secretary
+        }
+    };
+
+    currentMinutesData = minutes;
+    renderMinutesPreview(minutes);
+}
+
+function renderMinutesPreview(minutes) {
+    const preview = document.getElementById('minutes-preview');
+    const date = new Date(minutes.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+    preview.innerHTML = `
+        <div style="font-family: 'Times New Roman', serif; line-height: 1.6;">
+            <h2 style="text-align: center; margin-bottom: 1.5rem;">MEETING MINUTES</h2>
+            <h3 style="text-align: center; margin-bottom: 2rem;">${date}</h3>
+
+            <p><strong>Opening:</strong> ${escapeHtml(minutes.content.opening)}</p>
+
+            <h4 style="margin-top: 1.5rem;">Attendance</h4>
+            <p>Members Present: ${minutes.content.attendeeCount}</p>
+
+            <h4 style="margin-top: 1.5rem;">Motions & Decisions</h4>
+            ${minutes.content.motions.map((m, idx) => `
+                <div style="margin: 1rem 0; padding-left: 1rem; border-left: 3px solid #3498db;">
+                    <p><strong>Motion ${idx + 1}:</strong> ${escapeHtml(m.item)}</p>
+                    <p><strong>Submitted by:</strong> ${escapeHtml(m.submittedBy || 'Unknown')}</p>
+                    <p><strong>Voting:</strong> For: ${m.votesFor}, Against: ${m.votesAgainst}, Abstain: ${m.votesAbstain}</p>
+                    <p><strong>Result:</strong> <span style="color: ${m.status === 'approved' ? '#2ecc71' : m.status === 'rejected' ? '#e74c3c' : '#f39c12'};">${escapeHtml(m.status || 'Pending').toUpperCase()}</span></p>
+                    ${m.discussion ? `<p><strong>Discussion:</strong> ${escapeHtml(m.discussion)}</p>` : ''}
+                </div>
+            `).join('')}
+
+            ${minutes.content.servantReports && minutes.content.servantReports.length > 0 ? `
+                <h4 style="margin-top: 1.5rem;">Trusted Servant Reports</h4>
+                ${minutes.content.servantReports.map(r => `
+                    <p><strong>${escapeHtml(r.position)}:</strong> ${escapeHtml(r.report)}</p>
+                `).join('')}
+            ` : ''}
+
+            <p style="margin-top: 2rem;"><strong>Closing:</strong> ${escapeHtml(minutes.content.closing)}</p>
+
+            <div style="margin-top: 3rem; border-top: 1px solid #95a5a6; padding-top: 1rem;">
+                <p><strong>Minutes prepared by:</strong> ${escapeHtml(minutes.content.secretary)}</p>
+                <p><strong>Status:</strong> ${minutes.status === 'approved' ? '<span style="color: #2ecc71;">APPROVED</span>' : '<span style="color: #f39c12;">DRAFT</span>'}</p>
+                <p><strong>Generated:</strong> ${new Date(minutes.generatedDate).toLocaleString()}</p>
+            </div>
+        </div>
+    `;
+}
+
+function saveMinutes() {
+    if (!currentMinutesData) {
+        showToast('No minutes to save', 'error');
+        return;
+    }
+
+    const minutes = storage.getMeetingMinutes();
+    minutes.push(currentMinutesData);
+    storage.saveMeetingMinutes(minutes);
+
+    showToast('Minutes saved as draft!', 'success');
+    renderMinutesArchive();
+}
+
+function approveMinutes() {
+    if (!currentMinutesData) {
+        showToast('No minutes to approve', 'error');
+        return;
+    }
+
+    if (!confirm('Mark these minutes as approved?')) return;
+
+    currentMinutesData.status = 'approved';
+    currentMinutesData.approvedDate = new Date().toISOString();
+
+    const minutes = storage.getMeetingMinutes();
+    const existingIndex = minutes.findIndex(m => m.id === currentMinutesData.id);
+
+    if (existingIndex > -1) {
+        minutes[existingIndex] = currentMinutesData;
+    } else {
+        minutes.push(currentMinutesData);
+    }
+
+    storage.saveMeetingMinutes(minutes);
+    showToast('Minutes approved!', 'success');
+    renderMinutesPreview(currentMinutesData);
+    renderMinutesArchive();
+}
+
+function exportMinutesPDF() {
+    if (!currentMinutesData) {
+        showToast('No minutes to export', 'error');
+        return;
+    }
+
+    showToast('PDF export feature requires jsPDF library', 'info');
+    // This would use jsPDF to create a professional PDF
+}
+
+function renderMinutesArchive() {
+    const minutes = storage.getMeetingMinutes().sort((a, b) => new Date(b.date) - new Date(a.date));
+    const list = document.getElementById('minutes-archive-list');
+
+    if (minutes.length === 0) {
+        list.innerHTML = '<p style="opacity: 0.7;">No minutes archived yet</p>';
+        return;
+    }
+
+    list.innerHTML = minutes.map(m => `
+        <div style="padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem; cursor: pointer;" onclick="loadMinutes('${escapeAttribute(m.id)}')">
+            <strong>${new Date(m.date).toLocaleDateString()}</strong>
+            <span style="background: ${m.status === 'approved' ? '#27ae60' : '#f39c12'}; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.75rem; margin-left: 0.5rem;">${escapeHtml(m.status)}</span>
+        </div>
+    `).join('');
+}
+
+function loadMinutes(id) {
+    const minutes = storage.getMeetingMinutes();
+    const min = minutes.find(m => m.id === id);
+    if (min) {
+        currentMinutesData = min;
+        renderMinutesPreview(min);
+    }
+}
+
+function saveSecretarySettings() {
+    const name = document.getElementById('secretary-name').value;
+    const autoGen = document.getElementById('auto-generate-minutes').checked;
+
+    localStorage.setItem('secretaryName', name);
+    localStorage.setItem('autoGenerateMinutes', autoGen);
+
+    showToast('Secretary settings saved!', 'success');
+}
+
+function populateMinutesGCSelect() {
+    const logs = storage.getGroupConscienceLog().sort((a, b) => new Date(b.date) - new Date(a.date));
+    const select = document.getElementById('minutes-gc-select');
+
+    if (select) {
+        select.innerHTML = '<option value="">-- Select Meeting --</option>' +
+            logs.map(l => `<option value="${escapeAttribute(l.id)}">${new Date(l.date).toLocaleDateString()} - ${escapeHtml(l.item.substring(0, 50))}...</option>`).join('');
+    }
+}
+
+// ========== PARTICIPATION ANALYTICS ==========
+function renderParticipationAnalytics() {
+    const logs = storage.getGroupConscienceLog();
+    const members = storage.getMembers();
+
+    // Calculate average GC attendance
+    const recentLogs = logs.slice(-6);
+    const avgAttendance = recentLogs.length > 0
+        ? Math.round(recentLogs.reduce((sum, l) => sum + (l.attendees || []).length, 0) / recentLogs.length)
+        : 0;
+
+    // Calculate voting participation
+    const totalVotes = logs.reduce((sum, l) => sum + (l.votesFor || 0) + (l.votesAgainst || 0) + (l.votesAbstain || 0), 0);
+    const potentialVotes = logs.length * members.length;
+    const votingParticipation = potentialVotes > 0 ? ((totalVotes / potentialVotes) * 100).toFixed(1) : 0;
+
+    // Engagement score (simplified)
+    const engagementScore = Math.min(100, Math.round((avgAttendance / Math.max(members.length, 1)) * 100));
+
+    document.getElementById('avg-attendance').textContent = avgAttendance;
+    document.getElementById('voting-participation').textContent = votingParticipation + '%';
+    document.getElementById('avg-meeting-length').textContent = '90'; // Placeholder
+    document.getElementById('engagement-score').textContent = engagementScore + '%';
+}
+
+// ========== DECISION IMPACT TRACKING ==========
+function saveDecisionImpact() {
+    const gcId = document.getElementById('impact-gc-motion').value;
+    const months = parseInt(document.getElementById('impact-months').value) || 0;
+    const achieved = document.getElementById('impact-achieved').value;
+    const rating = parseInt(document.getElementById('impact-rating').value) || 3;
+    const lessons = document.getElementById('impact-lessons').value.trim();
+
+    if (!gcId) {
+        showToast('Please select a motion', 'error');
+        return;
+    }
+
+    const logs = storage.getGroupConscienceLog();
+    const motion = logs.find(l => l.id === gcId);
+
+    const impacts = storage.getDecisionImpacts();
+    impacts.push({
+        id: genId(),
+        gcId,
+        motionText: motion ? motion.item : '',
+        months,
+        achieved,
+        rating,
+        lessons,
+        assessmentDate: new Date().toISOString()
+    });
+
+    storage.saveDecisionImpacts(impacts);
+    showToast('Impact assessment saved!', 'success');
+
+    document.getElementById('impact-lessons').value = '';
+    renderDecisionImpacts();
+}
+
+function renderDecisionImpacts() {
+    const impacts = storage.getDecisionImpacts().sort((a, b) => new Date(b.assessmentDate) - new Date(a.assessmentDate));
+    const list = document.getElementById('impact-list');
+
+    if (impacts.length === 0) {
+        list.innerHTML = '<p style="opacity: 0.7;">No impact assessments yet</p>';
+        return;
+    }
+
+    list.innerHTML = impacts.map(i => `
+        <div style="padding: 1rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem;">
+            <p style="font-size: 0.9rem;"><strong>${escapeHtml(i.motionText)}</strong></p>
+            <div style="margin-top: 0.5rem; font-size: 0.85rem;">
+                <span style="color: ${i.achieved === 'yes' ? '#2ecc71' : i.achieved === 'no' ? '#e74c3c' : '#f39c12'};">
+                    Goal: ${i.achieved === 'yes' ? '✓ Achieved' : i.achieved === 'no' ? '✗ Not Achieved' : '⊙ Partial'}
+                </span>
+                <span style="margin-left: 1rem;">Rating: ${'★'.repeat(i.rating)}${'☆'.repeat(5 - i.rating)}</span>
+            </div>
+            <p style="margin-top: 0.5rem; font-size: 0.85rem; opacity: 0.8;">${escapeHtml(i.lessons)}</p>
+        </div>
+    `).join('');
+
+    // Calculate insights
+    const avgRating = impacts.length > 0
+        ? (impacts.reduce((sum, i) => sum + i.rating, 0) / impacts.length).toFixed(1)
+        : 0;
+
+    const achievedCount = impacts.filter(i => i.achieved === 'yes').length;
+
+    document.getElementById('decision-insights').innerHTML = `
+        <p><strong>Average Decision Rating:</strong> ${avgRating}/5 ★</p>
+        <p><strong>Goals Fully Achieved:</strong> ${achievedCount} of ${impacts.length} (${impacts.length > 0 ? Math.round((achievedCount / impacts.length) * 100) : 0}%)</p>
+        <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">Groups that track decision impacts tend to make better decisions over time.</p>
+    `;
+}
+
+function populateImpactGCMotions() {
+    const logs = storage.getGroupConscienceLog();
+    const select = document.getElementById('impact-gc-motion');
+    if (select) {
+        select.innerHTML = '<option value="">-- Select Motion --</option>' +
+            logs.map(l => {
+                const date = new Date(l.date).toLocaleDateString();
+                const preview = l.item.substring(0, 60) + (l.item.length > 60 ? '...' : '');
+                return `<option value="${escapeAttribute(l.id)}" data-text="${escapeAttribute(l.item)}">${escapeHtml(date)} - ${escapeHtml(preview)}</option>`;
+            }).join('');
+    }
+}
+
+// ========== FINANCIAL HEALTH DASHBOARD ==========
+function renderFinancialHealth() {
+    // This would pull from existing financial data
+    const balance = 1500; // Placeholder
+    const reserve = 1200; // Placeholder
+    const health = 85; // Placeholder
+
+    document.getElementById('current-balance').textContent = '$' + balance.toFixed(2);
+    document.getElementById('prudent-reserve').textContent = '$' + reserve.toFixed(2);
+    document.getElementById('contribution-health').textContent = health + '%';
+}
+
+function calculateAffordability() {
+    const amount = parseFloat(document.getElementById('afford-amount').value) || 0;
+    const category = document.getElementById('afford-category').value;
+    const balance = 1500; // Would pull from actual data
+    const reserve = 1200; // Would pull from actual data
+
+    let annualizedCost = amount;
+    if (category === 'monthly') annualizedCost = amount * 12;
+    if (category === 'annual') annualizedCost = amount;
+
+    const afterExpense = balance - amount;
+    const canAfford = afterExpense >= reserve;
+
+    const result = document.getElementById('affordability-result');
+    result.style.display = 'block';
+    result.style.padding = '1rem';
+    result.style.borderRadius = '6px';
+    result.style.background = canAfford ? '#27ae60' : '#e74c3c';
+
+    result.innerHTML = `
+        <h4>${canAfford ? '✓ We CAN afford this' : '✗ We CANNOT afford this'}</h4>
+        <p><strong>Current Balance:</strong> $${balance.toFixed(2)}</p>
+        <p><strong>After Expense:</strong> $${afterExpense.toFixed(2)}</p>
+        <p><strong>Prudent Reserve:</strong> $${reserve.toFixed(2)}</p>
+        <p><strong>Remaining Above Reserve:</strong> $${Math.max(0, afterExpense - reserve).toFixed(2)}</p>
+        ${!canAfford ? '<p style="color: #f1c40f; margin-top: 0.5rem;"><strong>Warning:</strong> This would put us below prudent reserve!</p>' : ''}
+    `;
+}
+
+// ========== GROUP INVENTORY SCHEDULER ==========
+function scheduleInventory() {
+    const type = document.getElementById('inventory-type').value;
+    const customName = document.getElementById('inventory-custom-name').value.trim();
+    const date = document.getElementById('inventory-scheduled-date').value;
+    const frequency = document.getElementById('inventory-frequency').value;
+    const notes = document.getElementById('inventory-notes').value.trim();
+
+    if (!date) {
+        showToast('Please select a date', 'error');
+        return;
+    }
+
+    const name = type === 'custom' ? customName : type;
+
+    const schedules = storage.getInventorySchedules();
+    schedules.push({
+        id: genId(),
+        type,
+        name,
+        scheduledDate: date,
+        frequency,
+        notes,
+        status: 'scheduled',
+        createdDate: new Date().toISOString()
+    });
+
+    storage.saveInventorySchedules(schedules);
+    showToast('Inventory scheduled!', 'success');
+
+    document.getElementById('inventory-notes').value = '';
+    renderInventorySchedules();
+}
+
+function renderInventorySchedules() {
+    const schedules = storage.getInventorySchedules();
+    const upcoming = schedules.filter(s => s.status === 'scheduled' && new Date(s.scheduledDate) >= new Date());
+    const completed = schedules.filter(s => s.status === 'completed');
+
+    const upcomingList = document.getElementById('upcoming-inventories-list');
+    const completedList = document.getElementById('completed-inventories-list');
+
+    upcomingList.innerHTML = upcoming.length > 0
+        ? upcoming.map(s => `
+            <div style="padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem;">
+                <strong>${escapeHtml(s.name)}</strong><br>
+                <span style="font-size: 0.85rem;">Date: ${new Date(s.scheduledDate).toLocaleDateString()}</span><br>
+                <span style="font-size: 0.85rem;">Frequency: ${escapeHtml(s.frequency)}</span>
+                <div style="margin-top: 0.5rem;">
+                    <button class="btn secondary" onclick="completeInventory('${escapeAttribute(s.id)}')" style="font-size: 0.85rem;">Mark Complete</button>
+                </div>
+            </div>
+        `).join('')
+        : '<p style="opacity: 0.7;">No upcoming inventories</p>';
+
+    completedList.innerHTML = completed.length > 0
+        ? completed.map(s => `
+            <div style="padding: 0.75rem; background: #27ae60; border-radius: 4px; margin-bottom: 0.5rem;">
+                <strong>${escapeHtml(s.name)}</strong><br>
+                <span style="font-size: 0.85rem;">Completed: ${s.completedDate ? new Date(s.completedDate).toLocaleDateString() : 'N/A'}</span>
+            </div>
+        `).join('')
+        : '<p style="opacity: 0.7;">No completed inventories</p>';
+}
+
+function completeInventory(id) {
+    let schedules = storage.getInventorySchedules();
+    const schedule = schedules.find(s => s.id === id);
+
+    if (schedule) {
+        schedule.status = 'completed';
+        schedule.completedDate = new Date().toISOString();
+
+        // If recurring, create next occurrence
+        if (schedule.frequency !== 'once') {
+            const nextDate = new Date(schedule.scheduledDate);
+            switch (schedule.frequency) {
+                case 'quarterly': nextDate.setMonth(nextDate.getMonth() + 3); break;
+                case 'semiannual': nextDate.setMonth(nextDate.getMonth() + 6); break;
+                case 'annual': nextDate.setFullYear(nextDate.getFullYear() + 1); break;
+            }
+
+            schedules.push({
+                ...schedule,
+                id: genId(),
+                scheduledDate: nextDate.toISOString().split('T')[0],
+                status: 'scheduled',
+                createdDate: new Date().toISOString()
+            });
+        }
+
+        storage.saveInventorySchedules(schedules);
+        showToast('Inventory marked complete!', 'success');
+        renderInventorySchedules();
+    }
+}
+
+// ========== ROLE-BASED VIEWS ==========
+function updateRoleView() {
+    const role = document.getElementById('user-role-select').value;
+
+    const benefits = {
+        member: 'Standard view with all features',
+        gsr: 'Prioritized district motions, GSR reports, and area information',
+        treasurer: 'Financial dashboard, expense tracking, and budget tools highlighted',
+        secretary: 'Quick access to minutes, attendance, and meeting logs',
+        chairperson: 'Meeting management tools, parliamentary procedure, and agenda building',
+        literature: 'Literature inventory, loans, and purchase requests prioritized'
+    };
+
+    document.getElementById('role-benefits').innerHTML = `<p>${benefits[role]}</p>`;
+}
+
+function saveUserRole() {
+    const role = document.getElementById('user-role-select').value;
+    storage.saveUserRole(role);
+    showToast(`Role set to ${role}!`, 'success');
+}
+
+function showDashboard(role) {
+    const dashboardDiv = document.getElementById('role-dashboard');
+    const titleEl = document.getElementById('dashboard-title');
+    const contentEl = document.getElementById('dashboard-content');
+
+    dashboardDiv.style.display = 'block';
+
+    const dashboards = {
+        gsr: {
+            title: 'GSR Dashboard',
+            content: `
+                <h4>District Motions Pending Response</h4>
+                <div id="gsr-district-motions"></div>
+                <h4 class="mt-3">Upcoming Area Events</h4>
+                <p>Area Assembly: [Date TBD]</p>
+                <h4 class="mt-3">Quick Actions</h4>
+                <button class="btn" onclick="goToSection('district-motions-section')">Manage District Motions</button>
+            `
+        },
+        treasurer: {
+            title: 'Treasurer Dashboard',
+            content: `
+                <h4>Financial Summary</h4>
+                <p><strong>Current Balance:</strong> $[Amount]</p>
+                <p><strong>Prudent Reserve:</strong> $[Amount]</p>
+                <h4 class="mt-3">Pending Expenses</h4>
+                <p>Review pending expenses in Finance section</p>
+                <h4 class="mt-3">Quick Actions</h4>
+                <button class="btn" onclick="goToSection('finance-section')">View Finances</button>
+                <button class="btn secondary ml-2" onclick="goToSection('financial-health-section')">Financial Health</button>
+            `
+        },
+        secretary: {
+            title: 'Secretary Dashboard',
+            content: `
+                <h4>Recent Meetings</h4>
+                <p>Last GC: [Date]</p>
+                <p>Draft Minutes: [Count]</p>
+                <h4 class="mt-3">Quick Actions</h4>
+                <button class="btn" onclick="goToSection('meeting-minutes-section')">Manage Minutes</button>
+                <button class="btn secondary ml-2" onclick="goToSection('chairperson-section')">Attendance Logs</button>
+            `
+        },
+        chairperson: {
+            title: 'Chairperson Dashboard',
+            content: `
+                <h4>Next Meeting Preparation</h4>
+                <p>Tabled items: [Count]</p>
+                <p>Proposed agenda items: [Count]</p>
+                <h4 class="mt-3">Quick Actions</h4>
+                <button class="btn" onclick="goToSection('parliamentary-section')">Parliamentary Tools</button>
+                <button class="btn secondary ml-2" onclick="goToSection('gc-live-section')">Live GC Session</button>
+            `
+        }
+    };
+
+    const dashboard = dashboards[role] || { title: 'Dashboard', content: '<p>Select a role to view dashboard</p>' };
+    titleEl.textContent = dashboard.title;
+    contentEl.innerHTML = dashboard.content;
 }
 
 // ========== HELPER FUNCTIONS FOR DROPDOWNS ==========
