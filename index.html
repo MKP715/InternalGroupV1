@@ -3028,11 +3028,18 @@
                 <button class="btn secondary" onclick="checkStorageUsage()">Refresh Storage Info</button>
             </div>
 
-            <div class="box">
+            <div class="box mb-4">
                 <h3>Cloud Sync (Export to Cloud)</h3>
                 <p class="mb-2">Download your data to manually upload to Google Drive, Dropbox, or other cloud storage.</p>
-                <button class="btn" onclick="exportForCloud()">Export for Cloud Backup</button>
+                <button class="btn" onclick="exportData('all')">Export for Cloud Backup</button>
                 <p style="margin-top: 1rem; font-size: 0.85rem; color: #95a5a6;">Note: After exporting, upload the file to your preferred cloud service. To sync across devices, download the file from cloud storage and import it on your other device.</p>
+            </div>
+
+            <div class="box" style="border: 2px solid #e74c3c;">
+                <h3 style="color: #e74c3c;"><i class="fas fa-exclamation-triangle"></i> Reset Application</h3>
+                <p class="mb-2" style="color: #f39c12;"><strong>Warning:</strong> This will permanently delete ALL data from the application. This action cannot be undone!</p>
+                <p class="mb-2">Before resetting, make sure you have exported your data for backup.</p>
+                <button class="btn" style="background: #e74c3c; border-color: #c0392b;" onclick="resetApplication()">Reset All Application Data</button>
             </div>
         </section>
 
@@ -6660,28 +6667,51 @@ function exportGroupConscienceLogToPDF() {
 function exportData(dataType) {
     let data;
     let filename = 'rowlett_group_data.json';
-    const keys = {
-        events: 'events',
-        birthdays: 'birthdays',
-        announcements: 'announcements',
-        photos: 'photos',
-        chairpersonLog: 'chairpersonLog',
-        groupConscienceLog: 'groupConscienceLog',
-    };
 
     if (dataType === 'all') {
-        data = {};
-        Object.keys(keys).forEach(key => {
-            data[key] = JSON.parse(localStorage.getItem(keys[key]) || '[]');
-        });
-        // Handle non-JSON items
-
-    } else if (keys[dataType]) {
-        data = { [dataType]: JSON.parse(localStorage.getItem(keys[dataType]) || '[]') };
-        filename = `rowlett_group_${dataType}.json`;
+        // Export all application data
+        data = {
+            events: storage.getEvents(),
+            members: storage.getMembers(),
+            announcements: storage.getAnnouncements(),
+            photos: storage.getPhotos(),
+            chairpersonLog: storage.getChairpersonLog(),
+            groupConscienceLog: storage.getGroupConscienceLog(),
+            liveGCItems: storage.getLiveGCItems(),
+            proposedAgendaItems: storage.getProposedAgendaItems(),
+            gcComments: storage.getGCComments(),
+            gcActionItems: storage.getGCActionItems(),
+            gcSettings: storage.getGCSettings(),
+            messages: storage.getMessages(),
+            servicePositions: storage.getServicePositions(),
+            nominations: storage.getNominations(),
+            budgetCategories: storage.getBudgetCategories(),
+            expenses: storage.getExpenses(),
+            templates: storage.getTemplates(),
+            exportDate: new Date().toISOString(),
+            version: '2.0'
+        };
+        const dateStr = new Date().toISOString().split('T')[0];
+        filename = `rowlett-group-backup-${dateStr}.json`;
     } else {
-        showToast('Invalid data type for export.', 'error');
-        return;
+        // Export specific data type
+        const dataMap = {
+            events: storage.getEvents,
+            members: storage.getMembers,
+            birthdays: storage.getMembers, // Members contain birthday info
+            announcements: storage.getAnnouncements,
+            photos: storage.getPhotos,
+            chairpersonLog: storage.getChairpersonLog,
+            groupConscienceLog: storage.getGroupConscienceLog
+        };
+
+        if (dataMap[dataType]) {
+            data = { [dataType]: dataMap[dataType]() };
+            filename = `rowlett_group_${dataType}.json`;
+        } else {
+            showToast('Invalid data type for export.', 'error');
+            return;
+        }
     }
 
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -6712,12 +6742,25 @@ function importData() {
             const data = JSON.parse(event.target.result);
             let imported = false;
 
+            // Import all data types
             if (data.events) { storage.saveEvents(data.events); imported = true; }
+            if (data.members) { storage.saveMembers(data.members); imported = true; }
             if (data.birthdays) { storage.saveBirthdays(data.birthdays); imported = true; }
             if (data.announcements) { storage.saveAnnouncements(data.announcements); imported = true; }
             if (data.photos) { storage.savePhotos(data.photos); imported = true; }
             if (data.chairpersonLog) { storage.saveChairpersonLog(data.chairpersonLog); imported = true; }
             if (data.groupConscienceLog) { storage.saveGroupConscienceLog(data.groupConscienceLog); imported = true; }
+            if (data.liveGCItems) { storage.saveLiveGCItems(data.liveGCItems); imported = true; }
+            if (data.proposedAgendaItems) { storage.saveProposedAgendaItems(data.proposedAgendaItems); imported = true; }
+            if (data.gcComments) { storage.saveGCComments(data.gcComments); imported = true; }
+            if (data.gcActionItems) { storage.saveGCActionItems(data.gcActionItems); imported = true; }
+            if (data.gcSettings) { storage.saveGCSettings(data.gcSettings); imported = true; }
+            if (data.messages) { storage.saveMessages(data.messages); imported = true; }
+            if (data.servicePositions) { storage.saveServicePositions(data.servicePositions); imported = true; }
+            if (data.nominations) { storage.saveNominations(data.nominations); imported = true; }
+            if (data.budgetCategories) { storage.saveBudgetCategories(data.budgetCategories); imported = true; }
+            if (data.expenses) { storage.saveExpenses(data.expenses); imported = true; }
+            if (data.templates) { storage.saveTemplates(data.templates); imported = true; }
 
             if (imported) {
                 showToast('Data imported successfully! The page will now reload.', 'success');
@@ -6731,6 +6774,39 @@ function importData() {
         }
     };
     reader.readAsText(file);
+}
+
+function resetApplication() {
+    // First confirmation
+    if (!confirm('⚠️ WARNING: This will permanently delete ALL application data!\n\nThis includes:\n• All members and birthdays\n• All events and meetings\n• All financial records\n• All Group Conscience logs\n• All photos and announcements\n• ALL other data\n\nAre you absolutely sure you want to continue?')) {
+        return;
+    }
+
+    // Second confirmation with typed verification
+    const confirmText = prompt('This action CANNOT be undone!\n\nTo confirm, type "DELETE ALL DATA" exactly:');
+
+    if (confirmText !== 'DELETE ALL DATA') {
+        showToast('Reset cancelled.', 'info');
+        return;
+    }
+
+    try {
+        // Clear all localStorage data
+        localStorage.clear();
+
+        // Clear sessionStorage as well
+        sessionStorage.clear();
+
+        showToast('All application data has been deleted. The page will now reload.', 'success');
+
+        // Reload the page after a short delay
+        setTimeout(() => {
+            location.reload();
+        }, 2000);
+    } catch (e) {
+        showToast('Error resetting application: ' + e.message, 'error');
+        console.error('Reset error:', e);
+    }
 }
 
 // Update gallery display
@@ -8556,40 +8632,6 @@ function checkStorageUsage() {
     }
 }
 
-function exportForCloud() {
-    // Same as exportData('all') but with a cloud-friendly filename
-    const allData = {
-        events: storage.getEvents(),
-        members: storage.getMembers(),
-        announcements: storage.getAnnouncements(),
-        photos: storage.getPhotos(),
-        chairpersonLog: storage.getChairpersonLog(),
-        groupConscienceLog: storage.getGroupConscienceLog(),
-        liveGCItems: storage.getLiveGCItems(),
-        proposedAgendaItems: storage.getProposedAgendaItems(),
-        gcComments: storage.getGCComments(),
-        gcActionItems: storage.getGCActionItems(),
-        gcSettings: storage.getGCSettings(),
-        messages: storage.getMessages(),
-        servicePositions: storage.getServicePositions(),
-        nominations: storage.getNominations(),
-        budgetCategories: storage.getBudgetCategories(),
-        expenses: storage.getExpenses(),
-        templates: storage.getTemplates(),
-        exportDate: new Date().toISOString(),
-        version: '2.0'
-    };
-
-    const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-
-    const dateStr = new Date().toISOString().split('T')[0];
-    link.download = `rowlett-group-backup-${dateStr}.json`;
-
-    link.click();
-    showToast('Data exported for cloud backup!', 'success');
-}
 
 // ========== TEMPLATE FUNCTIONS ==========
 
