@@ -32,6 +32,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            overflow-y: scroll; /* Persistent vertical scrollbar */
         }
 
         h1, h2, h3 {
@@ -3931,18 +3932,21 @@ function goToSection(sectionId) {
 // Toggle form visibility
 function toggleEventForm() {
     const form = document.getElementById('add-event-form');
+    if (!form) return;
     const isVisible = form.style.display === 'block';
     form.style.display = isVisible ? 'none' : 'block';
 }
 
 function toggleMemberForm() {
     const form = document.getElementById('add-member-form');
+    if (!form) return;
     const isVisible = form.style.display === 'block';
     form.style.display = isVisible ? 'none' : 'block';
 }
 // Toast Notification
 function showToast(message, type = 'info') { // type can be 'info', 'success', or 'error'
     const container = document.getElementById('toast-container');
+    if (!container) return;
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     toast.textContent = message;
@@ -3958,7 +3962,7 @@ function showToast(message, type = 'info') { // type can be 'info', 'success', o
         toast.classList.remove('show');
         toast.addEventListener('transitionend', () => {
             toast.remove();
-        });
+        }, { once: true }); // Use once option to prevent multiple fires
     }, 3000); // Toast disappears after 3 seconds
 }
 
@@ -4032,50 +4036,104 @@ function safeLocalStorageSet(key, value) {
     }
 }
 
-// Storage wrappers using localStorage
+// Storage wrappers using localStorage with error handling
 const storage = {
-    getEvents() { return JSON.parse(localStorage.getItem('events') || '[]'); },
+    getEvents() {
+        try { return JSON.parse(localStorage.getItem('events') || '[]'); }
+        catch(e) { console.error('Error parsing events:', e); return []; }
+    },
     saveEvents(events) { localStorage.setItem('events', JSON.stringify(events)); },
-    getMembers() { return JSON.parse(localStorage.getItem('members') || '[]'); },
+    getMembers() {
+        try { return JSON.parse(localStorage.getItem('members') || '[]'); }
+        catch(e) { console.error('Error parsing members:', e); return []; }
+    },
     saveMembers(m) { localStorage.setItem('members', JSON.stringify(m)); },
-    getAnnouncements() { return JSON.parse(localStorage.getItem('announcements') || '[]'); },
+    getAnnouncements() {
+        try { return JSON.parse(localStorage.getItem('announcements') || '[]'); }
+        catch(e) { console.error('Error parsing announcements:', e); return []; }
+    },
     saveAnnouncements(a) { localStorage.setItem('announcements', JSON.stringify(a)); },
-    getPhotos() { return JSON.parse(localStorage.getItem('photos') || '[]'); },
+    getPhotos() {
+        try { return JSON.parse(localStorage.getItem('photos') || '[]'); }
+        catch(e) { console.error('Error parsing photos:', e); return []; }
+    },
     savePhotos(p) {
         const jsonStr = JSON.stringify(p);
         if (!safeLocalStorageSet('photos', jsonStr)) {
             throw new Error('Failed to save photos due to storage quota exceeded');
         }
     },
-    getChairpersonLog() { return JSON.parse(localStorage.getItem('chairpersonLog') || '[]'); },
+    getChairpersonLog() {
+        try { return JSON.parse(localStorage.getItem('chairpersonLog') || '[]'); }
+        catch(e) { console.error('Error parsing chairpersonLog:', e); return []; }
+    },
     saveChairpersonLog(log) { localStorage.setItem('chairpersonLog', JSON.stringify(log)); },
-    getGroupConscienceLog() { return JSON.parse(localStorage.getItem('groupConscienceLog') || '[]'); },
+    getGroupConscienceLog() {
+        try { return JSON.parse(localStorage.getItem('groupConscienceLog') || '[]'); }
+        catch(e) { console.error('Error parsing groupConscienceLog:', e); return []; }
+    },
     saveGroupConscienceLog(log) { localStorage.setItem('groupConscienceLog', JSON.stringify(log)); },
-    getLiveGCItems() { return JSON.parse(localStorage.getItem('liveGCItems') || '[]'); },
+    getLiveGCItems() {
+        try { return JSON.parse(localStorage.getItem('liveGCItems') || '[]'); }
+        catch(e) { console.error('Error parsing liveGCItems:', e); return []; }
+    },
     saveLiveGCItems(items) { localStorage.setItem('liveGCItems', JSON.stringify(items)); },
-    getProposedAgendaItems() { return JSON.parse(localStorage.getItem('proposedAgendaItems') || '[]'); },
+    getProposedAgendaItems() {
+        try { return JSON.parse(localStorage.getItem('proposedAgendaItems') || '[]'); }
+        catch(e) { console.error('Error parsing proposedAgendaItems:', e); return []; }
+    },
     saveProposedAgendaItems(items) { localStorage.setItem('proposedAgendaItems', JSON.stringify(items)); },
-    getGCComments() { return JSON.parse(localStorage.getItem('gcComments') || '[]'); },
+    getGCComments() {
+        try { return JSON.parse(localStorage.getItem('gcComments') || '[]'); }
+        catch(e) { console.error('Error parsing gcComments:', e); return []; }
+    },
     saveGCComments(comments) { localStorage.setItem('gcComments', JSON.stringify(comments)); },
-    getGCActionItems() { return JSON.parse(localStorage.getItem('gcActionItems') || '[]'); },
+    getGCActionItems() {
+        try { return JSON.parse(localStorage.getItem('gcActionItems') || '[]'); }
+        catch(e) { console.error('Error parsing gcActionItems:', e); return []; }
+    },
     saveGCActionItems(actions) { localStorage.setItem('gcActionItems', JSON.stringify(actions)); },
-    getGCSettings() { return JSON.parse(localStorage.getItem('gcSettings') || '{"quorumPercentage": 50, "quorumMinimum": 5}'); },
+    getGCSettings() {
+        try { return JSON.parse(localStorage.getItem('gcSettings') || '{"quorumPercentage": 50, "quorumMinimum": 5}'); }
+        catch(e) { console.error('Error parsing gcSettings:', e); return {"quorumPercentage": 50, "quorumMinimum": 5}; }
+    },
     saveGCSettings(settings) { localStorage.setItem('gcSettings', JSON.stringify(settings)); },
 
     // New feature storage methods
-    getMessages() { return JSON.parse(localStorage.getItem('messages') || '[]'); },
+    getMessages() {
+        try { return JSON.parse(localStorage.getItem('messages') || '[]'); }
+        catch(e) { console.error('Error parsing messages:', e); return []; }
+    },
     saveMessages(messages) { localStorage.setItem('messages', JSON.stringify(messages)); },
-    getServicePositions() { return JSON.parse(localStorage.getItem('servicePositions') || '[]'); },
+    getServicePositions() {
+        try { return JSON.parse(localStorage.getItem('servicePositions') || '[]'); }
+        catch(e) { console.error('Error parsing servicePositions:', e); return []; }
+    },
     saveServicePositions(positions) { localStorage.setItem('servicePositions', JSON.stringify(positions)); },
-    getNominations() { return JSON.parse(localStorage.getItem('nominations') || '[]'); },
+    getNominations() {
+        try { return JSON.parse(localStorage.getItem('nominations') || '[]'); }
+        catch(e) { console.error('Error parsing nominations:', e); return []; }
+    },
     saveNominations(nominations) { localStorage.setItem('nominations', JSON.stringify(nominations)); },
-    getBudgetCategories() { return JSON.parse(localStorage.getItem('budgetCategories') || '[]'); },
+    getBudgetCategories() {
+        try { return JSON.parse(localStorage.getItem('budgetCategories') || '[]'); }
+        catch(e) { console.error('Error parsing budgetCategories:', e); return []; }
+    },
     saveBudgetCategories(categories) { localStorage.setItem('budgetCategories', JSON.stringify(categories)); },
-    getExpenses() { return JSON.parse(localStorage.getItem('expenses') || '[]'); },
+    getExpenses() {
+        try { return JSON.parse(localStorage.getItem('expenses') || '[]'); }
+        catch(e) { console.error('Error parsing expenses:', e); return []; }
+    },
     saveExpenses(expenses) { localStorage.setItem('expenses', JSON.stringify(expenses)); },
-    getTemplates() { return JSON.parse(localStorage.getItem('templates') || '[]'); },
+    getTemplates() {
+        try { return JSON.parse(localStorage.getItem('templates') || '[]'); }
+        catch(e) { console.error('Error parsing templates:', e); return []; }
+    },
     saveTemplates(templates) { localStorage.setItem('templates', JSON.stringify(templates)); },
-    getAnnouncementReadReceipts() { return JSON.parse(localStorage.getItem('announcementReadReceipts') || '{}'); },
+    getAnnouncementReadReceipts() {
+        try { return JSON.parse(localStorage.getItem('announcementReadReceipts') || '{}'); }
+        catch(e) { console.error('Error parsing announcementReadReceipts:', e); return {}; }
+    },
     saveAnnouncementReadReceipts(receipts) { localStorage.setItem('announcementReadReceipts', JSON.stringify(receipts)); },
     getCurrentUser() { return localStorage.getItem('currentUser') || 'Anonymous'; },
     saveCurrentUser(user) { localStorage.setItem('currentUser', user); },
@@ -4356,8 +4414,12 @@ function computeUpcomingOccurrences(daysAhead = 30) {
                 date.setHours(0, 0, 0, 0);
                 date.setDate(date.getDate() + d);
                 if (date.getDay() === ev.dayOfWeek) {
-                    const [hours, minutes] = (ev.time || '00:00').split(':');
-                    date.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+                    const timeParts = (ev.time || '00:00').split(':');
+                    if (timeParts.length >= 2) {
+                        const hours = parseInt(timeParts[0], 10) || 0;
+                        const minutes = parseInt(timeParts[1], 10) || 0;
+                        date.setHours(hours, minutes, 0, 0);
+                    }
                     if (date >= now && date <= end) occurrences.push({ occurDate: new Date(date), event: ev });
                 }
             }
@@ -4576,7 +4638,10 @@ function getAnniversariesInWindow(members, pastDays, futureDays) {
 
     members.forEach(member => {
         if (!member.birthday) return; // Skip members with no birthday
-        const [origYear, month, day] = member.birthday.split('-').map(Number);
+        const parts = member.birthday.split('-');
+        if (parts.length < 3) return; // Invalid date format
+        const [origYear, month, day] = parts.map(Number);
+        if (isNaN(month) || isNaN(day)) return; // Invalid numbers
 
         // Check anniversary for the current year
         const thisYearAnniversary = new Date(now.getFullYear(), month - 1, day);
@@ -4631,10 +4696,15 @@ function calculateSoberTime(bdayStr) {
 // Compute next birthday date relative to now
 function nextBirthdayDate(bdayStr) {
     const now = new Date();
-    const [year, month, day] = bdayStr.split('-').map(Number);
-    let nextDate = new Date(now.getFullYear(), month - 1, day);
-    if (nextDate < now.setHours(0, 0, 0, 0)) {
-        nextDate = new Date(now.getFullYear() + 1, month - 1, day);
+    const parts = bdayStr.split('-');
+    if (parts.length < 3) return null; // Invalid format
+    const [year, month, day] = parts.map(Number);
+    if (isNaN(year) || isNaN(month) || isNaN(day)) return null; // Invalid numbers
+    const today = new Date(now);
+    today.setHours(0, 0, 0, 0);
+    let nextDate = new Date(today.getFullYear(), month - 1, day);
+    if (nextDate < today) {
+        nextDate = new Date(today.getFullYear() + 1, month - 1, day);
     }
     return nextDate;
 }
@@ -4763,7 +4833,7 @@ function updateAnnouncementsList() {
         priorityBadge.textContent = (a.priority || 'info').toUpperCase();
 
         const text = document.createElement('span');
-        text.innerHTML = `<strong>${dateStr}:</strong> ${a.text}`;
+        text.innerHTML = `<strong>${dateStr}:</strong> ${escapeHtml(a.text)}`;
         text.style.flexGrow = '1';
 
         const topRow = document.createElement('div');
@@ -4818,7 +4888,7 @@ function updateChairpersonAnnouncements() {
     activeAnnouncements.forEach(a => {
         const li = document.createElement('li');
         const dateStr = new Date(a.dateCreated).toLocaleDateString();
-        li.innerHTML = `<strong>${dateStr}:</strong> ${a.text}`;
+        li.innerHTML = `<strong>${dateStr}:</strong> ${escapeHtml(a.text)}`;
         ul.appendChild(li);
     });
     if (activeAnnouncements.length === 0) {
@@ -6874,14 +6944,14 @@ function renderCalendar() {
 
                 const tooltip = document.createElement('div');
                 tooltip.className = 'tooltip';
-                let tooltipContent = `<strong>${ev.title}</strong><br>`;
+                let tooltipContent = `<strong>${escapeHtml(ev.title)}</strong><br>`;
                 try {
                     const eventTime = new Date('1970-01-01T' + (ev.time || '00:00'));
                     tooltipContent += `Time: ${eventTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}<br>`;
                 } catch(e) { /* Ignore invalid time format */ }
-                if (ev.speaker) tooltipContent += `Speaker: ${ev.speaker}<br>`;
-                if (ev.chair) tooltipContent += `Chair: ${ev.chair}<br>`;
-                if (ev.description) tooltipContent += `Description: ${ev.description}`;
+                if (ev.speaker) tooltipContent += `Speaker: ${escapeHtml(ev.speaker)}<br>`;
+                if (ev.chair) tooltipContent += `Chair: ${escapeHtml(ev.chair)}<br>`;
+                if (ev.description) tooltipContent += `Description: ${escapeHtml(ev.description)}`;
                 tooltip.innerHTML = tooltipContent;
                 evEl.appendChild(tooltip);
 
@@ -6901,7 +6971,14 @@ function renderCalendar() {
         }
     }
 }
+// Track if event listeners have been initialized to prevent duplicates
+let calendarNavInitialized = false;
+let mainNavInitialized = false;
+let dictionaryInitialized = false;
+
 function initCalendarNav() {
+    if (calendarNavInitialized) return;
+
     const prevBtn = document.getElementById('prev-month-btn');
     const nextBtn = document.getElementById('next-month-btn');
     if (prevBtn) {
@@ -6916,9 +6993,12 @@ function initCalendarNav() {
             renderCalendar();
         });
     }
+    calendarNavInitialized = true;
 }
 // Navigation click handlers
 function initNav() {
+    if (mainNavInitialized) return;
+
     // Handle clicks on menu items with sections
     document.querySelectorAll('nav li[data-section]').forEach(li => {
         li.addEventListener('click', (e) => {
@@ -6960,9 +7040,13 @@ function initNav() {
             });
         }
     });
+
+    mainNavInitialized = true;
 }
 
 function initDictionary() {
+    if (dictionaryInitialized) return;
+
     const searchBtn = document.getElementById('dictionary-search-btn');
     const searchInput = document.getElementById('dictionary-search-word');
     if (searchBtn) {
@@ -6975,6 +7059,7 @@ function initDictionary() {
             }
         });
     }
+    dictionaryInitialized = true;
 }
 // Meeting Companion: format data and display logic
 const contentData = {
@@ -10854,13 +10939,9 @@ function initNewSections() {
     }
 }
 
-// Add to init function
-const originalInit = init;
-function init() {
-    if (typeof originalInit === 'function') {
-        originalInit();
-    }
-    initNewSections();
+// Extend init function to include new sections
+// Note: init() is defined earlier in the code, we just need to call these additional functions
+function initNewSections() {
     requestNotificationPermission();
     checkUpcomingReminders();
 }
@@ -10893,57 +10974,95 @@ function sendNotification(title, body, icon = null) {
     }
 }
 
+// Track reminder timeout to allow cancellation
+let reminderTimeoutId = null;
+
 function checkUpcomingReminders() {
-    // Check for upcoming meetings
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
+    try {
+        // Check for upcoming meetings
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
 
-    const events = JSON.parse(localStorage.getItem('events') || '[]');
-    const upcomingEvents = events.filter(e => {
-        const eventDate = new Date(e.date);
-        return eventDate.toDateString() === tomorrow.toDateString();
-    });
-
-    if (upcomingEvents.length > 0) {
-        upcomingEvents.forEach(event => {
-            sendNotification('Upcoming Meeting Tomorrow', event.title + ' at ' + event.time);
-        });
-    }
-
-    // Check for upcoming birthdays (7 days ahead)
-    const weekAhead = new Date(today);
-    weekAhead.setDate(weekAhead.getDate() + 7);
-
-    const members = JSON.parse(localStorage.getItem('members') || '[]');
-    members.forEach(member => {
-        if (member.birthday) {
-            const birthday = new Date(member.birthday);
-            birthday.setFullYear(today.getFullYear());
-
-            if (birthday.toDateString() === weekAhead.toDateString()) {
-                sendNotification('Upcoming Birthday', member.name + '\'s birthday is in one week!');
-            }
+        let events = [];
+        try {
+            events = JSON.parse(localStorage.getItem('events') || '[]');
+        } catch(e) {
+            console.error('Error parsing events for reminders:', e);
         }
-    });
 
-    // Check for commitment reminders (2 days ahead)
-    const twoDaysAhead = new Date(today);
-    twoDaysAhead.setDate(twoDaysAhead.getDate() + 2);
+        const upcomingEvents = events.filter(e => {
+            if (!e.date) return false;
+            const eventDate = new Date(e.date);
+            return eventDate.toDateString() === tomorrow.toDateString();
+        });
 
-    const commitments = JSON.parse(localStorage.getItem('meetingCommitments') || '[]');
-    const upcomingCommitments = commitments.filter(c => {
-        const commitDate = new Date(c.date);
-        return c.reminder && commitDate.toDateString() === twoDaysAhead.toDateString();
-    });
+        if (upcomingEvents.length > 0) {
+            upcomingEvents.forEach(event => {
+                sendNotification('Upcoming Meeting Tomorrow', event.title + ' at ' + event.time);
+            });
+        }
 
-    upcomingCommitments.forEach(commitment => {
-        sendNotification('Meeting Commitment Reminder',
-            'You are signed up for ' + commitment.role + ' in 2 days on ' + new Date(commitment.date).toLocaleDateString());
-    });
+        // Check for upcoming birthdays (7 days ahead)
+        const weekAhead = new Date(today);
+        weekAhead.setDate(weekAhead.getDate() + 7);
 
-    // Check again in 1 hour
-    setTimeout(checkUpcomingReminders, 60 * 60 * 1000);
+        let members = [];
+        try {
+            members = JSON.parse(localStorage.getItem('members') || '[]');
+        } catch(e) {
+            console.error('Error parsing members for reminders:', e);
+        }
+
+        members.forEach(member => {
+            if (member.birthday) {
+                const birthday = new Date(member.birthday);
+                birthday.setFullYear(today.getFullYear());
+
+                if (birthday.toDateString() === weekAhead.toDateString()) {
+                    sendNotification('Upcoming Birthday', member.name + '\'s birthday is in one week!');
+                }
+            }
+        });
+
+        // Check for commitment reminders (2 days ahead)
+        const twoDaysAhead = new Date(today);
+        twoDaysAhead.setDate(twoDaysAhead.getDate() + 2);
+
+        let commitments = [];
+        try {
+            commitments = JSON.parse(localStorage.getItem('meetingCommitments') || '[]');
+        } catch(e) {
+            console.error('Error parsing commitments for reminders:', e);
+        }
+
+        const upcomingCommitments = commitments.filter(c => {
+            if (!c.date) return false;
+            const commitDate = new Date(c.date);
+            return c.reminder && commitDate.toDateString() === twoDaysAhead.toDateString();
+        });
+
+        upcomingCommitments.forEach(commitment => {
+            sendNotification('Meeting Commitment Reminder',
+                'You are signed up for ' + commitment.role + ' in 2 days on ' + new Date(commitment.date).toLocaleDateString());
+        });
+
+        // Check again in 1 hour (clear previous timeout to prevent duplicates)
+        if (reminderTimeoutId) {
+            clearTimeout(reminderTimeoutId);
+        }
+        reminderTimeoutId = setTimeout(checkUpcomingReminders, 60 * 60 * 1000);
+    } catch(e) {
+        console.error('Error in checkUpcomingReminders:', e);
+    }
+}
+
+// Function to stop reminder checks (useful for cleanup)
+function stopReminderChecks() {
+    if (reminderTimeoutId) {
+        clearTimeout(reminderTimeoutId);
+        reminderTimeoutId = null;
+    }
 }
 
 // ========================================
@@ -10978,6 +11097,12 @@ function injectPWAManifest() {
     link.rel = 'manifest';
     link.href = manifestURL;
     document.head.appendChild(link);
+
+    // Revoke the object URL after a short delay to free memory
+    // (link element should have processed it by then)
+    setTimeout(() => {
+        URL.revokeObjectURL(manifestURL);
+    }, 100);
 }
 
 // Initialize PWA
