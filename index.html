@@ -14964,11 +14964,16 @@ function showDashboard(role) {
 
 // ========== PRIVACY & ANONYMITY PROTECTION ==========
 function savePrivacySettings() {
+    const anonymousVoting = document.getElementById('privacy-anonymous-voting');
+    const hideNames = document.getElementById('privacy-hide-names-export');
+    const encryptSensitive = document.getElementById('privacy-encrypt-sensitive');
+    const redactLastnames = document.getElementById('privacy-redact-lastnames');
+
     const settings = {
-        anonymousVoting: document.getElementById('privacy-anonymous-voting').checked,
-        hideNamesInExports: document.getElementById('privacy-hide-names-export').checked,
-        encryptSensitive: document.getElementById('privacy-encrypt-sensitive').checked,
-        autoRedactLastNames: document.getElementById('privacy-redact-lastnames').checked
+        anonymousVoting: anonymousVoting ? anonymousVoting.checked : false,
+        hideNamesInExports: hideNames ? hideNames.checked : false,
+        encryptSensitive: encryptSensitive ? encryptSensitive.checked : false,
+        autoRedactLastNames: redactLastnames ? redactLastnames.checked : false
     };
     storage.savePrivacySettings(settings);
     showToast('Privacy settings saved!', 'success');
@@ -14976,10 +14981,18 @@ function savePrivacySettings() {
 
 function loadPrivacySettings() {
     const settings = storage.getPrivacySettings();
-    document.getElementById('privacy-anonymous-voting').checked = settings.anonymousVoting || false;
-    document.getElementById('privacy-hide-names-export').checked = settings.hideNamesInExports || false;
-    document.getElementById('privacy-encrypt-sensitive').checked = settings.encryptSensitive || false;
-    document.getElementById('privacy-redact-lastnames').checked = settings.autoRedactLastNames || false;
+
+    const anonymousVoting = document.getElementById('privacy-anonymous-voting');
+    if (anonymousVoting) anonymousVoting.checked = settings.anonymousVoting || false;
+
+    const hideNames = document.getElementById('privacy-hide-names-export');
+    if (hideNames) hideNames.checked = settings.hideNamesInExports || false;
+
+    const encryptSensitive = document.getElementById('privacy-encrypt-sensitive');
+    if (encryptSensitive) encryptSensitive.checked = settings.encryptSensitive || false;
+
+    const redactLastnames = document.getElementById('privacy-redact-lastnames');
+    if (redactLastnames) redactLastnames.checked = settings.autoRedactLastNames || false;
 }
 
 function redactName(fullName) {
@@ -15011,6 +15024,9 @@ const traditions = [
 ];
 
 function displayTraditionOfDay() {
+    const element = document.getElementById('tradition-of-day-display');
+    if (!element) return;
+
     const todayData = storage.getTraditionOfDay();
     const today = new Date().toDateString();
 
@@ -15024,16 +15040,19 @@ function displayTraditionOfDay() {
     }
 
     const tradition = traditions[traditionNum - 1];
-    document.getElementById('tradition-of-day-display').innerHTML = `
+    element.innerHTML = `
         <h4 style="color: white; font-size: 1.5rem;">Tradition ${tradition.num}</h4>
         <p style="margin-top: 1rem; line-height: 1.6;">${tradition.text}</p>
     `;
 }
 
 function randomizeTradition() {
+    const element = document.getElementById('tradition-of-day-display');
+    if (!element) return;
+
     const randomNum = Math.floor(Math.random() * 12) + 1;
     const tradition = traditions[randomNum - 1];
-    document.getElementById('tradition-of-day-display').innerHTML = `
+    element.innerHTML = `
         <h4 style="color: white; font-size: 1.5rem;">Tradition ${tradition.num}</h4>
         <p style="margin-top: 1rem; line-height: 1.6;">${tradition.text}</p>
     `;
@@ -15084,7 +15103,10 @@ function checkTraditionViolations(motionText) {
 
 // ========== SPIRITUAL PRINCIPLES INTEGRATION ==========
 function saveSpiritualPrincipleTags() {
-    const motionId = document.getElementById('principle-motion-select').value;
+    const motionSelect = document.getElementById('principle-motion-select');
+    if (!motionSelect) return;
+
+    const motionId = motionSelect.value;
     if (!motionId) {
         showToast('Please select a motion', 'error');
         return;
@@ -15119,8 +15141,10 @@ function saveSpiritualPrincipleTags() {
 }
 
 function renderPrincipleTaggedList() {
-    const principleData = storage.getSpiritualPrinciples().sort((a, b) => new Date(b.date) - new Date(a.date));
     const list = document.getElementById('principle-tagged-list');
+    if (!list) return;
+
+    const principleData = storage.getSpiritualPrinciples().sort((a, b) => new Date(b.date) - new Date(a.date));
 
     if (principleData.length === 0) {
         list.innerHTML = '<p style="opacity: 0.7;">No tagged motions yet</p>';
@@ -15152,6 +15176,8 @@ function populatePrincipleMotionSelect() {
 
 function startGroupInventory() {
     const questionsDiv = document.getElementById('group-inventory-questions');
+    if (!questionsDiv) return;
+
     if (questionsDiv.style.display === 'none') {
         questionsDiv.style.display = 'block';
     } else {
@@ -15161,9 +15187,15 @@ function startGroupInventory() {
 
 // ========== UNITY CHECKER ==========
 function saveMinorityOpinion() {
-    const motionId = document.getElementById('minority-motion-select').value;
-    const opinionText = document.getElementById('minority-opinion-text').value.trim();
-    const voteCount = parseInt(document.getElementById('minority-vote-count').value) || 0;
+    const motionSelect = document.getElementById('minority-motion-select');
+    const opinionTextEl = document.getElementById('minority-opinion-text');
+    const voteCountEl = document.getElementById('minority-vote-count');
+
+    if (!motionSelect || !opinionTextEl || !voteCountEl) return;
+
+    const motionId = motionSelect.value;
+    const opinionText = opinionTextEl.value.trim();
+    const voteCount = parseInt(voteCountEl.value) || 0;
 
     if (!motionId || !opinionText) {
         showToast('Please select a motion and enter the minority opinion', 'error');
@@ -15186,14 +15218,16 @@ function saveMinorityOpinion() {
     storage.saveMinorityOpinions(opinions);
     showToast('Minority opinion recorded!', 'success');
 
-    document.getElementById('minority-opinion-text').value = '';
-    document.getElementById('minority-vote-count').value = '';
+    opinionTextEl.value = '';
+    voteCountEl.value = '';
     renderMinorityOpinions();
 }
 
 function renderMinorityOpinions() {
-    const opinions = storage.getMinorityOpinions().sort((a, b) => new Date(b.date) - new Date(a.date));
     const list = document.getElementById('minority-opinions-list');
+    if (!list) return;
+
+    const opinions = storage.getMinorityOpinions().sort((a, b) => new Date(b.date) - new Date(a.date));
 
     if (opinions.length === 0) {
         list.innerHTML = '<p style="opacity: 0.7;">No minority opinions recorded yet</p>';
@@ -15266,12 +15300,17 @@ function openCommonGroundDialog() {
 
 // ========== SERVICE STRUCTURE VISUALIZER ==========
 function saveServiceStructure() {
+    const groupName = document.getElementById('structure-group-name');
+    const district = document.getElementById('structure-district');
+    const area = document.getElementById('structure-area');
+    const gsrName = document.getElementById('structure-gsr-name');
+
     const structure = {
         group: {
-            name: document.getElementById('structure-group-name').value.trim(),
-            district: document.getElementById('structure-district').value.trim(),
-            area: document.getElementById('structure-area').value.trim(),
-            gsrName: document.getElementById('structure-gsr-name').value.trim()
+            name: groupName ? groupName.value.trim() : '',
+            district: district ? district.value.trim() : '',
+            area: area ? area.value.trim() : '',
+            gsrName: gsrName ? gsrName.value.trim() : ''
         }
     };
 
