@@ -4198,20 +4198,10 @@ function initDefaults() {
     }
 
     if (!localStorage.getItem('events')) {
-        const defaults = [
-            { id: genId(), title: 'Open Discussion', dayOfWeek: 0, time: '19:00', reading: 'How It Works', speaker: '', chair: '', description: 'Weekly open discussion meeting' },
-            { id: genId(), title: 'Big Book Study', dayOfWeek: 2, time: '19:00', reading: 'Big Book', speaker: '', chair: '', description: 'Weekly big book study' },
-            { id: genId(), title: 'Speaker Meeting', dayOfWeek: 5, time: '19:00', reading: 'Speaker’s Choice', speaker: 'Guest Speaker', chair: '', description: 'Weekly speaker meeting' }
-        ];
-        storage.saveEvents(defaults);
+        storage.saveEvents([]);
     }
     if (!localStorage.getItem('members')) {
-        const members = [
-            { id: genId(), name: 'Alice', birthday: '1990-09-10', phone: '123-456-7890', email: 'alice@example.com', homegroup: 'Rowlett Group', sponsor: 'Bob', city: 'Rowlett', isServant: true, servantPosition: 'Treasurer', servantSince: '2022-01-01' },
-            { id: genId(), name: 'Bob', birthday: '1985-12-05', phone: '', email: '', homegroup: 'Rowlett Group', sponsor: '', city: 'Garland', isServant: false, servantPosition: '', servantSince: '' },
-            { id: genId(), name: 'Charlie', birthday: '1993-04-22', phone: '', email: '', homegroup: '', sponsor: '', city: 'Dallas', isServant: false, servantPosition: '', servantSince: '' }
-        ];
-        storage.saveMembers(members);
+        storage.saveMembers([]);
     }
     if (!localStorage.getItem('announcements')) {
         storage.saveAnnouncements([]);
