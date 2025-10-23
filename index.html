@@ -3141,9 +3141,8 @@
             <div class="box mb-4">
                 <h3><i class="fas fa-history"></i> Automated Backup History</h3>
                 <p class="mb-2">The system automatically creates backups. View and restore from backup history.</p>
-                <button class="btn" onclick="createBackupSnapshot()">Create Backup Now</button>
+                <button class="btn" onclick="createAutomatedBackup(); showToast('Backup created successfully!', 'success');">Create Backup Now</button>
                 <button class="btn secondary" onclick="viewBackupHistory()">View Backup History</button>
-                <div id="backup-history" style="margin-top: 1rem;"></div>
             </div>
 
             <!-- Storage Usage Monitor -->
@@ -10651,58 +10650,6 @@ function openTransitionModal(positionId) {
     showToast('View transition package in Service Positions section', 'info');
 }
 
-function checkUpcomingTermExpirations() {
-    const positions = storage.getServicePositions();
-    const today = new Date();
-
-    positions.forEach(position => {
-        if (!position.startDate) return;
-
-        const daysRemaining = calculateDaysRemaining(position.startDate, position.termLength);
-        if (daysRemaining === null) return;
-
-        // Send notifications at 90, 60, 30 days
-        if (!position.notificationsSent) {
-            position.notificationsSent = {days90: false, days60: false, days30: false};
-        }
-
-        if (daysRemaining <= 90 && daysRemaining > 89 && !position.notificationsSent.days90) {
-            createNotification({
-                type: 'service-term-expiring',
-                title: `${position.name} term expires in 90 days`,
-                message: `${position.currentHolder}'s term as ${position.name} expires ${calculateEndDate(position.startDate, position.termLength)}. Time to start succession planning.`,
-                priority: 'normal',
-                actionLink: 'service-positions-section'
-            });
-            position.notificationsSent.days90 = true;
-        }
-
-        if (daysRemaining <= 60 && daysRemaining > 59 && !position.notificationsSent.days60) {
-            createNotification({
-                type: 'service-term-expiring',
-                title: `${position.name} term expires in 60 days`,
-                message: `Consider starting transition process for ${position.name}. Election should be scheduled soon.`,
-                priority: 'high',
-                actionLink: 'service-positions-section'
-            });
-            position.notificationsSent.days60 = true;
-        }
-
-        if (daysRemaining <= 30 && daysRemaining > 29 && !position.notificationsSent.days30) {
-            createNotification({
-                type: 'service-term-expiring',
-                title: `${position.name} term expires in 30 days!`,
-                message: `URGENT: Election needed for ${position.name}. Term ends ${calculateEndDate(position.startDate, position.termLength)}.`,
-                priority: 'urgent',
-                actionLink: 'service-elections-section'
-            });
-            position.notificationsSent.days30 = true;
-        }
-    });
-
-    storage.saveServicePositions(positions);
-}
-
 // ========== P2-2: NOTIFICATION SYSTEM ==========
 
 function createNotification(notification) {
@@ -14106,126 +14053,6 @@ function loadCurrentUser() {
     }
 }
 
-function createBackupSnapshot() {
-    const backups = JSON.parse(localStorage.getItem('backupSnapshots') || '[]');
-
-    const snapshot = {
-        id: genId(),
-        date: new Date().toISOString(),
-        data: {
-            events: storage.getEvents(),
-            members: storage.getMembers(),
-            announcements: storage.getAnnouncements(),
-            photos: storage.getPhotos(),
-            chairpersonLog: storage.getChairpersonLog(),
-            groupConscienceLog: storage.getGroupConscienceLog(),
-            liveGCItems: storage.getLiveGCItems(),
-            proposedAgendaItems: storage.getProposedAgendaItems(),
-            gcComments: storage.getGCComments(),
-            gcActionItems: storage.getGCActionItems(),
-            gcSettings: storage.getGCSettings(),
-            messages: storage.getMessages(),
-            servicePositions: storage.getServicePositions(),
-            nominations: storage.getNominations(),
-            budgetCategories: storage.getBudgetCategories(),
-            expenses: storage.getExpenses(),
-            templates: storage.getTemplates()
-        }
-    };
-
-    backups.push(snapshot);
-
-    // Keep only last 10 backups
-    if (backups.length > 10) {
-        backups.shift();
-    }
-
-    localStorage.setItem('backupSnapshots', JSON.stringify(backups));
-    showToast('Backup snapshot created!', 'success');
-    viewBackupHistory();
-}
-
-function viewBackupHistory() {
-    const container = document.getElementById('backup-history');
-    const backups = JSON.parse(localStorage.getItem('backupSnapshots') || '[]');
-
-    if (backups.length === 0) {
-        container.innerHTML = '<p>No backup snapshots available. Create one to get started.</p>';
-        return;
-    }
-
-    container.innerHTML = '<h4>Available Backups</h4>';
-
-    backups.reverse().forEach((backup, index) => {
-        const card = document.createElement('div');
-        card.className = 'box';
-        card.style.marginTop = '10px';
-        card.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <strong>Backup ${backups.length - index}</strong><br>
-                    <span style="font-size: 0.85rem; color: #95a5a6;">${new Date(backup.date).toLocaleString()}</span>
-                </div>
-                <div>
-                    <button class="btn" data-action="restore-backup" data-id="${escapeAttribute(backup.id)}">Restore</button>
-                    <button class="btn secondary" data-action="delete-backup" data-id="${escapeAttribute(backup.id)}" style="margin-left: 8px;">Delete</button>
-                </div>
-            </div>
-        `;
-        container.appendChild(card);
-    });
-}
-
-function restoreBackup(backupId) {
-    if (!confirm('This will restore data from the selected backup and overwrite your current data. Continue?')) {
-        return;
-    }
-
-    const backups = JSON.parse(localStorage.getItem('backupSnapshots') || '[]');
-    const backup = backups.find(b => b.id === backupId);
-
-    if (!backup) {
-        showToast('Backup not found', 'error');
-        return;
-    }
-
-    // Restore all data
-    const data = backup.data;
-    if (data.events) storage.saveEvents(data.events);
-    if (data.members) storage.saveMembers(data.members);
-    if (data.announcements) storage.saveAnnouncements(data.announcements);
-    if (data.photos) storage.savePhotos(data.photos);
-    if (data.chairpersonLog) storage.saveChairpersonLog(data.chairpersonLog);
-    if (data.groupConscienceLog) storage.saveGroupConscienceLog(data.groupConscienceLog);
-    if (data.liveGCItems) storage.saveLiveGCItems(data.liveGCItems);
-    if (data.proposedAgendaItems) storage.saveProposedAgendaItems(data.proposedAgendaItems);
-    if (data.gcComments) storage.saveGCComments(data.gcComments);
-    if (data.gcActionItems) storage.saveGCActionItems(data.gcActionItems);
-    if (data.gcSettings) storage.saveGCSettings(data.gcSettings);
-    if (data.messages) storage.saveMessages(data.messages);
-    if (data.servicePositions) storage.saveServicePositions(data.servicePositions);
-    if (data.nominations) storage.saveNominations(data.nominations);
-    if (data.budgetCategories) storage.saveBudgetCategories(data.budgetCategories);
-    if (data.expenses) storage.saveExpenses(data.expenses);
-    if (data.templates) storage.saveTemplates(data.templates);
-
-    showToast('Data restored from backup!', 'success');
-
-    // Reload page to reflect restored data
-    setTimeout(() => location.reload(), 1500);
-}
-
-function deleteBackup(backupId) {
-    if (!confirm('Delete this backup snapshot?')) return;
-
-    let backups = JSON.parse(localStorage.getItem('backupSnapshots') || '[]');
-    backups = backups.filter(b => b.id !== backupId);
-    localStorage.setItem('backupSnapshots', JSON.stringify(backups));
-
-    showToast('Backup deleted', 'success');
-    viewBackupHistory();
-}
-
 // Storage Usage Monitoring
 function checkStorageUsage() {
     try {
@@ -15077,10 +14904,6 @@ document.addEventListener('click', function(e) {
         // Budget & Expenses
         case 'delete-budget-category': deleteBudgetCategory(id); break;
         case 'delete-expense': deleteExpense(id); break;
-
-        // Backups
-        case 'restore-backup': restoreBackup(id); break;
-        case 'delete-backup': deleteBackup(id); break;
 
         // Format & Commitments
         case 'edit-format': editFormat(id); break;
@@ -16307,12 +16130,6 @@ function initNewSections() {
 // ========================================
 // BROWSER NOTIFICATIONS
 // ========================================
-function requestNotificationPermission() {
-    if ('Notification' in window && Notification.permission === 'default') {
-        Notification.requestPermission();
-    }
-}
-
 function sendNotification(title, body, icon = null) {
     if ('Notification' in window && Notification.permission === 'granted') {
         const options = {
