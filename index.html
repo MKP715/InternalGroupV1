@@ -1203,6 +1203,71 @@
                     </div>
                 </div>
             </div>
+
+            <!-- GROUP HEALTH METRICS DASHBOARD -->
+            <div style="margin-top: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 style="color: #2ecc71; border-bottom: 2px solid #2ecc71; padding-bottom: 0.5rem; margin: 0; flex: 1;">
+                        <i class="fas fa-heartbeat"></i> Group Health Metrics
+                    </h2>
+                    <button class="btn" onclick="viewDetailedHealthReport()" style="background: #2ecc71; white-space: nowrap; margin-left: 1rem;">
+                        <i class="fas fa-chart-line"></i> Detailed Report
+                    </button>
+                </div>
+
+                <!-- Key Performance Indicators -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                    <!-- Participation Rate -->
+                    <div class="box" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); text-align: center; padding: 1.5rem;">
+                        <div style="font-size: 2rem; font-weight: bold;" id="participation-rate">--%</div>
+                        <div style="font-size: 0.85rem; opacity: 0.9; margin-top: 0.5rem;">GC Participation</div>
+                        <div style="font-size: 0.75rem; opacity: 0.7; margin-top: 0.25rem;">Last 3 months</div>
+                    </div>
+
+                    <!-- Decision Quality -->
+                    <div class="box" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); text-align: center; padding: 1.5rem;">
+                        <div style="font-size: 2rem; font-weight: bold;" id="consensus-rate">--%</div>
+                        <div style="font-size: 0.85rem; opacity: 0.9; margin-top: 0.5rem;">Consensus Rate</div>
+                        <div style="font-size: 0.75rem; opacity: 0.7; margin-top: 0.25rem;">Substantial unanimity</div>
+                    </div>
+
+                    <!-- Follow-Through -->
+                    <div class="box" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); text-align: center; padding: 1.5rem;">
+                        <div style="font-size: 2rem; font-weight: bold;" id="action-completion-rate">--%</div>
+                        <div style="font-size: 0.85rem; opacity: 0.9; margin-top: 0.5rem;">Action Completion</div>
+                        <div style="font-size: 0.75rem; opacity: 0.7; margin-top: 0.25rem;">On-time delivery</div>
+                    </div>
+
+                    <!-- Service Continuity -->
+                    <div class="box" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); text-align: center; padding: 1.5rem;">
+                        <div style="font-size: 2rem; font-weight: bold;" id="service-filled-rate">--%</div>
+                        <div style="font-size: 0.85rem; opacity: 0.9; margin-top: 0.5rem;">Service Positions</div>
+                        <div style="font-size: 0.75rem; opacity: 0.7; margin-top: 0.25rem;">Filled vs vacant</div>
+                    </div>
+
+                    <!-- Financial Health -->
+                    <div class="box" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); text-align: center; padding: 1.5rem;">
+                        <div style="font-size: 2rem; font-weight: bold;" id="prudent-reserve-status">--</div>
+                        <div style="font-size: 0.85rem; opacity: 0.9; margin-top: 0.5rem;">Prudent Reserve</div>
+                        <div style="font-size: 0.75rem; opacity: 0.7; margin-top: 0.25rem;">3-month operating</div>
+                    </div>
+
+                    <!-- Member Engagement -->
+                    <div class="box" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); text-align: center; padding: 1.5rem; color: #2c3e50;">
+                        <div style="font-size: 2rem; font-weight: bold;" id="avg-attendance">--</div>
+                        <div style="font-size: 0.85rem; opacity: 0.9; margin-top: 0.5rem;">Avg. Attendance</div>
+                        <div style="font-size: 0.75rem; opacity: 0.7; margin-top: 0.25rem;">Weekly meetings</div>
+                    </div>
+                </div>
+
+                <!-- Health Trend Indicators -->
+                <div class="box" style="border-left: 4px solid #2ecc71;">
+                    <h3><i class="fas fa-chart-line"></i> Health Trends</h3>
+                    <div id="health-trends" style="min-height: 100px;">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Chairperson's Corner Section -->
@@ -1460,28 +1525,76 @@
                     <!-- Pre-GC Submission System -->
                     <div class="box mt-4">
                         <h3>Pre-GC Agenda Submissions</h3>
-                        <p class="mb-2 text-sm" style="font-size: 0.8rem; opacity: 0.8;">Members can submit agenda items before the meeting</p>
-                        <div class="form-group">
-                            <label for="proposed-item-title">Item Title</label>
-                            <input type="text" id="proposed-item-title" placeholder="Brief title for the item">
-                        </div>
-                        <div class="form-group">
-                            <label for="proposed-item-description">Description</label>
-                            <textarea id="proposed-item-description" rows="3" placeholder="Detailed description of the proposal..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="proposed-item-submitter">Submitted By</label>
-                            <input type="text" id="proposed-item-submitter" placeholder="Your name">
-                        </div>
-                        <button class="btn" onclick="addProposedAgendaItem()">Submit Agenda Item</button>
+                        <p class="mb-2 text-sm" style="font-size: 0.8rem; opacity: 0.8;">
+                            <i class="fas fa-calendar-alt"></i> Collaborative agenda building - Submit items 7 days before meeting
+                        </p>
 
-                        <h4 class="mt-4">Proposed Agenda Items</h4>
-                        <table id="proposed-agenda-table">
+                        <!-- Submission Deadline Warning -->
+                        <div id="agenda-submission-notice" style="display: none; padding: 1rem; background: #f39c12; border-radius: 4px; margin-bottom: 1rem;">
+                            <i class="fas fa-info-circle"></i> <span id="agenda-notice-text"></span>
+                        </div>
+
+                        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label for="proposed-item-title">Item Title *</label>
+                                <input type="text" id="proposed-item-title" placeholder="Brief title for the item">
+                            </div>
+                            <div class="form-group">
+                                <label for="proposed-item-submitter">Submitted By *</label>
+                                <select id="proposed-item-submitter">
+                                    <option value="">Select your name...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="proposed-item-description">Description & Rationale *</label>
+                            <textarea id="proposed-item-description" rows="3" placeholder="Detailed description and why this is important..."></textarea>
+                        </div>
+
+                        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label for="proposed-item-time">Estimated Time (minutes)</label>
+                                <input type="number" id="proposed-item-time" min="5" max="60" value="15" placeholder="15">
+                                <small style="font-size: 0.75rem; opacity: 0.8;">How long will this discussion need?</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="proposed-item-urgency">Urgency</label>
+                                <select id="proposed-item-urgency">
+                                    <option value="low">Low - Can wait</option>
+                                    <option value="medium" selected>Medium - Should discuss soon</option>
+                                    <option value="high">High - Time-sensitive</option>
+                                    <option value="urgent">Urgent - Immediate attention needed</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="proposed-item-background">Background Materials / Context</label>
+                            <textarea id="proposed-item-background" rows="3" placeholder="Any relevant history, prior discussions, research, or supporting information..."></textarea>
+                            <small style="font-size: 0.75rem; opacity: 0.8;">Help members make informed decisions</small>
+                        </div>
+
+                        <button class="btn" onclick="addProposedAgendaItem()">
+                            <i class="fas fa-paper-plane"></i> Submit Agenda Item
+                        </button>
+
+                        <!-- Enhanced Agenda Items Table -->
+                        <div style="margin-top: 2rem; display: flex; justify-content: space-between; align-items: center;">
+                            <h4 style="margin: 0;">Proposed Agenda Items</h4>
+                            <button class="btn" onclick="viewAgendaSummaryForUpcomingMeeting()" style="background: #9b59b6;">
+                                <i class="fas fa-clipboard-list"></i> Generate Agenda
+                            </button>
+                        </div>
+
+                        <table id="proposed-agenda-table" style="margin-top: 1rem;">
                             <thead>
                                 <tr>
+                                    <th>Urgency</th>
                                     <th>Title</th>
                                     <th>Submitter</th>
-                                    <th>Date Submitted</th>
+                                    <th>Time</th>
+                                    <th>Interest</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
@@ -1508,37 +1621,76 @@
 
                     <!-- Action Items Tracking -->
                     <div class="box mt-4">
-                        <h3>Action Items & Follow-Up</h3>
-                        <p class="mb-2 text-sm" style="font-size: 0.8rem; opacity: 0.8;">Track action items from passed motions</p>
-                        <div class="form-group">
-                            <label for="action-item-description">Action Item</label>
-                            <textarea id="action-item-description" rows="2" placeholder="What needs to be done?"></textarea>
+                        <h3><i class="fas fa-tasks"></i> Action Items & Follow-Up</h3>
+                        <p class="mb-2 text-sm" style="font-size: 0.8rem; opacity: 0.8;">Track action items with accountability, dependencies, and automatic reminders</p>
+
+                        <!-- Enhanced Action Item Form -->
+                        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label for="action-item-description">Action Item *</label>
+                                <textarea id="action-item-description" rows="2" placeholder="What needs to be done?"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="action-item-assignee">Assigned To *</label>
+                                <select id="action-item-assignee"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="action-item-due-date">Due Date *</label>
+                                <input type="date" id="action-item-due-date">
+                            </div>
+                            <div class="form-group">
+                                <label for="action-item-priority">Priority</label>
+                                <select id="action-item-priority">
+                                    <option value="low">Low</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="high">High</option>
+                                    <option value="urgent">Urgent</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="action-item-related-gc">Related GC Motion</label>
+                                <select id="action-item-related-gc">
+                                    <option value="">None</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="action-item-dependencies">Dependencies (Optional)</label>
+                                <select id="action-item-dependencies" multiple style="height: 60px;">
+                                    <option value="">None - select other action items this depends on</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="action-item-assignee">Assigned To</label>
-                            <select id="action-item-assignee"></select>
+
+                        <input type="hidden" id="action-item-edit-id">
+                        <div style="margin-top: 1rem;">
+                            <button id="action-item-btn" class="btn" onclick="handleActionItemSubmit()">Add Action Item</button>
+                            <button id="action-item-cancel-btn" class="btn secondary" onclick="cancelActionItemEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
+                            <button class="btn" onclick="viewActionItemReport()" style="margin-left: 0.5rem; background: #9b59b6;">
+                                <i class="fas fa-chart-bar"></i> Accountability Report
+                            </button>
                         </div>
-                        <div class="form-group">
-                            <label for="action-item-due-date">Due Date</label>
-                            <input type="date" id="action-item-due-date">
-                        </div>
-                        <div class="form-group">
-                            <label for="action-item-related-gc">Related GC Motion (Optional)</label>
-                            <select id="action-item-related-gc">
-                                <option value="">None</option>
+
+                        <!-- Filter and View Options -->
+                        <div style="margin-top: 2rem; display: flex; gap: 1rem; align-items: center;">
+                            <h4 style="margin: 0;">Action Items</h4>
+                            <div style="flex: 1;"></div>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem;">
+                                <input type="checkbox" id="action-item-show-completed" onchange="updateActionItemsTable()"> Show Completed
+                            </label>
+                            <select id="action-item-filter-assignee" onchange="updateActionItemsTable()" style="background: #34495e; color: #ecf0f1; border: 1px solid #7f8c8d; border-radius: 4px; padding: 0.5rem;">
+                                <option value="">All Assignees</option>
                             </select>
                         </div>
-                        <input type="hidden" id="action-item-edit-id">
-                        <button id="action-item-btn" class="btn" onclick="handleActionItemSubmit()">Add Action Item</button>
-                        <button id="action-item-cancel-btn" class="btn secondary" onclick="cancelActionItemEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
 
-                        <h4 class="mt-4">Active Action Items</h4>
-                        <table id="action-items-table">
+                        <!-- Enhanced Action Items Table -->
+                        <table id="action-items-table" style="margin-top: 1rem;">
                             <thead>
                                 <tr>
+                                    <th>Priority</th>
                                     <th>Item</th>
                                     <th>Assigned To</th>
                                     <th>Due Date</th>
+                                    <th>Progress</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
@@ -7758,32 +7910,63 @@ function deleteLiveGCItem(id) {
 }
 
 // ========== FEATURE 1: Pre-GC Submission System ==========
+// ===== ENHANCED PRE-MEETING AGENDA COLLABORATION =====
+
 function addProposedAgendaItem() {
     const title = document.getElementById('proposed-item-title').value.trim();
     const description = document.getElementById('proposed-item-description').value.trim();
-    const submitter = document.getElementById('proposed-item-submitter').value.trim();
+    const submitter = document.getElementById('proposed-item-submitter').value;
+    const estimatedTime = parseInt(document.getElementById('proposed-item-time').value) || 15;
+    const urgency = document.getElementById('proposed-item-urgency').value;
+    const background = document.getElementById('proposed-item-background').value.trim();
 
     if (!title || !description || !submitter) {
-        showToast('Please fill in all fields for the agenda item.', 'error');
+        showToast('Please fill in all required fields (title, description, submitter).', 'error');
         return;
     }
 
     const items = storage.getProposedAgendaItems();
-    items.push({
+
+    // Check if submission is within allowed timeframe
+    const notice = checkAgendaSubmissionDeadline();
+    if (notice && notice.closed) {
+        showToast('Agenda submissions are closed for the upcoming meeting. Please submit for the next meeting.', 'error');
+        return;
+    }
+
+    const newItem = {
         id: genId(),
         title,
         description,
         submitter,
+        estimatedTime,
+        urgency,
+        background,
         dateSubmitted: new Date().toISOString().split('T')[0],
         status: 'pending',
-        discussionNotes: ''
-    });
-    storage.saveProposedAgendaItems(items);
-    showToast('Agenda item submitted successfully!', 'success');
+        discussionNotes: '',
+        interestedMembers: [], // Members who expressed interest
+        historicalContext: findHistoricalContext(title, description)
+    };
 
+    items.push(newItem);
+    storage.saveProposedAgendaItems(items);
+
+    // Add audit log
+    addAuditLog('CREATE', 'proposed-agenda', newItem.id, submitter, null,
+        `Submitted agenda item: ${title}`, null);
+
+    showToast('Agenda item submitted successfully! Members will be notified.', 'success');
+
+    // Send notification to all members
+    sendAgendaItemNotification(newItem);
+
+    // Clear form
     document.getElementById('proposed-item-title').value = '';
     document.getElementById('proposed-item-description').value = '';
-    document.getElementById('proposed-item-submitter').value = '';
+    document.getElementById('proposed-item-time').value = '15';
+    document.getElementById('proposed-item-urgency').value = 'medium';
+    document.getElementById('proposed-item-background').value = '';
 
     updateProposedAgendaTable();
 }
@@ -7792,27 +7975,91 @@ function updateProposedAgendaTable() {
     const tbody = document.getElementById('proposed-agenda-body');
     if (!tbody) return;
     tbody.innerHTML = '';
-    const items = storage.getProposedAgendaItems().sort((a, b) => new Date(b.dateSubmitted) - new Date(a.dateSubmitted));
 
-    items.forEach(item => {
+    // Populate submitter dropdown
+    const submitterSelect = document.getElementById('proposed-item-submitter');
+    if (submitterSelect && submitterSelect.options.length <= 1) {
+        const members = storage.getMembers().sort((a, b) => a.name.localeCompare(b.name));
+        members.forEach(m => {
+            const option = document.createElement('option');
+            option.value = m.name;
+            option.textContent = m.name;
+            submitterSelect.appendChild(option);
+        });
+    }
+
+    const items = storage.getProposedAgendaItems();
+
+    // Filter to only pending items for upcoming meeting
+    const pendingItems = items.filter(i => i.status === 'pending' || i.status === 'reviewed');
+
+    // Sort by urgency, then date
+    const urgencyOrder = { urgent: 0, high: 1, medium: 2, low: 3 };
+    pendingItems.sort((a, b) => {
+        const urgencyA = urgencyOrder[a.urgency || 'medium'];
+        const urgencyB = urgencyOrder[b.urgency || 'medium'];
+        if (urgencyA !== urgencyB) return urgencyA - urgencyB;
+        return new Date(a.dateSubmitted) - new Date(b.dateSubmitted);
+    });
+
+    pendingItems.forEach(item => {
         const tr = document.createElement('tr');
+
+        // Urgency badge
+        const urgencyColors = { urgent: '#e74c3c', high: '#f39c12', medium: '#3498db', low: '#95a5a6' };
+        const urgencyColor = urgencyColors[item.urgency || 'medium'];
+        const urgencyBadge = `<span style="display: inline-block; padding: 0.25rem 0.5rem; background: ${urgencyColor}; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">${(item.urgency || 'medium').toUpperCase()}</span>`;
+
+        // Interest indicator
+        const interestedCount = (item.interestedMembers || []).length;
+        const members = storage.getMembers();
+        const interestPercentage = members.length > 0 ? ((interestedCount / members.length) * 100).toFixed(0) : 0;
+        const interestDisplay = `
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-users" style="color: #3498db;"></i>
+                <span>${interestedCount} (${interestPercentage}%)</span>
+            </div>
+        `;
+
+        // Status color
         const statusColor = item.status === 'converted' ? '#2ecc71' : item.status === 'discussed' ? '#f39c12' : '#3498db';
+
+        // Historical context indicator
+        const hasContext = item.historicalContext && item.historicalContext.length > 0;
+        const contextBadge = hasContext ? `<span style="color: #f39c12; margin-left: 0.5rem;" title="Related to ${item.historicalContext.length} past decision(s)"><i class="fas fa-history"></i></span>` : '';
+
         tr.innerHTML = `
-            <td>${escapeHtml(item.title)}</td>
-            <td>${escapeHtml(item.submitter)}</td>
-            <td>${new Date(item.dateSubmitted).toLocaleDateString()}</td>
-            <td style="color: ${statusColor};">${escapeHtml(item.status.charAt(0).toUpperCase() + item.status.slice(1))}</td>
+            <td>${urgencyBadge}</td>
             <td>
-                <button class="btn" data-action="view-proposed" data-id="${escapeAttribute(item.id)}" style="margin-right: 5px;">View</button>
-                <button class="btn secondary" data-action="delete-proposed" data-id="${escapeAttribute(item.id)}">Delete</button>
+                <div style="font-weight: 500;">${escapeHtml(item.title)}${contextBadge}</div>
+                <div style="font-size: 0.75rem; opacity: 0.7; margin-top: 0.25rem;">
+                    Submitted: ${new Date(item.dateSubmitted).toLocaleDateString()}
+                </div>
+            </td>
+            <td>${escapeHtml(item.submitter)}</td>
+            <td>${item.estimatedTime || 15} min</td>
+            <td onclick="toggleAgendaInterest('${escapeAttribute(item.id)}')" style="cursor: pointer;" title="Click to express interest">
+                ${interestDisplay}
+            </td>
+            <td style="color: ${statusColor};">${escapeHtml(item.status.charAt(0).toUpperCase() + item.status.slice(1))}</td>
+            <td style="white-space: nowrap;">
+                <button class="btn" data-action="view-proposed" data-id="${escapeAttribute(item.id)}" style="margin-right: 5px; font-size: 0.8rem; padding: 0.3rem 0.6rem;">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button class="btn secondary" data-action="delete-proposed" data-id="${escapeAttribute(item.id)}" style="font-size: 0.8rem; padding: 0.3rem 0.6rem;">
+                    <i class="fas fa-trash"></i>
+                </button>
             </td>
         `;
         tbody.appendChild(tr);
     });
 
-    if (items.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5">No proposed agenda items.</td></tr>';
+    if (pendingItems.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem; opacity: 0.7;">No pending agenda items. Submit items to begin collaborative agenda building!</td></tr>';
     }
+
+    // Update submission deadline notice
+    updateAgendaSubmissionNotice();
 }
 
 function viewProposedAgendaItem(id) {
@@ -7820,16 +8067,277 @@ function viewProposedAgendaItem(id) {
     const item = items.find(i => i.id === id);
     if (!item) return;
 
-    alert(`Title: ${item.title}\n\nDescription: ${item.description}\n\nSubmitted by: ${item.submitter}\nDate: ${new Date(item.dateSubmitted).toLocaleDateString()}\nStatus: ${item.status}`);
+    // Build historical context section
+    let contextSection = '';
+    if (item.historicalContext && item.historicalContext.length > 0) {
+        const contextList = item.historicalContext.map(ctx => `
+            <div style="padding: 0.75rem; background: #2c3e50; border-left: 3px solid #f39c12; margin-bottom: 0.5rem;">
+                <div style="font-weight: bold;">${escapeHtml(ctx.item)}</div>
+                <div style="font-size: 0.85rem; opacity: 0.7; margin-top: 0.25rem;">
+                    ${new Date(ctx.date).toLocaleDateString()} - ${ctx.outcome}
+                </div>
+            </div>
+        `).join('');
+
+        contextSection = `
+            <div style="margin-top: 1.5rem;">
+                <h4 style="margin-bottom: 0.75rem;"><i class="fas fa-history"></i> Historical Context</h4>
+                <div style="background: #2c3e50; padding: 1rem; border-radius: 4px;">
+                    <div style="margin-bottom: 0.5rem; opacity: 0.8;">Similar past decisions:</div>
+                    ${contextList}
+                </div>
+            </div>
+        `;
+    }
+
+    // Build interested members section
+    let interestSection = '';
+    if (item.interestedMembers && item.interestedMembers.length > 0) {
+        const membersList = item.interestedMembers.map(name => `<span style="display: inline-block; padding: 0.25rem 0.5rem; background: #34495e; border-radius: 4px; margin: 0.25rem;">${escapeHtml(name)}</span>`).join('');
+        interestSection = `
+            <div style="margin-top: 1rem;">
+                <div style="font-weight: bold; margin-bottom: 0.5rem;"><i class="fas fa-users"></i> Interested Members (${item.interestedMembers.length})</div>
+                <div>${membersList}</div>
+            </div>
+        `;
+    }
+
+    const urgencyColors = { urgent: '#e74c3c', high: '#f39c12', medium: '#3498db', low: '#95a5a6' };
+    const urgencyColor = urgencyColors[item.urgency || 'medium'];
+
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center; overflow-y: auto;';
+    modal.innerHTML = `
+        <div style="background: #34495e; padding: 2rem; border-radius: 8px; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto; margin: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1.5rem;">
+                <h3 style="margin: 0;"><i class="fas fa-clipboard-list"></i> Agenda Item Details</h3>
+                <button onclick="this.closest('div[style*=fixed]').remove()" class="btn secondary" style="padding: 0.25rem 0.75rem;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Main Info -->
+            <div style="background: #2c3e50; padding: 1.5rem; border-radius: 4px; border-left: 4px solid ${urgencyColor};">
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <span style="display: inline-block; padding: 0.25rem 0.75rem; background: ${urgencyColor}; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">
+                        ${(item.urgency || 'medium').toUpperCase()}
+                    </span>
+                    <span style="display: inline-block; padding: 0.25rem 0.75rem; background: #7f8c8d; border-radius: 4px; font-size: 0.85rem;">
+                        ${item.estimatedTime || 15} minutes
+                    </span>
+                </div>
+
+                <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 1rem;">${escapeHtml(item.title)}</div>
+
+                <div style="margin-bottom: 1rem;">
+                    <div style="font-weight: bold; margin-bottom: 0.5rem;">Description & Rationale:</div>
+                    <div style="line-height: 1.6;">${escapeHtml(item.description)}</div>
+                </div>
+
+                ${item.background ? `
+                <div>
+                    <div style="font-weight: bold; margin-bottom: 0.5rem;">Background Materials:</div>
+                    <div style="background: #1a252f; padding: 1rem; border-radius: 4px; line-height: 1.6;">
+                        ${escapeHtml(item.background)}
+                    </div>
+                </div>
+                ` : ''}
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; font-size: 0.9rem;">
+                    <div>
+                        <div style="opacity: 0.7;">Submitted By:</div>
+                        <div style="font-weight: bold;">${escapeHtml(item.submitter)}</div>
+                    </div>
+                    <div>
+                        <div style="opacity: 0.7;">Date Submitted:</div>
+                        <div>${new Date(item.dateSubmitted).toLocaleDateString()}</div>
+                    </div>
+                </div>
+
+                ${interestSection}
+            </div>
+
+            ${contextSection}
+
+            <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+                <button onclick="toggleAgendaInterest('${escapeAttribute(item.id)}'); this.closest('div[style*=fixed]').remove(); updateProposedAgendaTable();" class="btn" style="background: #3498db;">
+                    <i class="fas fa-hand-paper"></i> Express Interest
+                </button>
+                <button onclick="this.closest('div[style*=fixed]').remove()" class="btn secondary">Close</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
 }
 
 function deleteProposedAgendaItem(id) {
-    if (!confirm('Delete this proposed agenda item?')) return;
-    let items = storage.getProposedAgendaItems();
-    items = items.filter(i => i.id !== id);
-    storage.saveProposedAgendaItems(items);
+    const items = storage.getProposedAgendaItems();
+    const item = items.find(i => i.id === id);
+
+    if (!confirm(`Delete proposed agenda item: "${item.title}"?`)) return;
+
+    const filtered = items.filter(i => i.id !== id);
+    storage.saveProposedAgendaItems(filtered);
+
+    // Add audit log
+    addAuditLog('DELETE', 'proposed-agenda', id, item.submitter, item,
+        `Deleted agenda item: ${item.title}`, null);
+
     showToast('Proposed agenda item deleted.', 'info');
     updateProposedAgendaTable();
+}
+
+function toggleAgendaInterest(itemId) {
+    const items = storage.getProposedAgendaItems();
+    const item = items.find(i => i.id === itemId);
+    if (!item) return;
+
+    const userName = prompt('Enter your name to express interest in this agenda item:');
+    if (!userName || userName.trim() === '') return;
+
+    if (!item.interestedMembers) item.interestedMembers = [];
+
+    if (item.interestedMembers.includes(userName.trim())) {
+        // Remove interest
+        item.interestedMembers = item.interestedMembers.filter(n => n !== userName.trim());
+        showToast('Interest removed', 'info');
+    } else {
+        // Add interest
+        item.interestedMembers.push(userName.trim());
+        showToast('Interest recorded! This helps prioritize agenda items.', 'success');
+    }
+
+    storage.saveProposedAgendaItems(items);
+    updateProposedAgendaTable();
+}
+
+function findHistoricalContext(title, description) {
+    const gcLogs = storage.getGroupConscienceLog();
+    const searchTerms = (title + ' ' + description).toLowerCase().split(' ').filter(word => word.length > 3);
+
+    // Find similar past decisions
+    const relatedDecisions = gcLogs.filter(log => {
+        const logText = (log.item + ' ' + (log.discussionNotes || '')).toLowerCase();
+        return searchTerms.some(term => logText.includes(term));
+    }).slice(0, 3); // Limit to 3 most recent
+
+    return relatedDecisions;
+}
+
+function sendAgendaItemNotification(item) {
+    const notification = {
+        id: genId(),
+        date: new Date().toISOString(),
+        priority: item.urgency === 'urgent' || item.urgency === 'high' ? 'high' : 'medium',
+        title: `New Agenda Item: ${item.title}`,
+        message: `${item.submitter} submitted a new item for the next GC meeting. Review and express interest if relevant to you.`,
+        actionLink: 'gc-decisions-section',
+        read: false
+    };
+
+    const notifications = storage.getNotifications();
+    notifications.unshift(notification);
+    storage.saveNotifications(notifications);
+}
+
+function checkAgendaSubmissionDeadline() {
+    // This would integrate with GC meeting schedule if available
+    // For now, return null (always open)
+    return null;
+}
+
+function updateAgendaSubmissionNotice() {
+    const notice = checkAgendaSubmissionDeadline();
+    const noticeEl = document.getElementById('agenda-submission-notice');
+    const textEl = document.getElementById('agenda-notice-text');
+
+    if (!noticeEl || !textEl) return;
+
+    if (notice) {
+        noticeEl.style.display = 'block';
+        textEl.textContent = notice.message;
+        if (notice.closed) {
+            noticeEl.style.background = '#e74c3c';
+        } else {
+            noticeEl.style.background = '#f39c12';
+        }
+    } else {
+        noticeEl.style.display = 'none';
+    }
+}
+
+function viewAgendaSummaryForUpcomingMeeting() {
+    const items = storage.getProposedAgendaItems().filter(i => i.status === 'pending' || i.status === 'reviewed');
+
+    if (items.length === 0) {
+        showToast('No agenda items to display', 'info');
+        return;
+    }
+
+    // Sort by urgency and interest
+    const urgencyOrder = { urgent: 0, high: 1, medium: 2, low: 3 };
+    items.sort((a, b) => {
+        const urgencyA = urgencyOrder[a.urgency || 'medium'];
+        const urgencyB = urgencyOrder[b.urgency || 'medium'];
+        if (urgencyA !== urgencyB) return urgencyA - urgencyB;
+
+        const interestA = (a.interestedMembers || []).length;
+        const interestB = (b.interestedMembers || []).length;
+        return interestB - interestA;
+    });
+
+    const totalTime = items.reduce((sum, item) => sum + (item.estimatedTime || 15), 0);
+
+    const itemsList = items.map((item, idx) => `
+        <div style="padding: 1rem; background: #2c3e50; border-left: 4px solid ${urgencyOrder[item.urgency || 'medium'] <= 1 ? '#e74c3c' : '#3498db'}; margin-bottom: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="flex: 1;">
+                    <div style="font-weight: bold; font-size: 1.05rem;">${idx + 1}. ${escapeHtml(item.title)}</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">${escapeHtml(item.description)}</div>
+                    <div style="font-size: 0.85rem; opacity: 0.7; margin-top: 0.5rem;">
+                        Submitted by ${escapeHtml(item.submitter)} | ${(item.interestedMembers || []).length} members interested
+                    </div>
+                </div>
+                <div style="text-align: right; min-width: 80px; margin-left: 1rem;">
+                    <div style="font-size: 0.9rem; font-weight: bold;">${item.estimatedTime || 15} min</div>
+                    <div style="font-size: 0.75rem; opacity: 0.7;">${(item.urgency || 'medium').toUpperCase()}</div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center; overflow-y: auto;';
+    modal.innerHTML = `
+        <div style="background: #34495e; padding: 2rem; border-radius: 8px; max-width: 900px; width: 90%; max-height: 90vh; overflow-y: auto; margin: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="margin: 0;"><i class="fas fa-clipboard-list"></i> Proposed Agenda for Next Meeting</h3>
+                <button onclick="this.closest('div[style*=fixed]').remove()" class="btn secondary">Close</button>
+            </div>
+
+            <div style="background: #2c3e50; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem; display: flex; justify-content: space-around;">
+                <div style="text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #3498db;">${items.length}</div>
+                    <div style="font-size: 0.85rem; opacity: 0.7;">Agenda Items</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #f39c12;">${totalTime} min</div>
+                    <div style="font-size: 0.85rem; opacity: 0.7;">Est. Total Time</div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <h4 style="margin-bottom: 0.75rem;">Prioritized Agenda (by urgency and interest):</h4>
+                ${itemsList}
+            </div>
+
+            <div style="padding: 1rem; background: #2c3e50; border-radius: 4px; font-size: 0.9rem; opacity: 0.8;">
+                <i class="fas fa-info-circle"></i> This prioritized agenda is based on urgency level and member interest.
+                Actual agenda order will be finalized by the facilitator before the meeting.
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
 }
 
 // ========== FEATURE 2: Voting Transparency & Quorum ==========
@@ -7943,7 +8451,7 @@ function loadGCSettings() {
     if (minimumInput) minimumInput.value = settings.quorumMinimum;
 }
 
-// ========== FEATURE 3: Action Items & Follow-Up Tracking ==========
+// ========== FEATURE 3: Enhanced Action Items & Follow-Up Tracking ==========
 function handleActionItemSubmit() {
     const editId = document.getElementById('action-item-edit-id').value;
     if (editId) {
@@ -7957,7 +8465,12 @@ function addActionItem() {
     const description = document.getElementById('action-item-description').value.trim();
     const assignee = document.getElementById('action-item-assignee').value;
     const dueDate = document.getElementById('action-item-due-date').value;
+    const priority = document.getElementById('action-item-priority').value;
     const relatedGCId = document.getElementById('action-item-related-gc').value;
+    const dependenciesSelect = document.getElementById('action-item-dependencies');
+    const dependencies = Array.from(dependenciesSelect.selectedOptions)
+        .map(opt => opt.value)
+        .filter(v => v !== '');
 
     if (!description || !assignee || !dueDate) {
         showToast('Please fill in all required fields.', 'error');
@@ -7965,19 +8478,35 @@ function addActionItem() {
     }
 
     const actions = storage.getGCActionItems();
-    actions.push({
+    const newAction = {
         id: genId(),
         description,
         assignee,
         dueDate,
+        priority,
         relatedGCId,
+        dependencies,
         status: 'pending',
+        progress: 0,
         createdDate: new Date().toISOString().split('T')[0],
-        completedDate: null
-    });
+        completedDate: null,
+        updates: [],
+        reminders: {
+            sent7Days: false,
+            sent3Days: false,
+            sent1Day: false,
+            sentOverdue: false
+        }
+    };
 
+    actions.push(newAction);
     storage.saveGCActionItems(actions);
-    showToast('Action item added!', 'success');
+
+    // Add audit log entry
+    addAuditLog('CREATE', 'action-item', newAction.id, assignee, null,
+        `Created action item: ${description.substring(0, 50)}`, null);
+
+    showToast('Action item added with automatic reminders enabled!', 'success');
     cancelActionItemEdit();
     updateActionItemsTable();
 }
@@ -7990,22 +8519,35 @@ function updateActionItem(id) {
     const description = document.getElementById('action-item-description').value.trim();
     const assignee = document.getElementById('action-item-assignee').value;
     const dueDate = document.getElementById('action-item-due-date').value;
+    const priority = document.getElementById('action-item-priority').value;
     const relatedGCId = document.getElementById('action-item-related-gc').value;
+    const dependenciesSelect = document.getElementById('action-item-dependencies');
+    const dependencies = Array.from(dependenciesSelect.selectedOptions)
+        .map(opt => opt.value)
+        .filter(v => v !== '');
 
     if (!description || !assignee || !dueDate) {
         showToast('Please fill in all required fields.', 'error');
         return;
     }
 
+    const oldAction = {...actions[index]};
     actions[index] = {
         ...actions[index],
         description,
         assignee,
         dueDate,
-        relatedGCId
+        priority,
+        relatedGCId,
+        dependencies
     };
 
     storage.saveGCActionItems(actions);
+
+    // Add audit log entry
+    addAuditLog('EDIT', 'action-item', id, assignee, oldAction,
+        `Updated action item: ${description.substring(0, 50)}`, null);
+
     showToast('Action item updated!', 'success');
     cancelActionItemEdit();
     updateActionItemsTable();
@@ -8016,7 +8558,10 @@ function cancelActionItemEdit() {
     document.getElementById('action-item-description').value = '';
     document.getElementById('action-item-assignee').value = '';
     document.getElementById('action-item-due-date').value = '';
+    document.getElementById('action-item-priority').value = 'medium';
     document.getElementById('action-item-related-gc').value = '';
+    const depsSelect = document.getElementById('action-item-dependencies');
+    Array.from(depsSelect.options).forEach(opt => opt.selected = false);
 
     document.getElementById('action-item-btn').textContent = 'Add Action Item';
     document.getElementById('action-item-cancel-btn').style.display = 'none';
@@ -8027,40 +8572,107 @@ function updateActionItemsTable() {
     if (!tbody) return;
     tbody.innerHTML = '';
 
-    const actions = storage.getGCActionItems().filter(a => a.status !== 'completed').sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+    const showCompleted = document.getElementById('action-item-show-completed')?.checked || false;
+    const filterAssignee = document.getElementById('action-item-filter-assignee')?.value || '';
+
+    let actions = storage.getGCActionItems();
+
+    // Apply filters
+    if (!showCompleted) {
+        actions = actions.filter(a => a.status !== 'completed');
+    }
+    if (filterAssignee) {
+        actions = actions.filter(a => a.assignee === filterAssignee);
+    }
+
+    // Sort by priority, then due date
+    const priorityOrder = { urgent: 0, high: 1, medium: 2, low: 3 };
+    actions.sort((a, b) => {
+        const priorityA = priorityOrder[a.priority || 'medium'];
+        const priorityB = priorityOrder[b.priority || 'medium'];
+        if (priorityA !== priorityB) return priorityA - priorityB;
+        return new Date(a.dueDate) - new Date(b.dueDate);
+    });
 
     actions.forEach(action => {
         const tr = document.createElement('tr');
         const today = new Date().toISOString().split('T')[0];
-        const isOverdue = action.dueDate < today;
+        const isOverdue = action.dueDate < today && action.status !== 'completed';
         const dueDateColor = isOverdue ? '#e74c3c' : '#ecf0f1';
 
-        const statusOptions = ['pending', 'in-progress', 'completed']
+        // Priority badge
+        const priorityColors = {
+            urgent: '#e74c3c',
+            high: '#f39c12',
+            medium: '#3498db',
+            low: '#95a5a6'
+        };
+        const priorityColor = priorityColors[action.priority || 'medium'];
+        const priorityBadge = `<span style="display: inline-block; padding: 0.25rem 0.5rem; background: ${priorityColor}; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">${(action.priority || 'medium').toUpperCase()}</span>`;
+
+        // Progress bar
+        const progress = action.progress || 0;
+        const progressBar = `
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div style="flex: 1; background: #2c3e50; border-radius: 10px; height: 20px; overflow: hidden;">
+                    <div style="background: ${progress === 100 ? '#2ecc71' : '#3498db'}; width: ${progress}%; height: 100%; transition: width 0.3s;"></div>
+                </div>
+                <span style="font-size: 0.85rem; min-width: 35px;">${progress}%</span>
+            </div>
+        `;
+
+        // Status dropdown
+        const statusOptions = ['pending', 'in-progress', 'blocked', 'completed']
             .map(s => `<option value="${s}" ${s === action.status ? 'selected' : ''}>${s.charAt(0).toUpperCase() + s.slice(1).replace('-', ' ')}</option>`)
             .join('');
 
+        // Check for dependency blocking
+        const isBlocked = checkActionItemBlocked(action);
+        const blockedWarning = isBlocked ? '<span style="color: #e74c3c; font-size: 0.8rem;"> (Blocked by dependencies)</span>' : '';
+
         tr.innerHTML = `
-            <td>${action.description.substring(0, 50)}${action.description.length > 50 ? '...' : ''}</td>
-            <td>${action.assignee}</td>
-            <td style="color: ${dueDateColor};">${new Date(action.dueDate).toLocaleDateString()}${isOverdue ? ' (OVERDUE)' : ''}</td>
+            <td>${priorityBadge}</td>
             <td>
-                <select onchange="updateActionItemStatus('${action.id}', this.value)" style="background: #34495e; color: #ecf0f1; border: 1px solid #7f8c8d; border-radius: 4px; padding: 0.25rem;">
+                <div style="font-weight: 500;">${escapeHtml(action.description.substring(0, 50))}${action.description.length > 50 ? '...' : ''}</div>
+                ${blockedWarning}
+                ${action.dependencies && action.dependencies.length > 0 ? `<div style="font-size: 0.75rem; opacity: 0.7; margin-top: 0.25rem;"><i class="fas fa-link"></i> ${action.dependencies.length} dependency/ies</div>` : ''}
+            </td>
+            <td>${escapeHtml(action.assignee)}</td>
+            <td style="color: ${dueDateColor}; font-weight: ${isOverdue ? 'bold' : 'normal'};">
+                ${new Date(action.dueDate).toLocaleDateString()}
+                ${isOverdue ? '<br><span style="font-size: 0.8rem;">(OVERDUE)</span>' : ''}
+            </td>
+            <td onclick="updateActionItemProgress('${escapeAttribute(action.id)}')" style="cursor: pointer;" title="Click to update progress">
+                ${progressBar}
+            </td>
+            <td>
+                <select onchange="handleActionItemStatusChange('${escapeAttribute(action.id)}', this.value)" style="background: #34495e; color: #ecf0f1; border: 1px solid #7f8c8d; border-radius: 4px; padding: 0.25rem;">
                     ${statusOptions}
                 </select>
             </td>
-            <td>
-                <button class="btn" data-action="edit-action" data-id="${escapeAttribute(action.id)}" style="margin-right: 5px;">Edit</button>
-                <button class="btn secondary" data-action="delete-action" data-id="${escapeAttribute(action.id)}">Delete</button>
+            <td style="white-space: nowrap;">
+                <button class="btn" data-action="view-action-details" data-id="${escapeAttribute(action.id)}" style="margin-right: 5px; font-size: 0.8rem; padding: 0.3rem 0.6rem;">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button class="btn" data-action="edit-action" data-id="${escapeAttribute(action.id)}" style="margin-right: 5px; font-size: 0.8rem; padding: 0.3rem 0.6rem;">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn secondary" data-action="delete-action" data-id="${escapeAttribute(action.id)}" style="font-size: 0.8rem; padding: 0.3rem 0.6rem;">
+                    <i class="fas fa-trash"></i>
+                </button>
             </td>
         `;
         tbody.appendChild(tr);
     });
 
     if (actions.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5">No active action items.</td></tr>';
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem; opacity: 0.7;">No action items match the current filters.</td></tr>`;
     }
 
     populateActionItemDropdowns();
+
+    // Run automatic reminder check
+    checkAndSendActionItemReminders();
 }
 
 function editActionItem(id) {
@@ -8072,10 +8684,29 @@ function editActionItem(id) {
     document.getElementById('action-item-description').value = action.description;
     document.getElementById('action-item-assignee').value = action.assignee;
     document.getElementById('action-item-due-date').value = action.dueDate;
+    document.getElementById('action-item-priority').value = action.priority || 'medium';
     document.getElementById('action-item-related-gc').value = action.relatedGCId || '';
+
+    // Select dependencies
+    const depsSelect = document.getElementById('action-item-dependencies');
+    Array.from(depsSelect.options).forEach(opt => {
+        opt.selected = action.dependencies && action.dependencies.includes(opt.value);
+    });
 
     document.getElementById('action-item-btn').textContent = 'Update Action Item';
     document.getElementById('action-item-cancel-btn').style.display = 'inline-block';
+
+    // Scroll to form
+    document.getElementById('action-item-description').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function handleActionItemStatusChange(id, newStatus) {
+    if (newStatus === 'completed') {
+        // Require completion verification
+        openCompletionVerificationModal(id);
+    } else {
+        updateActionItemStatus(id, newStatus);
+    }
 }
 
 function updateActionItemStatus(id, newStatus) {
@@ -8083,21 +8714,37 @@ function updateActionItemStatus(id, newStatus) {
     const index = actions.findIndex(a => a.id === id);
     if (index === -1) return;
 
+    const oldStatus = actions[index].status;
     actions[index].status = newStatus;
+
     if (newStatus === 'completed') {
         actions[index].completedDate = new Date().toISOString().split('T')[0];
+        actions[index].progress = 100;
     }
 
     storage.saveGCActionItems(actions);
+
+    // Add audit log
+    addAuditLog('EDIT', 'action-item', id, actions[index].assignee, { status: oldStatus },
+        `Status changed from ${oldStatus} to ${newStatus}`, null);
+
     showToast('Action item status updated!', 'success');
     updateActionItemsTable();
 }
 
 function deleteActionItem(id) {
-    if (!confirm('Delete this action item?')) return;
-    let actions = storage.getGCActionItems();
-    actions = actions.filter(a => a.id !== id);
-    storage.saveGCActionItems(actions);
+    const actions = storage.getGCActionItems();
+    const action = actions.find(a => a.id === id);
+
+    if (!confirm(`Delete action item: "${action.description.substring(0, 50)}"?`)) return;
+
+    const filtered = actions.filter(a => a.id !== id);
+    storage.saveGCActionItems(filtered);
+
+    // Add audit log
+    addAuditLog('DELETE', 'action-item', id, action.assignee, action,
+        `Deleted action item: ${action.description.substring(0, 50)}`, null);
+
     showToast('Action item deleted.', 'info');
     updateActionItemsTable();
 }
@@ -8105,6 +8752,8 @@ function deleteActionItem(id) {
 function populateActionItemDropdowns() {
     const assigneeSelect = document.getElementById('action-item-assignee');
     const relatedGCSelect = document.getElementById('action-item-related-gc');
+    const depsSelect = document.getElementById('action-item-dependencies');
+    const filterSelect = document.getElementById('action-item-filter-assignee');
 
     if (assigneeSelect) {
         const currentValue = assigneeSelect.value;
@@ -8119,6 +8768,19 @@ function populateActionItemDropdowns() {
         if (currentValue) assigneeSelect.value = currentValue;
     }
 
+    if (filterSelect) {
+        const currentValue = filterSelect.value;
+        filterSelect.innerHTML = '<option value="">All Assignees</option>';
+        const members = storage.getMembers().sort((a, b) => a.name.localeCompare(b.name));
+        members.forEach(m => {
+            const option = document.createElement('option');
+            option.value = m.name;
+            option.textContent = m.name;
+            filterSelect.appendChild(option);
+        });
+        if (currentValue) filterSelect.value = currentValue;
+    }
+
     if (relatedGCSelect) {
         const currentValue = relatedGCSelect.value;
         relatedGCSelect.innerHTML = '<option value="">None</option>';
@@ -8131,6 +8793,472 @@ function populateActionItemDropdowns() {
         });
         if (currentValue) relatedGCSelect.value = currentValue;
     }
+
+    if (depsSelect) {
+        const currentEditId = document.getElementById('action-item-edit-id').value;
+        const currentValue = Array.from(depsSelect.selectedOptions).map(opt => opt.value);
+        depsSelect.innerHTML = '<option value="">None - select other action items this depends on</option>';
+        const actions = storage.getGCActionItems().filter(a => a.status !== 'completed' && a.id !== currentEditId);
+        actions.forEach(action => {
+            const option = document.createElement('option');
+            option.value = action.id;
+            option.textContent = `${action.description.substring(0, 60)} (${action.assignee})`;
+            if (currentValue.includes(action.id)) option.selected = true;
+            depsSelect.appendChild(option);
+        });
+    }
+}
+
+// ===== NEW ENHANCED ACTION ITEM FUNCTIONS =====
+
+function checkActionItemBlocked(action) {
+    if (!action.dependencies || action.dependencies.length === 0) return false;
+
+    const actions = storage.getGCActionItems();
+    const dependencyActions = actions.filter(a => action.dependencies.includes(a.id));
+
+    // Blocked if any dependency is not completed
+    return dependencyActions.some(dep => dep.status !== 'completed');
+}
+
+function updateActionItemProgress(id) {
+    const actions = storage.getGCActionItems();
+    const action = actions.find(a => a.id === id);
+    if (!action) return;
+
+    const currentProgress = action.progress || 0;
+    const newProgress = prompt(`Update progress for:\n"${action.description}"\n\nEnter percentage (0-100):`, currentProgress);
+
+    if (newProgress === null) return;
+
+    const progress = parseInt(newProgress);
+    if (isNaN(progress) || progress < 0 || progress > 100) {
+        showToast('Please enter a valid percentage (0-100)', 'error');
+        return;
+    }
+
+    const note = prompt('Add a progress note (optional):', '');
+
+    const index = actions.findIndex(a => a.id === id);
+    actions[index].progress = progress;
+
+    // Add update to history
+    if (!actions[index].updates) actions[index].updates = [];
+    actions[index].updates.push({
+        date: new Date().toISOString(),
+        type: 'progress',
+        progress: progress,
+        note: note || ''
+    });
+
+    // Auto-update status based on progress
+    if (progress === 0 && actions[index].status === 'pending') {
+        // Keep as pending
+    } else if (progress > 0 && progress < 100 && actions[index].status === 'pending') {
+        actions[index].status = 'in-progress';
+    } else if (progress === 100 && actions[index].status !== 'completed') {
+        // Suggest completion
+        if (confirm('Progress is 100%. Mark this action item as completed?')) {
+            openCompletionVerificationModal(id);
+            return;
+        }
+    }
+
+    storage.saveGCActionItems(actions);
+    showToast(`Progress updated to ${progress}%`, 'success');
+    updateActionItemsTable();
+}
+
+function openCompletionVerificationModal(id) {
+    const actions = storage.getGCActionItems();
+    const action = actions.find(a => a.id === id);
+    if (!action) return;
+
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center;';
+    modal.innerHTML = `
+        <div style="background: #34495e; padding: 2rem; border-radius: 8px; max-width: 600px; width: 90%;">
+            <h3 style="margin-top: 0;"><i class="fas fa-check-circle" style="color: #2ecc71;"></i> Complete Action Item</h3>
+            <div style="background: #2c3e50; padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                <div style="font-weight: bold; margin-bottom: 0.5rem;">${escapeHtml(action.description)}</div>
+                <div style="font-size: 0.85rem; opacity: 0.7;">Assigned to: ${escapeHtml(action.assignee)} | Due: ${new Date(action.dueDate).toLocaleDateString()}</div>
+            </div>
+
+            <div style="margin: 1.5rem 0;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
+                    Completion Notes / Evidence *
+                </label>
+                <textarea id="completion-notes" rows="4" placeholder="Describe what was completed and any relevant details..." style="width: 100%; padding: 0.5rem; background: #2c3e50; border: 1px solid #7f8c8d; border-radius: 4px; color: #ecf0f1; font-family: inherit;"></textarea>
+                <div style="font-size: 0.85rem; opacity: 0.7; margin-top: 0.25rem;">Required for accountability and future reference</div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button onclick="this.closest('div[style*=fixed]').remove()" class="btn secondary">Cancel</button>
+                <button onclick="completeActionItem('${escapeAttribute(id)}')" class="btn" style="background: #2ecc71;">
+                    <i class="fas fa-check"></i> Mark Complete
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    document.getElementById('completion-notes').focus();
+}
+
+function completeActionItem(id) {
+    const notes = document.getElementById('completion-notes').value.trim();
+
+    if (!notes) {
+        showToast('Please provide completion notes for accountability', 'error');
+        return;
+    }
+
+    const actions = storage.getGCActionItems();
+    const index = actions.findIndex(a => a.id === id);
+    if (index === -1) return;
+
+    actions[index].status = 'completed';
+    actions[index].progress = 100;
+    actions[index].completedDate = new Date().toISOString().split('T')[0];
+
+    if (!actions[index].updates) actions[index].updates = [];
+    actions[index].updates.push({
+        date: new Date().toISOString(),
+        type: 'completion',
+        note: notes
+    });
+
+    storage.saveGCActionItems(actions);
+
+    // Add audit log
+    addAuditLog('EDIT', 'action-item', id, actions[index].assignee, { status: 'in-progress' },
+        `Completed action item: ${actions[index].description.substring(0, 50)}`, notes);
+
+    // Close modal
+    document.querySelectorAll('div[style*="position: fixed"]').forEach(modal => modal.remove());
+
+    showToast('Action item marked as complete!', 'success');
+    updateActionItemsTable();
+}
+
+function viewActionItemDetails(id) {
+    const actions = storage.getGCActionItems();
+    const action = actions.find(a => a.id === id);
+    if (!action) return;
+
+    const today = new Date().toISOString().split('T')[0];
+    const isOverdue = action.dueDate < today && action.status !== 'completed';
+    const daysUntilDue = Math.ceil((new Date(action.dueDate) - new Date(today)) / (1000 * 60 * 60 * 24));
+
+    // Get related GC motion if exists
+    let relatedGCInfo = '';
+    if (action.relatedGCId) {
+        const gcLog = storage.getGroupConscienceLog().find(log => log.id === action.relatedGCId);
+        if (gcLog) {
+            relatedGCInfo = `
+                <div style="background: #2c3e50; padding: 1rem; border-radius: 4px; margin-top: 1rem;">
+                    <div style="font-weight: bold; margin-bottom: 0.5rem;"><i class="fas fa-link"></i> Related GC Motion</div>
+                    <div>${escapeHtml(gcLog.item)}</div>
+                    <div style="font-size: 0.85rem; opacity: 0.7; margin-top: 0.25rem;">
+                        ${new Date(gcLog.date).toLocaleDateString()} - ${gcLog.outcome}
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    // Get dependencies info
+    let depsInfo = '';
+    if (action.dependencies && action.dependencies.length > 0) {
+        const depActions = actions.filter(a => action.dependencies.includes(a.id));
+        const depsList = depActions.map(dep => `
+            <div style="padding: 0.5rem; background: ${dep.status === 'completed' ? '#27ae60' : '#e74c3c'}; border-radius: 4px; margin-bottom: 0.5rem;">
+                <div style="font-weight: 500;">${escapeHtml(dep.description.substring(0, 60))}</div>
+                <div style="font-size: 0.85rem; opacity: 0.9;">Status: ${dep.status} | ${dep.assignee}</div>
+            </div>
+        `).join('');
+
+        depsInfo = `
+            <div style="background: #2c3e50; padding: 1rem; border-radius: 4px; margin-top: 1rem;">
+                <div style="font-weight: bold; margin-bottom: 0.5rem;"><i class="fas fa-project-diagram"></i> Dependencies (${depActions.length})</div>
+                ${depsList}
+            </div>
+        `;
+    }
+
+    // Updates history
+    let updatesInfo = '';
+    if (action.updates && action.updates.length > 0) {
+        const updatesList = action.updates.slice().reverse().map(update => `
+            <div style="padding: 0.75rem; background: #2c3e50; border-left: 3px solid #3498db; margin-bottom: 0.5rem;">
+                <div style="font-size: 0.85rem; opacity: 0.7;">${new Date(update.date).toLocaleString()}</div>
+                <div style="margin-top: 0.25rem;">
+                    ${update.type === 'progress' ? `<strong>Progress: ${update.progress}%</strong>` : '<strong>Completed</strong>'}
+                </div>
+                ${update.note ? `<div style="margin-top: 0.5rem;">${escapeHtml(update.note)}</div>` : ''}
+            </div>
+        `).join('');
+
+        updatesInfo = `
+            <div style="background: #2c3e50; padding: 1rem; border-radius: 4px; margin-top: 1rem;">
+                <div style="font-weight: bold; margin-bottom: 0.5rem;"><i class="fas fa-history"></i> Update History (${action.updates.length})</div>
+                ${updatesList}
+            </div>
+        `;
+    }
+
+    const priorityColors = { urgent: '#e74c3c', high: '#f39c12', medium: '#3498db', low: '#95a5a6' };
+    const priorityColor = priorityColors[action.priority || 'medium'];
+
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center; overflow-y: auto;';
+    modal.innerHTML = `
+        <div style="background: #34495e; padding: 2rem; border-radius: 8px; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto; margin: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1.5rem;">
+                <h3 style="margin: 0;"><i class="fas fa-tasks"></i> Action Item Details</h3>
+                <button onclick="this.closest('div[style*=fixed]').remove()" class="btn secondary" style="padding: 0.25rem 0.75rem;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Main Info -->
+            <div style="background: #2c3e50; padding: 1.5rem; border-radius: 4px; border-left: 4px solid ${priorityColor};">
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <span style="display: inline-block; padding: 0.25rem 0.75rem; background: ${priorityColor}; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">
+                        ${(action.priority || 'medium').toUpperCase()}
+                    </span>
+                    <span style="display: inline-block; padding: 0.25rem 0.75rem; background: #7f8c8d; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">
+                        ${action.status.toUpperCase()}
+                    </span>
+                </div>
+                <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 1rem;">${escapeHtml(action.description)}</div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.9rem;">
+                    <div>
+                        <div style="opacity: 0.7;">Assigned To:</div>
+                        <div style="font-weight: bold;">${escapeHtml(action.assignee)}</div>
+                    </div>
+                    <div>
+                        <div style="opacity: 0.7;">Due Date:</div>
+                        <div style="font-weight: bold; color: ${isOverdue ? '#e74c3c' : '#ecf0f1'};">
+                            ${new Date(action.dueDate).toLocaleDateString()}
+                            ${isOverdue ? ' (OVERDUE)' : daysUntilDue >= 0 ? ` (${daysUntilDue} days)` : ''}
+                        </div>
+                    </div>
+                    <div>
+                        <div style="opacity: 0.7;">Created:</div>
+                        <div>${new Date(action.createdDate).toLocaleDateString()}</div>
+                    </div>
+                    ${action.completedDate ? `
+                    <div>
+                        <div style="opacity: 0.7;">Completed:</div>
+                        <div style="color: #2ecc71;">${new Date(action.completedDate).toLocaleDateString()}</div>
+                    </div>
+                    ` : ''}
+                </div>
+
+                <!-- Progress Bar -->
+                <div style="margin-top: 1rem;">
+                    <div style="opacity: 0.7; margin-bottom: 0.5rem;">Progress: ${action.progress || 0}%</div>
+                    <div style="background: #1a252f; border-radius: 10px; height: 24px; overflow: hidden;">
+                        <div style="background: ${action.progress === 100 ? '#2ecc71' : '#3498db'}; width: ${action.progress || 0}%; height: 100%; transition: width 0.3s;"></div>
+                    </div>
+                </div>
+            </div>
+
+            ${relatedGCInfo}
+            ${depsInfo}
+            ${updatesInfo}
+
+            <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+                <button onclick="editActionItem('${escapeAttribute(action.id)}'); this.closest('div[style*=fixed]').remove();" class="btn">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                ${action.status !== 'completed' ? `
+                <button onclick="updateActionItemProgress('${escapeAttribute(action.id)}'); this.closest('div[style*=fixed]').remove();" class="btn" style="background: #3498db;">
+                    <i class="fas fa-tasks"></i> Update Progress
+                </button>
+                <button onclick="openCompletionVerificationModal('${escapeAttribute(action.id)}'); this.closest('div[style*=fixed]').remove();" class="btn" style="background: #2ecc71;">
+                    <i class="fas fa-check"></i> Mark Complete
+                </button>
+                ` : ''}
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function checkAndSendActionItemReminders() {
+    const actions = storage.getGCActionItems().filter(a => a.status !== 'completed');
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    actions.forEach(action => {
+        const dueDate = new Date(action.dueDate);
+        dueDate.setHours(0, 0, 0, 0);
+        const daysUntilDue = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+
+        // Initialize reminders object if missing
+        if (!action.reminders) {
+            action.reminders = {
+                sent7Days: false,
+                sent3Days: false,
+                sent1Day: false,
+                sentOverdue: false
+            };
+        }
+
+        // 7 days reminder
+        if (daysUntilDue === 7 && !action.reminders.sent7Days) {
+            sendActionItemReminder(action, '7 days');
+            action.reminders.sent7Days = true;
+        }
+
+        // 3 days reminder
+        if (daysUntilDue === 3 && !action.reminders.sent3Days) {
+            sendActionItemReminder(action, '3 days');
+            action.reminders.sent3Days = true;
+        }
+
+        // 1 day reminder
+        if (daysUntilDue === 1 && !action.reminders.sent1Day) {
+            sendActionItemReminder(action, '1 day');
+            action.reminders.sent1Day = true;
+        }
+
+        // Overdue reminder (send once per day while overdue)
+        if (daysUntilDue < 0) {
+            const lastSent = action.reminders.lastOverdueReminder;
+            const shouldSend = !lastSent || (new Date().toISOString().split('T')[0] !== lastSent);
+            if (shouldSend) {
+                sendActionItemReminder(action, `${Math.abs(daysUntilDue)} days overdue`);
+                action.reminders.lastOverdueReminder = new Date().toISOString().split('T')[0];
+            }
+        }
+    });
+
+    storage.saveGCActionItems(actions);
+}
+
+function sendActionItemReminder(action, timeframe) {
+    const notification = {
+        id: genId(),
+        date: new Date().toISOString(),
+        priority: timeframe.includes('overdue') ? 'urgent' : 'high',
+        title: `Action Item Reminder: ${timeframe}`,
+        message: `"${action.description}" assigned to ${action.assignee} - Due: ${new Date(action.dueDate).toLocaleDateString()}`,
+        actionLink: 'gc-decisions-section',
+        read: false
+    };
+
+    const notifications = storage.getNotifications();
+    notifications.unshift(notification);
+    storage.saveNotifications(notifications);
+}
+
+function viewActionItemReport() {
+    const actions = storage.getGCActionItems();
+    const members = storage.getMembers();
+
+    // Calculate metrics by assignee
+    const metrics = {};
+    members.forEach(member => {
+        const memberActions = actions.filter(a => a.assignee === member.name);
+        const completed = memberActions.filter(a => a.status === 'completed');
+        const overdue = memberActions.filter(a => {
+            const today = new Date().toISOString().split('T')[0];
+            return a.dueDate < today && a.status !== 'completed';
+        });
+        const inProgress = memberActions.filter(a => a.status === 'in-progress');
+
+        metrics[member.name] = {
+            total: memberActions.length,
+            completed: completed.length,
+            inProgress: inProgress.length,
+            overdue: overdue.length,
+            completionRate: memberActions.length > 0 ? ((completed.length / memberActions.length) * 100).toFixed(1) : 0
+        };
+    });
+
+    // Overall statistics
+    const totalActions = actions.length;
+    const completedActions = actions.filter(a => a.status === 'completed').length;
+    const overdueActions = actions.filter(a => {
+        const today = new Date().toISOString().split('T')[0];
+        return a.dueDate < today && a.status !== 'completed';
+    }).length;
+
+    const membersWithActions = Object.entries(metrics).filter(([_, m]) => m.total > 0);
+
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center; overflow-y: auto;';
+    modal.innerHTML = `
+        <div style="background: #34495e; padding: 2rem; border-radius: 8px; max-width: 1000px; width: 90%; max-height: 90vh; overflow-y: auto; margin: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="margin: 0;"><i class="fas fa-chart-bar"></i> Action Items Accountability Report</h3>
+                <button onclick="this.closest('div[style*=fixed]').remove()" class="btn secondary">Close</button>
+            </div>
+
+            <!-- Overall Stats -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                <div style="background: #2c3e50; padding: 1rem; border-radius: 4px; text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #3498db;">${totalActions}</div>
+                    <div style="opacity: 0.7;">Total Action Items</div>
+                </div>
+                <div style="background: #2c3e50; padding: 1rem; border-radius: 4px; text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #2ecc71;">${completedActions}</div>
+                    <div style="opacity: 0.7;">Completed</div>
+                </div>
+                <div style="background: #2c3e50; padding: 1rem; border-radius: 4px; text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #e74c3c;">${overdueActions}</div>
+                    <div style="opacity: 0.7;">Overdue</div>
+                </div>
+                <div style="background: #2c3e50; padding: 1rem; border-radius: 4px; text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #f39c12;">${totalActions > 0 ? ((completedActions / totalActions) * 100).toFixed(1) : 0}%</div>
+                    <div style="opacity: 0.7;">Completion Rate</div>
+                </div>
+            </div>
+
+            <!-- By Assignee Table -->
+            <h4>Performance by Assignee</h4>
+            <table style="width: 100%; margin-top: 1rem;">
+                <thead>
+                    <tr>
+                        <th>Assignee</th>
+                        <th>Total</th>
+                        <th>Completed</th>
+                        <th>In Progress</th>
+                        <th>Overdue</th>
+                        <th>Completion Rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${membersWithActions.map(([name, m]) => `
+                        <tr>
+                            <td style="font-weight: bold;">${escapeHtml(name)}</td>
+                            <td>${m.total}</td>
+                            <td style="color: #2ecc71;">${m.completed}</td>
+                            <td style="color: #3498db;">${m.inProgress}</td>
+                            <td style="color: ${m.overdue > 0 ? '#e74c3c' : '#ecf0f1'}; font-weight: ${m.overdue > 0 ? 'bold' : 'normal'};">${m.overdue}</td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div style="flex: 1; background: #1a252f; border-radius: 10px; height: 20px; overflow: hidden;">
+                                        <div style="background: #2ecc71; width: ${m.completionRate}%; height: 100%;"></div>
+                                    </div>
+                                    <span style="min-width: 45px;">${m.completionRate}%</span>
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+
+            <div style="margin-top: 2rem; padding: 1rem; background: #2c3e50; border-radius: 4px; font-size: 0.9rem; opacity: 0.8;">
+                <i class="fas fa-info-circle"></i> This report shows action item completion metrics for accountability.
+                Use this data during GC meetings to identify bottlenecks and recognize consistent performers.
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
 }
 
 // ========== FEATURE 4: Discussion Threading & Comments ==========
@@ -9438,6 +10566,7 @@ function updateUnifiedDashboard() {
     updateAttentionItems();
     updateUpcomingTimeline();
     updateActivityFeed();
+    updateGroupHealthMetrics();
 }
 
 function updateAttentionItems() {
@@ -9654,6 +10783,377 @@ function updateActivityFeed() {
             </div>
         `).join('');
     }
+}
+
+// ===== GROUP HEALTH METRICS DASHBOARD =====
+
+function updateGroupHealthMetrics() {
+    calculateParticipationRate();
+    calculateConsensusRate();
+    calculateActionCompletionRate();
+    calculateServiceFilledRate();
+    calculatePrudentReserveStatus();
+    calculateAverageAttendance();
+    updateHealthTrends();
+}
+
+function calculateParticipationRate() {
+    const members = storage.getMembers();
+    const gcLogs = storage.getGroupConscienceLog();
+
+    // Last 3 months
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+    const recentGCs = gcLogs.filter(log => new Date(log.date) >= threeMonthsAgo);
+
+    if (recentGCs.length === 0 || members.length === 0) {
+        document.getElementById('participation-rate').textContent = 'N/A';
+        return;
+    }
+
+    // Calculate unique members who participated
+    const uniqueParticipants = new Set();
+    recentGCs.forEach(log => {
+        if (Array.isArray(log.attendees)) {
+            log.attendees.forEach(name => uniqueParticipants.add(name));
+        }
+    });
+
+    const participationRate = ((uniqueParticipants.size / members.length) * 100).toFixed(0);
+    document.getElementById('participation-rate').textContent = participationRate + '%';
+}
+
+function calculateConsensusRate() {
+    const gcLogs = storage.getGroupConscienceLog();
+
+    // Last 3 months
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+    const recentDecisions = gcLogs.filter(log =>
+        new Date(log.date) >= threeMonthsAgo && log.outcome === 'passed'
+    );
+
+    if (recentDecisions.length === 0) {
+        document.getElementById('consensus-rate').textContent = 'N/A';
+        return;
+    }
+
+    // Count how many achieved substantial unanimity (2/3 or more)
+    const consensusDecisions = recentDecisions.filter(log => {
+        const votesFor = log.votesFor || 0;
+        const votesAgainst = log.votesAgainst || 0;
+        const totalVotes = votesFor + votesAgainst;
+
+        if (totalVotes === 0) return false;
+
+        const percentFor = (votesFor / totalVotes) * 100;
+        return percentFor >= 66.7; // Substantial unanimity (2/3)
+    });
+
+    const consensusRate = ((consensusDecisions.length / recentDecisions.length) * 100).toFixed(0);
+    document.getElementById('consensus-rate').textContent = consensusRate + '%';
+}
+
+function calculateActionCompletionRate() {
+    const actions = storage.getGCActionItems();
+
+    // Actions created in last 3 months
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+    const recentActions = actions.filter(action =>
+        new Date(action.createdDate) >= threeMonthsAgo
+    );
+
+    if (recentActions.length === 0) {
+        document.getElementById('action-completion-rate').textContent = 'N/A';
+        return;
+    }
+
+    // Count completed actions that were done on-time or early
+    const completedOnTime = recentActions.filter(action => {
+        if (action.status !== 'completed' || !action.completedDate) return false;
+
+        const dueDate = new Date(action.dueDate);
+        const completedDate = new Date(action.completedDate);
+
+        return completedDate <= dueDate;
+    });
+
+    const completionRate = ((completedOnTime.length / recentActions.length) * 100).toFixed(0);
+    document.getElementById('action-completion-rate').textContent = completionRate + '%';
+}
+
+function calculateServiceFilledRate() {
+    const positions = storage.getServicePositions();
+
+    if (positions.length === 0) {
+        document.getElementById('service-filled-rate').textContent = 'N/A';
+        return;
+    }
+
+    const filledPositions = positions.filter(pos => pos.currentHolder && pos.currentHolder.trim() !== '');
+    const filledRate = ((filledPositions.length / positions.length) * 100).toFixed(0);
+
+    document.getElementById('service-filled-rate').textContent = filledRate + '%';
+}
+
+function calculatePrudentReserveStatus() {
+    const balance = parseFloat(localStorage.getItem('treasurerBalance')) || 0;
+    const expenses = storage.getExpenses();
+
+    // Calculate average monthly expenses (last 3 months)
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+    const recentExpenses = expenses.filter(exp => new Date(exp.date) >= threeMonthsAgo);
+    const totalExpenses = recentExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+    const monthlyAverage = totalExpenses / 3;
+
+    if (monthlyAverage === 0) {
+        document.getElementById('prudent-reserve-status').textContent = 'N/A';
+        return;
+    }
+
+    const monthsOfReserve = balance / monthlyAverage;
+    const statusEl = document.getElementById('prudent-reserve-status');
+
+    if (monthsOfReserve >= 3) {
+        statusEl.textContent = 'Healthy';
+        statusEl.style.color = '#2ecc71';
+    } else if (monthsOfReserve >= 2) {
+        statusEl.textContent = 'Fair';
+        statusEl.style.color = '#f39c12';
+    } else {
+        statusEl.textContent = 'Low';
+        statusEl.style.color = '#e74c3c';
+    }
+}
+
+function calculateAverageAttendance() {
+    const chairpersonLogs = storage.getChairpersonLog();
+
+    // Last 3 months
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+    const recentLogs = chairpersonLogs.filter(log => new Date(log.date) >= threeMonthsAgo);
+
+    if (recentLogs.length === 0) {
+        document.getElementById('avg-attendance').textContent = 'N/A';
+        return;
+    }
+
+    const totalAttendance = recentLogs.reduce((sum, log) => sum + (log.attendance || 0), 0);
+    const average = Math.round(totalAttendance / recentLogs.length);
+
+    document.getElementById('avg-attendance').textContent = average;
+}
+
+function updateHealthTrends() {
+    const container = document.getElementById('health-trends');
+    const trends = [];
+
+    // Analyze trends
+    const members = storage.getMembers().length;
+    const gcLogs = storage.getGroupConscienceLog();
+    const actions = storage.getGCActionItems();
+    const positions = storage.getServicePositions();
+
+    // GC Activity Trend
+    const lastMonth = new Date();
+    lastMonth.setMonth(lastMonth.getMonth() - 1);
+    const recentGCs = gcLogs.filter(log => new Date(log.date) >= lastMonth).length;
+
+    if (recentGCs === 0) {
+        trends.push({
+            icon: 'fa-exclamation-triangle',
+            color: '#e74c3c',
+            text: 'No GC meetings in the last month - Consider scheduling one',
+            action: 'goToSection(\'gc-decisions-section\')',
+            actionText: 'Schedule GC'
+        });
+    } else if (recentGCs >= 2) {
+        trends.push({
+            icon: 'fa-check-circle',
+            color: '#2ecc71',
+            text: `${recentGCs} GC meeting(s) held last month - Strong group conscience activity`,
+            action: null,
+            actionText: null
+        });
+    }
+
+    // Overdue Action Items
+    const today = new Date().toISOString().split('T')[0];
+    const overdueActions = actions.filter(a => a.dueDate < today && a.status !== 'completed').length;
+
+    if (overdueActions > 0) {
+        trends.push({
+            icon: 'fa-tasks',
+            color: '#e74c3c',
+            text: `${overdueActions} action item(s) overdue - Follow-through needed`,
+            action: 'goToSection(\'gc-decisions-section\')',
+            actionText: 'View Actions'
+        });
+    }
+
+    // Service Position Vacancies
+    const vacantPositions = positions.filter(p => !p.currentHolder || p.currentHolder.trim() === '');
+
+    if (vacantPositions.length > 0) {
+        trends.push({
+            icon: 'fa-user-tie',
+            color: '#f39c12',
+            text: `${vacantPositions.length} service position(s) vacant - ${vacantPositions.map(p => p.name).join(', ')}`,
+            action: 'goToSection(\'service-positions-section\')',
+            actionText: 'Fill Positions'
+        });
+    }
+
+    // Financial Health Check
+    const balance = parseFloat(localStorage.getItem('treasurerBalance')) || 0;
+    const expenses = storage.getExpenses();
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+    const recentExpenses = expenses.filter(exp => new Date(exp.date) >= threeMonthsAgo);
+    const totalExpenses = recentExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+    const monthlyAverage = totalExpenses / 3;
+    const monthsOfReserve = monthlyAverage > 0 ? balance / monthlyAverage : 0;
+
+    if (monthsOfReserve < 2) {
+        trends.push({
+            icon: 'fa-dollar-sign',
+            color: '#e74c3c',
+            text: `Prudent reserve below 2 months - Current: ${monthsOfReserve.toFixed(1)} months`,
+            action: 'goToSection(\'finance-section\')',
+            actionText: 'Review Finances'
+        });
+    }
+
+    // Display trends
+    if (trends.length === 0) {
+        container.innerHTML = '<p style="padding: 1rem; text-align: center; color: #2ecc71;"><i class="fas fa-check-circle"></i> All health indicators looking good!</p>';
+    } else {
+        container.innerHTML = trends.map(trend => `
+            <div style="display: flex; align-items: center; padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem; border-left: 4px solid ${trend.color};">
+                <i class="fas ${trend.icon}" style="font-size: 1.2rem; color: ${trend.color}; margin-right: 1rem;"></i>
+                <div style="flex: 1; font-size: 0.95rem;">${escapeHtml(trend.text)}</div>
+                ${trend.action ? `<button class="btn" onclick="${trend.action}" style="background: ${trend.color}; white-space: nowrap; margin-left: 1rem; font-size: 0.85rem; padding: 0.4rem 0.8rem;">${trend.actionText}</button>` : ''}
+            </div>
+        `).join('');
+    }
+}
+
+function viewDetailedHealthReport() {
+    const members = storage.getMembers();
+    const gcLogs = storage.getGroupConscienceLog();
+    const actions = storage.getGCActionItems();
+    const positions = storage.getServicePositions();
+    const expenses = storage.getExpenses();
+    const chairpersonLogs = storage.getChairpersonLog();
+
+    // Calculate all metrics in detail
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+    // Participation details
+    const recentGCs = gcLogs.filter(log => new Date(log.date) >= threeMonthsAgo);
+    const uniqueParticipants = new Set();
+    recentGCs.forEach(log => {
+        if (Array.isArray(log.attendees)) {
+            log.attendees.forEach(name => uniqueParticipants.add(name));
+        }
+    });
+
+    // Inactive members
+    const inactiveMembers = members.filter(m => !uniqueParticipants.has(m.name));
+
+    // Financial trends
+    const recentExpenses = expenses.filter(exp => new Date(exp.date) >= threeMonthsAgo);
+    const totalExpenses = recentExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+    const monthlyAverage = totalExpenses / 3;
+    const balance = parseFloat(localStorage.getItem('treasurerBalance')) || 0;
+
+    // Attendance trends
+    const recentAttendance = chairpersonLogs.filter(log => new Date(log.date) >= threeMonthsAgo);
+    const avgAttendance = recentAttendance.length > 0 ?
+        Math.round(recentAttendance.reduce((sum, log) => sum + (log.attendance || 0), 0) / recentAttendance.length) : 0;
+
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center; overflow-y: auto;';
+    modal.innerHTML = `
+        <div style="background: #34495e; padding: 2rem; border-radius: 8px; max-width: 1000px; width: 90%; max-height: 90vh; overflow-y: auto; margin: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="margin: 0;"><i class="fas fa-heartbeat"></i> Detailed Group Health Report</h3>
+                <button onclick="this.closest('div[style*=fixed]').remove()" class="btn secondary">Close</button>
+            </div>
+
+            <!-- Executive Summary -->
+            <div style="background: #2c3e50; padding: 1.5rem; border-radius: 4px; border-left: 4px solid #2ecc71; margin-bottom: 1.5rem;">
+                <h4 style="margin-top: 0;">Executive Summary (Last 3 Months)</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div>
+                        <div style="opacity: 0.7; font-size: 0.85rem;">Total Members:</div>
+                        <div style="font-size: 1.2rem; font-weight: bold;">${members.length}</div>
+                    </div>
+                    <div>
+                        <div style="opacity: 0.7; font-size: 0.85rem;">GC Meetings Held:</div>
+                        <div style="font-size: 1.2rem; font-weight: bold;">${recentGCs.length}</div>
+                    </div>
+                    <div>
+                        <div style="opacity: 0.7; font-size: 0.85rem;">Active Participants:</div>
+                        <div style="font-size: 1.2rem; font-weight: bold;">${uniqueParticipants.size} (${members.length > 0 ? ((uniqueParticipants.size / members.length) * 100).toFixed(0) : 0}%)</div>
+                    </div>
+                    <div>
+                        <div style="opacity: 0.7; font-size: 0.85rem;">Avg. Attendance:</div>
+                        <div style="font-size: 1.2rem; font-weight: bold;">${avgAttendance} members/meeting</div>
+                    </div>
+                    <div>
+                        <div style="opacity: 0.7; font-size: 0.85rem;">Current Balance:</div>
+                        <div style="font-size: 1.2rem; font-weight: bold;">$${balance.toFixed(2)}</div>
+                    </div>
+                    <div>
+                        <div style="opacity: 0.7; font-size: 0.85rem;">Prudent Reserve:</div>
+                        <div style="font-size: 1.2rem; font-weight: bold;">${monthlyAverage > 0 ? (balance / monthlyAverage).toFixed(1) : 'N/A'} months</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Areas of Concern -->
+            ${inactiveMembers.length > 0 ? `
+            <div style="background: #2c3e50; padding: 1.5rem; border-radius: 4px; border-left: 4px solid #f39c12; margin-bottom: 1.5rem;">
+                <h4 style="margin-top: 0;"><i class="fas fa-exclamation-triangle"></i> Inactive Members (${inactiveMembers.length})</h4>
+                <div style="opacity: 0.9;">
+                    ${inactiveMembers.slice(0, 10).map(m => `<span style="display: inline-block; padding: 0.25rem 0.5rem; background: #34495e; border-radius: 4px; margin: 0.25rem;">${escapeHtml(m.name)}</span>`).join('')}
+                    ${inactiveMembers.length > 10 ? `<span style="opacity: 0.7;">... and ${inactiveMembers.length - 10} more</span>` : ''}
+                </div>
+                <div style="margin-top: 0.75rem; font-size: 0.9rem; opacity: 0.8;">
+                    <i class="fas fa-info-circle"></i> Consider reaching out to these members to encourage participation
+                </div>
+            </div>
+            ` : ''}
+
+            <!-- Recommendations -->
+            <div style="background: #2c3e50; padding: 1.5rem; border-radius: 4px; border-left: 4px solid #3498db;">
+                <h4 style="margin-top: 0;"><i class="fas fa-lightbulb"></i> Recommendations</h4>
+                <ul style="margin: 0; padding-left: 1.5rem;">
+                    ${uniqueParticipants.size < members.length * 0.5 ? '<li>Participation below 50% - Consider more engaging topics or different meeting times</li>' : ''}
+                    ${monthlyAverage > 0 && balance / monthlyAverage < 2 ? '<li>Prudent reserve below recommended 3 months - Increase 7th tradition emphasis</li>' : ''}
+                    ${positions.filter(p => !p.currentHolder).length > 0 ? '<li>Fill vacant service positions to ensure group sustainability</li>' : ''}
+                    ${recentGCs.length === 0 ? '<li>No GC meetings in last 3 months - Schedule regular group conscience</li>' : ''}
+                    ${recentGCs.length > 0 && recentGCs.length < 3 ? '<li>Consider holding monthly GC meetings for better group health</li>' : ''}
+                </ul>
+            </div>
+
+            <div style="margin-top: 1.5rem; padding: 1rem; background: #2c3e50; border-radius: 4px; font-size: 0.9rem; opacity: 0.8;">
+                <i class="fas fa-info-circle"></i> This report analyzes the last 3 months of group data.
+                Regular review of these metrics helps maintain a healthy, functioning group.
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
 }
 
 // History display: show selected timeline and hide others
@@ -15554,6 +17054,7 @@ document.addEventListener('click', function(e) {
         case 'delete-proposed': deleteProposedAgendaItem(id); break;
         case 'edit-action': editActionItem(id); break;
         case 'delete-action': deleteActionItem(id); break;
+        case 'view-action-details': viewActionItemDetails(id); break;
         case 'update-amendment': updateAmendmentStatus(id, status); break;
         case 'delete-comment': deleteGCComment(id); break;
         case 'view-chain': viewMotionChain(id); break;
