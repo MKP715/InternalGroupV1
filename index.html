@@ -941,6 +941,9 @@
                     <li data-section="gc-decisions-section">Decision History</li>
                     <li data-section="motion-templates-section">Motion Templates</li>
                     <li data-section="tradition-checker-section">Tradition & Concept Checker</li>
+                    <li data-section="tradition-moments-section">Tradition Moments</li>
+                    <li data-section="spiritual-principles-section">Spiritual Principles</li>
+                    <li data-section="unity-checker-section">Unity Checker</li>
                     <li data-section="gc-inventory-section">GC Inventory</li>
                     <li data-section="gc-bylaws-section">Guidelines & By-Laws</li>
                     <li data-section="voting-settings-section">Voting Settings</li>
@@ -955,6 +958,7 @@
                     <li data-section="sponsorship-section">Sponsorship Tracking</li>
                     <li data-section="district-area-section">District/Area Committee</li>
                     <li data-section="district-motions-section">District Motions</li>
+                    <li data-section="service-structure-section">Service Structure</li>
                 </ul>
             </li>
 
@@ -995,6 +999,7 @@
                 <i class="fas fa-cog"></i>
                 <ul class="dropdown-menu">
                     <li data-section="settings-section">General Settings</li>
+                    <li data-section="privacy-section">Privacy & Anonymity</li>
                     <li data-section="quorum-management-section">Quorum Management</li>
                     <li data-section="inventory-scheduler-section">Group Inventory Scheduler</li>
                     <li data-section="role-settings-section">Role & View Settings</li>
@@ -4819,6 +4824,390 @@
                 </div>
             </div>
         </section>
+
+        <!-- PRIVACY & ANONYMITY PROTECTION SECTION -->
+        <section id="privacy-section">
+            <h2>Privacy & Anonymity Protection</h2>
+            <p class="mb-4">Configure privacy settings to protect member anonymity and sensitive information.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3>Privacy Settings</h3>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="privacy-anonymous-voting">
+                                <strong>Anonymous Voting Mode</strong>
+                            </label>
+                            <p style="font-size: 0.85rem; opacity: 0.8; margin-left: 1.5rem;">
+                                Enable for sensitive topics. Votes are recorded without names.
+                            </p>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="privacy-hide-names-export">
+                                <strong>Hide Names in Exports</strong>
+                            </label>
+                            <p style="font-size: 0.85rem; opacity: 0.8; margin-left: 1.5rem;">
+                                Replace member names with "Member 1", "Member 2" in exported data.
+                            </p>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="privacy-encrypt-sensitive">
+                                <strong>Mark Sensitive Motions</strong>
+                            </label>
+                            <p style="font-size: 0.85rem; opacity: 0.8; margin-left: 1.5rem;">
+                                Flag motions as "sensitive" - requires extra confirmation to view.
+                            </p>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="privacy-redact-lastnames">
+                                <strong>Auto-Redact Last Names</strong>
+                            </label>
+                            <p style="font-size: 0.85rem; opacity: 0.8; margin-left: 1.5rem;">
+                                Show only first names and last initial (e.g., "John S.")
+                            </p>
+                        </div>
+                        <button class="btn" onclick="savePrivacySettings()">Save Privacy Settings</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box">
+                        <h3>Multi-Level Access Control</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">
+                            Control who can see what information. Based on AA traditions of anonymity and transparency.
+                        </p>
+                        <div style="background: #34495e; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+                            <h4 style="color: #2ecc71; margin-bottom: 0.5rem;">Public Info</h4>
+                            <p style="font-size: 0.85rem;">Meeting times, location, format</p>
+                            <p style="font-size: 0.75rem; opacity: 0.7;">Anyone can view this information</p>
+                        </div>
+                        <div style="background: #34495e; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+                            <h4 style="color: #3498db; margin-bottom: 0.5rem;">Member Info</h4>
+                            <p style="font-size: 0.85rem;">Financial details, voting records, member roster</p>
+                            <p style="font-size: 0.75rem; opacity: 0.7;">Homegroup members only</p>
+                        </div>
+                        <div style="background: #34495e; padding: 1rem; border-radius: 6px;">
+                            <h4 style="color: #f39c12; margin-bottom: 0.5rem;">Trusted Servant Info</h4>
+                            <p style="font-size: 0.85rem;">Sensitive GC discussions, personnel matters</p>
+                            <p style="font-size: 0.75rem; opacity: 0.7;">Trusted servants only (GSR, Secretary, Treasurer, Chairperson)</p>
+                        </div>
+                        <div class="mt-4">
+                            <p style="font-size: 0.85rem; opacity: 0.8;">
+                                <strong>Note:</strong> This app honors tradition 12: "Anonymity is the spiritual foundation of all our traditions."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TRADITION MOMENTS SECTION -->
+        <section id="tradition-moments-section">
+            <h2>Tradition Moments</h2>
+            <p class="mb-4">Daily reminders of AA's 12 Traditions to guide group decisions.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <h3 style="color: white;">Tradition of the Day</h3>
+                        <div id="tradition-of-day-display" style="font-size: 1.1rem; padding: 1.5rem;">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                        <button class="btn" onclick="randomizeTradition()" style="background: white; color: #667eea;">Show Random Tradition</button>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Before Voting Reminder</h3>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="tradition-reminder-enabled" checked>
+                                <strong>Show tradition reminder before finalizing votes</strong>
+                            </label>
+                        </div>
+                        <p style="font-size: 0.85rem; opacity: 0.8;">
+                            When enabled, a relevant tradition will be shown before finalizing important votes to ensure decisions align with AA principles.
+                        </p>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box">
+                        <h3>Tradition Violation Warnings</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">
+                            Automatic checks for potential tradition violations:
+                        </p>
+                        <div id="tradition-warnings-list">
+                            <div style="padding: 0.75rem; background: #34495e; border-left: 3px solid #e74c3c; margin-bottom: 0.5rem;">
+                                <strong>Tradition 6:</strong> Outside enterprises
+                                <p style="font-size: 0.85rem; margin-top: 0.25rem;">Warns if motion mentions endorsement, affiliation, or lending the AA name</p>
+                            </div>
+                            <div style="padding: 0.75rem; background: #34495e; border-left: 3px solid #f39c12; margin-bottom: 0.5rem;">
+                                <strong>Tradition 7:</strong> Self-supporting
+                                <p style="font-size: 0.85rem; margin-top: 0.25rem;">Warns if accepting outside contributions or donations</p>
+                            </div>
+                            <div style="padding: 0.75rem; background: #34495e; border-left: 3px solid #f39c12; margin-bottom: 0.5rem;">
+                                <strong>Tradition 10:</strong> No outside issues
+                                <p style="font-size: 0.85rem; margin-top: 0.25rem;">Warns if motion involves public controversy or outside issues</p>
+                            </div>
+                            <div style="padding: 0.75rem; background: #34495e; border-left: 3px solid #3498db;">
+                                <strong>Tradition 12:</strong> Anonymity
+                                <p style="font-size: 0.85rem; margin-top: 0.25rem;">Warns if personal names might be exposed publicly</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SPIRITUAL PRINCIPLES INTEGRATION SECTION -->
+        <section id="spiritual-principles-section">
+            <h2>Spiritual Principles Integration</h2>
+            <p class="mb-4">Tag motions with spiritual principles and guide decisions based on AA's spiritual foundation.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3>Tag Motion with Principles</h3>
+                        <div class="form-group">
+                            <label for="principle-motion-select">Select Motion</label>
+                            <select id="principle-motion-select">
+                                <option value="">-- Select Motion --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="principle-tags">Spiritual Principles (select all that apply)</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                                <label><input type="checkbox" class="principle-checkbox" value="honesty"> Honesty</label>
+                                <label><input type="checkbox" class="principle-checkbox" value="humility"> Humility</label>
+                                <label><input type="checkbox" class="principle-checkbox" value="unity"> Unity</label>
+                                <label><input type="checkbox" class="principle-checkbox" value="service"> Service</label>
+                                <label><input type="checkbox" class="principle-checkbox" value="responsibility"> Responsibility</label>
+                                <label><input type="checkbox" class="principle-checkbox" value="love"> Love</label>
+                                <label><input type="checkbox" class="principle-checkbox" value="tolerance"> Tolerance</label>
+                                <label><input type="checkbox" class="principle-checkbox" value="wisdom"> Wisdom</label>
+                            </div>
+                        </div>
+                        <button class="btn" onclick="saveSpiritualPrincipleTags()">Save Principle Tags</button>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Principles-Based Decision Guide</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.8;">Before making a decision, ask:</p>
+                        <ul style="font-size: 0.9rem; line-height: 1.8;">
+                            <li><strong>Honesty:</strong> Are we being truthful?</li>
+                            <li><strong>Humility:</strong> Are we putting principles before personalities?</li>
+                            <li><strong>Unity:</strong> Does this promote group unity?</li>
+                            <li><strong>Service:</strong> Does this serve our primary purpose?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box">
+                        <h3>Tagged Motions</h3>
+                        <div id="principle-tagged-list" style="max-height: 400px; overflow-y: auto;">
+                            <!-- Tagged motions will be displayed here -->
+                        </div>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Step 10 for Groups - Group Inventory Prompts</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">
+                            Regular group inventory questions to keep the group healthy:
+                        </p>
+                        <button class="btn secondary" onclick="startGroupInventory()">Start Group Inventory</button>
+                        <div id="group-inventory-questions" style="display: none; margin-top: 1rem;">
+                            <div style="padding: 1rem; background: #34495e; border-radius: 6px; margin-bottom: 0.5rem;">
+                                <p>1. Are we placing principles before personalities?</p>
+                            </div>
+                            <div style="padding: 1rem; background: #34495e; border-radius: 6px; margin-bottom: 0.5rem;">
+                                <p>2. Are our decisions guided by our primary purpose?</p>
+                            </div>
+                            <div style="padding: 1rem; background: #34495e; border-radius: 6px; margin-bottom: 0.5rem;">
+                                <p>3. Do we practice rotation of leadership?</p>
+                            </div>
+                            <div style="padding: 1rem; background: #34495e; border-radius: 6px; margin-bottom: 0.5rem;">
+                                <p>4. Are we self-supporting?</p>
+                            </div>
+                            <div style="padding: 1rem; background: #34495e; border-radius: 6px;">
+                                <p>5. Is our group atmosphere welcoming and inclusive?</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- UNITY CHECKER SECTION -->
+        <section id="unity-checker-section">
+            <h2>Unity Checker & Minority Opinion</h2>
+            <p class="mb-4">Ensure decisions promote unity and respect minority voices.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3>Unity Check Before Vote</h3>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="unity-check-enabled" checked>
+                                <strong>Enable unity check before finalizing votes</strong>
+                            </label>
+                        </div>
+                        <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">
+                            When enabled, these questions will appear before finalizing any vote:
+                        </p>
+                        <div style="background: #34495e; padding: 1rem; border-radius: 6px;">
+                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem;"><strong>✓ Does this decision promote unity?</strong></p>
+                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem;"><strong>✓ Have all voices been heard?</strong></p>
+                            <p style="font-size: 0.9rem;"><strong>✓ Is there a minority opinion that should be recorded?</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Record Minority Opinion</h3>
+                        <div class="form-group">
+                            <label for="minority-motion-select">Select Motion</label>
+                            <select id="minority-motion-select">
+                                <option value="">-- Select Motion --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="minority-opinion-text">Minority Opinion Statement</label>
+                            <textarea id="minority-opinion-text" rows="4" placeholder="Record the concerns or alternative viewpoint..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="minority-vote-count">Number in Minority</label>
+                            <input type="number" id="minority-vote-count" min="1" placeholder="e.g., 3">
+                        </div>
+                        <button class="btn" onclick="saveMinorityOpinion()">Record Minority Opinion</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box">
+                        <h3>Consensus Builder Tools</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">
+                            When there's disagreement, try these approaches:
+                        </p>
+                        <div style="background: #34495e; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+                            <h4 style="color: #3498db;">1. Table the Motion</h4>
+                            <p style="font-size: 0.85rem;">Give time for prayer, reflection, and discussion outside the meeting</p>
+                            <button class="btn secondary" onclick="tableCurrentMotion()">Table Current Motion</button>
+                        </div>
+                        <div style="background: #34495e; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+                            <h4 style="color: #3498db;">2. Form Committee</h4>
+                            <p style="font-size: 0.85rem;">Create a committee to research and bring recommendations</p>
+                            <button class="btn secondary" onclick="formCommittee()">Form Ad Hoc Committee</button>
+                        </div>
+                        <div style="background: #34495e; padding: 1rem; border-radius: 6px;">
+                            <h4 style="color: #3498db;">3. Find Common Ground</h4>
+                            <p style="font-size: 0.85rem;">Identify what everyone agrees on and build from there</p>
+                            <button class="btn secondary" onclick="openCommonGroundDialog()">Start Common Ground Exercise</button>
+                        </div>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Recorded Minority Opinions</h3>
+                        <div id="minority-opinions-list" style="max-height: 300px; overflow-y: auto;">
+                            <!-- Minority opinions will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SERVICE STRUCTURE VISUALIZER SECTION -->
+        <section id="service-structure-section">
+            <h2>Service Structure Visualizer</h2>
+            <p class="mb-4">Visual representation of AA's service structure and how group conscience flows.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3>Configure Your Service Structure</h3>
+                        <div class="form-group">
+                            <label for="structure-group-name">Group Name</label>
+                            <input type="text" id="structure-group-name" placeholder="Your group name">
+                        </div>
+                        <div class="form-group">
+                            <label for="structure-district">District</label>
+                            <input type="text" id="structure-district" placeholder="District number or name">
+                        </div>
+                        <div class="form-group">
+                            <label for="structure-area">Area</label>
+                            <input type="text" id="structure-area" placeholder="Area name">
+                        </div>
+                        <div class="form-group">
+                            <label for="structure-gsr-name">GSR Name</label>
+                            <input type="text" id="structure-gsr-name" placeholder="General Service Representative">
+                        </div>
+                        <button class="btn" onclick="saveServiceStructure()">Save Structure Info</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box">
+                        <h3>Upside-Down Triangle</h3>
+                        <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 1rem;">
+                            In AA, the traditional leadership triangle is inverted - servants are at the bottom supporting the groups.
+                        </p>
+                        <div id="service-triangle" style="text-align: center; padding: 2rem;">
+                            <div style="width: 100%; border-bottom: 3px solid #3498db; padding: 1rem; background: #34495e; margin-bottom: 1rem;">
+                                <strong style="font-size: 1.1rem;">The Groups</strong>
+                                <p style="font-size: 0.8rem; opacity: 0.8;">Ultimate authority & responsibility</p>
+                            </div>
+                            <div style="width: 90%; margin: 0 auto; border-bottom: 3px solid #3498db; padding: 1rem; background: #34495e; margin-bottom: 1rem;">
+                                <strong>District & GSRs</strong>
+                                <p style="font-size: 0.8rem; opacity: 0.8;">Serve the groups</p>
+                            </div>
+                            <div style="width: 80%; margin: 0 auto; border-bottom: 3px solid #3498db; padding: 1rem; background: #34495e; margin-bottom: 1rem;">
+                                <strong>Area Assembly</strong>
+                                <p style="font-size: 0.8rem; opacity: 0.8;">Coordinates districts</p>
+                            </div>
+                            <div style="width: 70%; margin: 0 auto; padding: 1rem; background: #34495e;">
+                                <strong>GSO (General Service Office)</strong>
+                                <p style="font-size: 0.8rem; opacity: 0.8;">Supports worldwide AA</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box mt-4">
+                <h3>Flow of Group Conscience</h3>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">
+                    How decisions flow through AA's service structure:
+                </p>
+                <div class="grid" style="grid-template-columns: repeat(4, 1fr); gap: 1rem; text-align: center;">
+                    <div style="background: #34495e; padding: 1.5rem; border-radius: 6px; border-top: 4px solid #2ecc71;">
+                        <strong>1. Home Group</strong>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem; opacity: 0.8;">Group conscience formed</p>
+                    </div>
+                    <div style="background: #34495e; padding: 1.5rem; border-radius: 6px; border-top: 4px solid #3498db;">
+                        <strong>2. GSR Reports</strong>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem; opacity: 0.8;">Carries voice to district</p>
+                    </div>
+                    <div style="background: #34495e; padding: 1.5rem; border-radius: 6px; border-top: 4px solid #9b59b6;">
+                        <strong>3. District Meeting</strong>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem; opacity: 0.8;">Groups share & discuss</p>
+                    </div>
+                    <div style="background: #34495e; padding: 1.5rem; border-radius: 6px; border-top: 4px solid #f39c12;">
+                        <strong>4. Area Assembly</strong>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem; opacity: 0.8;">Collective conscience</p>
+                    </div>
+                </div>
+                <div style="margin-top: 2rem; text-align: center;">
+                    <p style="font-size: 1.1rem; color: #3498db;">
+                        <strong>"Our leaders are but trusted servants; they do not govern."</strong>
+                    </p>
+                    <p style="font-size: 0.85rem; opacity: 0.8; margin-top: 0.5rem;">- Tradition 2</p>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Member Roster Modal -->
@@ -5269,6 +5658,45 @@ const storage = {
         catch(e) { console.error('Error parsing educationalProgress:', e); return {"completed": [], "dismissed": []}; }
     },
     saveEducationalProgress(progress) { localStorage.setItem('educationalProgress', JSON.stringify(progress)); },
+
+    // Privacy & Security Storage
+    getPrivacySettings() {
+        try { return JSON.parse(localStorage.getItem('privacySettings') || '{"anonymousVoting": false, "hideNamesInExports": false, "encryptSensitive": false, "autoRedactLastNames": false}'); }
+        catch(e) { console.error('Error parsing privacySettings:', e); return {"anonymousVoting": false, "hideNamesInExports": false, "encryptSensitive": false, "autoRedactLastNames": false}; }
+    },
+    savePrivacySettings(settings) { localStorage.setItem('privacySettings', JSON.stringify(settings)); },
+    getAccessLevels() {
+        try { return JSON.parse(localStorage.getItem('accessLevels') || '{}'); }
+        catch(e) { console.error('Error parsing accessLevels:', e); return {}; }
+    },
+    saveAccessLevels(levels) { localStorage.setItem('accessLevels', JSON.stringify(levels)); },
+
+    // AA-Specific Features Storage
+    getTraditionOfDay() {
+        try { return JSON.parse(localStorage.getItem('traditionOfDay') || '{"tradition": 1, "date": ""}'); }
+        catch(e) { console.error('Error parsing traditionOfDay:', e); return {"tradition": 1, "date": ""}; }
+    },
+    saveTraditionOfDay(data) { localStorage.setItem('traditionOfDay', JSON.stringify(data)); },
+    getSpiritualPrinciples() {
+        try { return JSON.parse(localStorage.getItem('spiritualPrinciples') || '[]'); }
+        catch(e) { console.error('Error parsing spiritualPrinciples:', e); return []; }
+    },
+    saveSpiritualPrinciples(principles) { localStorage.setItem('spiritualPrinciples', JSON.stringify(principles)); },
+    getUnityChecks() {
+        try { return JSON.parse(localStorage.getItem('unityChecks') || '[]'); }
+        catch(e) { console.error('Error parsing unityChecks:', e); return []; }
+    },
+    saveUnityChecks(checks) { localStorage.setItem('unityChecks', JSON.stringify(checks)); },
+    getMinorityOpinions() {
+        try { return JSON.parse(localStorage.getItem('minorityOpinions') || '[]'); }
+        catch(e) { console.error('Error parsing minorityOpinions:', e); return []; }
+    },
+    saveMinorityOpinions(opinions) { localStorage.setItem('minorityOpinions', JSON.stringify(opinions)); },
+    getServiceStructure() {
+        try { return JSON.parse(localStorage.getItem('serviceStructure') || '{"group": {}, "district": {}, "area": {}}'); }
+        catch(e) { console.error('Error parsing serviceStructure:', e); return {"group": {}, "district": {}, "area": {}}; }
+    },
+    saveServiceStructure(structure) { localStorage.setItem('serviceStructure', JSON.stringify(structure)); },
 
     // Backward compatibility: Import birthdays from old format
     saveBirthdays(birthdays) {
@@ -7938,8 +8366,17 @@ function exportData(dataType) {
             participationData: storage.getParticipationData(),
             userRole: storage.getUserRole(),
             educationalProgress: storage.getEducationalProgress(),
+            // Privacy & Security Data
+            privacySettings: storage.getPrivacySettings(),
+            accessLevels: storage.getAccessLevels(),
+            // AA-Specific Features Data
+            traditionOfDay: storage.getTraditionOfDay(),
+            spiritualPrinciples: storage.getSpiritualPrinciples(),
+            unityChecks: storage.getUnityChecks(),
+            minorityOpinions: storage.getMinorityOpinions(),
+            serviceStructure: storage.getServiceStructure(),
             exportDate: new Date().toISOString(),
-            version: '4.0'
+            version: '5.0'
         };
         const dateStr = new Date().toISOString().split('T')[0];
         filename = `rowlett-group-backup-${dateStr}.json`;
@@ -8031,6 +8468,15 @@ function importData() {
             if (data.participationData) { storage.saveParticipationData(data.participationData); imported = true; }
             if (data.userRole) { storage.saveUserRole(data.userRole); imported = true; }
             if (data.educationalProgress) { storage.saveEducationalProgress(data.educationalProgress); imported = true; }
+            // Import Privacy & Security data
+            if (data.privacySettings) { storage.savePrivacySettings(data.privacySettings); imported = true; }
+            if (data.accessLevels) { storage.saveAccessLevels(data.accessLevels); imported = true; }
+            // Import AA-Specific Features data
+            if (data.traditionOfDay) { storage.saveTraditionOfDay(data.traditionOfDay); imported = true; }
+            if (data.spiritualPrinciples) { storage.saveSpiritualPrinciples(data.spiritualPrinciples); imported = true; }
+            if (data.unityChecks) { storage.saveUnityChecks(data.unityChecks); imported = true; }
+            if (data.minorityOpinions) { storage.saveMinorityOpinions(data.minorityOpinions); imported = true; }
+            if (data.serviceStructure) { storage.saveServiceStructure(data.serviceStructure); imported = true; }
 
             if (imported) {
                 showToast('Data imported successfully! The page will now reload.', 'success');
@@ -10132,6 +10578,17 @@ function init() {
     renderInventorySchedules();
     populateImpactGCMotions();
     updateRoleView();
+
+    // Initialize Privacy & Security Features
+    loadPrivacySettings();
+
+    // Initialize AA-Specific Features
+    displayTraditionOfDay();
+    renderPrincipleTaggedList();
+    populatePrincipleMotionSelect();
+    renderMinorityOpinions();
+    populateMinorityMotionSelect();
+    loadServiceStructure();
 }
 
 // ============================================
@@ -14503,6 +14960,341 @@ function showDashboard(role) {
     const dashboard = dashboards[role] || { title: 'Dashboard', content: '<p>Select a role to view dashboard</p>' };
     titleEl.textContent = dashboard.title;
     contentEl.innerHTML = dashboard.content;
+}
+
+// ========== PRIVACY & ANONYMITY PROTECTION ==========
+function savePrivacySettings() {
+    const settings = {
+        anonymousVoting: document.getElementById('privacy-anonymous-voting').checked,
+        hideNamesInExports: document.getElementById('privacy-hide-names-export').checked,
+        encryptSensitive: document.getElementById('privacy-encrypt-sensitive').checked,
+        autoRedactLastNames: document.getElementById('privacy-redact-lastnames').checked
+    };
+    storage.savePrivacySettings(settings);
+    showToast('Privacy settings saved!', 'success');
+}
+
+function loadPrivacySettings() {
+    const settings = storage.getPrivacySettings();
+    document.getElementById('privacy-anonymous-voting').checked = settings.anonymousVoting || false;
+    document.getElementById('privacy-hide-names-export').checked = settings.hideNamesInExports || false;
+    document.getElementById('privacy-encrypt-sensitive').checked = settings.encryptSensitive || false;
+    document.getElementById('privacy-redact-lastnames').checked = settings.autoRedactLastNames || false;
+}
+
+function redactName(fullName) {
+    const settings = storage.getPrivacySettings();
+    if (!settings.autoRedactLastNames) return fullName;
+
+    const parts = fullName.trim().split(' ');
+    if (parts.length === 1) return fullName;
+
+    const firstName = parts[0];
+    const lastInitial = parts[parts.length - 1].charAt(0);
+    return `${firstName} ${lastInitial}.`;
+}
+
+// ========== TRADITION MOMENTS ==========
+const traditions = [
+    { num: 1, text: "Our common welfare should come first; personal recovery depends upon A.A. unity." },
+    { num: 2, text: "For our group purpose there is but one ultimate authority—a loving God as He may express Himself in our group conscience. Our leaders are but trusted servants; they do not govern." },
+    { num: 3, text: "The only requirement for A.A. membership is a desire to stop drinking." },
+    { num: 4, text: "Each group should be autonomous except in matters affecting other groups or A.A. as a whole." },
+    { num: 5, text: "Each group has but one primary purpose—to carry its message to the alcoholic who still suffers." },
+    { num: 6, text: "An A.A. group ought never endorse, finance, or lend the A.A. name to any related facility or outside enterprise, lest problems of money, property, and prestige divert us from our primary purpose." },
+    { num: 7, text: "Every A.A. group ought to be fully self-supporting, declining outside contributions." },
+    { num: 8, text: "Alcoholics Anonymous should remain forever nonprofessional, but our service centers may employ special workers." },
+    { num: 9, text: "A.A., as such, ought never be organized; but we may create service boards or committees directly responsible to those they serve." },
+    { num: 10, text: "Alcoholics Anonymous has no opinion on outside issues; hence the A.A. name ought never be drawn into public controversy." },
+    { num: 11, text: "Our public relations policy is based on attraction rather than promotion; we need always maintain personal anonymity at the level of press, radio, and films." },
+    { num: 12, text: "Anonymity is the spiritual foundation of all our Traditions, ever reminding us to place principles before personalities." }
+];
+
+function displayTraditionOfDay() {
+    const todayData = storage.getTraditionOfDay();
+    const today = new Date().toDateString();
+
+    let traditionNum;
+    if (todayData.date !== today) {
+        // New day - pick random tradition
+        traditionNum = Math.floor(Math.random() * 12) + 1;
+        storage.saveTraditionOfDay({ tradition: traditionNum, date: today });
+    } else {
+        traditionNum = todayData.tradition;
+    }
+
+    const tradition = traditions[traditionNum - 1];
+    document.getElementById('tradition-of-day-display').innerHTML = `
+        <h4 style="color: white; font-size: 1.5rem;">Tradition ${tradition.num}</h4>
+        <p style="margin-top: 1rem; line-height: 1.6;">${tradition.text}</p>
+    `;
+}
+
+function randomizeTradition() {
+    const randomNum = Math.floor(Math.random() * 12) + 1;
+    const tradition = traditions[randomNum - 1];
+    document.getElementById('tradition-of-day-display').innerHTML = `
+        <h4 style="color: white; font-size: 1.5rem;">Tradition ${tradition.num}</h4>
+        <p style="margin-top: 1rem; line-height: 1.6;">${tradition.text}</p>
+    `;
+}
+
+function checkTraditionViolations(motionText) {
+    const warnings = [];
+    const lowerText = motionText.toLowerCase();
+
+    // Tradition 6 - Outside enterprises
+    if (lowerText.match(/endorse|endorsement|affiliation|affiliate|lend.*name|partnership/)) {
+        warnings.push({
+            tradition: 6,
+            severity: 'high',
+            message: 'This motion may involve endorsement or affiliation with an outside entity (Tradition 6)'
+        });
+    }
+
+    // Tradition 7 - Self-supporting
+    if (lowerText.match(/outside contribution|outside donation|accept.*from|grant|sponsor(ship)?.*from/)) {
+        warnings.push({
+            tradition: 7,
+            severity: 'high',
+            message: 'This motion may involve accepting outside contributions (Tradition 7)'
+        });
+    }
+
+    // Tradition 10 - Outside issues
+    if (lowerText.match(/politic|religious|controversial|public.*issue|government/)) {
+        warnings.push({
+            tradition: 10,
+            severity: 'medium',
+            message: 'This motion may involve outside issues or public controversy (Tradition 10)'
+        });
+    }
+
+    // Tradition 12 - Anonymity
+    if (lowerText.match(/public.*announcement|press release|media|newspaper|full name.*public/)) {
+        warnings.push({
+            tradition: 12,
+            severity: 'medium',
+            message: 'This motion may compromise member anonymity (Tradition 12)'
+        });
+    }
+
+    return warnings;
+}
+
+// ========== SPIRITUAL PRINCIPLES INTEGRATION ==========
+function saveSpiritualPrincipleTags() {
+    const motionId = document.getElementById('principle-motion-select').value;
+    if (!motionId) {
+        showToast('Please select a motion', 'error');
+        return;
+    }
+
+    const checkboxes = document.querySelectorAll('.principle-checkbox:checked');
+    const principles = Array.from(checkboxes).map(cb => cb.value);
+
+    if (principles.length === 0) {
+        showToast('Please select at least one principle', 'error');
+        return;
+    }
+
+    const logs = storage.getGroupConscienceLog();
+    const motion = logs.find(l => l.id === motionId);
+
+    const principleData = storage.getSpiritualPrinciples();
+    principleData.push({
+        id: genId(),
+        motionId,
+        motionText: motion ? motion.item : '',
+        principles,
+        date: new Date().toISOString()
+    });
+
+    storage.saveSpiritualPrinciples(principleData);
+    showToast('Spiritual principles tagged!', 'success');
+
+    // Clear checkboxes
+    checkboxes.forEach(cb => cb.checked = false);
+    renderPrincipleTaggedList();
+}
+
+function renderPrincipleTaggedList() {
+    const principleData = storage.getSpiritualPrinciples().sort((a, b) => new Date(b.date) - new Date(a.date));
+    const list = document.getElementById('principle-tagged-list');
+
+    if (principleData.length === 0) {
+        list.innerHTML = '<p style="opacity: 0.7;">No tagged motions yet</p>';
+        return;
+    }
+
+    list.innerHTML = principleData.map(p => `
+        <div style="padding: 1rem; background: #34495e; border-radius: 4px; margin-bottom: 0.5rem;">
+            <p style="font-size: 0.9rem;"><strong>${escapeHtml(p.motionText.substring(0, 80))}${p.motionText.length > 80 ? '...' : ''}</strong></p>
+            <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                ${p.principles.map(pr => `<span style="background: #3498db; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">${pr}</span>`).join('')}
+            </div>
+        </div>
+    `).join('');
+}
+
+function populatePrincipleMotionSelect() {
+    const logs = storage.getGroupConscienceLog();
+    const select = document.getElementById('principle-motion-select');
+    if (select) {
+        select.innerHTML = '<option value="">-- Select Motion --</option>' +
+            logs.map(l => {
+                const date = new Date(l.date).toLocaleDateString();
+                const preview = l.item.substring(0, 60) + (l.item.length > 60 ? '...' : '');
+                return `<option value="${escapeAttribute(l.id)}">${escapeHtml(date)} - ${escapeHtml(preview)}</option>`;
+            }).join('');
+    }
+}
+
+function startGroupInventory() {
+    const questionsDiv = document.getElementById('group-inventory-questions');
+    if (questionsDiv.style.display === 'none') {
+        questionsDiv.style.display = 'block';
+    } else {
+        questionsDiv.style.display = 'none';
+    }
+}
+
+// ========== UNITY CHECKER ==========
+function saveMinorityOpinion() {
+    const motionId = document.getElementById('minority-motion-select').value;
+    const opinionText = document.getElementById('minority-opinion-text').value.trim();
+    const voteCount = parseInt(document.getElementById('minority-vote-count').value) || 0;
+
+    if (!motionId || !opinionText) {
+        showToast('Please select a motion and enter the minority opinion', 'error');
+        return;
+    }
+
+    const logs = storage.getGroupConscienceLog();
+    const motion = logs.find(l => l.id === motionId);
+
+    const opinions = storage.getMinorityOpinions();
+    opinions.push({
+        id: genId(),
+        motionId,
+        motionText: motion ? motion.item : '',
+        opinion: opinionText,
+        voteCount,
+        date: new Date().toISOString()
+    });
+
+    storage.saveMinorityOpinions(opinions);
+    showToast('Minority opinion recorded!', 'success');
+
+    document.getElementById('minority-opinion-text').value = '';
+    document.getElementById('minority-vote-count').value = '';
+    renderMinorityOpinions();
+}
+
+function renderMinorityOpinions() {
+    const opinions = storage.getMinorityOpinions().sort((a, b) => new Date(b.date) - new Date(a.date));
+    const list = document.getElementById('minority-opinions-list');
+
+    if (opinions.length === 0) {
+        list.innerHTML = '<p style="opacity: 0.7;">No minority opinions recorded yet</p>';
+        return;
+    }
+
+    list.innerHTML = opinions.map(o => `
+        <div style="padding: 1rem; background: #34495e; border-radius: 4px; margin-bottom: 0.5rem; border-left: 3px solid #f39c12;">
+            <p style="font-size: 0.85rem; opacity: 0.8;">${new Date(o.date).toLocaleDateString()}</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;"><strong>${escapeHtml(o.motionText.substring(0, 60))}${o.motionText.length > 60 ? '...' : ''}</strong></p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">${escapeHtml(o.opinion)}</p>
+            <p style="font-size: 0.85rem; margin-top: 0.5rem; opacity: 0.8;">Minority count: ${o.voteCount}</p>
+        </div>
+    `).join('');
+}
+
+function populateMinorityMotionSelect() {
+    const logs = storage.getGroupConscienceLog();
+    const select = document.getElementById('minority-motion-select');
+    if (select) {
+        select.innerHTML = '<option value="">-- Select Motion --</option>' +
+            logs.map(l => {
+                const date = new Date(l.date).toLocaleDateString();
+                const preview = l.item.substring(0, 60) + (l.item.length > 60 ? '...' : '');
+                return `<option value="${escapeAttribute(l.id)}">${escapeHtml(date)} - ${escapeHtml(preview)}</option>`;
+            }).join('');
+    }
+}
+
+function tableCurrentMotion() {
+    const liveItems = storage.getLiveGCItems();
+    if (liveItems.length === 0) {
+        showToast('No current motion to table', 'info');
+        return;
+    }
+
+    const currentItem = liveItems[0];
+    if (confirm(`Table this motion for future discussion?\n\n"${currentItem.item}"`)) {
+        // Move to proposed agenda for next meeting
+        const proposedItems = storage.getProposedAgendaItems();
+        proposedItems.push({
+            id: genId(),
+            item: currentItem.item + ' (Tabled for further discussion)',
+            proposedBy: 'Group',
+            date: new Date().toISOString(),
+            priority: 'high'
+        });
+        storage.saveProposedAgendaItems(proposedItems);
+
+        // Remove from live items
+        liveItems.shift();
+        storage.saveLiveGCItems(liveItems);
+
+        showToast('Motion tabled - added to next meeting agenda', 'success');
+        updateLiveGCTable();
+        updateProposedAgendaTable();
+    }
+}
+
+function formCommittee() {
+    const committeeName = prompt('Enter committee name/purpose:');
+    if (!committeeName) return;
+
+    showToast(`Ad hoc committee formed: ${committeeName}\nAdd members via Service Positions section`, 'success');
+}
+
+function openCommonGroundDialog() {
+    alert('Common Ground Exercise:\n\n1. What do we all agree on?\n2. What is our shared goal?\n3. What are we trying to accomplish?\n4. Can we find a middle path?\n\nDiscuss these questions to find unity.');
+}
+
+// ========== SERVICE STRUCTURE VISUALIZER ==========
+function saveServiceStructure() {
+    const structure = {
+        group: {
+            name: document.getElementById('structure-group-name').value.trim(),
+            district: document.getElementById('structure-district').value.trim(),
+            area: document.getElementById('structure-area').value.trim(),
+            gsrName: document.getElementById('structure-gsr-name').value.trim()
+        }
+    };
+
+    storage.saveServiceStructure(structure);
+    showToast('Service structure information saved!', 'success');
+}
+
+function loadServiceStructure() {
+    const structure = storage.getServiceStructure();
+    if (structure.group) {
+        if (document.getElementById('structure-group-name')) {
+            document.getElementById('structure-group-name').value = structure.group.name || '';
+        }
+        if (document.getElementById('structure-district')) {
+            document.getElementById('structure-district').value = structure.group.district || '';
+        }
+        if (document.getElementById('structure-area')) {
+            document.getElementById('structure-area').value = structure.group.area || '';
+        }
+        if (document.getElementById('structure-gsr-name')) {
+            document.getElementById('structure-gsr-name').value = structure.group.gsrName || '';
+        }
+    }
 }
 
 // ========== HELPER FUNCTIONS FOR DROPDOWNS ==========
