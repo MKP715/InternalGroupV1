@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <meta name="description" content="Rowlett Group AA - Internal Group Conscience Management Tool">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data: blob:; connect-src 'self' https://api.dictionaryapi.dev;">
     <title>Rowlett Group Home</title>
     <!-- Link to the custom favicon logo -->
     <!-- Include Tailwind CSS for utility classes and Font Awesome for icons -->
@@ -496,6 +497,13 @@
             border-radius: 6px;
             overflow: hidden;
         }
+
+        @media (max-width: 640px) {
+            #calendar-grid {
+                font-size: 0.7rem;
+            }
+        }
+
         .calendar-day {
             border-right: 1px solid #7f8c8d;
             border-bottom: 1px solid #7f8c8d;
@@ -503,6 +511,14 @@
             padding: 4px;
             font-size: 0.8rem;
             position: relative;
+        }
+
+        @media (max-width: 640px) {
+            .calendar-day {
+                min-height: 80px;
+                padding: 2px;
+                font-size: 0.7rem;
+            }
         }
         .calendar-day:nth-child(7n) {
             border-right: none;
@@ -7209,9 +7225,9 @@ function updateLiveGCTable() {
             .join('');
 
         tr.innerHTML = `
-            <td>${item.item}</td>
+            <td>${escapeHtml(item.item)}</td>
             <td>
-                <select onchange="updateLiveGCItemStatus('${item.id}', this.value)">
+                <select onchange="updateLiveGCItemStatus('${escapeAttribute(item.id)}', this.value)">
                     ${statusOptions}
                 </select>
             </td>
@@ -7288,10 +7304,10 @@ function updateProposedAgendaTable() {
         const tr = document.createElement('tr');
         const statusColor = item.status === 'converted' ? '#2ecc71' : item.status === 'discussed' ? '#f39c12' : '#3498db';
         tr.innerHTML = `
-            <td>${item.title}</td>
-            <td>${item.submitter}</td>
+            <td>${escapeHtml(item.title)}</td>
+            <td>${escapeHtml(item.submitter)}</td>
             <td>${new Date(item.dateSubmitted).toLocaleDateString()}</td>
-            <td style="color: ${statusColor};">${item.status.charAt(0).toUpperCase() + item.status.slice(1)}</td>
+            <td style="color: ${statusColor};">${escapeHtml(item.status.charAt(0).toUpperCase() + item.status.slice(1))}</td>
             <td>
                 <button class="btn" data-action="view-proposed" data-id="${escapeAttribute(item.id)}" style="margin-right: 5px;">View</button>
                 <button class="btn secondary" data-action="delete-proposed" data-id="${escapeAttribute(item.id)}">Delete</button>
