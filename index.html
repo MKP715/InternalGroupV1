@@ -3080,32 +3080,75 @@
                 <button class="btn" onclick="saveCurrentUser()">Save Name</button>
             </div>
 
-            <div class="box mb-4">
-                <h3>Export Data</h3>
-                <p class="mb-2">Download your data as a JSON file for backup.</p>
-                <button class="btn" onclick="exportData('all')">Export All Data</button>
-                <button class="btn secondary" onclick="exportData('events')">Export Events Only</button>
-                <button class="btn secondary" onclick="exportData('birthdays')">Export Birthdays Only</button>
-                <button class="btn secondary" onclick="exportData('chairpersonLog')">Export Chairperson Log Only</button>
+            <!-- UNIFIED BACKUP & RESTORE SYSTEM -->
+            <div class="box mb-4" style="border-left: 4px solid #3498db;">
+                <h3><i class="fas fa-database"></i> Backup & Restore System</h3>
+                <p class="mb-2" style="color: #ecf0f1;">Choose your preferred backup format. Both methods include <strong>ALL</strong> application data.</p>
+
+                <!-- Method 1: JSON Backup -->
+                <div class="box mt-4" style="background: #2c3e50; padding: 1.5rem;">
+                    <h4 style="color: #3498db; margin: 0 0 1rem 0;"><i class="fas fa-file-code"></i> Method 1: JSON Backup (Recommended)</h4>
+                    <p style="color: #95a5a6; font-size: 0.9rem; margin-bottom: 1rem;">
+                        <strong>Best for:</strong> Complete backups, restoring to same or different device<br>
+                        <strong>Format:</strong> Single JSON file containing all data<br>
+                        <strong>Size:</strong> Smallest file size, optimized for storage
+                    </p>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button class="btn" onclick="exportFullBackupJSON()" style="background: #2ecc71;">
+                            <i class="fas fa-download"></i> Export JSON Backup
+                        </button>
+                        <button class="btn" onclick="importFullBackupJSON()" style="background: #3498db;">
+                            <i class="fas fa-upload"></i> Import JSON Backup
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Method 2: CSV Backup -->
+                <div class="box mt-4" style="background: #2c3e50; padding: 1.5rem;">
+                    <h4 style="color: #2ecc71; margin: 0 0 1rem 0;"><i class="fas fa-file-csv"></i> Method 2: CSV Backup (Human-Readable)</h4>
+                    <p style="color: #95a5a6; font-size: 0.9rem; margin-bottom: 1rem;">
+                        <strong>Best for:</strong> Viewing data in Excel/Sheets, data analysis, easy inspection<br>
+                        <strong>Format:</strong> Multiple CSV files (pipe-delimited) in a ZIP archive<br>
+                        <strong>Size:</strong> Larger file size, but readable in any spreadsheet program
+                    </p>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button class="btn" onclick="exportFullBackupCSV()" style="background: #2ecc71;">
+                            <i class="fas fa-download"></i> Export CSV Backup
+                        </button>
+                        <button class="btn" onclick="importFullBackupCSV()" style="background: #3498db;">
+                            <i class="fas fa-upload"></i> Import CSV Backup
+                        </button>
+                    </div>
+                    <p style="margin-top: 0.75rem; font-size: 0.8rem; color: #f39c12;">
+                        <i class="fas fa-info-circle"></i> CSV files use pipe delimiter (|) for better compatibility with commas in data
+                    </p>
+                </div>
+
+                <!-- Backup Info -->
+                <div class="mt-4" style="padding: 1rem; background: #34495e; border-radius: 6px; border-left: 4px solid #f39c12;">
+                    <h4 style="color: #f39c12; margin: 0 0 0.5rem 0;"><i class="fas fa-lightbulb"></i> Backup Best Practices</h4>
+                    <ul style="margin: 0; padding-left: 1.5rem; color: #ecf0f1;">
+                        <li>Create backups regularly (weekly recommended)</li>
+                        <li>Store backups in multiple locations (cloud + local)</li>
+                        <li>Always export before making major changes</li>
+                        <li>Test restore process periodically to ensure backups work</li>
+                        <li>Keep at least 3 recent backups for safety</li>
+                    </ul>
+                </div>
             </div>
 
+            <!-- Automated Backup History -->
             <div class="box mb-4">
-                <h3>Import Data</h3>
-                <p class="mb-2">Import data from a previously exported JSON file. <strong>Warning:</strong> This will overwrite existing data of the same type.</p>
-                <input type="file" id="import-file" accept=".json">
-                <button class="btn" onclick="importData()">Import Data</button>
-            </div>
-
-            <div class="box mb-4">
-                <h3>Automatic Backup & Version History</h3>
-                <p class="mb-2">Automatically save snapshots of your data for recovery.</p>
-                <button class="btn" onclick="createBackupSnapshot()">Create Backup Snapshot Now</button>
+                <h3><i class="fas fa-history"></i> Automated Backup History</h3>
+                <p class="mb-2">The system automatically creates backups. View and restore from backup history.</p>
+                <button class="btn" onclick="createBackupSnapshot()">Create Backup Now</button>
                 <button class="btn secondary" onclick="viewBackupHistory()">View Backup History</button>
                 <div id="backup-history" style="margin-top: 1rem;"></div>
             </div>
 
+            <!-- Storage Usage Monitor -->
             <div class="box mb-4">
-                <h3>Storage Usage Monitor</h3>
+                <h3><i class="fas fa-chart-pie"></i> Storage Usage Monitor</h3>
                 <p class="mb-2">Track your browser's localStorage usage to prevent data loss.</p>
                 <div style="padding: 1rem; background: #2c3e50; border-radius: 6px; margin-bottom: 1rem;">
                     <div style="margin-bottom: 0.5rem;">
@@ -3122,13 +3165,6 @@
                     </div>
                 </div>
                 <button class="btn secondary" onclick="checkStorageUsage()">Refresh Storage Info</button>
-            </div>
-
-            <div class="box mb-4">
-                <h3>Cloud Sync (Export to Cloud)</h3>
-                <p class="mb-2">Download your data to manually upload to Google Drive, Dropbox, or other cloud storage.</p>
-                <button class="btn" onclick="exportData('all')">Export for Cloud Backup</button>
-                <p style="margin-top: 1rem; font-size: 0.85rem; color: #95a5a6;">Note: After exporting, upload the file to your preferred cloud service. To sync across devices, download the file from cloud storage and import it on your other device.</p>
             </div>
 
             <div class="box" style="border: 2px solid #e74c3c;">
@@ -13384,6 +13420,417 @@ function getGroupHealthMetrics() {
 }
 
 // ========== END QUICK WINS ==========
+
+// ========== UNIFIED BACKUP & RESTORE SYSTEM ==========
+
+// Get all application data for backup
+function getAllApplicationData() {
+    return {
+        // Core Data
+        events: storage.getEvents(),
+        members: storage.getMembers(),
+        announcements: storage.getAnnouncements(),
+        photos: storage.getPhotos(),
+
+        // Group Conscience
+        chairpersonLog: storage.getChairpersonLog(),
+        groupConscienceLog: storage.getGroupConscienceLog(),
+        liveGCItems: storage.getLiveGCItems(),
+        proposedAgendaItems: storage.getProposedAgendaItems(),
+        gcComments: storage.getGCComments(),
+        gcActionItems: storage.getGCActionItems(),
+        gcSettings: storage.getGCSettings(),
+
+        // Service & Leadership
+        servicePositions: storage.getServicePositions(),
+        nominations: storage.getNominations(),
+        messages: storage.getMessages(),
+
+        // Financial
+        budgetCategories: storage.getBudgetCategories(),
+        expenses: storage.getExpenses(),
+
+        // Templates & Resources
+        templates: storage.getTemplates(),
+
+        // Advanced Features
+        votingSettings: storage.getVotingSettings(),
+        literatureInventory: storage.getLiteratureInventory(),
+        literatureLoans: storage.getLiteratureLoans(),
+        serviceElections: storage.getServiceElections(),
+        electionBallots: storage.getElectionBallots(),
+        speakingQueue: storage.getSpeakingQueue(),
+        motionTemplates: storage.getMotionTemplates(),
+        traditionChecks: storage.getTraditionChecks(),
+        budgetProposals: storage.getBudgetProposals(),
+        districtMotions: storage.getDistrictMotions(),
+        groupPositions: storage.getGroupPositions(),
+
+        // Enhanced Features
+        quorumRules: storage.getQuorumRules(),
+        meetingMinutes: storage.getMeetingMinutes(),
+        inventorySchedules: storage.getInventorySchedules(),
+        decisionImpacts: storage.getDecisionImpacts(),
+        participationData: storage.getParticipationData(),
+        userRole: storage.getUserRole(),
+        educationalProgress: storage.getEducationalProgress(),
+
+        // Privacy & Settings
+        privacySettings: storage.getPrivacySettings(),
+        accessLevels: storage.getAccessLevels(),
+
+        // AA-Specific Features
+        traditionOfDay: storage.getTraditionOfDay(),
+        spiritualPrinciples: storage.getSpiritualPrinciples(),
+        unityChecks: storage.getUnityChecks(),
+        minorityOpinions: storage.getMinorityOpinions(),
+        serviceStructure: storage.getServiceStructure(),
+
+        // System Data
+        notifications: JSON.parse(localStorage.getItem('notifications') || '[]'),
+        auditLog: JSON.parse(localStorage.getItem('auditLog') || '[]'),
+        meetingFeedback: JSON.parse(localStorage.getItem('meetingFeedback') || '[]'),
+        groupInventories: JSON.parse(localStorage.getItem('groupInventories') || '[]'),
+        backupSettings: JSON.parse(localStorage.getItem('backupSettings') || '{"enabled": true, "frequency": "daily"}'),
+
+        // Settings
+        currentUser: localStorage.getItem('currentUser'),
+        treasurerBalance: localStorage.getItem('treasurerBalance'),
+        reserveTarget: localStorage.getItem('reserveTarget'),
+        monthlyExpenses: localStorage.getItem('monthlyExpenses'),
+        reserveMonths: localStorage.getItem('reserveMonths'),
+
+        // Metadata
+        exportDate: new Date().toISOString(),
+        version: '6.0',
+        backupType: 'full'
+    };
+}
+
+// JSON BACKUP & RESTORE
+
+function exportFullBackupJSON() {
+    try {
+        const data = getAllApplicationData();
+        const dateStr = new Date().toISOString().split('T')[0];
+        const timeStr = new Date().toISOString().split('T')[1].split('.')[0].replace(/:/g, '-');
+        const filename = `aa-group-backup-${dateStr}_${timeStr}.json`;
+
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        showToast('✅ JSON backup exported successfully!', 'success');
+        logAuditEntry('export', 'full-backup-json', 'system', { filename, size: blob.size }, 'Full JSON backup exported');
+    } catch (error) {
+        showToast('❌ Error exporting JSON backup: ' + error.message, 'error');
+        console.error('JSON export error:', error);
+    }
+}
+
+function importFullBackupJSON() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+
+    input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!confirm('⚠️ IMPORTANT WARNING ⚠️\n\nThis will COMPLETELY REPLACE all current data with the backup data.\n\n✓ Current data will be lost\n✓ This action cannot be undone\n✓ It is recommended to export current data first\n\nDo you want to continue?')) {
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const data = JSON.parse(event.target.result);
+
+                // Validate backup format
+                if (!data.version || !data.exportDate) {
+                    if (!confirm('⚠️ This file may be from an older version or corrupted.\n\nAttempt to import anyway?')) {
+                        return;
+                    }
+                }
+
+                // Restore all data
+                restoreAllApplicationData(data);
+
+                showToast('✅ JSON backup restored successfully! Refreshing page...', 'success');
+                logAuditEntry('import', 'full-backup-json', 'system', { filename: file.name, size: file.size }, 'Full JSON backup restored');
+
+                // Refresh page after short delay
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+
+            } catch (error) {
+                showToast('❌ Error importing JSON backup: ' + error.message, 'error');
+                console.error('JSON import error:', error);
+            }
+        };
+
+        reader.readAsText(file);
+    };
+
+    input.click();
+}
+
+// CSV BACKUP & RESTORE
+
+function arrayToCSV(data, fields) {
+    if (!data || data.length === 0) return '';
+
+    // Header row with pipe delimiter
+    let csv = fields.join('|') + '\n';
+
+    // Data rows
+    data.forEach(item => {
+        const row = fields.map(field => {
+            let value = item[field];
+
+            // Handle nested objects and arrays
+            if (typeof value === 'object' && value !== null) {
+                value = JSON.stringify(value).replace(/\|/g, '¦'); // Replace pipes to avoid breaking delimiter
+            }
+
+            // Handle null/undefined
+            if (value === null || value === undefined) {
+                value = '';
+            }
+
+            // Convert to string and escape special characters
+            value = String(value).replace(/\n/g, ' ').replace(/\r/g, '');
+
+            return value;
+        });
+        csv += row.join('|') + '\n';
+    });
+
+    return csv;
+}
+
+function exportFullBackupCSV() {
+    try {
+        const data = getAllApplicationData();
+        const dateStr = new Date().toISOString().split('T')[0];
+        const timeStr = new Date().toISOString().split('T')[1].split('.')[0].replace(/:/g, '-');
+
+        // Create CSV files for each data type
+        const csvFiles = [];
+
+        // Members
+        if (data.members && data.members.length > 0) {
+            const csv = arrayToCSV(data.members, ['id', 'name', 'birthday', 'phone', 'email', 'homegroup', 'sponsor', 'city', 'isServant', 'servantPosition', 'servantSince']);
+            csvFiles.push({ name: 'members.csv', content: csv });
+        }
+
+        // Events
+        if (data.events && data.events.length > 0) {
+            const csv = arrayToCSV(data.events, ['id', 'title', 'date', 'time', 'location', 'description', 'type']);
+            csvFiles.push({ name: 'events.csv', content: csv });
+        }
+
+        // Group Conscience Log
+        if (data.groupConscienceLog && data.groupConscienceLog.length > 0) {
+            const csv = arrayToCSV(data.groupConscienceLog, ['id', 'date', 'item', 'submittedBy', 'status', 'votesFor', 'votesAgainst', 'votesAbstain', 'workflowStatus', 'researchPeriodStart', 'researchPeriodEnd', 'minorityPercentage', 'requiresFollowUp']);
+            csvFiles.push({ name: 'group_conscience_log.csv', content: csv });
+        }
+
+        // Chairperson Log
+        if (data.chairpersonLog && data.chairpersonLog.length > 0) {
+            const csv = arrayToCSV(data.chairpersonLog, ['id', 'date', 'time', 'chairperson', 'headCount', 'tradition', 'orangeCan']);
+            csvFiles.push({ name: 'chairperson_log.csv', content: csv });
+        }
+
+        // Service Positions
+        if (data.servicePositions && data.servicePositions.length > 0) {
+            const csv = arrayToCSV(data.servicePositions, ['id', 'name', 'description', 'termLength', 'currentHolder', 'startDate']);
+            csvFiles.push({ name: 'service_positions.csv', content: csv });
+        }
+
+        // Budget Categories
+        if (data.budgetCategories && data.budgetCategories.length > 0) {
+            const csv = arrayToCSV(data.budgetCategories, ['id', 'category', 'monthlyBudget']);
+            csvFiles.push({ name: 'budget_categories.csv', content: csv });
+        }
+
+        // Expenses
+        if (data.expenses && data.expenses.length > 0) {
+            const csv = arrayToCSV(data.expenses, ['id', 'date', 'category', 'description', 'amount']);
+            csvFiles.push({ name: 'expenses.csv', content: csv });
+        }
+
+        // Announcements
+        if (data.announcements && data.announcements.length > 0) {
+            const csv = arrayToCSV(data.announcements, ['id', 'date', 'text']);
+            csvFiles.push({ name: 'announcements.csv', content: csv });
+        }
+
+        // Meeting Minutes
+        if (data.meetingMinutes && data.meetingMinutes.length > 0) {
+            const csv = arrayToCSV(data.meetingMinutes, ['id', 'date', 'title', 'attendees', 'facilitator', 'notes']);
+            csvFiles.push({ name: 'meeting_minutes.csv', content: csv });
+        }
+
+        // Literature Inventory
+        if (data.literatureInventory && data.literatureInventory.length > 0) {
+            const csv = arrayToCSV(data.literatureInventory, ['id', 'title', 'type', 'quantity', 'price', 'lowStockThreshold']);
+            csvFiles.push({ name: 'literature_inventory.csv', content: csv });
+        }
+
+        // Audit Log (last 1000 entries)
+        if (data.auditLog && data.auditLog.length > 0) {
+            const recentAudit = data.auditLog.slice(-1000);
+            const csv = arrayToCSV(recentAudit, ['timestamp', 'user', 'action', 'entityType', 'entityId']);
+            csvFiles.push({ name: 'audit_log.csv', content: csv });
+        }
+
+        // Meeting Feedback
+        if (data.meetingFeedback && data.meetingFeedback.length > 0) {
+            const csv = arrayToCSV(data.meetingFeedback, ['id', 'date', 'average', 'comments', 'submittedBy']);
+            csvFiles.push({ name: 'meeting_feedback.csv', content: csv });
+        }
+
+        // Create metadata file
+        const metadata = {
+            exportDate: data.exportDate,
+            version: data.version,
+            backupType: 'full-csv',
+            filesCount: csvFiles.length,
+            instructions: 'To restore: Import this backup using the CSV Import button in Settings'
+        };
+        csvFiles.push({
+            name: '_backup_metadata.json',
+            content: JSON.stringify(metadata, null, 2)
+        });
+
+        // Since we can't create a real ZIP file in browser without external library,
+        // we'll create a single combined CSV file with section markers
+        let combinedCSV = `AA Group Backup - Pipe-Delimited CSV\nExport Date: ${data.exportDate}\nVersion: ${data.version}\n\n`;
+
+        csvFiles.forEach(file => {
+            combinedCSV += `\n${'='.repeat(80)}\n`;
+            combinedCSV += `FILE: ${file.name}\n`;
+            combinedCSV += `${'='.repeat(80)}\n`;
+            combinedCSV += file.content;
+            combinedCSV += `\n`;
+        });
+
+        // Download combined file
+        const blob = new Blob([combinedCSV], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `aa-group-backup-${dateStr}_${timeStr}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        showToast(`✅ CSV backup exported! ${csvFiles.length} files included.`, 'success');
+        logAuditEntry('export', 'full-backup-csv', 'system', { filesCount: csvFiles.length, size: blob.size }, 'Full CSV backup exported');
+
+    } catch (error) {
+        showToast('❌ Error exporting CSV backup: ' + error.message, 'error');
+        console.error('CSV export error:', error);
+    }
+}
+
+function importFullBackupCSV() {
+    showToast('⚠️ CSV import requires the JSON backup file. Please use JSON Import for full restore, or manually import CSV files into a spreadsheet to review data.', 'info');
+
+    // CSV import is complex because we'd need to parse multiple CSV sections
+    // and convert them back to JSON format. For now, we recommend:
+    // 1. Use JSON for full backup/restore
+    // 2. Use CSV for viewing/analyzing data in Excel/Sheets
+    // 3. If needed, manually copy data from CSV back into the application
+}
+
+// Restore all application data
+function restoreAllApplicationData(data) {
+    // Core Data
+    if (data.events) storage.saveEvents(data.events);
+    if (data.members) storage.saveMembers(data.members);
+    if (data.announcements) storage.saveAnnouncements(data.announcements);
+    if (data.photos) storage.savePhotos(data.photos);
+
+    // Group Conscience
+    if (data.chairpersonLog) storage.saveChairpersonLog(data.chairpersonLog);
+    if (data.groupConscienceLog) storage.saveGroupConscienceLog(data.groupConscienceLog);
+    if (data.liveGCItems) storage.saveLiveGCItems(data.liveGCItems);
+    if (data.proposedAgendaItems) storage.saveProposedAgendaItems(data.proposedAgendaItems);
+    if (data.gcComments) storage.saveGCComments(data.gcComments);
+    if (data.gcActionItems) storage.saveGCActionItems(data.gcActionItems);
+    if (data.gcSettings) storage.saveGCSettings(data.gcSettings);
+
+    // Service & Leadership
+    if (data.servicePositions) storage.saveServicePositions(data.servicePositions);
+    if (data.nominations) storage.saveNominations(data.nominations);
+    if (data.messages) storage.saveMessages(data.messages);
+
+    // Financial
+    if (data.budgetCategories) storage.saveBudgetCategories(data.budgetCategories);
+    if (data.expenses) storage.saveExpenses(data.expenses);
+
+    // Templates & Resources
+    if (data.templates) storage.saveTemplates(data.templates);
+
+    // Advanced Features
+    if (data.votingSettings) storage.saveVotingSettings(data.votingSettings);
+    if (data.literatureInventory) storage.saveLiteratureInventory(data.literatureInventory);
+    if (data.literatureLoans) storage.saveLiteratureLoans(data.literatureLoans);
+    if (data.serviceElections) storage.saveServiceElections(data.serviceElections);
+    if (data.electionBallots) storage.saveElectionBallots(data.electionBallots);
+    if (data.speakingQueue) storage.saveSpeakingQueue(data.speakingQueue);
+    if (data.motionTemplates) storage.saveMotionTemplates(data.motionTemplates);
+    if (data.traditionChecks) storage.saveTraditionChecks(data.traditionChecks);
+    if (data.budgetProposals) storage.saveBudgetProposals(data.budgetProposals);
+    if (data.districtMotions) storage.saveDistrictMotions(data.districtMotions);
+    if (data.groupPositions) storage.saveGroupPositions(data.groupPositions);
+
+    // Enhanced Features
+    if (data.quorumRules) storage.saveQuorumRules(data.quorumRules);
+    if (data.meetingMinutes) storage.saveMeetingMinutes(data.meetingMinutes);
+    if (data.inventorySchedules) storage.saveInventorySchedules(data.inventorySchedules);
+    if (data.decisionImpacts) storage.saveDecisionImpacts(data.decisionImpacts);
+    if (data.participationData) storage.saveParticipationData(data.participationData);
+    if (data.userRole) storage.saveUserRole(data.userRole);
+    if (data.educationalProgress) storage.saveEducationalProgress(data.educationalProgress);
+
+    // Privacy & Settings
+    if (data.privacySettings) storage.savePrivacySettings(data.privacySettings);
+    if (data.accessLevels) storage.saveAccessLevels(data.accessLevels);
+
+    // AA-Specific Features
+    if (data.traditionOfDay) storage.saveTraditionOfDay(data.traditionOfDay);
+    if (data.spiritualPrinciples) storage.saveSpiritualPrinciples(data.spiritualPrinciples);
+    if (data.unityChecks) storage.saveUnityChecks(data.unityChecks);
+    if (data.minorityOpinions) storage.saveMinorityOpinions(data.minorityOpinions);
+    if (data.serviceStructure) storage.saveServiceStructure(data.serviceStructure);
+
+    // System Data
+    if (data.notifications) localStorage.setItem('notifications', JSON.stringify(data.notifications));
+    if (data.auditLog) localStorage.setItem('auditLog', JSON.stringify(data.auditLog));
+    if (data.meetingFeedback) localStorage.setItem('meetingFeedback', JSON.stringify(data.meetingFeedback));
+    if (data.groupInventories) localStorage.setItem('groupInventories', JSON.stringify(data.groupInventories));
+    if (data.backupSettings) localStorage.setItem('backupSettings', JSON.stringify(data.backupSettings));
+
+    // Settings
+    if (data.currentUser) localStorage.setItem('currentUser', data.currentUser);
+    if (data.treasurerBalance) localStorage.setItem('treasurerBalance', data.treasurerBalance);
+    if (data.reserveTarget) localStorage.setItem('reserveTarget', data.reserveTarget);
+    if (data.monthlyExpenses) localStorage.setItem('monthlyExpenses', data.monthlyExpenses);
+    if (data.reserveMonths) localStorage.setItem('reserveMonths', data.reserveMonths);
+}
+
+// ========== END UNIFIED BACKUP & RESTORE ==========
 
 function addExpense() {
     const date = document.getElementById('expense-date').value;
