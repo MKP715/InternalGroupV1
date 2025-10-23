@@ -1099,7 +1099,9 @@
                     <li onclick="viewBackupHistory()" style="border-top: 1px solid #7f8c8d; margin-top: 0.5rem; padding-top: 0.5rem;"><i class="fas fa-database"></i> Backup & Restore</li>
                     <li onclick="viewAuditLog()"><i class="fas fa-history"></i> Audit Log</li>
                     <li onclick="displayEngagementDashboard()"><i class="fas fa-chart-line"></i> Engagement Metrics</li>
-                    <li data-section="accessibility-section">Accessibility</li>
+                    <li onclick="openMeetingFeedbackSurvey()" style="border-top: 1px solid #7f8c8d; margin-top: 0.5rem; padding-top: 0.5rem;"><i class="fas fa-comment-dots"></i> Meeting Feedback Survey</li>
+                    <li onclick="viewMeetingFeedbackResults()"><i class="fas fa-chart-bar"></i> View Feedback Results</li>
+                    <li data-section="accessibility-section" style="border-top: 1px solid #7f8c8d; margin-top: 0.5rem; padding-top: 0.5rem;">Accessibility</li>
                 </ul>
             </li>
         </ul>
@@ -2062,6 +2064,22 @@
                     <input type="month" id="report-month" />
                 </div>
                 <button class="btn" onclick="generateMonthlyReport()">Generate Report</button>
+
+                <!-- Quick Win #1: Monthly Treasurer Report -->
+                <div class="box mt-4" style="background: #34495e; padding: 1rem; border-left: 4px solid #3498db;">
+                    <h4 style="color: #3498db; margin: 0 0 0.5rem 0;">📋 Monthly Treasurer Report</h4>
+                    <p style="color: #ecf0f1; font-size: 0.9rem; margin: 0 0 1rem 0;">
+                        Generate comprehensive treasurer reports with budget analysis and prudent reserve status
+                    </p>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn" onclick="displayTreasurerReport()" style="background: #3498db;">
+                            <i class="fas fa-file-alt"></i> View Report
+                        </button>
+                        <button class="btn" onclick="exportTreasurerReportPDF()" style="background: #2ecc71;">
+                            <i class="fas fa-file-pdf"></i> Export PDF
+                        </button>
+                    </div>
+                </div>
 
                 <div id="monthly-report" class="box mt-4"></div>
 
@@ -3704,6 +3722,23 @@
                             <div class="mb-2"><strong>Operating Balance:</strong> $<span id="operating-balance">0.00</span></div>
                             <div class="mb-2"><strong>Reserve Target:</strong> $<span id="display-reserve-target">0.00</span></div>
                             <div class="mb-2"><strong>Status:</strong> <span id="reserve-health-status">--</span></div>
+
+                            <!-- Quick Win #2: Prudent Reserve Progress Bar -->
+                            <div style="margin-top: 1rem;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <span style="font-size: 0.85rem; color: #ecf0f1;">Reserve Progress</span>
+                                    <span id="reserve-percentage" style="font-size: 0.85rem; font-weight: bold; color: #3498db;">0%</span>
+                                </div>
+                                <div style="width: 100%; height: 24px; background: #34495e; border-radius: 12px; overflow: hidden; position: relative;">
+                                    <div id="reserve-progress-bar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #e74c3c 0%, #f39c12 33%, #f1c40f 66%, #2ecc71 100%); transition: width 0.5s ease; display: flex; align-items: center; justify-content: center;">
+                                        <span id="reserve-progress-text" style="font-size: 0.75rem; font-weight: bold; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); position: absolute;"></span>
+                                    </div>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-top: 0.25rem; font-size: 0.7rem; color: #95a5a6;">
+                                    <span>0 months</span>
+                                    <span>Target: <span id="reserve-target-months">3</span> months</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -6336,8 +6371,8 @@ function addMember() {
         return;
     }
 
-    const members = storage.getMembers();
-    members.push({
+    // Quick Win #8: Check for duplicate members
+    const newMember = {
         id: genId(),
         name,
         birthday: bdate,
@@ -6349,7 +6384,25 @@ function addMember() {
         isServant: document.getElementById('member-is-servant').checked,
         servantPosition: document.getElementById('member-servant-position').value.trim(),
         servantSince: document.getElementById('member-servant-since').value
-    });
+    };
+
+    const duplicates = checkForDuplicateMembers(newMember);
+
+    if (duplicates.length > 0) {
+        const topMatch = duplicates[0];
+        const confirmMsg = `⚠️ Possible duplicate member detected!\n\n` +
+            `Existing member: ${topMatch.member.name}\n` +
+            `Match confidence: ${topMatch.score}%\n` +
+            `Reasons: ${topMatch.reasons.join(', ')}\n\n` +
+            `Do you want to add this member anyway?`;
+
+        if (!confirm(confirmMsg)) {
+            return; // User cancelled
+        }
+    }
+
+    const members = storage.getMembers();
+    members.push(newMember);
     storage.saveMembers(members);
     showToast('Member added successfully!', 'success');
     cancelMemberEdit();
@@ -7303,12 +7356,16 @@ function updateGCLogTable() {
             qaInfo = `<br><small style="color: ${qaColor};"><i class="fas fa-question-circle"></i> ${answered}/${log.questions.length} questions answered</small>`;
         }
 
+        // Quick Win #4: Tradition alignment badge
+        const traditionBadge = addTraditionBadgeToMotion(log.id);
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${escapeHtml(logDate.toLocaleDateString())}</td>
             <td>
                 ${escapeHtml(log.item.substring(0, 50))}${log.item.length > 50 ? '...' : ''}
                 ${statusBadges[workflowStatus]}
+                ${traditionBadge}
                 ${researchInfo}
                 ${reviewBadge}
                 ${qaInfo}
@@ -10811,7 +10868,15 @@ function viewAuditLog() {
     content.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
             <h2 style="color: #3498db; margin: 0;">Audit Log</h2>
-            <button onclick="closeAuditLog()" style="background: #e74c3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Close</button>
+            <div style="display: flex; gap: 0.5rem;">
+                <button onclick="exportAuditLogToCSV()" style="background: #2ecc71; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
+                    <i class="fas fa-file-csv"></i> Export CSV
+                </button>
+                <button onclick="exportAuditLogToPDF()" style="background: #3498db; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
+                    <i class="fas fa-file-pdf"></i> Export PDF
+                </button>
+                <button onclick="closeAuditLog()" style="background: #e74c3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Close</button>
+            </div>
         </div>
         <table style="width: 100%; border-collapse: collapse;">
             <thead>
@@ -12463,6 +12528,863 @@ function exportTreasurerReportPDF() {
 
 // ========== END P0-3 ==========
 
+// ========== QUICK WINS ENHANCEMENTS ==========
+
+// Quick Win #2: Prudent Reserve Progress Bar
+function updatePrudentReserveProgressBar() {
+    const totalBalance = parseFloat(localStorage.getItem('treasurerBalance')) || 0;
+    const reserveTarget = parseFloat(localStorage.getItem('reserveTarget')) || 0;
+    const monthlyExpenses = parseFloat(localStorage.getItem('monthlyExpenses')) || 0;
+    const targetMonths = parseInt(localStorage.getItem('reserveMonths')) || 3;
+
+    const progressBar = document.getElementById('reserve-progress-bar');
+    const progressText = document.getElementById('reserve-progress-text');
+    const percentageSpan = document.getElementById('reserve-percentage');
+    const targetMonthsSpan = document.getElementById('reserve-target-months');
+
+    if (!progressBar || !progressText || !percentageSpan) return;
+
+    // Calculate percentage
+    const targetAmount = reserveTarget || (monthlyExpenses * targetMonths);
+    const percentage = targetAmount > 0 ? Math.min((totalBalance / targetAmount) * 100, 100) : 0;
+    const months = monthlyExpenses > 0 ? (totalBalance / monthlyExpenses).toFixed(1) : 0;
+
+    // Update UI
+    progressBar.style.width = percentage + '%';
+    progressText.textContent = months + ' mo';
+    percentageSpan.textContent = percentage.toFixed(0) + '%';
+    if (targetMonthsSpan) targetMonthsSpan.textContent = targetMonths;
+
+    // Color coding based on status
+    if (percentage >= 100) {
+        progressBar.style.background = '#2ecc71'; // Green - Excellent
+    } else if (percentage >= 75) {
+        progressBar.style.background = 'linear-gradient(90deg, #f1c40f, #2ecc71)'; // Yellow to Green - Good
+    } else if (percentage >= 50) {
+        progressBar.style.background = 'linear-gradient(90deg, #f39c12, #f1c40f)'; // Orange to Yellow - Caution
+    } else {
+        progressBar.style.background = 'linear-gradient(90deg, #e74c3c, #f39c12)'; // Red to Orange - Critical
+    }
+}
+
+// Quick Win #3: Enhanced Service Term Expiration Alerts
+function checkUpcomingTermExpirations() {
+    const positions = storage.getServicePositions();
+    const today = new Date();
+    const notifications = [];
+
+    positions.forEach(pos => {
+        if (!pos.startDate || !pos.termLength || !pos.currentHolder) return;
+
+        const startDate = new Date(pos.startDate);
+        const termMonths = pos.termLength === 'Indefinite' ? 0 : parseInt(pos.termLength.split(' ')[0]);
+        if (termMonths === 0) return; // Skip indefinite terms
+
+        const endDate = new Date(startDate);
+        endDate.setMonth(endDate.getMonth() + termMonths);
+
+        const daysUntilEnd = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
+
+        // Create notifications at 90, 60, 30, 14, 7 days
+        if (daysUntilEnd === 90 && !pos.notificationsSent?.days90) {
+            notifications.push({
+                type: 'service-term',
+                title: `${pos.name} Term Ending in 90 Days`,
+                message: `${pos.currentHolder}'s term as ${pos.name} will end on ${endDate.toLocaleDateString()}. Begin succession planning.`,
+                priority: 'normal',
+                actionLink: 'service-positions-section'
+            });
+            if (!pos.notificationsSent) pos.notificationsSent = {};
+            pos.notificationsSent.days90 = true;
+        } else if (daysUntilEnd === 60 && !pos.notificationsSent?.days60) {
+            notifications.push({
+                type: 'service-term',
+                title: `${pos.name} Term Ending in 60 Days`,
+                message: `${pos.currentHolder}'s term as ${pos.name} will end on ${endDate.toLocaleDateString()}. Identify potential successors.`,
+                priority: 'high',
+                actionLink: 'service-positions-section'
+            });
+            if (!pos.notificationsSent) pos.notificationsSent = {};
+            pos.notificationsSent.days60 = true;
+        } else if (daysUntilEnd === 30 && !pos.notificationsSent?.days30) {
+            notifications.push({
+                type: 'service-term',
+                title: `${pos.name} Term Ending in 30 Days`,
+                message: `${pos.currentHolder}'s term as ${pos.name} will end on ${endDate.toLocaleDateString()}. Begin transition process.`,
+                priority: 'urgent',
+                actionLink: 'service-positions-section'
+            });
+            if (!pos.notificationsSent) pos.notificationsSent = {};
+            pos.notificationsSent.days30 = true;
+        } else if (daysUntilEnd === 14 && !pos.notificationsSent?.days14) {
+            notifications.push({
+                type: 'service-term',
+                title: `${pos.name} Term Ending in 14 Days`,
+                message: `URGENT: ${pos.currentHolder}'s term as ${pos.name} will end on ${endDate.toLocaleDateString()}. Ensure transition is underway.`,
+                priority: 'urgent',
+                actionLink: 'service-positions-section'
+            });
+            if (!pos.notificationsSent) pos.notificationsSent = {};
+            pos.notificationsSent.days14 = true;
+        } else if (daysUntilEnd === 7 && !pos.notificationsSent?.days7) {
+            notifications.push({
+                type: 'service-term',
+                title: `${pos.name} Term Ending in 7 Days`,
+                message: `CRITICAL: ${pos.currentHolder}'s term as ${pos.name} will end on ${endDate.toLocaleDateString()}. Complete transition immediately.`,
+                priority: 'urgent',
+                actionLink: 'service-positions-section'
+            });
+            if (!pos.notificationsSent) pos.notificationsSent = {};
+            pos.notificationsSent.days7 = true;
+        }
+    });
+
+    // Create all notifications
+    notifications.forEach(n => createNotification(n));
+
+    // Save updated positions with notification flags
+    storage.saveServicePositions(positions);
+}
+
+// Quick Win #4: GC Motion Tradition Score Badge
+function getMotionTraditionAlignment(motionText) {
+    // Score each motion based on tradition keywords and principles
+    const traditionKeywords = {
+        1: ['unity', 'common welfare', 'together', 'group', 'whole'],
+        2: ['god', 'higher power', 'spiritual', 'conscience', 'guidance'],
+        3: ['desire to stop drinking', 'membership', 'requirements'],
+        4: ['autonomy', 'autonomous', 'independent', 'self-governing'],
+        5: ['primary purpose', 'carry the message', 'alcoholic', 'recovery'],
+        6: ['endorse', 'finance', 'lend name', 'outside', 'enterprise'],
+        7: ['self-supporting', 'contributions', 'decline', 'outside'],
+        8: ['non-professional', 'special workers', 'service', 'never'],
+        9: ['organization', 'board', 'committee', 'service'],
+        10: ['outside issues', 'opinion', 'controversy', 'public'],
+        11: ['attraction', 'promotion', 'anonymous', 'personal'],
+        12: ['anonymity', 'principles', 'personalities', 'spiritual']
+    };
+
+    const text = motionText.toLowerCase();
+    const scores = [];
+
+    for (let tradition in traditionKeywords) {
+        const keywords = traditionKeywords[tradition];
+        const matchCount = keywords.filter(keyword => text.includes(keyword)).length;
+        if (matchCount > 0) {
+            scores.push({
+                tradition: parseInt(tradition),
+                score: matchCount,
+                keywords: keywords.filter(keyword => text.includes(keyword))
+            });
+        }
+    }
+
+    // Sort by score descending
+    scores.sort((a, b) => b.score - a.score);
+
+    return scores.length > 0 ? scores[0] : null;
+}
+
+function addTraditionBadgeToMotion(motionId) {
+    const logs = storage.getGroupConscienceLog();
+    const motion = logs.find(l => l.id === motionId);
+
+    if (!motion) return '';
+
+    const alignment = getMotionTraditionAlignment(motion.item);
+
+    if (!alignment) return '';
+
+    const tradition = alignment.tradition;
+    const traditionShort = getTraditionDetails(tradition)?.title.substring(0, 30) || `Tradition ${tradition}`;
+
+    return `<span style="background: #9b59b6; color: white; padding: 0.25rem 0.5rem; border-radius: 3px; font-size: 0.75rem; margin-left: 0.5rem;" title="${traditionShort}...">
+        <i class="fas fa-book"></i> T${tradition}
+    </span>`;
+}
+
+// Quick Win #6: Automated Birthday/Anniversary Notifications
+function checkUpcomingBirthdaysAndAnniversaries() {
+    const members = storage.getMembers();
+    const today = new Date();
+    const notifications = [];
+
+    members.forEach(member => {
+        // Birthday check (7 days advance notice)
+        if (member.birthday) {
+            const birthday = new Date(today.getFullYear(),
+                new Date(member.birthday).getMonth(),
+                new Date(member.birthday).getDate());
+
+            if (birthday < today) {
+                birthday.setFullYear(today.getFullYear() + 1);
+            }
+
+            const daysUntil = Math.ceil((birthday - today) / (1000 * 60 * 60 * 24));
+
+            if (daysUntil === 7 || daysUntil === 3 || daysUntil === 1) {
+                notifications.push({
+                    type: 'birthday',
+                    title: `Upcoming Birthday: ${member.name}`,
+                    message: `${member.name}'s birthday is in ${daysUntil} day${daysUntil !== 1 ? 's' : ''} (${birthday.toLocaleDateString()})`,
+                    priority: daysUntil === 1 ? 'high' : 'normal',
+                    actionLink: 'birthdays-section'
+                });
+            }
+        }
+
+        // Sobriety Anniversary check (14 days advance notice)
+        if (member.sobrietyDate) {
+            const sobrietyDate = new Date(member.sobrietyDate);
+            const anniversary = new Date(today.getFullYear(),
+                sobrietyDate.getMonth(),
+                sobrietyDate.getDate());
+
+            if (anniversary < today) {
+                anniversary.setFullYear(today.getFullYear() + 1);
+            }
+
+            const daysUntil = Math.ceil((anniversary - today) / (1000 * 60 * 60 * 24));
+            const years = today.getFullYear() - sobrietyDate.getFullYear();
+
+            if (daysUntil === 14 || daysUntil === 7 || daysUntil === 3 || daysUntil === 1) {
+                notifications.push({
+                    type: 'anniversary',
+                    title: `Sobriety Anniversary: ${member.name}`,
+                    message: `${member.name} will celebrate ${years} year${years !== 1 ? 's' : ''} of sobriety in ${daysUntil} day${daysUntil !== 1 ? 's' : ''} (${anniversary.toLocaleDateString()})`,
+                    priority: daysUntil <= 3 ? 'high' : 'normal',
+                    actionLink: 'birthdays-section'
+                });
+            }
+        }
+    });
+
+    // Create all notifications
+    notifications.forEach(n => {
+        // Check if notification already exists to avoid duplicates
+        const existing = JSON.parse(localStorage.getItem('notifications') || '[]');
+        const isDuplicate = existing.some(e =>
+            e.type === n.type &&
+            e.title === n.title &&
+            new Date(e.createdDate).toDateString() === today.toDateString()
+        );
+
+        if (!isDuplicate) {
+            createNotification(n);
+        }
+    });
+}
+
+// Quick Win #7: Action Item Reminder System
+function checkActionItemReminders() {
+    const logs = storage.getGroupConscienceLog();
+    const today = new Date();
+    const notifications = [];
+
+    logs.forEach(log => {
+        // Check for tabled items that need follow-up
+        if (log.status === 'tabled' && log.followUpDate) {
+            const followUp = new Date(log.followUpDate);
+            const daysUntil = Math.ceil((followUp - today) / (1000 * 60 * 60 * 24));
+
+            if (daysUntil === 7 || daysUntil === 3 || daysUntil === 0) {
+                notifications.push({
+                    type: 'action-item',
+                    title: `Tabled Motion Needs Review`,
+                    message: `Motion "${log.item.substring(0, 50)}..." scheduled for follow-up ${daysUntil === 0 ? 'today' : 'in ' + daysUntil + ' days'}`,
+                    priority: daysUntil === 0 ? 'urgent' : 'high',
+                    actionLink: 'gc-log-section'
+                });
+            }
+        }
+
+        // Check for minority opinion follow-ups
+        if (log.requiresFollowUp && log.followUpDate) {
+            const followUp = new Date(log.followUpDate);
+            const daysUntil = Math.ceil((followUp - today) / (1000 * 60 * 60 * 24));
+
+            if (daysUntil === 30 || daysUntil === 14 || daysUntil === 7) {
+                notifications.push({
+                    type: 'action-item',
+                    title: `Minority Opinion Follow-Up Due`,
+                    message: `Motion "${log.item.substring(0, 50)}..." with significant minority opinion needs review in ${daysUntil} days`,
+                    priority: 'high',
+                    actionLink: 'gc-log-section'
+                });
+            }
+        }
+
+        // Check for research period ending
+        if (log.workflowStatus === 'research' && log.researchPeriodEnd) {
+            const endDate = new Date(log.researchPeriodEnd);
+            const daysUntil = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
+
+            if (daysUntil === 7 || daysUntil === 3 || daysUntil === 1) {
+                notifications.push({
+                    type: 'action-item',
+                    title: `Research Period Ending Soon`,
+                    message: `Research for "${log.item.substring(0, 50)}..." ends in ${daysUntil} day${daysUntil !== 1 ? 's' : ''}`,
+                    priority: daysUntil === 1 ? 'urgent' : 'high',
+                    actionLink: 'gc-log-section'
+                });
+            }
+        }
+    });
+
+    // Create all notifications (avoiding duplicates)
+    notifications.forEach(n => {
+        const existing = JSON.parse(localStorage.getItem('notifications') || '[]');
+        const isDuplicate = existing.some(e =>
+            e.type === n.type &&
+            e.title === n.title &&
+            new Date(e.createdDate).toDateString() === today.toDateString()
+        );
+
+        if (!isDuplicate) {
+            createNotification(n);
+        }
+    });
+}
+
+// Quick Win #8: Duplicate Member Check
+function checkForDuplicateMembers(newMember) {
+    const members = storage.getMembers();
+    const duplicates = [];
+
+    members.forEach(existing => {
+        if (existing.id === newMember.id) return; // Skip self
+
+        let matchScore = 0;
+        const reasons = [];
+
+        // Exact name match
+        if (existing.name.toLowerCase() === newMember.name.toLowerCase()) {
+            matchScore += 50;
+            reasons.push('Exact name match');
+        }
+
+        // Similar name (Levenshtein-like)
+        const nameSimilarity = calculateStringSimilarity(
+            existing.name.toLowerCase(),
+            newMember.name.toLowerCase()
+        );
+        if (nameSimilarity > 0.8 && matchScore < 50) {
+            matchScore += 30;
+            reasons.push('Very similar name');
+        }
+
+        // Email match
+        if (existing.email && newMember.email &&
+            existing.email.toLowerCase() === newMember.email.toLowerCase()) {
+            matchScore += 40;
+            reasons.push('Same email');
+        }
+
+        // Phone match
+        if (existing.phone && newMember.phone) {
+            const phone1 = existing.phone.replace(/\D/g, '');
+            const phone2 = newMember.phone.replace(/\D/g, '');
+            if (phone1 === phone2) {
+                matchScore += 40;
+                reasons.push('Same phone number');
+            }
+        }
+
+        // Birthday match (suspicious)
+        if (existing.birthday && newMember.birthday &&
+            existing.birthday === newMember.birthday) {
+            matchScore += 10;
+            reasons.push('Same birthday');
+        }
+
+        if (matchScore >= 50) {
+            duplicates.push({
+                member: existing,
+                score: matchScore,
+                reasons: reasons
+            });
+        }
+    });
+
+    return duplicates;
+}
+
+function calculateStringSimilarity(str1, str2) {
+    const longer = str1.length > str2.length ? str1 : str2;
+    const shorter = str1.length > str2.length ? str2 : str1;
+
+    if (longer.length === 0) return 1.0;
+
+    const editDistance = (s1, s2) => {
+        s1 = s1.toLowerCase();
+        s2 = s2.toLowerCase();
+
+        const costs = [];
+        for (let i = 0; i <= s1.length; i++) {
+            let lastValue = i;
+            for (let j = 0; j <= s2.length; j++) {
+                if (i === 0) {
+                    costs[j] = j;
+                } else if (j > 0) {
+                    let newValue = costs[j - 1];
+                    if (s1.charAt(i - 1) !== s2.charAt(j - 1)) {
+                        newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+                    }
+                    costs[j - 1] = lastValue;
+                    lastValue = newValue;
+                }
+            }
+            if (i > 0) costs[s2.length] = lastValue;
+        }
+        return costs[s2.length];
+    };
+
+    return (longer.length - editDistance(longer, shorter)) / longer.length;
+}
+
+// Quick Win #9: Export Audit Log Feature
+function exportAuditLogToCSV() {
+    const entries = getAuditHistory(null, null, 10000); // Get all entries
+
+    if (entries.length === 0) {
+        showToast('No audit entries to export', 'error');
+        return;
+    }
+
+    // CSV Header
+    let csv = 'Timestamp,User,Action,Entity Type,Entity ID,Changes,Reason\n';
+
+    // Add rows
+    entries.forEach(entry => {
+        const timestamp = new Date(entry.timestamp).toLocaleString();
+        const changes = entry.changes ? JSON.stringify(entry.changes).replace(/"/g, '""') : '';
+        const reason = entry.reason || '';
+
+        csv += `"${timestamp}","${entry.user}","${entry.action}","${entry.entityType}","${entry.entityId}","${changes}","${reason}"\n`;
+    });
+
+    // Download
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `audit-log-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+
+    showToast('Audit log exported to CSV', 'success');
+}
+
+function exportAuditLogToPDF() {
+    const entries = getAuditHistory(null, null, 500); // Last 500 entries
+
+    if (entries.length === 0) {
+        showToast('No audit entries to export', 'error');
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFontSize(16);
+    doc.text('Audit Log Report', 15, 15);
+
+    doc.setFontSize(10);
+    doc.text(`Generated: ${new Date().toLocaleString()}`, 15, 25);
+    doc.text(`Total Entries: ${entries.length}`, 15, 32);
+
+    let y = 40;
+
+    entries.slice(0, 50).forEach(entry => { // First 50 for PDF
+        if (y > 270) {
+            doc.addPage();
+            y = 15;
+        }
+
+        const text = `${new Date(entry.timestamp).toLocaleString()} | ${entry.user} | ${entry.action} | ${entry.entityType}`;
+        doc.text(text, 15, y);
+        y += 7;
+    });
+
+    if (entries.length > 50) {
+        doc.text(`... and ${entries.length - 50} more entries`, 15, y + 5);
+    }
+
+    doc.save(`audit-log-${new Date().toISOString().split('T')[0]}.pdf`);
+    showToast('Audit log exported to PDF', 'success');
+}
+
+// Quick Win #10: Meeting Feedback Survey
+function openMeetingFeedbackSurvey() {
+    const modal = document.createElement('div');
+    modal.id = 'feedback-survey-modal';
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10001; display: flex; align-items: center; justify-content: center; padding: 1rem; overflow-y: auto;';
+
+    const content = document.createElement('div');
+    content.style.cssText = 'background: #34495e; padding: 2rem; border-radius: 8px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto;';
+
+    content.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="color: #3498db; margin: 0;">Meeting Feedback Survey</h2>
+            <button onclick="closeFeedbackSurvey()" style="background: #e74c3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Close</button>
+        </div>
+
+        <p style="color: #ecf0f1; margin-bottom: 1.5rem;">
+            Your feedback helps us improve our meetings. Please rate the following aspects (1-5 scale):
+        </p>
+
+        <div class="form-group">
+            <label>1. How welcoming was today's meeting atmosphere?</label>
+            <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+                ${[1,2,3,4,5].map(n => `
+                    <label style="display: flex; align-items: center; gap: 0.25rem; cursor: pointer;">
+                        <input type="radio" name="q1" value="${n}" required />
+                        <span style="color: #ecf0f1;">${n}</span>
+                    </label>
+                `).join('')}
+            </div>
+            <small style="color: #95a5a6;">1 = Not welcoming, 5 = Very welcoming</small>
+        </div>
+
+        <div class="form-group">
+            <label>2. How valuable was the meeting content?</label>
+            <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+                ${[1,2,3,4,5].map(n => `
+                    <label style="display: flex; align-items: center; gap: 0.25rem; cursor: pointer;">
+                        <input type="radio" name="q2" value="${n}" required />
+                        <span style="color: #ecf0f1;">${n}</span>
+                    </label>
+                `).join('')}
+            </div>
+            <small style="color: #95a5a6;">1 = Not valuable, 5 = Very valuable</small>
+        </div>
+
+        <div class="form-group">
+            <label>3. How inclusive was the meeting (everyone had opportunity to share)?</label>
+            <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+                ${[1,2,3,4,5].map(n => `
+                    <label style="display: flex; align-items: center; gap: 0.25rem; cursor: pointer;">
+                        <input type="radio" name="q3" value="${n}" required />
+                        <span style="color: #ecf0f1;">${n}</span>
+                    </label>
+                `).join('')}
+            </div>
+            <small style="color: #95a5a6;">1 = Not inclusive, 5 = Very inclusive</small>
+        </div>
+
+        <div class="form-group">
+            <label>4. How would you rate the meeting format?</label>
+            <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+                ${[1,2,3,4,5].map(n => `
+                    <label style="display: flex; align-items: center; gap: 0.25rem; cursor: pointer;">
+                        <input type="radio" name="q4" value="${n}" required />
+                        <span style="color: #ecf0f1;">${n}</span>
+                    </label>
+                `).join('')}
+            </div>
+            <small style="color: #95a5a6;">1 = Needs improvement, 5 = Excellent</small>
+        </div>
+
+        <div class="form-group">
+            <label>5. How likely are you to return or recommend this meeting?</label>
+            <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+                ${[1,2,3,4,5].map(n => `
+                    <label style="display: flex; align-items: center; gap: 0.25rem; cursor: pointer;">
+                        <input type="radio" name="q5" value="${n}" required />
+                        <span style="color: #ecf0f1;">${n}</span>
+                    </label>
+                `).join('')}
+            </div>
+            <small style="color: #95a5a6;">1 = Not likely, 5 = Very likely</small>
+        </div>
+
+        <div class="form-group">
+            <label>Additional Comments (Optional)</label>
+            <textarea id="feedback-comments" rows="4" placeholder="Any suggestions or comments?" style="width: 100%; padding: 0.5rem; background: #2c3e50; color: #ecf0f1; border: 1px solid #7f8c8d; border-radius: 4px;"></textarea>
+        </div>
+
+        <div style="margin-top: 1.5rem; text-align: center;">
+            <button onclick="submitMeetingFeedback()" style="background: #2ecc71; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; margin-right: 0.5rem;">
+                Submit Feedback
+            </button>
+            <button onclick="closeFeedbackSurvey()" style="background: #95a5a6; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer;">
+                Cancel
+            </button>
+        </div>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+}
+
+function submitMeetingFeedback() {
+    const q1 = document.querySelector('input[name="q1"]:checked')?.value;
+    const q2 = document.querySelector('input[name="q2"]:checked')?.value;
+    const q3 = document.querySelector('input[name="q3"]:checked')?.value;
+    const q4 = document.querySelector('input[name="q4"]:checked')?.value;
+    const q5 = document.querySelector('input[name="q5"]:checked')?.value;
+
+    if (!q1 || !q2 || !q3 || !q4 || !q5) {
+        showToast('Please answer all questions', 'error');
+        return;
+    }
+
+    const comments = document.getElementById('feedback-comments')?.value || '';
+
+    const feedback = {
+        id: genId(),
+        date: new Date().toISOString(),
+        scores: {
+            welcoming: parseInt(q1),
+            valuable: parseInt(q2),
+            inclusive: parseInt(q3),
+            format: parseInt(q4),
+            recommend: parseInt(q5)
+        },
+        average: ((parseInt(q1) + parseInt(q2) + parseInt(q3) + parseInt(q4) + parseInt(q5)) / 5).toFixed(1),
+        comments: comments,
+        submittedBy: getCurrentUserName()
+    };
+
+    // Save feedback
+    const allFeedback = JSON.parse(localStorage.getItem('meetingFeedback') || '[]');
+    allFeedback.push(feedback);
+    localStorage.setItem('meetingFeedback', JSON.stringify(allFeedback));
+
+    // Log to audit trail
+    logAuditEntry('create', 'meeting-feedback', feedback.id, feedback);
+
+    showToast('Thank you for your feedback!', 'success');
+    closeFeedbackSurvey();
+}
+
+function closeFeedbackSurvey() {
+    const modal = document.getElementById('feedback-survey-modal');
+    if (modal) modal.remove();
+}
+
+function viewMeetingFeedbackResults() {
+    const allFeedback = JSON.parse(localStorage.getItem('meetingFeedback') || '[]');
+
+    if (allFeedback.length === 0) {
+        showToast('No feedback submissions yet', 'info');
+        return;
+    }
+
+    // Calculate averages
+    const totals = {
+        welcoming: 0,
+        valuable: 0,
+        inclusive: 0,
+        format: 0,
+        recommend: 0
+    };
+
+    allFeedback.forEach(f => {
+        totals.welcoming += f.scores.welcoming;
+        totals.valuable += f.scores.valuable;
+        totals.inclusive += f.scores.inclusive;
+        totals.format += f.scores.format;
+        totals.recommend += f.scores.recommend;
+    });
+
+    const count = allFeedback.length;
+    const averages = {
+        welcoming: (totals.welcoming / count).toFixed(2),
+        valuable: (totals.valuable / count).toFixed(2),
+        inclusive: (totals.inclusive / count).toFixed(2),
+        format: (totals.format / count).toFixed(2),
+        recommend: (totals.recommend / count).toFixed(2),
+        overall: ((totals.welcoming + totals.valuable + totals.inclusive + totals.format + totals.recommend) / (count * 5)).toFixed(2)
+    };
+
+    const modal = document.createElement('div');
+    modal.id = 'feedback-results-modal';
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10001; display: flex; align-items: center; justify-content: center; padding: 1rem; overflow-y: auto;';
+
+    const content = document.createElement('div');
+    content.style.cssText = 'background: #34495e; padding: 2rem; border-radius: 8px; max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto;';
+
+    content.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="color: #3498db; margin: 0;">Meeting Feedback Results</h2>
+            <button onclick="closeFeedbackResults()" style="background: #e74c3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Close</button>
+        </div>
+
+        <div style="background: #2c3e50; padding: 1.5rem; border-radius: 6px; margin-bottom: 1rem;">
+            <h3 style="color: #3498db; margin: 0 0 1rem 0;">Overall Score</h3>
+            <div style="font-size: 2rem; font-weight: bold; color: #2ecc71; text-align: center;">
+                ${averages.overall} / 5.0
+            </div>
+            <div style="text-align: center; color: #95a5a6; margin-top: 0.5rem;">
+                Based on ${count} response${count !== 1 ? 's' : ''}
+            </div>
+        </div>
+
+        <div style="background: #2c3e50; padding: 1.5rem; border-radius: 6px; margin-bottom: 1rem;">
+            <h3 style="color: #3498db; margin: 0 0 1rem 0;">Category Scores</h3>
+
+            <div style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                    <span style="color: #ecf0f1;">Welcoming Atmosphere</span>
+                    <span style="color: #3498db; font-weight: bold;">${averages.welcoming}</span>
+                </div>
+                <div style="background: #34495e; height: 8px; border-radius: 4px; overflow: hidden;">
+                    <div style="background: #2ecc71; height: 100%; width: ${averages.welcoming * 20}%;"></div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                    <span style="color: #ecf0f1;">Content Value</span>
+                    <span style="color: #3498db; font-weight: bold;">${averages.valuable}</span>
+                </div>
+                <div style="background: #34495e; height: 8px; border-radius: 4px; overflow: hidden;">
+                    <div style="background: #2ecc71; height: 100%; width: ${averages.valuable * 20}%;"></div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                    <span style="color: #ecf0f1;">Inclusivity</span>
+                    <span style="color: #3498db; font-weight: bold;">${averages.inclusive}</span>
+                </div>
+                <div style="background: #34495e; height: 8px; border-radius: 4px; overflow: hidden;">
+                    <div style="background: #2ecc71; height: 100%; width: ${averages.inclusive * 20}%;"></div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                    <span style="color: #ecf0f1;">Meeting Format</span>
+                    <span style="color: #3498db; font-weight: bold;">${averages.format}</span>
+                </div>
+                <div style="background: #34495e; height: 8px; border-radius: 4px; overflow: hidden;">
+                    <div style="background: #2ecc71; height: 100%; width: ${averages.format * 20}%;"></div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                    <span style="color: #ecf0f1;">Likelihood to Recommend</span>
+                    <span style="color: #3498db; font-weight: bold;">${averages.recommend}</span>
+                </div>
+                <div style="background: #34495e; height: 8px; border-radius: 4px; overflow: hidden;">
+                    <div style="background: #2ecc71; height: 100%; width: ${averages.recommend * 20}%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: #2c3e50; padding: 1.5rem; border-radius: 6px;">
+            <h3 style="color: #3498db; margin: 0 0 1rem 0;">Recent Comments</h3>
+            ${allFeedback.filter(f => f.comments).slice(-5).reverse().map(f => `
+                <div style="background: #34495e; padding: 1rem; border-radius: 4px; margin-bottom: 0.75rem;">
+                    <p style="color: #ecf0f1; margin: 0 0 0.5rem 0;">${escapeHtml(f.comments)}</p>
+                    <small style="color: #95a5a6;">${new Date(f.date).toLocaleDateString()} - Score: ${f.average}/5.0</small>
+                </div>
+            `).join('') || '<p style="color: #95a5a6; text-align: center;">No comments yet</p>'}
+        </div>
+
+        <div style="margin-top: 1.5rem; text-align: center;">
+            <button onclick="exportFeedbackReport()" style="background: #3498db; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; margin-right: 0.5rem;">
+                <i class="fas fa-download"></i> Export Report
+            </button>
+        </div>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+}
+
+function closeFeedbackResults() {
+    const modal = document.getElementById('feedback-results-modal');
+    if (modal) modal.remove();
+}
+
+function exportFeedbackReport() {
+    const allFeedback = JSON.parse(localStorage.getItem('meetingFeedback') || '[]');
+
+    let csv = 'Date,Welcoming,Valuable,Inclusive,Format,Recommend,Average,Comments,Submitted By\n';
+
+    allFeedback.forEach(f => {
+        const date = new Date(f.date).toLocaleDateString();
+        const comments = (f.comments || '').replace(/"/g, '""');
+        csv += `"${date}",${f.scores.welcoming},${f.scores.valuable},${f.scores.inclusive},${f.scores.format},${f.scores.recommend},${f.average},"${comments}","${f.submittedBy}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `meeting-feedback-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+
+    showToast('Feedback report exported', 'success');
+}
+
+// Quick Win #5: Group Health Dashboard Widget (Enhancement to existing dashboard)
+function getGroupHealthMetrics() {
+    const members = storage.getMembers();
+    const positions = storage.getServicePositions();
+    const gcLogs = storage.getGroupConscienceLog();
+    const chairpersonLogs = storage.getChairpersonLog();
+    const today = new Date();
+    const thirtyDaysAgo = new Date(today - 30 * 24 * 60 * 60 * 1000);
+
+    // Calculate metrics
+    const activeMembers = members.filter(m => m.status === 'Active').length;
+    const filledPositions = positions.filter(p => p.currentHolder).length;
+    const totalPositions = positions.length;
+    const positionsFillRate = totalPositions > 0 ? (filledPositions / totalPositions * 100).toFixed(0) : 0;
+
+    // Recent GC activity
+    const recentGC = gcLogs.filter(log => new Date(log.date) >= thirtyDaysAgo);
+    const passedMotions = recentGC.filter(log => log.status === 'passed').length;
+    const totalMotions = recentGC.length;
+
+    // Attendance trend (last 8 weeks)
+    const recentLogs = chairpersonLogs
+        .filter(log => new Date(log.date) >= new Date(today - 56 * 24 * 60 * 60 * 1000))
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    const avgAttendance = recentLogs.length > 0
+        ? (recentLogs.reduce((sum, log) => sum + (log.headCount || 0), 0) / recentLogs.length).toFixed(1)
+        : 0;
+
+    // Financial health
+    const balance = parseFloat(localStorage.getItem('treasurerBalance')) || 0;
+    const monthlyExpenses = parseFloat(localStorage.getItem('monthlyExpenses')) || 0;
+    const monthsOfReserve = monthlyExpenses > 0 ? (balance / monthlyExpenses).toFixed(1) : 0;
+
+    // Overall health score (0-100)
+    let healthScore = 0;
+    healthScore += positionsFillRate * 0.25; // 25% weight
+    healthScore += Math.min((avgAttendance / 20) * 100, 100) * 0.25; // 25% weight (assuming target of 20)
+    healthScore += (totalMotions > 0 ? (passedMotions / totalMotions * 100) : 50) * 0.25; // 25% weight
+    healthScore += Math.min((monthsOfReserve / 3) * 100, 100) * 0.25; // 25% weight
+
+    return {
+        activeMembers,
+        positionsFillRate,
+        filledPositions,
+        totalPositions,
+        avgAttendance,
+        recentGCActivity: totalMotions,
+        gcPassRate: totalMotions > 0 ? ((passedMotions / totalMotions) * 100).toFixed(0) : 0,
+        monthsOfReserve,
+        healthScore: Math.round(healthScore),
+        healthStatus: healthScore >= 80 ? 'Excellent' : healthScore >= 60 ? 'Good' : healthScore >= 40 ? 'Fair' : 'Needs Attention',
+        healthColor: healthScore >= 80 ? '#2ecc71' : healthScore >= 60 ? '#f1c40f' : healthScore >= 40 ? '#f39c12' : '#e74c3c'
+    };
+}
+
+// ========== END QUICK WINS ==========
+
 function addExpense() {
     const date = document.getElementById('expense-date').value;
     const category = document.getElementById('expense-category').value;
@@ -13101,11 +14023,19 @@ function init() {
     checkUpcomingTermExpirations();
     checkMemberEngagement();
 
+    // Quick Wins: Initialize periodic checks
+    checkUpcomingBirthdaysAndAnniversaries();
+    checkActionItemReminders();
+    updatePrudentReserveProgressBar();
+
     // Run periodic checks
     setInterval(() => {
         checkUpcomingTermExpirations();
         checkMemberEngagement();
         scheduleAutomatedBackups();
+        checkUpcomingBirthdaysAndAnniversaries();
+        checkActionItemReminders();
+        updatePrudentReserveProgressBar();
     }, 3600000); // Check hourly
 
     // Back to Top button logic
@@ -14613,14 +15543,19 @@ function saveReserveSettings() {
     const monthlyExpenses = parseFloat(document.getElementById('monthly-expenses').value) || 0;
     const months = parseInt(document.getElementById('reserve-months').value) || 3;
 
+    localStorage.setItem('reserveTarget', target);
+    localStorage.setItem('monthlyExpenses', monthlyExpenses);
+    localStorage.setItem('reserveMonths', months);
     localStorage.setItem('reserveSettings', JSON.stringify({ target, monthlyExpenses, months }));
     showToast('Reserve settings saved', 'success');
     updateReserveStatus();
+    updatePrudentReserveProgressBar(); // Quick Win #2
 }
 
 function updateReserveStatus() {
     const settings = JSON.parse(localStorage.getItem('reserveSettings') || '{}');
     document.getElementById('display-reserve-target').textContent = (settings.target || 0).toFixed(2);
+    updatePrudentReserveProgressBar(); // Quick Win #2
     // Additional logic to calculate current balances from financial data would go here
 }
 
