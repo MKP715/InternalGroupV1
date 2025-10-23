@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(awk:*)",
-      "Bash(start index.html)"
+      "Bash(start index.html)",
+      "Bash(node --version:*)"
     ],
     "deny": [],
     "ask": []

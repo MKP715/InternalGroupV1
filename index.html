@@ -8793,6 +8793,9 @@ function init() {
     backToTopBtn.addEventListener('click', () => {
         mainEl.scrollTo({ top: 0, behavior: 'smooth' });
     });
+
+    // Initialize new sections
+    initNewSections();
 }
 
 // ============================================
@@ -10937,11 +10940,8 @@ function initNewSections() {
             }
         });
     }
-}
 
-// Extend init function to include new sections
-// Note: init() is defined earlier in the code, we just need to call these additional functions
-function initNewSections() {
+    // Initialize notifications and reminders
     requestNotificationPermission();
     checkUpcomingReminders();
 }
