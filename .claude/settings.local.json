@@ -3,7 +3,8 @@
     "allow": [
       "Bash(awk:*)",
       "Bash(start index.html)",
-      "Bash(node --version:*)"
+      "Bash(node --version:*)",
+      "Bash(node -c:*)"
     ],
     "deny": [],
     "ask": []

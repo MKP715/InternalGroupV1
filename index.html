@@ -6876,7 +6876,7 @@ function updateHome() {
         img.onclick = () => openModal(originalIndex, allPhotos);
         homePhotos.appendChild(img);
     });
-    if (photos.length === 0) {
+    if (allPhotos.length === 0) {
         homePhotos.innerHTML = '<span>No photos yet</span>';
     }
 }
