@@ -937,9 +937,13 @@
                 Group Conscience
                 <ul class="dropdown-menu">
                     <li data-section="gc-live-section">Live GC Session</li>
+                    <li data-section="parliamentary-section">Parliamentary Procedure</li>
                     <li data-section="gc-decisions-section">Decision History</li>
+                    <li data-section="motion-templates-section">Motion Templates</li>
+                    <li data-section="tradition-checker-section">Tradition & Concept Checker</li>
                     <li data-section="gc-inventory-section">GC Inventory</li>
                     <li data-section="gc-bylaws-section">Guidelines & By-Laws</li>
+                    <li data-section="voting-settings-section">Voting Settings</li>
                 </ul>
             </li>
 
@@ -947,8 +951,10 @@
                 Service
                 <ul class="dropdown-menu">
                     <li data-section="service-positions-section">Service Positions</li>
+                    <li data-section="service-elections-section">Service Elections</li>
                     <li data-section="sponsorship-section">Sponsorship Tracking</li>
                     <li data-section="district-area-section">District/Area Committee</li>
+                    <li data-section="district-motions-section">District Motions</li>
                 </ul>
             </li>
 
@@ -956,6 +962,7 @@
                 Treasury
                 <ul class="dropdown-menu">
                     <li data-section="finance-section">Financial Reports</li>
+                    <li data-section="budget-approval-section">Budget Approval</li>
                     <li data-section="seventh-tradition-section">7th Tradition Analysis</li>
                     <li data-section="prudent-reserve-section">Prudent Reserve</li>
                     <li data-section="chip-inventory-section">Chip Inventory</li>
@@ -974,6 +981,7 @@
                 Resources
                 <ul class="dropdown-menu">
                     <li data-section="library-section">AA Literature Library</li>
+                    <li data-section="literature-inventory-section">Literature Inventory</li>
                     <li data-section="history-section">Group History</li>
                     <li data-section="templates-section">Document Templates</li>
                 </ul>
@@ -3795,6 +3803,618 @@
                 </div>
             </div>
         </section>
+
+        <!-- VOTING SETTINGS SECTION -->
+        <section id="voting-settings-section">
+            <h2>Voting Settings & Methods</h2>
+            <p class="mb-4">Configure your group's preferred voting method for Group Conscience decisions.</p>
+
+            <div class="box mb-4">
+                <h3>Current Voting Method</h3>
+                <div id="current-voting-display" style="padding: 1.5rem; background: #2c3e50; border-radius: 6px;">
+                    <div style="font-size: 1.2rem; font-weight: bold; color: #3498db;" id="current-method-name">Substantial Unanimity</div>
+                    <div style="margin-top: 0.5rem; color: #95a5a6;" id="current-method-desc">Requires 2/3 majority (66.67%)</div>
+                </div>
+            </div>
+
+            <div class="box">
+                <h3>Configure Voting Method</h3>
+                <div class="form-group">
+                    <label for="voting-method">Voting Method</label>
+                    <select id="voting-method" onchange="updateVotingMethodDisplay()">
+                        <option value="substantialUnanimity">Substantial Unanimity (2/3 Majority)</option>
+                        <option value="simpleMajority">Simple Majority (50% + 1)</option>
+                        <option value="unanimousConsent">Unanimous Consent (100%)</option>
+                        <option value="senseOfMeeting">Sense of the Meeting (Consensus)</option>
+                        <option value="custom">Custom Threshold</option>
+                    </select>
+                    <small style="font-size: 0.75rem; opacity: 0.8;">Most AA groups use Substantial Unanimity (2/3 majority)</small>
+                </div>
+
+                <div class="form-group" id="custom-threshold-group" style="display: none;">
+                    <label for="custom-threshold">Custom Threshold (%)</label>
+                    <input type="number" id="custom-threshold" min="1" max="100" step="0.1" placeholder="66.67">
+                    <small style="font-size: 0.75rem; opacity: 0.8;">Enter the percentage required for a motion to pass</small>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="allow-abstain" checked>
+                        Allow Abstain Votes
+                    </label>
+                    <small style="font-size: 0.75rem; opacity: 0.8; display: block; margin-top: 0.25rem;">When enabled, abstentions are not counted in the total</small>
+                </div>
+
+                <button class="btn" onclick="saveVotingSettings()">Save Voting Settings</button>
+            </div>
+
+            <div class="box mt-4">
+                <h3>Voting Method Descriptions</h3>
+                <div style="padding: 1rem; background: #2c3e50; border-radius: 6px;">
+                    <div class="mb-3">
+                        <strong style="color: #3498db;">Substantial Unanimity (2/3):</strong>
+                        <p style="font-size: 0.9rem; margin-top: 0.25rem;">The traditional AA method. Requires at least 66.67% approval. Respects the minority opinion while allowing the group to move forward.</p>
+                    </div>
+                    <div class="mb-3">
+                        <strong style="color: #3498db;">Simple Majority (50% + 1):</strong>
+                        <p style="font-size: 0.9rem; margin-top: 0.25rem;">Requires just over half of votes to be in favor. Used for routine, non-controversial decisions.</p>
+                    </div>
+                    <div class="mb-3">
+                        <strong style="color: #3498db;">Unanimous Consent:</strong>
+                        <p style="font-size: 0.9rem; margin-top: 0.25rem;">Requires 100% agreement. Reserved for major decisions affecting the group's foundation.</p>
+                    </div>
+                    <div>
+                        <strong style="color: #3498db;">Sense of the Meeting:</strong>
+                        <p style="font-size: 0.9rem; margin-top: 0.25rem;">Informal consensus-based decision making. Chairperson gauges general agreement without formal vote count.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MOTION TEMPLATES SECTION -->
+        <section id="motion-templates-section">
+            <h2>Motion Templates</h2>
+            <p class="mb-4">Pre-formatted motion templates for common AA Group Conscience items.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3>Create/Edit Template</h3>
+                        <div class="form-group">
+                            <label for="template-name">Template Name</label>
+                            <input type="text" id="template-name" placeholder="e.g., Change Meeting Format">
+                        </div>
+                        <div class="form-group">
+                            <label for="template-category">Category</label>
+                            <select id="template-category">
+                                <option value="Finance">Finance</option>
+                                <option value="Service">Service</option>
+                                <option value="Meeting Format">Meeting Format</option>
+                                <option value="Group Health">Group Health</option>
+                                <option value="Literature">Literature</option>
+                                <option value="Special Events">Special Events</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="template-text">Motion Template Text</label>
+                            <textarea id="template-text" rows="4" placeholder="Motion to... Use [placeholders] for values to be filled in."></textarea>
+                            <small style="font-size: 0.75rem; opacity: 0.8;">Use square brackets [like this] for placeholders</small>
+                        </div>
+                        <input type="hidden" id="template-edit-id">
+                        <button id="template-form-btn" class="btn" onclick="saveMotionTemplate()">Add Template</button>
+                        <button id="template-form-cancel-btn" class="btn secondary" onclick="cancelTemplateEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box">
+                        <h3>Available Templates</h3>
+                        <div id="templates-filter" class="form-group">
+                            <select id="template-filter-category" onchange="renderMotionTemplates()">
+                                <option value="all">All Categories</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Service">Service</option>
+                                <option value="Meeting Format">Meeting Format</option>
+                                <option value="Group Health">Group Health</option>
+                                <option value="Literature">Literature</option>
+                                <option value="Special Events">Special Events</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div id="motion-templates-list" style="max-height: 500px; overflow-y: auto;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TRADITION & CONCEPT CHECKER SECTION -->
+        <section id="tradition-checker-section">
+            <h2>Tradition & Concept Checker</h2>
+            <p class="mb-4">Ensure your motions align with AA's 12 Traditions and 12 Concepts.</p>
+
+            <div class="box mb-4">
+                <h3>Check a Motion</h3>
+                <div class="form-group">
+                    <label for="check-motion-text">Motion to Check</label>
+                    <textarea id="check-motion-text" rows="3" placeholder="Enter the motion you want to check..."></textarea>
+                </div>
+                <button class="btn" onclick="checkTraditionsAndConcepts()">Analyze Motion</button>
+            </div>
+
+            <div id="tradition-check-results" style="display: none;">
+                <div class="box mb-4" style="border-left: 4px solid #f39c12;">
+                    <h3 style="color: #f39c12;"><i class="fas fa-exclamation-triangle"></i> Potential Issues</h3>
+                    <div id="tradition-warnings"></div>
+                </div>
+
+                <div class="box mb-4" style="border-left: 4px solid #3498db;">
+                    <h3 style="color: #3498db;"><i class="fas fa-info-circle"></i> Relevant Traditions</h3>
+                    <div id="relevant-traditions"></div>
+                </div>
+
+                <div class="box mb-4" style="border-left: 4px solid #9b59b6;">
+                    <h3 style="color: #9b59b6;"><i class="fas fa-lightbulb"></i> Relevant Concepts</h3>
+                    <div id="relevant-concepts"></div>
+                </div>
+
+                <div class="box" style="border-left: 4px solid #2ecc71;">
+                    <h3 style="color: #2ecc71;"><i class="fas fa-question-circle"></i> Guided Questions</h3>
+                    <div id="guided-questions"></div>
+                </div>
+            </div>
+
+            <div class="box mt-4">
+                <h3>Quick Reference</h3>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn secondary" onclick="showTraditionsReference()">View 12 Traditions</button>
+                    <button class="btn secondary" onclick="showConceptsReference()">View 12 Concepts</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PARLIAMENTARY PROCEDURE SECTION -->
+        <section id="parliamentary-section">
+            <h2>Parliamentary Procedure Assistant</h2>
+            <p class="mb-4">Guide motions through proper parliamentary procedure.</p>
+
+            <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box mb-4">
+                        <h3>Current Motion Workflow</h3>
+                        <div id="motion-workflow-display" style="padding: 1rem; background: #2c3e50; border-radius: 6px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                                <div class="workflow-step" style="flex: 1; text-align: center; padding: 1rem; border-radius: 4px;" id="step-motion">
+                                    <div style="font-weight: bold;">1. Motion</div>
+                                    <div style="font-size: 0.8rem; opacity: 0.7;">Member proposes</div>
+                                </div>
+                                <div style="color: #3498db; font-size: 1.5rem;">→</div>
+                                <div class="workflow-step" style="flex: 1; text-align: center; padding: 1rem; border-radius: 4px;" id="step-second">
+                                    <div style="font-weight: bold;">2. Second</div>
+                                    <div style="font-size: 0.8rem; opacity: 0.7;">Another supports</div>
+                                </div>
+                                <div style="color: #3498db; font-size: 1.5rem;">→</div>
+                                <div class="workflow-step" style="flex: 1; text-align: center; padding: 1rem; border-radius: 4px;" id="step-discussion">
+                                    <div style="font-weight: bold;">3. Discussion</div>
+                                    <div style="font-size: 0.8rem; opacity: 0.7;">Group discusses</div>
+                                </div>
+                                <div style="color: #3498db; font-size: 1.5rem;">→</div>
+                                <div class="workflow-step" style="flex: 1; text-align: center; padding: 1rem; border-radius: 4px;" id="step-vote">
+                                    <div style="font-weight: bold;">4. Vote</div>
+                                    <div style="font-size: 0.8rem; opacity: 0.7;">Group decides</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn" onclick="advanceMotionWorkflow()">Advance to Next Step</button>
+                            <button class="btn secondary" onclick="resetMotionWorkflow()">Reset Workflow</button>
+                        </div>
+                    </div>
+
+                    <div class="box">
+                        <h3>Speaking Queue</h3>
+                        <div class="form-group">
+                            <label for="speaker-name">Add Speaker to Queue</label>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <select id="speaker-name" style="flex: 1;">
+                                    <option value="">-- Select Member --</option>
+                                </select>
+                                <button class="btn" onclick="addToSpeakingQueue()">Add</button>
+                            </div>
+                        </div>
+                        <div id="speaking-queue-list" style="min-height: 200px; max-height: 400px; overflow-y: auto;"></div>
+                        <div id="discussion-timer-display" style="margin-top: 1rem; padding: 1rem; background: #2c3e50; border-radius: 6px; text-align: center; display: none;">
+                            <div style="font-size: 2rem; font-weight: bold; color: #3498db;" id="timer-display">3:00</div>
+                            <div style="margin-top: 0.5rem;">
+                                <button class="btn secondary" onclick="startSpeakerTimer()">Start</button>
+                                <button class="btn secondary" onclick="pauseSpeakerTimer()">Pause</button>
+                                <button class="btn secondary" onclick="resetSpeakerTimer()">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box mb-4">
+                        <h3>Quick Actions</h3>
+                        <button class="btn mb-2" onclick="callForSecond()" style="width: 100%;">Call for Second</button>
+                        <button class="btn mb-2" onclick="openDiscussion()" style="width: 100%;">Open Discussion</button>
+                        <button class="btn mb-2" onclick="closeDiscussion()" style="width: 100%;">Close Discussion</button>
+                        <button class="btn mb-2" onclick="callTheQuestion()" style="width: 100%;">Call the Question</button>
+                        <button class="btn mb-2" onclick="tableMotion()" style="width: 100%;">Table Motion</button>
+                    </div>
+
+                    <div class="box">
+                        <h3>Points of Order</h3>
+                        <button class="btn secondary mb-2" onclick="pointOfInformation()" style="width: 100%; font-size: 0.85rem;">Point of Information</button>
+                        <button class="btn secondary mb-2" onclick="pointOfOrder()" style="width: 100%; font-size: 0.85rem;">Point of Order</button>
+                        <button class="btn secondary mb-2" onclick="pointOfPrivilege()" style="width: 100%; font-size: 0.85rem;">Point of Privilege</button>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Amendments</h3>
+                        <div class="form-group">
+                            <label for="amendment-text">Proposed Amendment</label>
+                            <textarea id="amendment-text" rows="2" placeholder="Describe the amendment..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="radio" name="amendment-type" value="friendly" checked> Friendly Amendment
+                            </label>
+                            <label style="margin-left: 1rem;">
+                                <input type="radio" name="amendment-type" value="unfriendly"> Unfriendly Amendment
+                            </label>
+                        </div>
+                        <button class="btn" onclick="proposeAmendment()">Propose Amendment</button>
+                        <div id="active-amendments-list" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SERVICE ELECTIONS SECTION -->
+        <section id="service-elections-section">
+            <h2>Service Position Elections</h2>
+            <p class="mb-4">Conduct elections for service positions with eligibility checking and term tracking.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box mb-4">
+                        <h3>Start New Election</h3>
+                        <div class="form-group">
+                            <label for="election-position">Service Position</label>
+                            <select id="election-position" onchange="updateElectionEligibility()">
+                                <option value="">-- Select Position --</option>
+                            </select>
+                        </div>
+                        <div id="position-requirements" style="padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 1rem; display: none;">
+                            <strong>Requirements:</strong>
+                            <div id="position-req-details"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="election-date">Election Date</label>
+                            <input type="date" id="election-date">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="election-anonymous"> Anonymous Ballot
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="election-method">Voting Method</label>
+                            <select id="election-method">
+                                <option value="simple">Simple Majority</option>
+                                <option value="runoff">Runoff (if no majority)</option>
+                                <option value="ranked">Ranked Choice</option>
+                            </select>
+                        </div>
+                        <button class="btn" onclick="startElection()">Start Election</button>
+                    </div>
+
+                    <div class="box">
+                        <h3>Nominations</h3>
+                        <div id="current-election-info" style="display: none; padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 1rem;">
+                            <strong>Current Election:</strong> <span id="current-election-position"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="nominee-select">Nominate Member</label>
+                            <select id="nominee-select">
+                                <option value="">-- Select Member --</option>
+                            </select>
+                        </div>
+                        <div id="nominee-eligibility-check"></div>
+                        <button class="btn" onclick="nominateMember()">Nominate</button>
+                        <div id="nominees-list" class="mt-3"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box mb-4">
+                        <h3>Cast Ballots</h3>
+                        <div id="ballot-interface"></div>
+                    </div>
+
+                    <div class="box mb-4">
+                        <h3>Current Service Positions</h3>
+                        <table id="current-positions-table">
+                            <thead>
+                                <tr>
+                                    <th>Position</th>
+                                    <th>Holder</th>
+                                    <th>Term Ends</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="current-positions-body"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="box">
+                        <h3>Election History</h3>
+                        <div id="election-history-list" style="max-height: 300px; overflow-y: auto;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BUDGET APPROVAL SECTION -->
+        <section id="budget-approval-section">
+            <h2>Budget Approval Workflow</h2>
+            <p class="mb-4">Propose, review, and vote on annual budgets and budget amendments.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3>Create Budget Proposal</h3>
+                        <div class="form-group">
+                            <label for="budget-year">Fiscal Year</label>
+                            <input type="number" id="budget-year" min="2020" max="2050" placeholder="2024">
+                        </div>
+                        <div class="form-group">
+                            <label for="budget-type">Budget Type</label>
+                            <select id="budget-type">
+                                <option value="annual">Annual Budget</option>
+                                <option value="amendment">Budget Amendment</option>
+                                <option value="special">Special Project Budget</option>
+                            </select>
+                        </div>
+                        <div id="budget-categories-input">
+                            <h4 class="mt-3 mb-2">Budget Line Items</h4>
+                            <div id="budget-line-items"></div>
+                            <button class="btn secondary" onclick="addBudgetLineItem()">Add Line Item</button>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label>Total Proposed Budget: $<span id="total-proposed-budget">0.00</span></label>
+                        </div>
+                        <button class="btn mt-2" onclick="submitBudgetProposal()">Submit for GC Approval</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box mb-4">
+                        <h3>Pending Budget Proposals</h3>
+                        <div id="pending-budgets-list"></div>
+                    </div>
+
+                    <div class="box mb-4">
+                        <h3>Approved Budgets</h3>
+                        <div id="approved-budgets-list"></div>
+                    </div>
+
+                    <div class="box">
+                        <h3>Budget vs Actual (Current Year)</h3>
+                        <canvas id="budget-actual-chart" style="max-height: 300px;"></canvas>
+                        <div id="budget-variance-summary" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LITERATURE INVENTORY SECTION -->
+        <section id="literature-inventory-section">
+            <h2>Literature & Supplies Inventory</h2>
+            <p class="mb-4">Track AA literature, supplies, and loan management.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3>Add/Update Literature Item</h3>
+                        <div class="form-group">
+                            <label for="lit-item-name">Item Name</label>
+                            <input type="text" id="lit-item-name" placeholder="e.g., Big Book, Living Sober">
+                        </div>
+                        <div class="form-group">
+                            <label for="lit-item-type">Type</label>
+                            <select id="lit-item-type">
+                                <option value="book">Book</option>
+                                <option value="pamphlet">Pamphlet</option>
+                                <option value="chip">Chip/Medallion</option>
+                                <option value="supplies">Meeting Supplies</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="lit-quantity">Quantity in Stock</label>
+                            <input type="number" id="lit-quantity" min="0" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="lit-min-quantity">Minimum Stock Alert</label>
+                            <input type="number" id="lit-min-quantity" min="0" placeholder="5">
+                        </div>
+                        <div class="form-group">
+                            <label for="lit-cost">Unit Cost ($)</label>
+                            <input type="number" id="lit-cost" step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="lit-loanable"> Available for Loan
+                            </label>
+                        </div>
+                        <input type="hidden" id="lit-edit-id">
+                        <button id="lit-form-btn" class="btn" onclick="saveLiteratureItem()">Add Item</button>
+                        <button id="lit-form-cancel-btn" class="btn secondary" onclick="cancelLitEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box mb-4">
+                        <h3>Current Inventory</h3>
+                        <table id="literature-inventory-table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Type</th>
+                                    <th>Quantity</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="literature-inventory-body"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="box">
+                        <h3>Low Stock Alerts</h3>
+                        <div id="lit-low-stock-alerts"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box mt-4">
+                <h3>Literature Loans</h3>
+                <div class="grid" style="grid-template-columns: 1fr 2fr; gap: 2rem;">
+                    <div>
+                        <h4>Check Out Literature</h4>
+                        <div class="form-group">
+                            <label for="loan-member">Member</label>
+                            <select id="loan-member">
+                                <option value="">-- Select Member --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="loan-item">Literature Item</label>
+                            <select id="loan-item">
+                                <option value="">-- Select Item --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="loan-due-date">Due Date</label>
+                            <input type="date" id="loan-due-date">
+                        </div>
+                        <button class="btn" onclick="checkOutLiterature()">Check Out</button>
+                    </div>
+                    <div>
+                        <h4>Active Loans</h4>
+                        <table id="literature-loans-table">
+                            <thead>
+                                <tr>
+                                    <th>Member</th>
+                                    <th>Item</th>
+                                    <th>Due Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="literature-loans-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box mt-4">
+                <h3>Purchase Approval</h3>
+                <p class="mb-2">Submit purchase requests for Group Conscience approval</p>
+                <div class="form-group">
+                    <label for="purchase-items">Items to Purchase</label>
+                    <textarea id="purchase-items" rows="2" placeholder="List items and quantities..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="purchase-estimated-cost">Estimated Cost ($)</label>
+                    <input type="number" id="purchase-estimated-cost" step="0.01" placeholder="0.00">
+                </div>
+                <button class="btn" onclick="submitLiteraturePurchaseRequest()">Submit for GC Approval</button>
+            </div>
+        </section>
+
+        <!-- DISTRICT MOTIONS SECTION -->
+        <section id="district-motions-section">
+            <h2>District & Area Motions</h2>
+            <p class="mb-4">Track district and area motions that require group input, and record the group's positions.</p>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3>Add District/Area Motion</h3>
+                        <div class="form-group">
+                            <label for="district-motion-source">Source</label>
+                            <select id="district-motion-source">
+                                <option value="district">District Meeting</option>
+                                <option value="area">Area Assembly</option>
+                                <option value="conference">General Service Conference</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="district-motion-title">Motion Title</label>
+                            <input type="text" id="district-motion-title" placeholder="Brief title">
+                        </div>
+                        <div class="form-group">
+                            <label for="district-motion-text">Motion Details</label>
+                            <textarea id="district-motion-text" rows="4" placeholder="Full motion text..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="district-motion-deadline">Response Deadline</label>
+                            <input type="date" id="district-motion-deadline">
+                        </div>
+                        <div class="form-group">
+                            <label for="district-motion-background">Background Information</label>
+                            <textarea id="district-motion-background" rows="3" placeholder="Context and background..."></textarea>
+                        </div>
+                        <input type="hidden" id="district-motion-edit-id">
+                        <button id="district-motion-form-btn" class="btn" onclick="saveDistrictMotion()">Add Motion</button>
+                        <button id="district-motion-cancel-btn" class="btn secondary" onclick="cancelDistrictMotionEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="box mb-4">
+                        <h3>Pending Responses</h3>
+                        <div id="pending-district-motions-list"></div>
+                    </div>
+
+                    <div class="box">
+                        <h3>Group Position History</h3>
+                        <div id="district-motions-history-list" style="max-height: 400px; overflow-y: auto;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box mt-4">
+                <h3>Record Group's Position</h3>
+                <div class="form-group">
+                    <label for="position-motion-select">Select Motion</label>
+                    <select id="position-motion-select">
+                        <option value="">-- Select Motion --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="group-position">Group's Position</label>
+                    <select id="group-position">
+                        <option value="support">Support</option>
+                        <option value="oppose">Oppose</option>
+                        <option value="abstain">Abstain</option>
+                        <option value="needs-info">Needs More Information</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="position-rationale">Rationale</label>
+                    <textarea id="position-rationale" rows="3" placeholder="Why did the group take this position?"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="position-vote-count">Vote Count</label>
+                    <input type="text" id="position-vote-count" placeholder="e.g., 15-3-2 (For-Against-Abstain)">
+                </div>
+                <button class="btn" onclick="recordGroupPosition()">Record Position</button>
+            </div>
+        </section>
     </main>
 
     <!-- Member Roster Modal -->
@@ -4152,6 +4772,63 @@ const storage = {
     getCurrentUser() { return localStorage.getItem('currentUser') || 'Anonymous'; },
     saveCurrentUser(user) { localStorage.setItem('currentUser', user); },
 
+    // New High-Impact Features Storage
+    getLiteratureInventory() {
+        try { return JSON.parse(localStorage.getItem('literatureInventory') || '[]'); }
+        catch(e) { console.error('Error parsing literatureInventory:', e); return []; }
+    },
+    saveLiteratureInventory(inventory) { localStorage.setItem('literatureInventory', JSON.stringify(inventory)); },
+    getLiteratureLoans() {
+        try { return JSON.parse(localStorage.getItem('literatureLoans') || '[]'); }
+        catch(e) { console.error('Error parsing literatureLoans:', e); return []; }
+    },
+    saveLiteratureLoans(loans) { localStorage.setItem('literatureLoans', JSON.stringify(loans)); },
+    getServiceElections() {
+        try { return JSON.parse(localStorage.getItem('serviceElections') || '[]'); }
+        catch(e) { console.error('Error parsing serviceElections:', e); return []; }
+    },
+    saveServiceElections(elections) { localStorage.setItem('serviceElections', JSON.stringify(elections)); },
+    getElectionBallots() {
+        try { return JSON.parse(localStorage.getItem('electionBallots') || '[]'); }
+        catch(e) { console.error('Error parsing electionBallots:', e); return []; }
+    },
+    saveElectionBallots(ballots) { localStorage.setItem('electionBallots', JSON.stringify(ballots)); },
+    getSpeakingQueue() {
+        try { return JSON.parse(localStorage.getItem('speakingQueue') || '[]'); }
+        catch(e) { console.error('Error parsing speakingQueue:', e); return []; }
+    },
+    saveSpeakingQueue(queue) { localStorage.setItem('speakingQueue', JSON.stringify(queue)); },
+    getMotionTemplates() {
+        try { return JSON.parse(localStorage.getItem('motionTemplates') || '[]'); }
+        catch(e) { console.error('Error parsing motionTemplates:', e); return []; }
+    },
+    saveMotionTemplates(templates) { localStorage.setItem('motionTemplates', JSON.stringify(templates)); },
+    getTraditionChecks() {
+        try { return JSON.parse(localStorage.getItem('traditionChecks') || '[]'); }
+        catch(e) { console.error('Error parsing traditionChecks:', e); return []; }
+    },
+    saveTraditionChecks(checks) { localStorage.setItem('traditionChecks', JSON.stringify(checks)); },
+    getBudgetProposals() {
+        try { return JSON.parse(localStorage.getItem('budgetProposals') || '[]'); }
+        catch(e) { console.error('Error parsing budgetProposals:', e); return []; }
+    },
+    saveBudgetProposals(proposals) { localStorage.setItem('budgetProposals', JSON.stringify(proposals)); },
+    getDistrictMotions() {
+        try { return JSON.parse(localStorage.getItem('districtMotions') || '[]'); }
+        catch(e) { console.error('Error parsing districtMotions:', e); return []; }
+    },
+    saveDistrictMotions(motions) { localStorage.setItem('districtMotions', JSON.stringify(motions)); },
+    getGroupPositions() {
+        try { return JSON.parse(localStorage.getItem('groupPositions') || '[]'); }
+        catch(e) { console.error('Error parsing groupPositions:', e); return []; }
+    },
+    saveGroupPositions(positions) { localStorage.setItem('groupPositions', JSON.stringify(positions)); },
+    getVotingSettings() {
+        try { return JSON.parse(localStorage.getItem('votingSettings') || '{"method": "substantialUnanimity", "threshold": 66.67, "allowAbstain": true}'); }
+        catch(e) { console.error('Error parsing votingSettings:', e); return {"method": "substantialUnanimity", "threshold": 66.67, "allowAbstain": true}; }
+    },
+    saveVotingSettings(settings) { localStorage.setItem('votingSettings', JSON.stringify(settings)); },
+
     // Backward compatibility: Import birthdays from old format
     saveBirthdays(birthdays) {
         const existingMembers = this.getMembers();
@@ -4244,6 +4921,90 @@ function initDefaults() {
     }
     if (!localStorage.getItem('gcSettings')) {
         storage.saveGCSettings({ quorumPercentage: 50, quorumMinimum: 5 });
+    }
+
+    // Initialize new High-Impact Features
+    if (!localStorage.getItem('votingSettings')) {
+        storage.saveVotingSettings({ method: 'substantialUnanimity', threshold: 66.67, allowAbstain: true });
+    }
+    if (!localStorage.getItem('literatureInventory')) {
+        storage.saveLiteratureInventory([]);
+    }
+    if (!localStorage.getItem('literatureLoans')) {
+        storage.saveLiteratureLoans([]);
+    }
+    if (!localStorage.getItem('serviceElections')) {
+        storage.saveServiceElections([]);
+    }
+    if (!localStorage.getItem('electionBallots')) {
+        storage.saveElectionBallots([]);
+    }
+    if (!localStorage.getItem('speakingQueue')) {
+        storage.saveSpeakingQueue([]);
+    }
+    if (!localStorage.getItem('motionTemplates')) {
+        // Initialize with common AA motion templates
+        const defaultTemplates = [
+            {
+                id: genId(),
+                name: 'Change 7th Tradition Split',
+                template: 'Motion to change our 7th Tradition contribution split to [X]% for group expenses, [Y]% for District, [Z]% for Area, and [W]% for GSO.',
+                category: 'Finance'
+            },
+            {
+                id: genId(),
+                name: 'Approve Service Position',
+                template: 'Motion to approve [Name] as [Service Position] for a term of [Duration].',
+                category: 'Service'
+            },
+            {
+                id: genId(),
+                name: 'Change Meeting Format',
+                template: 'Motion to change the meeting format from [Current Format] to [New Format] effective [Date].',
+                category: 'Meeting Format'
+            },
+            {
+                id: genId(),
+                name: 'Approve Group Inventory',
+                template: 'Motion to conduct a group inventory on [Date] using the [12 Traditions/12 Concepts/Custom] format.',
+                category: 'Group Health'
+            },
+            {
+                id: genId(),
+                name: 'Purchase Literature',
+                template: 'Motion to purchase [Quantity] of [Literature Item] at an estimated cost of $[Amount].',
+                category: 'Literature'
+            },
+            {
+                id: genId(),
+                name: 'Approve Budget',
+                template: 'Motion to approve the proposed annual budget of $[Amount] for fiscal year [Year].',
+                category: 'Finance'
+            }
+        ];
+        storage.saveMotionTemplates(defaultTemplates);
+    }
+    if (!localStorage.getItem('traditionChecks')) {
+        storage.saveTraditionChecks([]);
+    }
+    if (!localStorage.getItem('budgetProposals')) {
+        storage.saveBudgetProposals([]);
+    }
+    if (!localStorage.getItem('districtMotions')) {
+        storage.saveDistrictMotions([]);
+    }
+    if (!localStorage.getItem('groupPositions')) {
+        // Initialize common AA service positions
+        const defaultPositions = [
+            { id: genId(), title: 'General Service Representative (GSR)', term: 24, minSobriety: 12, description: 'Represents the group at District and Area meetings' },
+            { id: genId(), title: 'Alternate GSR', term: 24, minSobriety: 6, description: 'Backs up the GSR' },
+            { id: genId(), title: 'Treasurer', term: 24, minSobriety: 12, description: 'Manages group finances' },
+            { id: genId(), title: 'Secretary', term: 12, minSobriety: 6, description: 'Takes meeting minutes and attendance' },
+            { id: genId(), title: 'Chairperson', term: 12, minSobriety: 6, description: 'Chairs the meeting' },
+            { id: genId(), title: 'Literature Coordinator', term: 12, minSobriety: 6, description: 'Manages group literature' },
+            { id: genId(), title: 'Coffee/Setup Coordinator', term: 6, minSobriety: 3, description: 'Coordinates coffee and setup duties' }
+        ];
+        storage.saveGroupPositions(defaultPositions);
     }
 }
 function handleEventSubmit() {
@@ -6688,8 +7449,20 @@ function exportData(dataType) {
             budgetCategories: storage.getBudgetCategories(),
             expenses: storage.getExpenses(),
             templates: storage.getTemplates(),
+            // New High-Impact Features Data
+            votingSettings: storage.getVotingSettings(),
+            literatureInventory: storage.getLiteratureInventory(),
+            literatureLoans: storage.getLiteratureLoans(),
+            serviceElections: storage.getServiceElections(),
+            electionBallots: storage.getElectionBallots(),
+            speakingQueue: storage.getSpeakingQueue(),
+            motionTemplates: storage.getMotionTemplates(),
+            traditionChecks: storage.getTraditionChecks(),
+            budgetProposals: storage.getBudgetProposals(),
+            districtMotions: storage.getDistrictMotions(),
+            groupPositions: storage.getGroupPositions(),
             exportDate: new Date().toISOString(),
-            version: '2.0'
+            version: '3.0'
         };
         const dateStr = new Date().toISOString().split('T')[0];
         filename = `rowlett-group-backup-${dateStr}.json`;
@@ -6761,6 +7534,18 @@ function importData() {
             if (data.budgetCategories) { storage.saveBudgetCategories(data.budgetCategories); imported = true; }
             if (data.expenses) { storage.saveExpenses(data.expenses); imported = true; }
             if (data.templates) { storage.saveTemplates(data.templates); imported = true; }
+            // Import new High-Impact Features data
+            if (data.votingSettings) { storage.saveVotingSettings(data.votingSettings); imported = true; }
+            if (data.literatureInventory) { storage.saveLiteratureInventory(data.literatureInventory); imported = true; }
+            if (data.literatureLoans) { storage.saveLiteratureLoans(data.literatureLoans); imported = true; }
+            if (data.serviceElections) { storage.saveServiceElections(data.serviceElections); imported = true; }
+            if (data.electionBallots) { storage.saveElectionBallots(data.electionBallots); imported = true; }
+            if (data.speakingQueue) { storage.saveSpeakingQueue(data.speakingQueue); imported = true; }
+            if (data.motionTemplates) { storage.saveMotionTemplates(data.motionTemplates); imported = true; }
+            if (data.traditionChecks) { storage.saveTraditionChecks(data.traditionChecks); imported = true; }
+            if (data.budgetProposals) { storage.saveBudgetProposals(data.budgetProposals); imported = true; }
+            if (data.districtMotions) { storage.saveDistrictMotions(data.districtMotions); imported = true; }
+            if (data.groupPositions) { storage.saveGroupPositions(data.groupPositions); imported = true; }
 
             if (imported) {
                 showToast('Data imported successfully! The page will now reload.', 'success');
@@ -8835,6 +9620,22 @@ function init() {
 
     // Initialize new sections
     initNewSections();
+
+    // Initialize High-Impact Features
+    loadVotingSettings();
+    renderMotionTemplates();
+    renderSpeakingQueue();
+    renderCurrentPositions();
+    renderElectionHistory();
+    renderBudgetProposals();
+    renderLiteratureInventory();
+    renderLiteratureLoans();
+    renderDistrictMotions();
+
+    // Populate new dropdowns
+    populateElectionPositions();
+    populateSpeakersDropdown();
+    populateLiteratureLoanMembers();
 }
 
 // ============================================
@@ -9746,6 +10547,15 @@ document.addEventListener('click', function(e) {
 
         // Sponsorships
         case 'delete-sponsorship': deleteSponsorship(id); break;
+
+        // Motion Templates
+        case 'use-template': useMotionTemplate(id); break;
+        case 'edit-template': editMotionTemplate(id); break;
+        case 'delete-template': deleteMotionTemplate(id); break;
+
+        // Literature Inventory
+        case 'edit-lit-item': editLiteratureItem(id); break;
+        case 'delete-lit-item': deleteLiteratureItem(id); break;
     }
 });
 
@@ -11142,6 +11952,1420 @@ function injectPWAManifest() {
     setTimeout(() => {
         URL.revokeObjectURL(manifestURL);
     }, 100);
+}
+
+// ========== HIGH-IMPACT FEATURES: VOTING SETTINGS ==========
+function updateVotingMethodDisplay() {
+    const method = document.getElementById('voting-method').value;
+    const customGroup = document.getElementById('custom-threshold-group');
+
+    if (method === 'custom') {
+        customGroup.style.display = 'block';
+    } else {
+        customGroup.style.display = 'none';
+    }
+}
+
+function saveVotingSettings() {
+    const method = document.getElementById('voting-method').value;
+    const allowAbstain = document.getElementById('allow-abstain').checked;
+    let threshold = 66.67;
+
+    switch(method) {
+        case 'substantialUnanimity':
+            threshold = 66.67;
+            break;
+        case 'simpleMajority':
+            threshold = 50.01;
+            break;
+        case 'unanimousConsent':
+            threshold = 100;
+            break;
+        case 'senseOfMeeting':
+            threshold = 0; // No specific threshold for consensus
+            break;
+        case 'custom':
+            threshold = parseFloat(document.getElementById('custom-threshold').value) || 66.67;
+            break;
+    }
+
+    storage.saveVotingSettings({ method, threshold, allowAbstain });
+    showToast('Voting settings saved!', 'success');
+    loadVotingSettings();
+}
+
+function loadVotingSettings() {
+    const settings = storage.getVotingSettings();
+    document.getElementById('voting-method').value = settings.method;
+    document.getElementById('allow-abstain').checked = settings.allowAbstain;
+    document.getElementById('custom-threshold').value = settings.threshold;
+
+    updateVotingMethodDisplay();
+
+    // Update display
+    const methodNames = {
+        substantialUnanimity: 'Substantial Unanimity',
+        simpleMajority: 'Simple Majority',
+        unanimousConsent: 'Unanimous Consent',
+        senseOfMeeting: 'Sense of the Meeting',
+        custom: 'Custom Threshold'
+    };
+
+    const methodDescs = {
+        substantialUnanimity: 'Requires 2/3 majority (66.67%)',
+        simpleMajority: 'Requires 50% + 1',
+        unanimousConsent: 'Requires 100% agreement',
+        senseOfMeeting: 'Informal consensus',
+        custom: `Requires ${settings.threshold}%`
+    };
+
+    document.getElementById('current-method-name').textContent = methodNames[settings.method] || 'Substantial Unanimity';
+    document.getElementById('current-method-desc').textContent = methodDescs[settings.method] || 'Requires 2/3 majority (66.67%)';
+}
+
+function checkVotePasses(votesFor, votesAgainst, votesAbstain) {
+    const settings = storage.getVotingSettings();
+
+    if (settings.method === 'senseOfMeeting') {
+        return { passes: true, type: 'consensus' };
+    }
+
+    const totalVotes = settings.allowAbstain
+        ? votesFor + votesAgainst
+        : votesFor + votesAgainst + votesAbstain;
+
+    if (totalVotes === 0) return { passes: false, type: 'no-votes' };
+
+    const percentage = (votesFor / totalVotes) * 100;
+    const passes = percentage >= settings.threshold;
+
+    return { passes, percentage: percentage.toFixed(2), threshold: settings.threshold };
+}
+
+// ========== MOTION TEMPLATES ==========
+function saveMotionTemplate() {
+    const editId = document.getElementById('template-edit-id').value;
+    if (editId) {
+        updateMotionTemplate();
+        return;
+    }
+
+    const name = document.getElementById('template-name').value.trim();
+    const category = document.getElementById('template-category').value;
+    const template = document.getElementById('template-text').value.trim();
+
+    if (!name || !template) {
+        showToast('Please provide template name and text', 'error');
+        return;
+    }
+
+    const templates = storage.getMotionTemplates();
+    templates.push({
+        id: genId(),
+        name,
+        category,
+        template,
+        createdDate: new Date().toISOString()
+    });
+
+    storage.saveMotionTemplates(templates);
+    showToast('Template saved!', 'success');
+
+    document.getElementById('template-name').value = '';
+    document.getElementById('template-text').value = '';
+    renderMotionTemplates();
+}
+
+function renderMotionTemplates() {
+    const templates = storage.getMotionTemplates();
+    const filter = document.getElementById('template-filter-category').value;
+    const filtered = filter === 'all' ? templates : templates.filter(t => t.category === filter);
+
+    const list = document.getElementById('motion-templates-list');
+    if (filtered.length === 0) {
+        list.innerHTML = '<p style="opacity: 0.7;">No templates found.</p>';
+        return;
+    }
+
+    list.innerHTML = filtered.map(t => `
+        <div style="padding: 1rem; margin-bottom: 0.5rem; background: #2c3e50; border-radius: 4px; border-left: 4px solid #3498db;">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="flex: 1;">
+                    <strong style="color: #3498db;">${escapeHtml(t.name)}</strong>
+                    <span style="background: #34495e; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.75rem; margin-left: 0.5rem;">${escapeHtml(t.category)}</span>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.9;">${escapeHtml(t.template)}</p>
+                </div>
+                <div style="display: flex; gap: 0.5rem; margin-left: 1rem;">
+                    <button class="btn secondary" data-action="use-template" data-id="${escapeAttribute(t.id)}" style="font-size: 0.85rem;">Use</button>
+                    <button class="btn secondary" data-action="edit-template" data-id="${escapeAttribute(t.id)}" style="font-size: 0.85rem;">Edit</button>
+                    <button class="btn secondary" data-action="delete-template" data-id="${escapeAttribute(t.id)}" style="font-size: 0.85rem; background: #e74c3c;">Delete</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function useMotionTemplate(id) {
+    const templates = storage.getMotionTemplates();
+    const template = templates.find(t => t.id === id);
+    if (!template) return;
+
+    // Try to find the GC item text area and populate it
+    const gcItemField = document.getElementById('gc-item');
+    if (gcItemField) {
+        gcItemField.value = template.template;
+        showToast('Template loaded into motion field!', 'success');
+        goToSection('chairperson-section');
+    } else {
+        // Copy to clipboard as fallback
+        navigator.clipboard.writeText(template.template).then(() => {
+            showToast('Template copied to clipboard!', 'success');
+        });
+    }
+}
+
+function editMotionTemplate(id) {
+    const templates = storage.getMotionTemplates();
+    const template = templates.find(t => t.id === id);
+    if (!template) return;
+
+    document.getElementById('template-edit-id').value = template.id;
+    document.getElementById('template-name').value = template.name;
+    document.getElementById('template-category').value = template.category;
+    document.getElementById('template-text').value = template.template;
+
+    document.getElementById('template-form-btn').textContent = 'Update Template';
+    document.getElementById('template-form-cancel-btn').style.display = 'inline-block';
+}
+
+function updateMotionTemplate() {
+    const id = document.getElementById('template-edit-id').value;
+    const name = document.getElementById('template-name').value.trim();
+    const category = document.getElementById('template-category').value;
+    const template = document.getElementById('template-text').value.trim();
+
+    if (!name || !template) {
+        showToast('Please provide template name and text', 'error');
+        return;
+    }
+
+    let templates = storage.getMotionTemplates();
+    const index = templates.findIndex(t => t.id === id);
+    if (index > -1) {
+        templates[index] = { ...templates[index], name, category, template };
+        storage.saveMotionTemplates(templates);
+        showToast('Template updated!', 'success');
+        cancelTemplateEdit();
+        renderMotionTemplates();
+    }
+}
+
+function cancelTemplateEdit() {
+    document.getElementById('template-edit-id').value = '';
+    document.getElementById('template-name').value = '';
+    document.getElementById('template-text').value = '';
+    document.getElementById('template-form-btn').textContent = 'Add Template';
+    document.getElementById('template-form-cancel-btn').style.display = 'none';
+}
+
+function deleteMotionTemplate(id) {
+    if (!confirm('Delete this template?')) return;
+    let templates = storage.getMotionTemplates();
+    templates = templates.filter(t => t.id !== id);
+    storage.saveMotionTemplates(templates);
+    showToast('Template deleted', 'info');
+    renderMotionTemplates();
+}
+
+// ========== TRADITION & CONCEPT CHECKER ==========
+function checkTraditionsAndConcepts() {
+    const motionText = document.getElementById('check-motion-text').value.trim().toLowerCase();
+    if (!motionText) {
+        showToast('Please enter a motion to check', 'error');
+        return;
+    }
+
+    const warnings = [];
+    const relevantTraditions = [];
+    const relevantConcepts = [];
+    const questions = [];
+
+    // Check for tradition violations (keyword-based analysis)
+    const traditionChecks = [
+        { tradition: 1, keywords: ['outside', 'non-aa', 'affiliate', 'merge'], warning: 'May affect group autonomy or unity', questions: ['Does this keep our group focused on AA\'s primary purpose?'] },
+        { tradition: 2, keywords: ['leader', 'boss', 'control', 'authority'], warning: 'May create authority issues', questions: ['Are we empowering a trusted servant or creating a leader?'] },
+        { tradition: 3, keywords: ['require', 'must be', 'mandatory'], warning: 'May restrict membership', questions: ['Is our only requirement a desire to stop drinking?'] },
+        { tradition: 4, keywords: ['interfere', 'tell', 'dictate'], warning: 'May affect group autonomy', questions: ['Does this interfere with other groups?'] },
+        { tradition: 5, keywords: ['purpose', 'mission', 'goal'], warning: 'Check alignment with primary purpose', questions: ['Does this help us carry the message to the alcoholic who still suffers?'] },
+        { tradition: 6, keywords: ['endorse', 'sponsor', 'partner', 'facility', 'property'], warning: 'Possible outside issue or endorsement', questions: ['Are we lending the AA name to any outside enterprise?'] },
+        { tradition: 7, keywords: ['donation', 'contribution', 'outside', 'fund'], warning: 'Self-support concern', questions: ['Are we remaining self-supporting?', 'Are we accepting contributions from non-members?'] },
+        { tradition: 8, keywords: ['pay', 'salary', 'hire', 'employee'], warning: 'Professional vs. non-professional distinction', questions: ['Should this remain non-professional or require special workers?'] },
+        { tradition: 9, keywords: ['organization', 'structure', 'board'], warning: 'Check organization complexity', questions: ['Are we creating unnecessary organization?'] },
+        { tradition: 10, keywords: ['opinion', 'position', 'stance', 'political'], warning: 'Possible outside controversy', questions: ['Does this involve AA in public controversy?'] },
+        { tradition: 11, keywords: ['publicity', 'promote', 'advertise', 'media'], warning: 'Attraction vs. promotion', questions: ['Are we practicing attraction rather than promotion?'] },
+        { tradition: 12, keywords: ['name', 'credit', 'recognition', 'fame'], warning: 'Anonymity concern', questions: ['Are we placing principles before personalities?'] }
+    ];
+
+    traditionChecks.forEach(check => {
+        if (check.keywords.some(kw => motionText.includes(kw))) {
+            relevantTraditions.push({ num: check.tradition, warning: check.warning });
+            questions.push(...check.questions);
+        }
+    });
+
+    // Relevant concepts (simplified)
+    if (motionText.includes('servant') || motionText.includes('service') || motionText.includes('position')) {
+        relevantConcepts.push({ num: 1, text: 'Final responsibility and ultimate authority for AA world services should always reside in the collective conscience of our whole Fellowship.' });
+        relevantConcepts.push({ num: 9, text: 'Good service leadership at all levels is indispensable for our future functioning and safety.' });
+    }
+    if (motionText.includes('money') || motionText.includes('budget') || motionText.includes('financial')) {
+        relevantConcepts.push({ num: 8, text: 'The trustees are the principal planners and administrators of overall policy and finance.' });
+    }
+
+    // General questions
+    questions.push('Does this promote unity within our group?');
+    questions.push('Is this decision made in the spirit of love and service?');
+    questions.push('Have we sought guidance through group discussion and prayer?');
+
+    // Display results
+    document.getElementById('tradition-check-results').style.display = 'block';
+
+    const warningsEl = document.getElementById('tradition-warnings');
+    if (relevantTraditions.length > 0) {
+        warningsEl.innerHTML = relevantTraditions.map(t => `
+            <div style="padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem;">
+                <strong style="color: #f39c12;">Tradition ${t.num}:</strong> ${escapeHtml(t.warning)}
+            </div>
+        `).join('');
+    } else {
+        warningsEl.innerHTML = '<p style="color: #2ecc71;">No obvious tradition concerns detected.</p>';
+    }
+
+    const traditionsEl = document.getElementById('relevant-traditions');
+    traditionsEl.innerHTML = `
+        <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">Consider reviewing these traditions:</p>
+        ${relevantTraditions.length > 0 ? relevantTraditions.map(t => `<div style="padding: 0.5rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.25rem;">Tradition ${t.num}</div>`).join('') : '<p style="opacity: 0.7;">All 12 Traditions are always relevant to group decisions.</p>'}
+    `;
+
+    const conceptsEl = document.getElementById('relevant-concepts');
+    if (relevantConcepts.length > 0) {
+        conceptsEl.innerHTML = relevantConcepts.map(c => `
+            <div style="padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem;">
+                <strong style="color: #9b59b6;">Concept ${c.num}:</strong> ${escapeHtml(c.text)}
+            </div>
+        `).join('');
+    } else {
+        conceptsEl.innerHTML = '<p style="opacity: 0.7;">Review the 12 Concepts for World Service as needed.</p>';
+    }
+
+    const questionsEl = document.getElementById('guided-questions');
+    questionsEl.innerHTML = [...new Set(questions)].map(q => `
+        <div style="padding: 0.5rem 0.5rem 0.5rem 1.5rem; margin-bottom: 0.25rem; position: relative;">
+            <span style="position: absolute; left: 0.5rem; color: #2ecc71;">•</span>
+            ${escapeHtml(q)}
+        </div>
+    `).join('');
+
+    // Save check to history
+    const checks = storage.getTraditionChecks();
+    checks.push({
+        id: genId(),
+        motionText: document.getElementById('check-motion-text').value,
+        timestamp: new Date().toISOString(),
+        warnings: relevantTraditions
+    });
+    storage.saveTraditionChecks(checks);
+}
+
+function showTraditionsReference() {
+    alert('View the 12 Traditions in the AA Literature Library section or visit aa.org');
+}
+
+function showConceptsReference() {
+    alert('View the 12 Concepts in the AA Literature Library section or visit aa.org');
+}
+
+// ========== PARLIAMENTARY PROCEDURE ==========
+let currentWorkflowStep = 0;
+let speakerTimerInterval = null;
+let speakerTimeRemaining = 180; // 3 minutes default
+
+function advanceMotionWorkflow() {
+    currentWorkflowStep = (currentWorkflowStep + 1) % 4;
+    updateWorkflowDisplay();
+}
+
+function resetMotionWorkflow() {
+    currentWorkflowStep = 0;
+    updateWorkflowDisplay();
+}
+
+function updateWorkflowDisplay() {
+    const steps = ['step-motion', 'step-second', 'step-discussion', 'step-vote'];
+    steps.forEach((step, idx) => {
+        const el = document.getElementById(step);
+        if (idx === currentWorkflowStep) {
+            el.style.background = '#3498db';
+            el.style.color = '#fff';
+        } else if (idx < currentWorkflowStep) {
+            el.style.background = '#27ae60';
+            el.style.color = '#fff';
+        } else {
+            el.style.background = '#34495e';
+            el.style.color = '#ecf0f1';
+        }
+    });
+
+    if (currentWorkflowStep === 2) {
+        document.getElementById('discussion-timer-display').style.display = 'block';
+    }
+}
+
+function addToSpeakingQueue() {
+    const speakerName = document.getElementById('speaker-name').value;
+    if (!speakerName) {
+        showToast('Please select a member', 'error');
+        return;
+    }
+
+    const queue = storage.getSpeakingQueue();
+    queue.push({
+        id: genId(),
+        name: speakerName,
+        timestamp: new Date().toISOString(),
+        status: 'waiting'
+    });
+    storage.saveSpeakingQueue(queue);
+    renderSpeakingQueue();
+    document.getElementById('speaker-name').value = '';
+}
+
+function renderSpeakingQueue() {
+    const queue = storage.getSpeakingQueue().filter(s => s.status !== 'done');
+    const list = document.getElementById('speaking-queue-list');
+
+    if (queue.length === 0) {
+        list.innerHTML = '<p style="opacity: 0.7; text-align: center; padding: 2rem;">No speakers in queue</p>';
+        return;
+    }
+
+    list.innerHTML = queue.map((speaker, idx) => `
+        <div style="padding: 0.75rem; margin-bottom: 0.5rem; background: ${idx === 0 ? '#27ae60' : '#2c3e50'}; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <strong>${idx + 1}. ${escapeHtml(speaker.name)}</strong>
+                ${idx === 0 ? '<span style="margin-left: 0.5rem; color: #f1c40f;">● Speaking Now</span>' : ''}
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                ${idx === 0 ? '<button class="btn secondary" onclick="markSpeakerDone(\'' + speaker.id + '\')" style="font-size: 0.85rem;">Done</button>' : ''}
+                <button class="btn secondary" onclick="removeSpeaker(\'' + speaker.id + '\')" style="font-size: 0.85rem; background: #e74c3c;">Remove</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function markSpeakerDone(id) {
+    let queue = storage.getSpeakingQueue();
+    const speaker = queue.find(s => s.id === id);
+    if (speaker) {
+        speaker.status = 'done';
+        storage.saveSpeakingQueue(queue);
+        renderSpeakingQueue();
+        resetSpeakerTimer();
+    }
+}
+
+function removeSpeaker(id) {
+    let queue = storage.getSpeakingQueue();
+    queue = queue.filter(s => s.id !== id);
+    storage.saveSpeakingQueue(queue);
+    renderSpeakingQueue();
+}
+
+function startSpeakerTimer() {
+    if (speakerTimerInterval) return;
+    speakerTimerInterval = setInterval(() => {
+        speakerTimeRemaining--;
+        updateTimerDisplay();
+        if (speakerTimeRemaining <= 0) {
+            pauseSpeakerTimer();
+            showToast('Time is up!', 'info');
+        }
+    }, 1000);
+}
+
+function pauseSpeakerTimer() {
+    if (speakerTimerInterval) {
+        clearInterval(speakerTimerInterval);
+        speakerTimerInterval = null;
+    }
+}
+
+function resetSpeakerTimer() {
+    pauseSpeakerTimer();
+    speakerTimeRemaining = 180;
+    updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+    const minutes = Math.floor(speakerTimeRemaining / 60);
+    const seconds = speakerTimeRemaining % 60;
+    document.getElementById('timer-display').textContent =
+        `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function callForSecond() {
+    showToast('Calling for a second to the motion...', 'info');
+    advanceMotionWorkflow();
+}
+
+function openDiscussion() {
+    showToast('Discussion is now open', 'info');
+    currentWorkflowStep = 2;
+    updateWorkflowDisplay();
+}
+
+function closeDiscussion() {
+    showToast('Discussion is closed', 'info');
+}
+
+function callTheQuestion() {
+    if (confirm('Are you ready to vote on this motion?')) {
+        currentWorkflowStep = 3;
+        updateWorkflowDisplay();
+        showToast('Ready to vote!', 'success');
+    }
+}
+
+function tableMotion() {
+    if (confirm('Table this motion until the next meeting?')) {
+        showToast('Motion has been tabled', 'info');
+        resetMotionWorkflow();
+        storage.saveSpeakingQueue([]);
+        renderSpeakingQueue();
+    }
+}
+
+function pointOfInformation() {
+    showToast('Point of Information recognized', 'info');
+}
+
+function pointOfOrder() {
+    showToast('Point of Order recognized', 'info');
+}
+
+function pointOfPrivilege() {
+    showToast('Point of Personal Privilege recognized', 'info');
+}
+
+function proposeAmendment() {
+    const text = document.getElementById('amendment-text').value.trim();
+    const type = document.querySelector('input[name="amendment-type"]:checked').value;
+
+    if (!text) {
+        showToast('Please enter amendment text', 'error');
+        return;
+    }
+
+    showToast(`${type === 'friendly' ? 'Friendly' : 'Unfriendly'} amendment proposed`, 'success');
+    document.getElementById('amendment-text').value = '';
+
+    // Could save amendments to a list for tracking
+    const list = document.getElementById('active-amendments-list');
+    const amendDiv = document.createElement('div');
+    amendDiv.style.cssText = 'padding: 0.5rem; background: #2c3e50; border-radius: 4px; margin-top: 0.5rem;';
+    amendDiv.innerHTML = `<strong>${type === 'friendly' ? 'Friendly' : 'Unfriendly'}:</strong> ${escapeHtml(text)}`;
+    list.appendChild(amendDiv);
+}
+
+// ========== SERVICE ELECTIONS ==========
+let currentElection = null;
+
+function startElection() {
+    const positionId = document.getElementById('election-position').value;
+    const date = document.getElementById('election-date').value;
+    const anonymous = document.getElementById('election-anonymous').checked;
+    const method = document.getElementById('election-method').value;
+
+    if (!positionId || !date) {
+        showToast('Please select position and date', 'error');
+        return;
+    }
+
+    const positions = storage.getGroupPositions();
+    const position = positions.find(p => p.id === positionId);
+
+    currentElection = {
+        id: genId(),
+        positionId,
+        positionTitle: position.title,
+        date,
+        anonymous,
+        method,
+        status: 'nominating',
+        nominees: [],
+        ballots: []
+    };
+
+    document.getElementById('current-election-info').style.display = 'block';
+    document.getElementById('current-election-position').textContent = position.title;
+
+    showToast(`Election started for ${position.title}`, 'success');
+    renderNominees();
+}
+
+function nominateMember() {
+    if (!currentElection) {
+        showToast('Please start an election first', 'error');
+        return;
+    }
+
+    const memberId = document.getElementById('nominee-select').value;
+    if (!memberId) {
+        showToast('Please select a member', 'error');
+        return;
+    }
+
+    const members = storage.getMembers();
+    const member = members.find(m => m.id === memberId);
+
+    // Check if already nominated
+    if (currentElection.nominees.find(n => n.memberId === memberId)) {
+        showToast('This member is already nominated', 'error');
+        return;
+    }
+
+    currentElection.nominees.push({
+        memberId,
+        memberName: member.name,
+        timestamp: new Date().toISOString()
+    });
+
+    showToast(`${member.name} nominated`, 'success');
+    renderNominees();
+}
+
+function renderNominees() {
+    if (!currentElection) return;
+
+    const list = document.getElementById('nominees-list');
+    if (currentElection.nominees.length === 0) {
+        list.innerHTML = '<p style="opacity: 0.7;">No nominees yet</p>';
+        return;
+    }
+
+    list.innerHTML = currentElection.nominees.map(n => `
+        <div style="padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-top: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+            <strong>${escapeHtml(n.memberName)}</strong>
+            <button class="btn secondary" onclick="removeNominee('${escapeAttribute(n.memberId)}')" style="font-size: 0.85rem; background: #e74c3c;">Remove</button>
+        </div>
+    `).join('');
+
+    renderBallotInterface();
+}
+
+function removeNominee(memberId) {
+    if (!currentElection) return;
+    currentElection.nominees = currentElection.nominees.filter(n => n.memberId !== memberId);
+    renderNominees();
+}
+
+function renderBallotInterface() {
+    if (!currentElection || currentElection.nominees.length === 0) {
+        document.getElementById('ballot-interface').innerHTML = '<p style="opacity: 0.7;">Add nominees to begin voting</p>';
+        return;
+    }
+
+    const ballot = document.getElementById('ballot-interface');
+    ballot.innerHTML = `
+        <p class="mb-2"><strong>Cast your vote:</strong></p>
+        ${currentElection.nominees.map(n => `
+            <div style="padding: 0.5rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem;">
+                <label style="cursor: pointer; display: flex; align-items: center;">
+                    <input type="radio" name="ballot-vote" value="${escapeAttribute(n.memberId)}" style="margin-right: 0.5rem;">
+                    ${escapeHtml(n.memberName)}
+                </label>
+            </div>
+        `).join('')}
+        <button class="btn mt-2" onclick="castBallot()">Cast Ballot</button>
+        <button class="btn secondary mt-2 ml-2" onclick="finalizeElection()">Finalize Election</button>
+    `;
+}
+
+function castBallot() {
+    if (!currentElection) return;
+
+    const selected = document.querySelector('input[name="ballot-vote"]:checked');
+    if (!selected) {
+        showToast('Please select a nominee', 'error');
+        return;
+    }
+
+    currentElection.ballots.push({
+        vote: selected.value,
+        timestamp: new Date().toISOString()
+    });
+
+    showToast('Ballot cast!', 'success');
+
+    // Reset selection
+    document.querySelectorAll('input[name="ballot-vote"]').forEach(r => r.checked = false);
+
+    // Show current tally if not anonymous
+    if (!currentElection.anonymous) {
+        const tallies = {};
+        currentElection.ballots.forEach(b => {
+            tallies[b.vote] = (tallies[b.vote] || 0) + 1;
+        });
+
+        console.log('Current tallies:', tallies);
+    }
+}
+
+function finalizeElection() {
+    if (!currentElection || currentElection.ballots.length === 0) {
+        showToast('No ballots have been cast', 'error');
+        return;
+    }
+
+    // Count votes
+    const tallies = {};
+    currentElection.ballots.forEach(b => {
+        tallies[b.vote] = (tallies[b.vote] || 0) + 1;
+    });
+
+    // Find winner
+    const sortedCandidates = Object.entries(tallies).sort((a, b) => b[1] - a[1]);
+    const winnerId = sortedCandidates[0][0];
+    const winnerVotes = sortedCandidates[0][1];
+    const totalVotes = currentElection.ballots.length;
+
+    const winner = currentElection.nominees.find(n => n.memberId === winnerId);
+
+    currentElection.status = 'completed';
+    currentElection.winner = winner;
+    currentElection.finalTally = tallies;
+    currentElection.completedDate = new Date().toISOString();
+
+    // Save election
+    const elections = storage.getServiceElections();
+    elections.push(currentElection);
+    storage.saveServiceElections(elections);
+
+    showToast(`${winner.memberName} elected with ${winnerVotes}/${totalVotes} votes!`, 'success');
+
+    // Update service position
+    updateServicePositionHolder(currentElection.positionId, winnerId, winner.memberName);
+
+    // Reset
+    currentElection = null;
+    document.getElementById('current-election-info').style.display = 'none';
+    document.getElementById('ballot-interface').innerHTML = '';
+    document.getElementById('nominees-list').innerHTML = '';
+
+    renderElectionHistory();
+    renderCurrentPositions();
+}
+
+function updateServicePositionHolder(positionId, memberId, memberName) {
+    const positions = storage.getGroupPositions();
+    const position = positions.find(p => p.id === positionId);
+    if (position) {
+        const termEnd = new Date();
+        termEnd.setMonth(termEnd.getMonth() + position.term);
+
+        position.currentHolder = memberName;
+        position.currentHolderId = memberId;
+        position.termStart = new Date().toISOString();
+        position.termEnd = termEnd.toISOString();
+
+        storage.saveGroupPositions(positions);
+    }
+}
+
+function renderCurrentPositions() {
+    const positions = storage.getGroupPositions();
+    const tbody = document.getElementById('current-positions-body');
+
+    tbody.innerHTML = positions.map(p => {
+        const termEnd = p.termEnd ? new Date(p.termEnd) : null;
+        const now = new Date();
+        const daysRemaining = termEnd ? Math.floor((termEnd - now) / (1000 * 60 * 60 * 24)) : null;
+
+        let status = 'Vacant';
+        let statusColor = '#95a5a6';
+
+        if (p.currentHolder) {
+            if (daysRemaining > 90) {
+                status = 'Active';
+                statusColor = '#2ecc71';
+            } else if (daysRemaining > 30) {
+                status = 'Expiring Soon';
+                statusColor = '#f39c12';
+            } else if (daysRemaining > 0) {
+                status = 'Expiring Very Soon';
+                statusColor = '#e67e22';
+            } else {
+                status = 'Expired';
+                statusColor = '#e74c3c';
+            }
+        }
+
+        return `
+            <tr>
+                <td>${escapeHtml(p.title)}</td>
+                <td>${p.currentHolder ? escapeHtml(p.currentHolder) : 'Vacant'}</td>
+                <td>${termEnd ? termEnd.toLocaleDateString() : 'N/A'}</td>
+                <td style="color: ${statusColor};">${status}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function renderElectionHistory() {
+    const elections = storage.getServiceElections().sort((a, b) => new Date(b.completedDate) - new Date(a.completedDate));
+    const list = document.getElementById('election-history-list');
+
+    if (elections.length === 0) {
+        list.innerHTML = '<p style="opacity: 0.7;">No elections recorded yet</p>';
+        return;
+    }
+
+    list.innerHTML = elections.map(e => `
+        <div style="padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem;">
+            <strong>${escapeHtml(e.positionTitle)}</strong><br>
+            <span style="font-size: 0.85rem; opacity: 0.8;">Winner: ${escapeHtml(e.winner.memberName)}</span><br>
+            <span style="font-size: 0.85rem; opacity: 0.8;">Date: ${new Date(e.completedDate).toLocaleDateString()}</span>
+        </div>
+    `).join('');
+}
+
+function updateElectionEligibility() {
+    const positionId = document.getElementById('election-position').value;
+    if (!positionId) {
+        document.getElementById('position-requirements').style.display = 'none';
+        return;
+    }
+
+    const positions = storage.getGroupPositions();
+    const position = positions.find(p => p.id === positionId);
+
+    if (position) {
+        document.getElementById('position-requirements').style.display = 'block';
+        document.getElementById('position-req-details').innerHTML = `
+            <div style="margin-top: 0.5rem;">
+                <div>Term: ${position.term} months</div>
+                <div>Min. Sobriety: ${position.minSobriety} months</div>
+                <div>${escapeHtml(position.description)}</div>
+            </div>
+        `;
+    }
+}
+
+// ========== BUDGET APPROVAL ==========
+let budgetLineItemCounter = 0;
+
+function addBudgetLineItem() {
+    const container = document.getElementById('budget-line-items');
+    const id = budgetLineItemCounter++;
+
+    const item = document.createElement('div');
+    item.className = 'budget-line-item';
+    item.style.cssText = 'padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem;';
+    item.innerHTML = `
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <input type="text" placeholder="Category" id="budget-cat-${id}" style="flex: 2;">
+            <input type="number" step="0.01" placeholder="Amount" id="budget-amt-${id}" onchange="updateBudgetTotal()" style="flex: 1;">
+            <button class="btn secondary" onclick="this.parentElement.parentElement.remove(); updateBudgetTotal();" style="font-size: 0.85rem;">Remove</button>
+        </div>
+    `;
+    container.appendChild(item);
+}
+
+function updateBudgetTotal() {
+    const items = document.querySelectorAll('.budget-line-item');
+    let total = 0;
+    items.forEach(item => {
+        const amtInput = item.querySelector('input[type="number"]');
+        if (amtInput) {
+            total += parseFloat(amtInput.value) || 0;
+        }
+    });
+    document.getElementById('total-proposed-budget').textContent = total.toFixed(2);
+}
+
+function submitBudgetProposal() {
+    const year = parseInt(document.getElementById('budget-year').value);
+    const type = document.getElementById('budget-type').value;
+
+    if (!year) {
+        showToast('Please enter fiscal year', 'error');
+        return;
+    }
+
+    const items = [];
+    document.querySelectorAll('.budget-line-item').forEach(item => {
+        const cat = item.querySelector('input[type="text"]').value.trim();
+        const amt = parseFloat(item.querySelector('input[type="number"]').value) || 0;
+        if (cat && amt > 0) {
+            items.push({ category: cat, amount: amt });
+        }
+    });
+
+    if (items.length === 0) {
+        showToast('Please add at least one budget line item', 'error');
+        return;
+    }
+
+    const total = items.reduce((sum, item) => sum + item.amount, 0);
+
+    const proposals = storage.getBudgetProposals();
+    proposals.push({
+        id: genId(),
+        year,
+        type,
+        items,
+        total,
+        status: 'pending',
+        submittedDate: new Date().toISOString()
+    });
+
+    storage.saveBudgetProposals(proposals);
+    showToast('Budget proposal submitted for Group Conscience approval!', 'success');
+
+    // Reset form
+    document.getElementById('budget-line-items').innerHTML = '';
+    document.getElementById('budget-year').value = '';
+    updateBudgetTotal();
+
+    renderBudgetProposals();
+}
+
+function renderBudgetProposals() {
+    const proposals = storage.getBudgetProposals();
+    const pending = proposals.filter(p => p.status === 'pending');
+    const approved = proposals.filter(p => p.status === 'approved');
+
+    const pendingList = document.getElementById('pending-budgets-list');
+    if (pending.length === 0) {
+        pendingList.innerHTML = '<p style="opacity: 0.7;">No pending budget proposals</p>';
+    } else {
+        pendingList.innerHTML = pending.map(p => `
+            <div style="padding: 1rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem;">
+                <strong>${p.type === 'annual' ? 'Annual Budget' : p.type === 'amendment' ? 'Budget Amendment' : 'Special Project'} - FY ${p.year}</strong><br>
+                <span style="font-size: 0.9rem;">Total: $${p.total.toFixed(2)}</span><br>
+                <span style="font-size: 0.85rem; opacity: 0.8;">Submitted: ${new Date(p.submittedDate).toLocaleDateString()}</span>
+                <div style="margin-top: 0.5rem;">
+                    <button class="btn secondary" onclick="approveBudget('${p.id}')" style="font-size: 0.85rem;">Approve</button>
+                    <button class="btn secondary" onclick="rejectBudget('${p.id}')" style="font-size: 0.85rem; background: #e74c3c; margin-left: 0.5rem;">Reject</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    const approvedList = document.getElementById('approved-budgets-list');
+    if (approved.length === 0) {
+        approvedList.innerHTML = '<p style="opacity: 0.7;">No approved budgets</p>';
+    } else {
+        approvedList.innerHTML = approved.map(p => `
+            <div style="padding: 1rem; background: #27ae60; border-radius: 4px; margin-bottom: 0.5rem;">
+                <strong>${p.type === 'annual' ? 'Annual Budget' : p.type === 'amendment' ? 'Budget Amendment' : 'Special Project'} - FY ${p.year}</strong><br>
+                <span style="font-size: 0.9rem;">Total: $${p.total.toFixed(2)}</span>
+            </div>
+        `).join('');
+    }
+}
+
+function approveBudget(id) {
+    let proposals = storage.getBudgetProposals();
+    const proposal = proposals.find(p => p.id === id);
+    if (proposal) {
+        proposal.status = 'approved';
+        proposal.approvedDate = new Date().toISOString();
+        storage.saveBudgetProposals(proposals);
+        showToast('Budget approved!', 'success');
+        renderBudgetProposals();
+    }
+}
+
+function rejectBudget(id) {
+    if (!confirm('Reject this budget proposal?')) return;
+    let proposals = storage.getBudgetProposals();
+    proposals = proposals.filter(p => p.id !== id);
+    storage.saveBudgetProposals(proposals);
+    showToast('Budget proposal rejected', 'info');
+    renderBudgetProposals();
+}
+
+// ========== LITERATURE INVENTORY ==========
+function saveLiteratureItem() {
+    const editId = document.getElementById('lit-edit-id').value;
+    if (editId) {
+        updateLiteratureItem();
+        return;
+    }
+
+    const name = document.getElementById('lit-item-name').value.trim();
+    const type = document.getElementById('lit-item-type').value;
+    const quantity = parseInt(document.getElementById('lit-quantity').value) || 0;
+    const minQuantity = parseInt(document.getElementById('lit-min-quantity').value) || 0;
+    const cost = parseFloat(document.getElementById('lit-cost').value) || 0;
+    const loanable = document.getElementById('lit-loanable').checked;
+
+    if (!name) {
+        showToast('Please enter item name', 'error');
+        return;
+    }
+
+    const inventory = storage.getLiteratureInventory();
+    inventory.push({
+        id: genId(),
+        name,
+        type,
+        quantity,
+        minQuantity,
+        cost,
+        loanable
+    });
+
+    storage.saveLiteratureInventory(inventory);
+    showToast('Literature item added!', 'success');
+
+    document.getElementById('lit-item-name').value = '';
+    document.getElementById('lit-quantity').value = '';
+    document.getElementById('lit-min-quantity').value = '';
+    document.getElementById('lit-cost').value = '';
+    document.getElementById('lit-loanable').checked = false;
+
+    renderLiteratureInventory();
+}
+
+function renderLiteratureInventory() {
+    const inventory = storage.getLiteratureInventory();
+    const tbody = document.getElementById('literature-inventory-body');
+    const alertsDiv = document.getElementById('lit-low-stock-alerts');
+
+    if (inventory.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">No items in inventory</td></tr>';
+        alertsDiv.innerHTML = '<p style="opacity: 0.7;">No alerts</p>';
+        return;
+    }
+
+    const lowStock = inventory.filter(item => item.quantity <= item.minQuantity);
+
+    tbody.innerHTML = inventory.map(item => {
+        const isLow = item.quantity <= item.minQuantity;
+        const status = isLow ? 'Low Stock' : 'OK';
+        const statusColor = isLow ? '#e74c3c' : '#2ecc71';
+
+        return `
+            <tr>
+                <td>${escapeHtml(item.name)}</td>
+                <td>${escapeHtml(item.type)}</td>
+                <td>${item.quantity}</td>
+                <td style="color: ${statusColor};">${status}</td>
+                <td>
+                    <button class="btn secondary" data-action="edit-lit-item" data-id="${escapeAttribute(item.id)}" style="font-size: 0.85rem;">Edit</button>
+                    <button class="btn secondary" data-action="delete-lit-item" data-id="${escapeAttribute(item.id)}" style="font-size: 0.85rem; background: #e74c3c;">Delete</button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+
+    if (lowStock.length > 0) {
+        alertsDiv.innerHTML = lowStock.map(item => `
+            <div style="padding: 0.75rem; background: #e74c3c; border-radius: 4px; margin-bottom: 0.5rem;">
+                <strong>${escapeHtml(item.name)}</strong> - Only ${item.quantity} left (min: ${item.minQuantity})
+            </div>
+        `).join('');
+    } else {
+        alertsDiv.innerHTML = '<p style="color: #2ecc71;">All items adequately stocked</p>';
+    }
+
+    // Update loan dropdowns
+    updateLiteratureLoanDropdowns();
+}
+
+function updateLiteratureLoanDropdowns() {
+    const inventory = storage.getLiteratureInventory().filter(item => item.loanable && item.quantity > 0);
+    const loanItemSelect = document.getElementById('loan-item');
+
+    loanItemSelect.innerHTML = '<option value="">-- Select Item --</option>' +
+        inventory.map(item => `<option value="${escapeAttribute(item.id)}">${escapeHtml(item.name)} (${item.quantity} available)</option>`).join('');
+}
+
+function checkOutLiterature() {
+    const memberId = document.getElementById('loan-member').value;
+    const itemId = document.getElementById('loan-item').value;
+    const dueDate = document.getElementById('loan-due-date').value;
+
+    if (!memberId || !itemId || !dueDate) {
+        showToast('Please fill all fields', 'error');
+        return;
+    }
+
+    const members = storage.getMembers();
+    const member = members.find(m => m.id === memberId);
+    const inventory = storage.getLiteratureInventory();
+    const item = inventory.find(i => i.id === itemId);
+
+    if (!item || item.quantity < 1) {
+        showToast('Item not available', 'error');
+        return;
+    }
+
+    // Update inventory
+    item.quantity--;
+    storage.saveLiteratureInventory(inventory);
+
+    // Create loan
+    const loans = storage.getLiteratureLoans();
+    loans.push({
+        id: genId(),
+        memberId,
+        memberName: member.name,
+        itemId,
+        itemName: item.name,
+        dueDate,
+        checkoutDate: new Date().toISOString(),
+        status: 'active'
+    });
+
+    storage.saveLiteratureLoans(loans);
+    showToast(`Checked out to ${member.name}`, 'success');
+
+    document.getElementById('loan-member').value = '';
+    document.getElementById('loan-item').value = '';
+    document.getElementById('loan-due-date').value = '';
+
+    renderLiteratureLoans();
+    renderLiteratureInventory();
+}
+
+function renderLiteratureLoans() {
+    const loans = storage.getLiteratureLoans().filter(l => l.status === 'active');
+    const tbody = document.getElementById('literature-loans-body');
+
+    if (loans.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">No active loans</td></tr>';
+        return;
+    }
+
+    const now = new Date();
+    tbody.innerHTML = loans.map(loan => {
+        const dueDate = new Date(loan.dueDate);
+        const isOverdue = dueDate < now;
+        const status = isOverdue ? 'Overdue' : 'Active';
+        const statusColor = isOverdue ? '#e74c3c' : '#2ecc71';
+
+        return `
+            <tr>
+                <td>${escapeHtml(loan.memberName)}</td>
+                <td>${escapeHtml(loan.itemName)}</td>
+                <td>${dueDate.toLocaleDateString()}</td>
+                <td style="color: ${statusColor};">${status}</td>
+                <td>
+                    <button class="btn secondary" onclick="returnLiterature('${escapeAttribute(loan.id)}')" style="font-size: 0.85rem;">Return</button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function returnLiterature(loanId) {
+    let loans = storage.getLiteratureLoans();
+    const loan = loans.find(l => l.id === loanId);
+
+    if (loan) {
+        // Update inventory
+        const inventory = storage.getLiteratureInventory();
+        const item = inventory.find(i => i.id === loan.itemId);
+        if (item) {
+            item.quantity++;
+            storage.saveLiteratureInventory(inventory);
+        }
+
+        // Mark loan as returned
+        loan.status = 'returned';
+        loan.returnDate = new Date().toISOString();
+        storage.saveLiteratureLoans(loans);
+
+        showToast('Literature returned', 'success');
+        renderLiteratureLoans();
+        renderLiteratureInventory();
+    }
+}
+
+function submitLiteraturePurchaseRequest() {
+    const items = document.getElementById('purchase-items').value.trim();
+    const cost = parseFloat(document.getElementById('purchase-estimated-cost').value) || 0;
+
+    if (!items) {
+        showToast('Please describe items to purchase', 'error');
+        return;
+    }
+
+    // Create a GC motion for literature purchase
+    const logs = storage.getGroupConscienceLog();
+    logs.push({
+        id: genId(),
+        date: new Date().toISOString().split('T')[0],
+        item: `Motion to purchase literature: ${items} (Estimated cost: $${cost.toFixed(2)})`,
+        submittedBy: storage.getCurrentUser(),
+        status: 'pending',
+        votesFor: 0,
+        votesAgainst: 0,
+        votesAbstain: 0,
+        attendees: [],
+        servantReports: []
+    });
+
+    storage.saveGroupConscienceLog(logs);
+    showToast('Purchase request submitted to Group Conscience!', 'success');
+
+    document.getElementById('purchase-items').value = '';
+    document.getElementById('purchase-estimated-cost').value = '';
+}
+
+function editLiteratureItem(id) {
+    const inventory = storage.getLiteratureInventory();
+    const item = inventory.find(i => i.id === id);
+    if (!item) return;
+
+    document.getElementById('lit-edit-id').value = item.id;
+    document.getElementById('lit-item-name').value = item.name;
+    document.getElementById('lit-item-type').value = item.type;
+    document.getElementById('lit-quantity').value = item.quantity;
+    document.getElementById('lit-min-quantity').value = item.minQuantity;
+    document.getElementById('lit-cost').value = item.cost;
+    document.getElementById('lit-loanable').checked = item.loanable;
+
+    document.getElementById('lit-form-btn').textContent = 'Update Item';
+    document.getElementById('lit-form-cancel-btn').style.display = 'inline-block';
+}
+
+function updateLiteratureItem() {
+    const id = document.getElementById('lit-edit-id').value;
+    const name = document.getElementById('lit-item-name').value.trim();
+    const type = document.getElementById('lit-item-type').value;
+    const quantity = parseInt(document.getElementById('lit-quantity').value) || 0;
+    const minQuantity = parseInt(document.getElementById('lit-min-quantity').value) || 0;
+    const cost = parseFloat(document.getElementById('lit-cost').value) || 0;
+    const loanable = document.getElementById('lit-loanable').checked;
+
+    let inventory = storage.getLiteratureInventory();
+    const index = inventory.findIndex(i => i.id === id);
+
+    if (index > -1) {
+        inventory[index] = { id, name, type, quantity, minQuantity, cost, loanable };
+        storage.saveLiteratureInventory(inventory);
+        showToast('Item updated!', 'success');
+        cancelLitEdit();
+        renderLiteratureInventory();
+    }
+}
+
+function cancelLitEdit() {
+    document.getElementById('lit-edit-id').value = '';
+    document.getElementById('lit-item-name').value = '';
+    document.getElementById('lit-quantity').value = '';
+    document.getElementById('lit-min-quantity').value = '';
+    document.getElementById('lit-cost').value = '';
+    document.getElementById('lit-loanable').checked = false;
+    document.getElementById('lit-form-btn').textContent = 'Add Item';
+    document.getElementById('lit-form-cancel-btn').style.display = 'none';
+}
+
+function deleteLiteratureItem(id) {
+    if (!confirm('Delete this item?')) return;
+    let inventory = storage.getLiteratureInventory();
+    inventory = inventory.filter(i => i.id !== id);
+    storage.saveLiteratureInventory(inventory);
+    showToast('Item deleted', 'info');
+    renderLiteratureInventory();
+}
+
+// ========== DISTRICT MOTIONS ==========
+function saveDistrictMotion() {
+    const editId = document.getElementById('district-motion-edit-id').value;
+    if (editId) {
+        updateDistrictMotion();
+        return;
+    }
+
+    const source = document.getElementById('district-motion-source').value;
+    const title = document.getElementById('district-motion-title').value.trim();
+    const text = document.getElementById('district-motion-text').value.trim();
+    const deadline = document.getElementById('district-motion-deadline').value;
+    const background = document.getElementById('district-motion-background').value.trim();
+
+    if (!title || !text) {
+        showToast('Please provide title and motion text', 'error');
+        return;
+    }
+
+    const motions = storage.getDistrictMotions();
+    motions.push({
+        id: genId(),
+        source,
+        title,
+        text,
+        deadline,
+        background,
+        status: 'pending',
+        createdDate: new Date().toISOString()
+    });
+
+    storage.saveDistrictMotions(motions);
+    showToast('District/Area motion added!', 'success');
+
+    document.getElementById('district-motion-title').value = '';
+    document.getElementById('district-motion-text').value = '';
+    document.getElementById('district-motion-deadline').value = '';
+    document.getElementById('district-motion-background').value = '';
+
+    renderDistrictMotions();
+}
+
+function renderDistrictMotions() {
+    const motions = storage.getDistrictMotions();
+    const pending = motions.filter(m => m.status === 'pending');
+    const responded = motions.filter(m => m.status !== 'pending');
+
+    const pendingList = document.getElementById('pending-district-motions-list');
+    if (pending.length === 0) {
+        pendingList.innerHTML = '<p style="opacity: 0.7;">No pending district/area motions</p>';
+    } else {
+        pendingList.innerHTML = pending.map(m => {
+            const deadline = m.deadline ? new Date(m.deadline) : null;
+            const isUrgent = deadline && (deadline - new Date()) < (7 * 24 * 60 * 60 * 1000);
+
+            return `
+                <div style="padding: 1rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem; border-left: 4px solid ${isUrgent ? '#e74c3c' : '#3498db'};">
+                    <strong style="color: ${isUrgent ? '#e74c3c' : '#3498db'};">${escapeHtml(m.title)}</strong>
+                    <span style="background: #34495e; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.75rem; margin-left: 0.5rem;">${escapeHtml(m.source)}</span>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem;">${escapeHtml(m.text)}</p>
+                    ${m.deadline ? `<div style="margin-top: 0.5rem; font-size: 0.85rem; opacity: 0.8;">Deadline: ${deadline.toLocaleDateString()}</div>` : ''}
+                    ${m.background ? `<div style="margin-top: 0.5rem; font-size: 0.85rem; opacity: 0.8;">Background: ${escapeHtml(m.background)}</div>` : ''}
+                </div>
+            `;
+        }).join('');
+    }
+
+    const historyList = document.getElementById('district-motions-history-list');
+    if (responded.length === 0) {
+        historyList.innerHTML = '<p style="opacity: 0.7;">No position history</p>';
+    } else {
+        historyList.innerHTML = responded.map(m => `
+            <div style="padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem;">
+                <strong>${escapeHtml(m.title)}</strong><br>
+                <span style="font-size: 0.85rem; opacity: 0.8;">Position: ${escapeHtml(m.groupPosition || 'Unknown')}</span><br>
+                <span style="font-size: 0.85rem; opacity: 0.8;">Date: ${new Date(m.positionDate).toLocaleDateString()}</span>
+            </div>
+        `).join('');
+    }
+
+    // Update position select dropdown
+    const select = document.getElementById('position-motion-select');
+    select.innerHTML = '<option value="">-- Select Motion --</option>' +
+        pending.map(m => `<option value="${escapeAttribute(m.id)}">${escapeHtml(m.title)}</option>`).join('');
+}
+
+function recordGroupPosition() {
+    const motionId = document.getElementById('position-motion-select').value;
+    const position = document.getElementById('group-position').value;
+    const rationale = document.getElementById('position-rationale').value.trim();
+    const voteCount = document.getElementById('position-vote-count').value.trim();
+
+    if (!motionId) {
+        showToast('Please select a motion', 'error');
+        return;
+    }
+
+    let motions = storage.getDistrictMotions();
+    const motion = motions.find(m => m.id === motionId);
+
+    if (motion) {
+        motion.status = 'responded';
+        motion.groupPosition = position;
+        motion.rationale = rationale;
+        motion.voteCount = voteCount;
+        motion.positionDate = new Date().toISOString();
+
+        storage.saveDistrictMotions(motions);
+        showToast('Group position recorded!', 'success');
+
+        // Reset form
+        document.getElementById('position-motion-select').value = '';
+        document.getElementById('position-rationale').value = '';
+        document.getElementById('position-vote-count').value = '';
+
+        renderDistrictMotions();
+    }
+}
+
+function updateDistrictMotion() {
+    const id = document.getElementById('district-motion-edit-id').value;
+    const source = document.getElementById('district-motion-source').value;
+    const title = document.getElementById('district-motion-title').value.trim();
+    const text = document.getElementById('district-motion-text').value.trim();
+    const deadline = document.getElementById('district-motion-deadline').value;
+    const background = document.getElementById('district-motion-background').value.trim();
+
+    let motions = storage.getDistrictMotions();
+    const index = motions.findIndex(m => m.id === id);
+
+    if (index > -1) {
+        motions[index] = { ...motions[index], source, title, text, deadline, background };
+        storage.saveDistrictMotions(motions);
+        showToast('Motion updated!', 'success');
+        cancelDistrictMotionEdit();
+        renderDistrictMotions();
+    }
+}
+
+function cancelDistrictMotionEdit() {
+    document.getElementById('district-motion-edit-id').value = '';
+    document.getElementById('district-motion-title').value = '';
+    document.getElementById('district-motion-text').value = '';
+    document.getElementById('district-motion-deadline').value = '';
+    document.getElementById('district-motion-background').value = '';
+    document.getElementById('district-motion-form-btn').textContent = 'Add Motion';
+    document.getElementById('district-motion-cancel-btn').style.display = 'none';
+}
+
+// ========== HELPER FUNCTIONS FOR DROPDOWNS ==========
+function populateElectionPositions() {
+    const positions = storage.getGroupPositions();
+    const select = document.getElementById('election-position');
+    if (select) {
+        select.innerHTML = '<option value="">-- Select Position --</option>' +
+            positions.map(p => `<option value="${escapeAttribute(p.id)}">${escapeHtml(p.title)}</option>`).join('');
+    }
+
+    const nomineeSelect = document.getElementById('nominee-select');
+    if (nomineeSelect) {
+        const members = storage.getMembers();
+        nomineeSelect.innerHTML = '<option value="">-- Select Member --</option>' +
+            members.map(m => `<option value="${escapeAttribute(m.id)}">${escapeHtml(m.name)}</option>`).join('');
+    }
+}
+
+function populateSpeakersDropdown() {
+    const members = storage.getMembers();
+    const select = document.getElementById('speaker-name');
+    if (select) {
+        select.innerHTML = '<option value="">-- Select Member --</option>' +
+            members.map(m => `<option value="${escapeHtml(m.name)}">${escapeHtml(m.name)}</option>`).join('');
+    }
+}
+
+function populateLiteratureLoanMembers() {
+    const members = storage.getMembers();
+    const select = document.getElementById('loan-member');
+    if (select) {
+        select.innerHTML = '<option value="">-- Select Member --</option>' +
+            members.map(m => `<option value="${escapeAttribute(m.id)}">${escapeHtml(m.name)}</option>`).join('');
+    }
 }
 
 // Initialize PWA
