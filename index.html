@@ -33,6 +33,7 @@
             flex-direction: column;
             min-height: 100vh;
             overflow-y: scroll; /* Persistent vertical scrollbar */
+            overflow-x: hidden; /* Prevent horizontal scrollbar */
         }
 
         h1, h2, h3 {
@@ -128,6 +129,11 @@
         }
         .dropdown-menu li.active {
             background: #2980b9;
+        }
+        /* Right-align the last dropdown (settings) */
+        nav ul li.has-dropdown:last-child .dropdown-menu {
+            left: auto;
+            right: 0;
         }
 
         /* Main content area */
