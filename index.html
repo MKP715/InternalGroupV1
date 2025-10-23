@@ -1159,6 +1159,9 @@
                 <div class="box">
                     <h3>Quick Actions</h3>
                     <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; min-height: 60px;">
+                        <button class="btn" onclick="initiateEmergencyGC()" style="font-size: 0.9rem; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); font-weight: bold;">
+                            <i class="fas fa-exclamation-triangle"></i> Emergency GC Protocol
+                        </button>
                         <button class="btn" onclick="displayUniversalSearch()" style="font-size: 0.9rem;">
                             <i class="fas fa-search"></i> Universal Search
                         </button>
@@ -3567,6 +3570,152 @@
                     </thead>
                     <tbody id="live-gc-queue-body"></tbody>
                 </table>
+            </div>
+        </section>
+
+        <!-- EMERGENCY GC PROTOCOL SECTION -->
+        <section id="emergency-gc-section" style="display: none;">
+            <div style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); padding: 2rem; border-radius: 8px; margin-bottom: 2rem;">
+                <h2 style="color: white; margin: 0 0 0.5rem 0;">
+                    <i class="fas fa-exclamation-triangle"></i> EMERGENCY GROUP CONSCIENCE PROTOCOL
+                </h2>
+                <p style="color: rgba(255,255,255,0.9); margin: 0; font-size: 1.05rem;">
+                    For crisis situations requiring immediate group conscience decision
+                </p>
+            </div>
+
+            <!-- Emergency Type Selection -->
+            <div class="box" style="border-left: 4px solid #e74c3c;">
+                <h3><i class="fas fa-clipboard-check"></i> Emergency Classification</h3>
+                <p style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 1.5rem;">
+                    Select the type of emergency to load the appropriate protocol and checklist
+                </p>
+
+                <div class="form-group">
+                    <label for="emergency-type">Emergency Type *</label>
+                    <select id="emergency-type" onchange="loadEmergencyProtocol(this.value)">
+                        <option value="">-- Select Emergency Type --</option>
+                        <option value="venue-loss">Venue Loss / Location Crisis</option>
+                        <option value="safety-concern">Safety/Security Concern</option>
+                        <option value="financial-crisis">Financial Crisis</option>
+                        <option value="member-conduct">Serious Member Conduct Issue</option>
+                        <option value="legal-issue">Legal/Liability Issue</option>
+                        <option value="service-disruption">Critical Service Disruption</option>
+                        <option value="other">Other Emergency</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Emergency Protocol Checklist -->
+            <div id="emergency-protocol-container" style="display: none;">
+                <div class="box" style="border-left: 4px solid #f39c12;">
+                    <h3><i class="fas fa-list-check"></i> Emergency Protocol Checklist</h3>
+                    <div id="emergency-checklist" style="margin-top: 1rem;">
+                        <!-- Dynamically populated based on emergency type -->
+                    </div>
+                </div>
+
+                <!-- Emergency GC Form -->
+                <div class="box mt-4" style="border-left: 4px solid #e74c3c;">
+                    <h3><i class="fas fa-gavel"></i> Emergency Decision Form</h3>
+
+                    <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-group">
+                            <label for="emergency-facilitator">Emergency Facilitator *</label>
+                            <select id="emergency-facilitator"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="emergency-date">Date/Time *</label>
+                            <input type="datetime-local" id="emergency-date">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="emergency-situation">Situation Description *</label>
+                        <textarea id="emergency-situation" rows="3" placeholder="Clearly describe the emergency situation..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="emergency-decision">Proposed Emergency Decision/Action *</label>
+                        <textarea id="emergency-decision" rows="3" placeholder="What action is being proposed to address the emergency?"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="emergency-rationale">Rationale for Emergency Process *</label>
+                        <textarea id="emergency-rationale" rows="2" placeholder="Why must this be handled as an emergency vs. regular GC?"></textarea>
+                    </div>
+
+                    <div class="grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="emergency-notification-method">Notification Method *</label>
+                            <select id="emergency-notification-method">
+                                <option value="phone-tree">Phone Tree</option>
+                                <option value="email-blast">Email Blast</option>
+                                <option value="text-message">Group Text</option>
+                                <option value="in-person">In-Person/Emergency Meeting</option>
+                                <option value="combined">Combined Methods</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="emergency-members-reached">Members Reached</label>
+                            <input type="number" id="emergency-members-reached" min="0" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="emergency-quorum-met">Quorum Met?</label>
+                            <select id="emergency-quorum-met">
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                                <option value="emergency-override">Emergency Override</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Vote Recording -->
+                    <div style="background: #2c3e50; padding: 1.5rem; border-radius: 4px; margin-top: 1.5rem;">
+                        <h4 style="margin-top: 0;"><i class="fas fa-vote-yea"></i> Emergency Vote Results</h4>
+                        <div class="grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label for="emergency-votes-for">Votes For</label>
+                                <input type="number" id="emergency-votes-for" min="0" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="emergency-votes-against">Votes Against</label>
+                                <input type="number" id="emergency-votes-against" min="0" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="emergency-votes-abstain">Abstentions</label>
+                                <input type="number" id="emergency-votes-abstain" min="0" value="0">
+                            </div>
+                        </div>
+                        <div id="emergency-vote-result" style="margin-top: 1rem; padding: 1rem; border-radius: 4px; background: #34495e; font-size: 1.1rem; font-weight: bold; text-align: center;">
+                            Enter votes to see result
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 1.5rem;">
+                        <label for="emergency-follow-up">Follow-Up Actions Required</label>
+                        <textarea id="emergency-follow-up" rows="3" placeholder="What follow-up actions or regular GC review is needed?"></textarea>
+                    </div>
+
+                    <div style="background: #f39c12; padding: 1rem; border-radius: 4px; margin: 1.5rem 0;">
+                        <i class="fas fa-info-circle"></i> <strong>Important:</strong> Emergency decisions should be reviewed at the next regular GC meeting for final ratification.
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                        <button class="btn secondary" onclick="cancelEmergencyGC()">Cancel</button>
+                        <button class="btn" onclick="submitEmergencyGC()" style="background: #e74c3c;">
+                            <i class="fas fa-save"></i> Log Emergency Decision
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emergency GC History -->
+            <div class="box mt-4">
+                <h3><i class="fas fa-history"></i> Emergency GC History</h3>
+                <div id="emergency-gc-history" style="min-height: 100px;">
+                    <!-- Populated with past emergency GCs -->
+                </div>
             </div>
         </section>
 
@@ -12585,19 +12734,43 @@ function updateNotificationBadge() {
     }
 }
 
+// ===== ENHANCED SMART NOTIFICATION SYSTEM =====
+
 function showNotificationCenter() {
     const modal = document.createElement('div');
     modal.id = 'notification-modal';
     modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center;';
 
     const content = document.createElement('div');
-    content.style.cssText = 'background: #34495e; padding: 2rem; border-radius: 8px; max-width: 600px; max-height: 80vh; overflow-y: auto; width: 90%;';
+    content.style.cssText = 'background: #34495e; padding: 2rem; border-radius: 8px; max-width: 700px; max-height: 85vh; overflow-y: auto; width: 90%;';
 
     content.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-            <h2 style="color: #3498db; margin: 0;">Notifications</h2>
-            <button onclick="closeNotificationCenter()" style="background: #e74c3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Close</button>
+            <h2 style="color: #3498db; margin: 0;"><i class="fas fa-bell"></i> Smart Notifications</h2>
+            <div style="display: flex; gap: 0.5rem;">
+                <button onclick="clearAllNotifications()" class="btn secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+                    <i class="fas fa-trash-alt"></i> Clear All
+                </button>
+                <button onclick="closeNotificationCenter()" class="btn secondary" style="padding: 0.5rem 1rem;">Close</button>
+            </div>
         </div>
+
+        <!-- Filter Tabs -->
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 2px solid #2c3e50; padding-bottom: 0.5rem;">
+            <button id="filter-all" onclick="filterNotifications('all')" class="btn" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; background: #3498db;">
+                All <span id="count-all" style="background: rgba(255,255,255,0.2); padding: 0.1rem 0.4rem; border-radius: 10px; margin-left: 0.25rem;">0</span>
+            </button>
+            <button id="filter-urgent" onclick="filterNotifications('urgent')" class="btn secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+                Urgent <span id="count-urgent" style="background: rgba(255,255,255,0.2); padding: 0.1rem 0.4rem; border-radius: 10px; margin-left: 0.25rem;">0</span>
+            </button>
+            <button id="filter-high" onclick="filterNotifications('high')" class="btn secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+                High <span id="count-high" style="background: rgba(255,255,255,0.2); padding: 0.1rem 0.4rem; border-radius: 10px; margin-left: 0.25rem;">0</span>
+            </button>
+            <button id="filter-unread" onclick="filterNotifications('unread')" class="btn secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+                Unread <span id="count-unread" style="background: rgba(255,255,255,0.2); padding: 0.1rem 0.4rem; border-radius: 10px; margin-left: 0.25rem;">0</span>
+            </button>
+        </div>
+
         <div id="notification-list">
             <!-- Notifications will be rendered here -->
         </div>
@@ -12611,6 +12784,26 @@ function showNotificationCenter() {
     };
 
     // Initial render of notifications
+    window.currentNotificationFilter = 'all';
+    refreshNotificationList();
+}
+
+function filterNotifications(filter) {
+    window.currentNotificationFilter = filter;
+
+    // Update active button
+    document.querySelectorAll('#notification-modal button[id^="filter-"]').forEach(btn => {
+        btn.classList.remove('btn');
+        btn.classList.add('btn', 'secondary');
+        btn.style.background = '';
+    });
+
+    const activeBtn = document.getElementById('filter-' + filter);
+    if (activeBtn) {
+        activeBtn.classList.remove('secondary');
+        activeBtn.style.background = '#3498db';
+    }
+
     refreshNotificationList();
 }
 
@@ -12618,28 +12811,359 @@ function refreshNotificationList() {
     const listDiv = document.getElementById('notification-list');
     if (!listDiv) return; // Modal is not open
 
-    const notifications = JSON.parse(localStorage.getItem('notifications') || '[]')
-        .filter(n => !n.dismissed) // Only show non-dismissed notifications
-        .sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
+    let notifications = storage.getNotifications()
+        .filter(n => !n.dismissed); // Only show non-dismissed notifications
 
-    listDiv.innerHTML = notifications.length === 0 ? '<p style="color: #95a5a6; text-align: center;">No notifications</p>' :
-        notifications.map(n => `
-            <div style="background: #2c3e50; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border-left: 4px solid ${n.priority === 'urgent' ? '#e74c3c' : n.priority === 'high' ? '#f39c12' : '#3498db'}; opacity: ${n.read ? '0.6' : '1'};">
-                <h4 style="color: ${n.priority === 'urgent' ? '#e74c3c' : '#3498db'}; margin: 0 0 0.5rem 0;">${escapeHtml(n.title)}</h4>
-                <p style="margin: 0 0 0.5rem 0; color: #ecf0f1;">${escapeHtml(n.message)}</p>
-                <small style="color: #95a5a6;">${new Date(n.createdDate).toLocaleString()}</small>
-                <div style="margin-top: 0.5rem;">
-                    ${!n.read ? `<button onclick="markNotificationRead('${n.id}')" style="background: #3498db; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; margin-right: 0.5rem;">Mark Read</button>` : ''}
-                    ${n.actionLink ? `<button onclick="dismissNotification('${n.id}'); goToSection('${n.actionLink}'); closeNotificationCenter();" style="background: #2ecc71; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; margin-right: 0.5rem;">Go to Action</button>` : ''}
-                    <button onclick="dismissNotification('${n.id}')" style="background: #95a5a6; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">Dismiss</button>
+    // Apply filter
+    const filter = window.currentNotificationFilter || 'all';
+    if (filter === 'urgent') {
+        notifications = notifications.filter(n => n.priority === 'urgent');
+    } else if (filter === 'high') {
+        notifications = notifications.filter(n => n.priority === 'high');
+    } else if (filter === 'unread') {
+        notifications = notifications.filter(n => !n.read);
+    }
+
+    // Sort by priority then date
+    const priorityOrder = { urgent: 0, high: 1, medium: 2, low: 3 };
+    notifications.sort((a, b) => {
+        const priorityA = priorityOrder[a.priority || 'medium'];
+        const priorityB = priorityOrder[b.priority || 'medium'];
+        if (priorityA !== priorityB) return priorityA - priorityB;
+        return new Date(b.date) - new Date(a.date);
+    });
+
+    // Update counts
+    const allNotifications = storage.getNotifications().filter(n => !n.dismissed);
+    document.getElementById('count-all').textContent = allNotifications.length;
+    document.getElementById('count-urgent').textContent = allNotifications.filter(n => n.priority === 'urgent').length;
+    document.getElementById('count-high').textContent = allNotifications.filter(n => n.priority === 'high').length;
+    document.getElementById('count-unread').textContent = allNotifications.filter(n => !n.read).length;
+
+    if (notifications.length === 0) {
+        listDiv.innerHTML = '<p style="color: #95a5a6; text-align: center; padding: 2rem;">No notifications in this category</p>';
+        return;
+    }
+
+    listDiv.innerHTML = notifications.map(n => {
+        const priorityColor = n.priority === 'urgent' ? '#e74c3c' : n.priority === 'high' ? '#f39c12' : '#3498db';
+        const priorityIcon = n.priority === 'urgent' ? 'fa-exclamation-triangle' : n.priority === 'high' ? 'fa-exclamation-circle' : 'fa-info-circle';
+
+        // Check if snoozed
+        const now = new Date();
+        const snoozedUntil = n.snoozedUntil ? new Date(n.snoozedUntil) : null;
+        const isSnoozed = snoozedUntil && snoozedUntil > now;
+
+        return `
+            <div style="background: #2c3e50; padding: 1rem; border-radius: 6px; margin-bottom: 0.75rem; border-left: 4px solid ${priorityColor}; opacity: ${n.read ? '0.7' : '1'}; ${isSnoozed ? 'border: 2px dashed #95a5a6;' : ''}">
+                <div style="display: flex; align-items: start; gap: 0.75rem;">
+                    <i class="fas ${priorityIcon}" style="color: ${priorityColor}; font-size: 1.2rem; margin-top: 0.25rem;"></i>
+                    <div style="flex: 1;">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                            <h4 style="color: ${priorityColor}; margin: 0; flex: 1;">${escapeHtml(n.title)}</h4>
+                            ${!n.read ? '<span style="background: #e74c3c; color: white; padding: 0.15rem 0.4rem; border-radius: 10px; font-size: 0.7rem; font-weight: bold;">NEW</span>' : ''}
+                        </div>
+                        <p style="margin: 0 0 0.5rem 0; color: #ecf0f1; line-height: 1.5;">${escapeHtml(n.message)}</p>
+
+                        ${isSnoozed ? `<div style="background: #34495e; padding: 0.5rem; border-radius: 4px; margin-bottom: 0.5rem; font-size: 0.85rem;">
+                            <i class="fas fa-clock"></i> Snoozed until ${snoozedUntil.toLocaleString()}
+                        </div>` : ''}
+
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <small style="color: #95a5a6;">
+                                <i class="fas fa-clock"></i> ${new Date(n.date).toLocaleString()}
+                            </small>
+                            ${n.recurring ? '<span style="color: #f39c12; font-size: 0.75rem;"><i class="fas fa-redo"></i> Recurring</span>' : ''}
+                        </div>
+
+                        <div style="margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                            ${!n.read ? `<button onclick="markNotificationRead('${escapeAttribute(n.id)}')" class="btn" style="font-size: 0.8rem; padding: 0.3rem 0.6rem; background: #3498db;">
+                                <i class="fas fa-check"></i> Mark Read
+                            </button>` : ''}
+
+                            ${n.actionLink ? `<button onclick="dismissNotification('${escapeAttribute(n.id)}'); goToSection('${escapeAttribute(n.actionLink)}'); closeNotificationCenter();" class="btn" style="font-size: 0.8rem; padding: 0.3rem 0.6rem; background: #2ecc71;">
+                                <i class="fas fa-external-link-alt"></i> Take Action
+                            </button>` : ''}
+
+                            ${!isSnoozed ? `<button onclick="snoozeNotification('${escapeAttribute(n.id)}')" class="btn secondary" style="font-size: 0.8rem; padding: 0.3rem 0.6rem;">
+                                <i class="fas fa-clock"></i> Snooze
+                            </button>` : `<button onclick="unsnoozeNotification('${escapeAttribute(n.id)}')" class="btn secondary" style="font-size: 0.8rem; padding: 0.3rem 0.6rem;">
+                                <i class="fas fa-bell"></i> Unsnooze
+                            </button>`}
+
+                            <button onclick="dismissNotification('${escapeAttribute(n.id)}')" class="btn secondary" style="font-size: 0.8rem; padding: 0.3rem 0.6rem;">
+                                <i class="fas fa-times"></i> Dismiss
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        `).join('');
+        `;
+    }).join('');
+}
+
+function snoozeNotification(id) {
+    const duration = prompt('Snooze for how long?\n\n1. 1 hour\n2. 3 hours\n3. 1 day\n4. 3 days\n5. 1 week\n\nEnter number (1-5):', '1');
+
+    if (!duration) return;
+
+    const hours = { '1': 1, '2': 3, '3': 24, '4': 72, '5': 168 }[duration];
+    if (!hours) {
+        showToast('Invalid selection', 'error');
+        return;
+    }
+
+    const notifications = storage.getNotifications();
+    const notification = notifications.find(n => n.id === id);
+
+    if (notification) {
+        const snoozeUntil = new Date();
+        snoozeUntil.setHours(snoozeUntil.getHours() + hours);
+        notification.snoozedUntil = snoozeUntil.toISOString();
+        notification.read = true; // Mark as read when snoozed
+
+        storage.saveNotifications(notifications);
+        refreshNotificationList();
+        updateNotificationBadge();
+        showToast(`Snoozed for ${hours} hour(s)`, 'success');
+    }
+}
+
+function unsnoozeNotification(id) {
+    const notifications = storage.getNotifications();
+    const notification = notifications.find(n => n.id === id);
+
+    if (notification) {
+        delete notification.snoozedUntil;
+        notification.read = false;
+
+        storage.saveNotifications(notifications);
+        refreshNotificationList();
+        updateNotificationBadge();
+        showToast('Notification unsnoozed', 'success');
+    }
+}
+
+function clearAllNotifications() {
+    if (!confirm('Clear all notifications? This cannot be undone.')) return;
+
+    const notifications = storage.getNotifications();
+    notifications.forEach(n => n.dismissed = true);
+    storage.saveNotifications(notifications);
+
+    refreshNotificationList();
+    updateNotificationBadge();
+    showToast('All notifications cleared', 'info');
 }
 
 function closeNotificationCenter() {
     const modal = document.getElementById('notification-modal');
     if (modal) modal.remove();
+}
+
+function markNotificationRead(id) {
+    const notifications = storage.getNotifications();
+    const notification = notifications.find(n => n.id === id);
+
+    if (notification) {
+        notification.read = true;
+        storage.saveNotifications(notifications);
+        refreshNotificationList();
+        updateNotificationBadge();
+    }
+}
+
+function dismissNotification(id) {
+    const notifications = storage.getNotifications();
+    const notification = notifications.find(n => n.id === id);
+
+    if (notification) {
+        notification.dismissed = true;
+        storage.saveNotifications(notifications);
+        refreshNotificationList();
+        updateNotificationBadge();
+    }
+}
+
+// ===== SMART NOTIFICATION PROCESSING =====
+
+function processSnoozedNotifications() {
+    const notifications = storage.getNotifications();
+    const now = new Date();
+    let updated = false;
+
+    notifications.forEach(n => {
+        if (n.snoozedUntil) {
+            const snoozeUntil = new Date(n.snoozedUntil);
+            if (snoozeUntil <= now) {
+                // Snooze period expired
+                delete n.snoozedUntil;
+                n.read = false; // Make it unread again
+                updated = true;
+            }
+        }
+    });
+
+    if (updated) {
+        storage.saveNotifications(notifications);
+        updateNotificationBadge();
+    }
+}
+
+function autoDismissOldNotifications() {
+    const notifications = storage.getNotifications();
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    let updated = false;
+    notifications.forEach(n => {
+        const notificationDate = new Date(n.date);
+        // Auto-dismiss read notifications older than 30 days
+        if (n.read && notificationDate < thirtyDaysAgo && !n.dismissed) {
+            n.dismissed = true;
+            updated = true;
+        }
+    });
+
+    if (updated) {
+        storage.saveNotifications(notifications);
+        updateNotificationBadge();
+    }
+}
+
+function deduplicateNotifications() {
+    const notifications = storage.getNotifications().filter(n => !n.dismissed);
+    const seen = new Map();
+    let hasDuplicates = false;
+
+    notifications.forEach(n => {
+        const key = `${n.title}-${n.message}`;
+        const existing = seen.get(key);
+
+        if (existing) {
+            // Keep the newer one, dismiss the older one
+            const olderNotification = new Date(existing.date) < new Date(n.date) ? existing : n;
+            const newerNotification = new Date(existing.date) >= new Date(n.date) ? existing : n;
+
+            olderNotification.dismissed = true;
+            hasDuplicates = true;
+        } else {
+            seen.set(key, n);
+        }
+    });
+
+    if (hasDuplicates) {
+        storage.saveNotifications(notifications);
+        updateNotificationBadge();
+    }
+}
+
+function createSmartNotification(title, message, priority = 'medium', actionLink = null, category = null) {
+    const notifications = storage.getNotifications();
+
+    // Check for duplicates in last hour
+    const oneHourAgo = new Date();
+    oneHourAgo.setHours(oneHourAgo.getHours() - 1);
+
+    const isDuplicate = notifications.some(n => {
+        return !n.dismissed &&
+               n.title === title &&
+               n.message === message &&
+               new Date(n.date) > oneHourAgo;
+    });
+
+    if (isDuplicate) {
+        // Don't create duplicate notification
+        return null;
+    }
+
+    const notification = {
+        id: genId(),
+        date: new Date().toISOString(),
+        title,
+        message,
+        priority,
+        actionLink,
+        category,
+        read: false,
+        dismissed: false,
+        recurring: false
+    };
+
+    notifications.unshift(notification);
+    storage.saveNotifications(notifications);
+    updateNotificationBadge();
+
+    return notification;
+}
+
+function createRecurringNotification(title, message, priority, actionLink, intervalDays) {
+    const notifications = storage.getNotifications();
+
+    const notification = {
+        id: genId(),
+        date: new Date().toISOString(),
+        title,
+        message,
+        priority,
+        actionLink,
+        recurring: true,
+        recurringIntervalDays: intervalDays,
+        lastShown: new Date().toISOString(),
+        read: false,
+        dismissed: false
+    };
+
+    notifications.unshift(notification);
+    storage.saveNotifications(notifications);
+    updateNotificationBadge();
+
+    return notification;
+}
+
+function processRecurringNotifications() {
+    const notifications = storage.getNotifications();
+    const now = new Date();
+    let updated = false;
+
+    notifications.forEach(n => {
+        if (n.recurring && n.recurringIntervalDays && n.lastShown) {
+            const lastShownDate = new Date(n.lastShown);
+            const daysSinceLastShown = Math.floor((now - lastShownDate) / (1000 * 60 * 60 * 24));
+
+            if (daysSinceLastShown >= n.recurringIntervalDays) {
+                // Time to show again
+                if (n.dismissed || n.read) {
+                    n.dismissed = false;
+                    n.read = false;
+                    n.lastShown = now.toISOString();
+                    updated = true;
+                }
+            }
+        }
+    });
+
+    if (updated) {
+        storage.saveNotifications(notifications);
+        updateNotificationBadge();
+    }
+}
+
+// Run smart notification processing periodically
+function initSmartNotificationSystem() {
+    // Process immediately
+    processSnoozedNotifications();
+    autoDismissOldNotifications();
+    deduplicateNotifications();
+    processRecurringNotifications();
+
+    // Then run every 5 minutes
+    setInterval(() => {
+        processSnoozedNotifications();
+        autoDismissOldNotifications();
+        deduplicateNotifications();
+        processRecurringNotifications();
+    }, 5 * 60 * 1000); // 5 minutes
 }
 
 // ========== P2-3: AUDIT TRAIL ==========
@@ -16340,6 +16864,9 @@ function init() {
     checkUpcomingTermExpirations();
     checkMemberEngagement();
 
+    // Initialize smart notification system
+    initSmartNotificationSystem();
+
     // Quick Wins: Initialize periodic checks
     checkUpcomingBirthdaysAndAnniversaries();
     checkActionItemReminders();
@@ -18256,6 +18783,407 @@ function updateGCItemStatus(id, status) {
         loadLiveGCQueue();
         showToast('Status updated', 'success');
     }
+}
+
+// ===== EMERGENCY GC PROTOCOL FUNCTIONS =====
+
+function initiateEmergencyGC() {
+    // Show confirmation dialog
+    const confirmed = confirm('⚠️ EMERGENCY GC PROTOCOL ⚠️\n\nThis should only be used for crisis situations requiring immediate group conscience decision.\n\nExamples: Venue loss, safety concerns, financial crisis, legal issues.\n\nProceed with Emergency GC Protocol?');
+
+    if (!confirmed) return;
+
+    // Navigate to emergency GC section
+    document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById('emergency-gc-section').classList.add('active');
+    document.getElementById('emergency-gc-section').style.display = 'block';
+
+    // Update navigation
+    document.querySelectorAll('nav li').forEach(li => li.classList.remove('active'));
+
+    // Populate facilitator dropdown
+    const facilitatorSelect = document.getElementById('emergency-facilitator');
+    facilitatorSelect.innerHTML = '<option value="">Select facilitator...</option>';
+    const members = storage.getMembers();
+    members.forEach(m => {
+        const option = document.createElement('option');
+        option.value = m.name;
+        option.textContent = m.name;
+        facilitatorSelect.appendChild(option);
+    });
+
+    // Set current date/time
+    const now = new Date();
+    const dateTimeLocal = now.toISOString().slice(0, 16);
+    document.getElementById('emergency-date').value = dateTimeLocal;
+
+    // Load emergency history
+    loadEmergencyGCHistory();
+
+    // Send urgent notification
+    createSmartNotification(
+        'Emergency GC Protocol Initiated',
+        'An emergency group conscience protocol has been started. Check the Emergency GC section for details.',
+        'urgent',
+        'emergency-gc-section'
+    );
+
+    showToast('Emergency GC Protocol initiated', 'warning');
+}
+
+const emergencyProtocols = {
+    'venue-loss': {
+        title: 'Venue Loss / Location Crisis',
+        checklist: [
+            'Confirm venue is no longer available',
+            'Document reason for venue loss',
+            'Identify alternate meeting locations',
+            'Check availability and cost of alternatives',
+            'Confirm meeting schedule compatibility',
+            'Notify all members of situation',
+            'Arrange transportation/accessibility for new location',
+            'Update meeting schedules (AA.org, local directories)',
+            'Notify intergroup/central office of change'
+        ]
+    },
+    'safety-concern': {
+        title: 'Safety/Security Concern',
+        checklist: [
+            'Document the safety concern in detail',
+            'Assess immediate threat level',
+            'Contact appropriate authorities if needed',
+            'Ensure member safety is prioritized',
+            'Determine if meeting can continue safely',
+            'Implement temporary safety measures',
+            'Notify members of the situation',
+            'Consult with area/district for guidance',
+            'Document all actions taken'
+        ]
+    },
+    'financial-crisis': {
+        title: 'Financial Crisis',
+        checklist: [
+            'Document the financial emergency',
+            'Review current balance and obligations',
+            'Identify immediate financial needs',
+            'Determine shortfall amount',
+            'Review prudent reserve status',
+            'Consider immediate cost reductions',
+            'Notify treasurer and trusted servants',
+            'Prepare emergency budget proposal',
+            'Plan for special 7th tradition appeal if needed'
+        ]
+    },
+    'member-conduct': {
+        title: 'Serious Member Conduct Issue',
+        checklist: [
+            'Document the conduct issue objectively',
+            'Review AA Tradition 1 (group welfare)',
+            'Consult AA guidelines on disruptive behavior',
+            'Consider safety of all members',
+            'Determine if immediate action required',
+            'Review group\'s existing conduct policies',
+            'Consult with experienced members/sponsors',
+            'Consider temporary measures if needed',
+            'Plan for fair group conscience process'
+        ]
+    },
+    'legal-issue': {
+        title: 'Legal/Liability Issue',
+        checklist: [
+            'Document the legal issue in detail',
+            'Determine if immediate legal counsel needed',
+            'Contact AA General Service Office if appropriate',
+            'Notify group insurance provider if applicable',
+            'Preserve all relevant documentation',
+            'Do not admit fault or make statements',
+            'Consult with district/area for guidance',
+            'Consider group\'s liability coverage',
+            'Follow AA\'s suggested legal protocols'
+        ]
+    },
+    'service-disruption': {
+        title: 'Critical Service Disruption',
+        checklist: [
+            'Identify which critical service is disrupted',
+            'Assess impact on group function',
+            'Determine cause of disruption',
+            'Identify immediate alternatives',
+            'Notify affected members',
+            'Implement temporary solutions',
+            'Contact service providers if applicable',
+            'Document disruption timeline',
+            'Plan for service restoration'
+        ]
+    },
+    'other': {
+        title: 'Other Emergency',
+        checklist: [
+            'Clearly define the emergency situation',
+            'Assess urgency and impact',
+            'Determine why regular GC process won\'t work',
+            'Identify immediate actions needed',
+            'Consider member safety first',
+            'Review relevant AA traditions and concepts',
+            'Consult with experienced members if time allows',
+            'Document all circumstances',
+            'Plan for regular GC review of decision'
+        ]
+    }
+};
+
+function loadEmergencyProtocol(type) {
+    if (!type) {
+        document.getElementById('emergency-protocol-container').style.display = 'none';
+        return;
+    }
+
+    const protocol = emergencyProtocols[type];
+    if (!protocol) return;
+
+    document.getElementById('emergency-protocol-container').style.display = 'block';
+
+    const checklistDiv = document.getElementById('emergency-checklist');
+    checklistDiv.innerHTML = `
+        <h4 style="color: #f39c12; margin-bottom: 1rem;">${protocol.title}</h4>
+        <div style="background: #2c3e50; padding: 1rem; border-radius: 4px;">
+            ${protocol.checklist.map((item, idx) => `
+                <div style="display: flex; align-items: start; gap: 0.75rem; padding: 0.5rem; margin-bottom: 0.5rem; background: #34495e; border-radius: 4px;">
+                    <input type="checkbox" id="checklist-${idx}" style="margin-top: 0.25rem; width: 18px; height: 18px; cursor: pointer;">
+                    <label for="checklist-${idx}" style="flex: 1; cursor: pointer; user-select: none;">${escapeHtml(item)}</label>
+                </div>
+            `).join('')}
+        </div>
+    `;
+
+    // Scroll to protocol
+    document.getElementById('emergency-protocol-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function submitEmergencyGC() {
+    // Validate required fields
+    const facilitator = document.getElementById('emergency-facilitator').value;
+    const date = document.getElementById('emergency-date').value;
+    const situation = document.getElementById('emergency-situation').value.trim();
+    const decision = document.getElementById('emergency-decision').value.trim();
+    const rationale = document.getElementById('emergency-rationale').value.trim();
+    const type = document.getElementById('emergency-type').value;
+    const notificationMethod = document.getElementById('emergency-notification-method').value;
+
+    if (!facilitator || !date || !situation || !decision || !rationale || !type) {
+        showToast('Please fill in all required fields (*)', 'error');
+        return;
+    }
+
+    // Get vote results
+    const votesFor = parseInt(document.getElementById('emergency-votes-for').value) || 0;
+    const votesAgainst = parseInt(document.getElementById('emergency-votes-against').value) || 0;
+    const votesAbstain = parseInt(document.getElementById('emergency-votes-abstain').value) || 0;
+    const totalVotes = votesFor + votesAgainst;
+
+    if (totalVotes === 0) {
+        if (!confirm('No votes recorded. Continue anyway?')) return;
+    }
+
+    // Determine outcome
+    let outcome = 'unknown';
+    if (totalVotes > 0) {
+        const percentFor = (votesFor / totalVotes) * 100;
+        outcome = percentFor >= 66.7 ? 'passed' : 'failed';
+    }
+
+    const membersReached = parseInt(document.getElementById('emergency-members-reached').value) || 0;
+    const quorumMet = document.getElementById('emergency-quorum-met').value;
+    const followUp = document.getElementById('emergency-follow-up').value.trim();
+
+    // Create emergency GC record
+    const emergencyGC = {
+        id: genId(),
+        type: 'emergency',
+        emergencyType: type,
+        facilitator,
+        date,
+        situation,
+        decision,
+        rationale,
+        notificationMethod,
+        membersReached,
+        quorumMet,
+        votesFor,
+        votesAgainst,
+        votesAbstain,
+        outcome,
+        followUp,
+        requiresRatification: true,
+        ratified: false,
+        submittedDate: new Date().toISOString()
+    };
+
+    // Save to special emergency GC storage
+    let emergencyGCs = JSON.parse(localStorage.getItem('emergencyGCs') || '[]');
+    emergencyGCs.unshift(emergencyGC);
+    localStorage.setItem('emergencyGCs', JSON.stringify(emergencyGCs));
+
+    // Also add to regular GC log with emergency flag
+    const gcLog = storage.getGroupConscienceLog();
+    gcLog.unshift({
+        id: emergencyGC.id,
+        date: emergencyGC.date,
+        item: `[EMERGENCY] ${emergencyGC.decision}`,
+        outcome: emergencyGC.outcome,
+        votesFor,
+        votesAgainst,
+        votesAbstain,
+        discussionNotes: `EMERGENCY GC PROTOCOL - ${protocol.title}\n\nSituation: ${situation}\n\nRationale: ${rationale}\n\nNotification: ${notificationMethod}\nMembers Reached: ${membersReached}\nQuorum: ${quorumMet}\n\nFollow-up: ${followUp || 'None specified'}`,
+        submittedBy: facilitator,
+        isEmergency: true,
+        emergencyType: type
+    });
+    storage.saveGroupConscienceLog(gcLog);
+
+    // Add audit log
+    addAuditLog('CREATE', 'emergency-gc', emergencyGC.id, facilitator, null,
+        `Emergency GC: ${type} - ${decision.substring(0, 50)}`, rationale);
+
+    // Send notifications to all members
+    createSmartNotification(
+        `Emergency GC Decision: ${outcome.toUpperCase()}`,
+        `Emergency decision regarding ${type.replace('-', ' ')}. Decision: ${decision.substring(0, 100)}... Requires ratification at next regular GC.`,
+        'urgent',
+        'emergency-gc-section'
+    );
+
+    // Create automatic action item for ratification
+    const actions = storage.getGCActionItems();
+    const nextGCDate = new Date();
+    nextGCDate.setDate(nextGCDate.getDate() + 30); // 30 days from now
+
+    actions.push({
+        id: genId(),
+        description: `Ratify Emergency GC Decision: ${decision.substring(0, 60)}`,
+        assignee: facilitator,
+        dueDate: nextGCDate.toISOString().split('T')[0],
+        priority: 'high',
+        relatedGCId: emergencyGC.id,
+        dependencies: [],
+        status: 'pending',
+        progress: 0,
+        createdDate: new Date().toISOString().split('T')[0],
+        completedDate: null,
+        updates: [],
+        reminders: {
+            sent7Days: false,
+            sent3Days: false,
+            sent1Day: false,
+            sentOverdue: false
+        }
+    });
+    storage.saveGCActionItems(actions);
+
+    showToast('Emergency GC logged successfully. Auto-created ratification action item.', 'success');
+
+    // Clear form
+    cancelEmergencyGC();
+
+    // Reload history
+    loadEmergencyGCHistory();
+}
+
+function cancelEmergencyGC() {
+    // Clear form
+    document.getElementById('emergency-type').value = '';
+    document.getElementById('emergency-facilitator').value = '';
+    document.getElementById('emergency-date').value = '';
+    document.getElementById('emergency-situation').value = '';
+    document.getElementById('emergency-decision').value = '';
+    document.getElementById('emergency-rationale').value = '';
+    document.getElementById('emergency-notification-method').value = 'phone-tree';
+    document.getElementById('emergency-members-reached').value = '';
+    document.getElementById('emergency-quorum-met').value = 'yes';
+    document.getElementById('emergency-votes-for').value = '0';
+    document.getElementById('emergency-votes-against').value = '0';
+    document.getElementById('emergency-votes-abstain').value = '0';
+    document.getElementById('emergency-follow-up').value = '';
+    document.getElementById('emergency-vote-result').textContent = 'Enter votes to see result';
+
+    // Hide protocol container
+    document.getElementById('emergency-protocol-container').style.display = 'none';
+
+    // Optionally go back to home
+    goToSection('home-section');
+}
+
+function loadEmergencyGCHistory() {
+    const emergencyGCs = JSON.parse(localStorage.getItem('emergencyGCs') || '[]');
+    const container = document.getElementById('emergency-gc-history');
+
+    if (emergencyGCs.length === 0) {
+        container.innerHTML = '<p style="text-align: center; padding: 2rem; opacity: 0.7;">No emergency GCs recorded</p>';
+        return;
+    }
+
+    container.innerHTML = emergencyGCs.slice(0, 10).map(egc => {
+        const outcomeColor = egc.outcome === 'passed' ? '#2ecc71' : egc.outcome === 'failed' ? '#e74c3c' : '#f39c12';
+        const protocol = emergencyProtocols[egc.emergencyType];
+
+        return `
+            <div style="background: #2c3e50; padding: 1rem; border-radius: 4px; margin-bottom: 0.75rem; border-left: 4px solid ${outcomeColor};">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold; color: #e74c3c; margin-bottom: 0.5rem;">
+                            <i class="fas fa-exclamation-triangle"></i> ${escapeHtml(protocol ? protocol.title : egc.emergencyType)}
+                        </div>
+                        <div style="font-size: 0.95rem; margin-bottom: 0.5rem;">${escapeHtml(egc.decision)}</div>
+                        <div style="font-size: 0.85rem; opacity: 0.8;">
+                            <div><strong>Date:</strong> ${new Date(egc.date).toLocaleString()}</div>
+                            <div><strong>Facilitator:</strong> ${escapeHtml(egc.facilitator)}</div>
+                            <div><strong>Votes:</strong> For=${egc.votesFor}, Against=${egc.votesAgainst}, Abstain=${egc.votesAbstain}</div>
+                            <div><strong>Outcome:</strong> <span style="color: ${outcomeColor}; font-weight: bold;">${egc.outcome.toUpperCase()}</span></div>
+                            ${egc.requiresRatification && !egc.ratified ? '<div style="color: #f39c12; margin-top: 0.5rem;"><i class="fas fa-hourglass-half"></i> Awaiting ratification at next regular GC</div>' : ''}
+                            ${egc.ratified ? '<div style="color: #2ecc71; margin-top: 0.5rem;"><i class="fas fa-check-circle"></i> Ratified</div>' : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Add event listener for emergency vote calculation
+document.addEventListener('DOMContentLoaded', function() {
+    const voteInputs = ['emergency-votes-for', 'emergency-votes-against', 'emergency-votes-abstain'];
+    voteInputs.forEach(inputId => {
+        const input = document.getElementById(inputId);
+        if (input) {
+            input.addEventListener('input', calculateEmergencyVoteResult);
+        }
+    });
+});
+
+function calculateEmergencyVoteResult() {
+    const votesFor = parseInt(document.getElementById('emergency-votes-for').value) || 0;
+    const votesAgainst = parseInt(document.getElementById('emergency-votes-against').value) || 0;
+    const totalVotes = votesFor + votesAgainst;
+
+    const resultDiv = document.getElementById('emergency-vote-result');
+
+    if (totalVotes === 0) {
+        resultDiv.textContent = 'Enter votes to see result';
+        resultDiv.style.background = '#34495e';
+        resultDiv.style.color = '#ecf0f1';
+        return;
+    }
+
+    const percentFor = (votesFor / totalVotes) * 100;
+    const passed = percentFor >= 66.7; // Substantial unanimity
+
+    resultDiv.textContent = passed ? '✓ MOTION PASSED' : '✗ MOTION FAILED';
+    resultDiv.style.background = passed ? '#2ecc71' : '#e74c3c';
+    resultDiv.style.color = 'white';
+    resultDiv.innerHTML = `
+        ${passed ? '✓ MOTION PASSED' : '✗ MOTION FAILED'}<br>
+        <span style="font-size: 0.9rem;">${percentFor.toFixed(1)}% in favor (${votesFor}/${totalVotes})</span>
+    `;
 }
 
 function removeGCItem(id) {
