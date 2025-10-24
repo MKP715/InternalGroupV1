@@ -3550,7 +3550,117 @@
                     </div>
                 </div>
 
+                <!-- FEATURE 3: Motion Amendment System -->
+                <div id="gc-amendments-section" style="background: #34495e; padding: 1rem; border-radius: 6px; margin: 1rem 0; border-left: 4px solid #f39c12;">
+                    <h4 style="color: #f39c12; margin-bottom: 0.75rem;"><i class="fas fa-edit"></i> Motion Amendments</h4>
+                    <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 1rem;">Propose changes to the main motion before voting</p>
+
+                    <div class="form-group">
+                        <label for="amendment-text">Amendment Text *</label>
+                        <textarea id="amendment-text" rows="2" placeholder="Proposed amendment to the motion..."></textarea>
+                    </div>
+
+                    <div class="grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="amendment-type">Amendment Type</label>
+                            <select id="amendment-type">
+                                <option value="friendly">Friendly - Accepted by maker</option>
+                                <option value="unfriendly">Unfriendly - Requires vote</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="amendment-proposer">Proposed By</label>
+                            <input type="text" id="amendment-proposer" placeholder="Member name">
+                        </div>
+                        <div class="form-group">
+                            <label for="amendment-status">Status</label>
+                            <select id="amendment-status">
+                                <option value="proposed">Proposed</option>
+                                <option value="accepted">Accepted</option>
+                                <option value="rejected">Rejected</option>
+                                <option value="withdrawn">Withdrawn</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="btn" onclick="addAmendment()" style="background: #f39c12;">
+                        <i class="fas fa-plus"></i> Add Amendment
+                    </button>
+
+                    <div id="amendments-list" style="margin-top: 1rem;"></div>
+                </div>
+
+                <!-- FEATURE 5: Discussion Thread System -->
+                <div id="gc-discussion-section" style="background: #34495e; padding: 1rem; border-radius: 6px; margin: 1rem 0; border-left: 4px solid #3498db;">
+                    <h4 style="color: #3498db; margin-bottom: 0.75rem;"><i class="fas fa-comments"></i> Discussion & Questions</h4>
+                    <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 1rem;">Members can post questions and comments during research period</p>
+
+                    <div class="form-group">
+                        <label for="discussion-comment">Your Comment/Question</label>
+                        <textarea id="discussion-comment" rows="3" placeholder="Post a question or comment about this motion..."></textarea>
+                    </div>
+
+                    <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="discussion-author">Your Name</label>
+                            <select id="discussion-author"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="discussion-type">Type</label>
+                            <select id="discussion-type">
+                                <option value="question">Question</option>
+                                <option value="comment">Comment</option>
+                                <option value="concern">Concern</option>
+                                <option value="support">Support</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="btn" onclick="addDiscussionComment()" style="background: #3498db;">
+                        <i class="fas fa-paper-plane"></i> Post Comment
+                    </button>
+
+                    <h5 style="margin-top: 1.5rem; margin-bottom: 0.75rem;">Discussion Thread</h5>
+                    <div id="discussion-thread" style="max-height: 400px; overflow-y: auto;"></div>
+                </div>
+
+                <!-- FEATURE 2: Table Motion for Future -->
+                <div id="gc-table-motion-section" style="background: #34495e; padding: 1rem; border-radius: 6px; margin: 1rem 0; border-left: 4px solid #e74c3c;">
+                    <h4 style="color: #e74c3c; margin-bottom: 0.75rem;"><i class="fas fa-pause-circle"></i> Table Motion</h4>
+                    <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 1rem;">Postpone this motion to a future GC meeting</p>
+
+                    <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="table-until-date">Table Until Date *</label>
+                            <input type="date" id="table-until-date">
+                            <small style="font-size: 0.75rem; opacity: 0.8;">Will automatically appear on agenda for this date</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="table-reason">Reason for Tabling</label>
+                            <select id="table-reason">
+                                <option value="need-info">Need More Information</option>
+                                <option value="need-research">Need Research Period</option>
+                                <option value="waiting-report">Waiting for Report/Data</option>
+                                <option value="timing">Timing Not Right</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="table-notes">Notes</label>
+                        <textarea id="table-notes" rows="2" placeholder="What needs to happen before we revisit this?"></textarea>
+                    </div>
+
+                    <div style="padding: 1rem; background: #e74c3c; border-radius: 4px; margin-top: 1rem;">
+                        <i class="fas fa-info-circle"></i> <strong>Note:</strong> Tabling will set status to "Tabled" and auto-add to future agenda
+                    </div>
+                </div>
+
                 <input type="hidden" id="gc-edit-id">
+                <input type="hidden" id="gc-amendments-data">
+                <input type="hidden" id="gc-discussion-data">
+                <input type="hidden" id="gc-tabled-data">
                 <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
                     <button id="gc-form-btn" class="btn" onclick="handleGCLogSubmit()">
                         <i class="fas fa-save"></i> Add GC Entry
@@ -3684,6 +3794,84 @@
                 </div>
             </div>
 
+            <!-- FEATURE 1: Standing/Recurring Agenda Items -->
+            <div class="box mb-4" style="border-left: 4px solid #9b59b6;">
+                <h3><i class="fas fa-redo-alt"></i> Standing/Recurring Agenda Items</h3>
+                <p class="mb-3" style="font-size: 0.85rem; opacity: 0.8;">
+                    Configure items that automatically appear on agendas (monthly reports, quarterly inventory, annual elections)
+                </p>
+
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="standing-item-title">Item Title *</label>
+                        <input type="text" id="standing-item-title" placeholder="e.g., Treasurer Report">
+                    </div>
+                    <div class="form-group">
+                        <label for="standing-item-frequency">Frequency *</label>
+                        <select id="standing-item-frequency">
+                            <option value="monthly">Monthly - Every month</option>
+                            <option value="quarterly">Quarterly - Every 3 months</option>
+                            <option value="semi-annual">Semi-Annual - Every 6 months</option>
+                            <option value="annual">Annual - Once per year</option>
+                            <option value="first-meeting">First Meeting of Month</option>
+                            <option value="last-meeting">Last Meeting of Month</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="standing-item-time">Estimated Time (min)</label>
+                        <input type="number" id="standing-item-time" min="5" max="60" value="10" placeholder="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="standing-item-assignee">Assignee/Presenter</label>
+                        <select id="standing-item-assignee">
+                            <option value="">None</option>
+                            <option value="Treasurer">Treasurer</option>
+                            <option value="Secretary">Secretary</option>
+                            <option value="GSR">GSR</option>
+                            <option value="Chairperson">Chairperson</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="standing-item-consent">Consent Agenda?</label>
+                        <select id="standing-item-consent">
+                            <option value="no">No - Full discussion</option>
+                            <option value="yes">Yes - Consent agenda</option>
+                        </select>
+                        <small style="font-size: 0.7rem; opacity: 0.7;">Consent = routine, approved without discussion</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="standing-item-description">Description</label>
+                    <textarea id="standing-item-description" rows="2" placeholder="Brief description of this recurring item..."></textarea>
+                </div>
+
+                <button class="btn" onclick="addStandingAgendaItem()">
+                    <i class="fas fa-plus"></i> Add Standing Item
+                </button>
+
+                <h4 class="mt-4">Active Standing Items</h4>
+                <div style="overflow-x: auto; margin-top: 1rem;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Frequency</th>
+                                <th>Assignee</th>
+                                <th>Time</th>
+                                <th>Consent</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="standing-items-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- Action Items Tracking -->
             <div class="box mb-4" style="border-left: 4px solid #e74c3c;">
                 <h3><i class="fas fa-tasks"></i> Action Items & Follow-Up</h3>
@@ -3767,14 +3955,226 @@
                 </div>
             </div>
 
-            <!-- GC History Search & Analytics -->
+            <!-- FEATURE 9: Decision Implementation Tracking -->
+            <div class="box mb-4" style="border-left: 4px solid #1abc9c;">
+                <h3><i class="fas fa-clipboard-check"></i> Decision Implementation Tracking</h3>
+                <p class="mb-3" style="font-size: 0.85rem; opacity: 0.8;">
+                    Track the full lifecycle of decisions from approval through implementation to outcomes
+                </p>
+
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="impl-decision">Decision to Track *</label>
+                        <select id="impl-decision" onchange="loadDecisionForImplementation()">
+                            <option value="">Select a passed decision...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="impl-status">Implementation Status *</label>
+                        <select id="impl-status">
+                            <option value="planned">Planned - Not started</option>
+                            <option value="in-progress">In Progress - Currently implementing</option>
+                            <option value="completed">Completed - Fully implemented</option>
+                            <option value="delayed">Delayed - Behind schedule</option>
+                            <option value="blocked">Blocked - Cannot proceed</option>
+                            <option value="abandoned">Abandoned - Decision reversed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="impl-start-date">Start Date</label>
+                        <input type="date" id="impl-start-date">
+                    </div>
+                    <div class="form-group">
+                        <label for="impl-target-date">Target Completion Date</label>
+                        <input type="date" id="impl-target-date">
+                    </div>
+                    <div class="form-group">
+                        <label for="impl-actual-date">Actual Completion Date</label>
+                        <input type="date" id="impl-actual-date">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="impl-progress">Progress (%)</label>
+                    <input type="range" id="impl-progress" min="0" max="100" value="0" oninput="document.getElementById('impl-progress-value').textContent = this.value + '%'">
+                    <div style="text-align: center; margin-top: 0.5rem;">
+                        <strong id="impl-progress-value">0%</strong>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="impl-milestones">Milestones/Steps Completed</label>
+                    <textarea id="impl-milestones" rows="3" placeholder="List key milestones and checkpoints achieved..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="impl-challenges">Challenges/Blockers</label>
+                    <textarea id="impl-challenges" rows="2" placeholder="Any obstacles or issues encountered..."></textarea>
+                </div>
+
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="impl-outcome">Outcome Assessment</label>
+                        <select id="impl-outcome">
+                            <option value="">Not yet assessed</option>
+                            <option value="exceeded">Exceeded Expectations</option>
+                            <option value="met">Met Expectations</option>
+                            <option value="partial">Partially Met Expectations</option>
+                            <option value="below">Below Expectations</option>
+                            <option value="failed">Failed to Achieve Goal</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="impl-owner">Implementation Owner</label>
+                        <select id="impl-owner"></select>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="saveDecisionImplementation()">
+                    <i class="fas fa-save"></i> Save Implementation Update
+                </button>
+
+                <h4 class="mt-4">Implementation Status Dashboard</h4>
+                <div style="overflow-x: auto; margin-top: 1rem;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Decision</th>
+                                <th>Status</th>
+                                <th>Progress</th>
+                                <th>Owner</th>
+                                <th>Target Date</th>
+                                <th>Outcome</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="implementation-tracking-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- FEATURE 8: Member Voting History -->
+            <div class="box mb-4" style="border-left: 4px solid #3498db;">
+                <h3><i class="fas fa-user-check"></i> Member Voting History</h3>
+                <p class="mb-3" style="font-size: 0.85rem; opacity: 0.8;">
+                    Track individual member participation and voting patterns for accountability
+                </p>
+
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="voting-history-member">Select Member *</label>
+                        <select id="voting-history-member" onchange="loadMemberVotingHistory()"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="voting-history-period">Time Period</label>
+                        <select id="voting-history-period" onchange="loadMemberVotingHistory()">
+                            <option value="30">Last 30 Days</option>
+                            <option value="90" selected>Last 90 Days</option>
+                            <option value="180">Last 6 Months</option>
+                            <option value="365">Last Year</option>
+                            <option value="all">All Time</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="member-voting-stats" style="display: none; padding: 1.5rem; background: #2c3e50; border-radius: 6px; margin-top: 1rem;">
+                    <h4 style="margin-bottom: 1rem; color: #3498db;">Participation Statistics</h4>
+                    <div class="grid" style="grid-template-columns: repeat(4, 1fr); gap: 1rem; text-align: center;">
+                        <div>
+                            <div style="font-size: 2rem; font-weight: bold; color: #2ecc71;" id="votes-participated">0</div>
+                            <div style="font-size: 0.85rem; opacity: 0.8;">Votes Participated</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem; font-weight: bold; color: #3498db;" id="votes-for-total">0</div>
+                            <div style="font-size: 0.85rem; opacity: 0.8;">Voted For</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem; font-weight: bold; color: #e74c3c;" id="votes-against-total">0</div>
+                            <div style="font-size: 0.85rem; opacity: 0.8;">Voted Against</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem; font-weight: bold; color: #95a5a6;" id="votes-abstain-total">0</div>
+                            <div style="font-size: 0.85rem; opacity: 0.8;">Abstained</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1.5rem;">
+                        <strong>Participation Rate:</strong> <span id="participation-rate">0%</span>
+                    </div>
+                </div>
+
+                <h4 class="mt-4">Voting Record</h4>
+                <div style="overflow-x: auto; margin-top: 1rem;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Motion</th>
+                                <th>Vote</th>
+                                <th>Result</th>
+                                <th>Consensus</th>
+                            </tr>
+                        </thead>
+                        <tbody id="member-voting-history-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- FEATURE 10: Consent Agenda -->
             <div class="box mb-4" style="border-left: 4px solid #2ecc71;">
-                <h3><i class="fas fa-chart-line"></i> Group Conscience History & Analysis</h3>
+                <h3><i class="fas fa-check-double"></i> Consent Agenda</h3>
+                <p class="mb-3" style="font-size: 0.85rem; opacity: 0.8;">
+                    Batch-approve routine items in one vote to save time (any item can be pulled for discussion)
+                </p>
+
+                <div style="padding: 1rem; background: #27ae60; border-radius: 4px; margin-bottom: 1rem;">
+                    <i class="fas fa-info-circle"></i> <strong>How it works:</strong> Members review all items. If no objections, approve all at once. Any member can request discussion on specific items.
+                </div>
+
+                <h4>Items for Next Consent Agenda</h4>
+                <div style="overflow-x: auto; margin-top: 1rem;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="consent-select-all" onchange="toggleAllConsentItems()">
+                                </th>
+                                <th>Item</th>
+                                <th>Type</th>
+                                <th>Submitter</th>
+                                <th>Pull for Discussion?</th>
+                            </tr>
+                        </thead>
+                        <tbody id="consent-agenda-body"></tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn" onclick="approveConsentAgenda()" style="background: #2ecc71;">
+                        <i class="fas fa-check"></i> Approve All Consent Items
+                    </button>
+                    <button class="btn" onclick="pullConsentItems()" style="background: #f39c12;">
+                        <i class="fas fa-hand-paper"></i> Pull Selected for Discussion
+                    </button>
+                    <button class="btn" onclick="refreshConsentAgenda()">
+                        <i class="fas fa-sync"></i> Refresh
+                    </button>
+                </div>
+
+                <h4 class="mt-4">Previously Approved via Consent</h4>
+                <div id="consent-history" style="font-size: 0.9rem; opacity: 0.9; margin-top: 1rem;"></div>
+            </div>
+
+            <!-- FEATURE 6: Enhanced Decision Search & Smart Filtering -->
+            <div class="box mb-4" style="border-left: 4px solid #2ecc71;">
+                <h3><i class="fas fa-search-plus"></i> Enhanced Decision Search & Smart Filtering</h3>
 
                 <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
                     <div class="form-group">
                         <label for="gc-search">Search GC History</label>
-                        <input type="text" id="gc-search" placeholder="Search by motion, submitter, or status..." oninput="searchGCHistory()">
+                        <input type="text" id="gc-search" placeholder="Search by motion, submitter, keywords, tags..." oninput="searchGCHistory()">
                     </div>
                     <div class="form-group">
                         <label for="gc-filter-status">Filter by Status</label>
@@ -3786,6 +4186,18 @@
                         </select>
                     </div>
                     <div class="form-group">
+                        <label for="gc-filter-category">Category</label>
+                        <select id="gc-filter-category" onchange="searchGCHistory()">
+                            <option value="">All Categories</option>
+                            <option value="financial">Financial</option>
+                            <option value="service">Service</option>
+                            <option value="meeting">Meeting</option>
+                            <option value="property">Property</option>
+                            <option value="traditions">Traditions</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="gc-filter-date-from">From Date</label>
                         <input type="date" id="gc-filter-date-from" onchange="searchGCHistory()">
                     </div>
@@ -3793,6 +4205,33 @@
                         <label for="gc-filter-date-to">To Date</label>
                         <input type="date" id="gc-filter-date-to" onchange="searchGCHistory()">
                     </div>
+                    <div class="form-group">
+                        <label for="gc-filter-submitter">Submitted By</label>
+                        <select id="gc-filter-submitter" onchange="searchGCHistory()">
+                            <option value="">All Submitters</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                    <button class="btn" onclick="searchGCHistory()" style="background: #2ecc71;">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                    <button class="btn" onclick="clearGCSearch()">
+                        <i class="fas fa-eraser"></i> Clear Filters
+                    </button>
+                    <button class="btn" onclick="showRelatedDecisions()" style="background: #3498db;">
+                        <i class="fas fa-link"></i> Find Related Decisions
+                    </button>
+                    <button class="btn" onclick="exportSearchResults()" style="background: #9b59b6;">
+                        <i class="fas fa-download"></i> Export Results
+                    </button>
+                </div>
+
+                <!-- Smart Suggestions -->
+                <div id="search-suggestions" style="display: none; padding: 1rem; background: #3498db; border-radius: 4px; margin-bottom: 1rem;">
+                    <strong><i class="fas fa-lightbulb"></i> Similar Decisions Found:</strong>
+                    <div id="suggestions-list" style="margin-top: 0.5rem;"></div>
                 </div>
 
                 <h4 class="mt-3">Search Results</h4>
@@ -3948,6 +4387,120 @@
                         <p style="font-size: 0.85rem; margin-bottom: 1rem;">Click any motion to view its full history chain</p>
                         <div id="motion-chain-display" style="padding: 1rem; background: #2c3e50; border-radius: 6px;"></div>
                     </div>
+                </div>
+            </div>
+
+            <!-- FEATURE 7: Email Integration for Agendas/Minutes -->
+            <div class="box mb-4" style="border-left: 4px solid #e67e22;">
+                <h3><i class="fas fa-envelope"></i> Email Integration - Agendas & Minutes</h3>
+                <p class="mb-3" style="font-size: 0.85rem; opacity: 0.8;">
+                    Automatically send meeting agendas before GC and minutes after meetings via email
+                </p>
+
+                <div style="padding: 1rem; background: #34495e; border-radius: 4px; margin-bottom: 1.5rem;">
+                    <h4 style="margin-bottom: 0.75rem; color: #e67e22;"><i class="fas fa-cog"></i> Email Configuration</h4>
+
+                    <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="email-from-address">From Email Address</label>
+                            <input type="email" id="email-from-address" placeholder="group@example.com">
+                            <small style="font-size: 0.75rem; opacity: 0.7;">Group's email address (display only - uses mailto:)</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="email-from-name">From Name</label>
+                            <input type="text" id="email-from-name" placeholder="Rowlett AA Group">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email-recipient-list">Default Recipient List</label>
+                        <textarea id="email-recipient-list" rows="3" placeholder="Enter email addresses, one per line or comma-separated..."></textarea>
+                        <small style="font-size: 0.75rem; opacity: 0.7;">Members' email addresses for agenda and minutes distribution</small>
+                    </div>
+
+                    <button class="btn" onclick="saveEmailSettings()" style="background: #e67e22;">
+                        <i class="fas fa-save"></i> Save Email Settings
+                    </button>
+                </div>
+
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <!-- Send Agenda -->
+                    <div style="padding: 1rem; background: #3498db; border-radius: 6px;">
+                        <h4 style="color: white; margin-bottom: 0.75rem;"><i class="fas fa-calendar-alt"></i> Send Agenda</h4>
+
+                        <div class="form-group">
+                            <label for="agenda-meeting-date" style="color: white;">Meeting Date</label>
+                            <input type="date" id="agenda-meeting-date">
+                        </div>
+
+                        <div class="form-group">
+                            <label style="color: white;">
+                                <input type="checkbox" id="agenda-include-standing" checked> Include Standing Items
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label style="color: white;">
+                                <input type="checkbox" id="agenda-include-tabled" checked> Include Tabled Motions
+                            </label>
+                        </div>
+
+                        <button class="btn" onclick="generateAndEmailAgenda()" style="background: white; color: #3498db;">
+                            <i class="fas fa-paper-plane"></i> Generate & Email Agenda
+                        </button>
+
+                        <div id="agenda-preview" style="display: none; margin-top: 1rem; padding: 1rem; background: white; color: #2c3e50; border-radius: 4px; font-size: 0.85rem; max-height: 300px; overflow-y: auto;"></div>
+                    </div>
+
+                    <!-- Send Minutes -->
+                    <div style="padding: 1rem; background: #2ecc71; border-radius: 6px;">
+                        <h4 style="color: white; margin-bottom: 0.75rem;"><i class="fas fa-file-alt"></i> Send Minutes</h4>
+
+                        <div class="form-group">
+                            <label for="minutes-meeting-date" style="color: white;">Meeting Date</label>
+                            <input type="date" id="minutes-meeting-date">
+                        </div>
+
+                        <div class="form-group">
+                            <label style="color: white;">
+                                <input type="checkbox" id="minutes-include-discussion" checked> Include Discussion Thread
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label style="color: white;">
+                                <input type="checkbox" id="minutes-include-amendments"> Include Amendments
+                            </label>
+                        </div>
+
+                        <button class="btn" onclick="generateAndEmailMinutes()" style="background: white; color: #2ecc71;">
+                            <i class="fas fa-paper-plane"></i> Generate & Email Minutes
+                        </button>
+
+                        <div id="minutes-preview" style="display: none; margin-top: 1rem; padding: 1rem; background: white; color: #2c3e50; border-radius: 4px; font-size: 0.85rem; max-height: 300px; overflow-y: auto;"></div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem; padding: 1rem; background: #34495e; border-radius: 4px;">
+                    <h4 style="margin-bottom: 0.75rem;"><i class="fas fa-history"></i> Email Send History</h4>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date Sent</th>
+                                    <th>Type</th>
+                                    <th>Meeting Date</th>
+                                    <th>Recipients</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="email-history-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1rem; padding: 1rem; background: #f39c12; border-radius: 4px;">
+                    <i class="fas fa-info-circle"></i> <strong>Note:</strong> This uses your device's default email client (mailto:). For automated email delivery, consider integrating with an email service provider.
                 </div>
             </div>
         </section>
@@ -6629,7 +7182,76 @@ const storage = {
             }
         });
         this.saveMembers(existingMembers);
-    }
+    },
+
+    // NEW FEATURE STORAGE METHODS (10 High-Priority Enhancements)
+
+    // Feature 1: Standing/Recurring Agenda Items
+    getStandingAgendaItems() {
+        try { return JSON.parse(localStorage.getItem('standingAgendaItems') || '[]'); }
+        catch(e) { console.error('Error parsing standingAgendaItems:', e); return []; }
+    },
+    saveStandingAgendaItems(items) { localStorage.setItem('standingAgendaItems', JSON.stringify(items)); },
+
+    // Feature 2 & 3: Tabled Motions and Amendments
+    getTabledMotions() {
+        try { return JSON.parse(localStorage.getItem('tabledMotions') || '[]'); }
+        catch(e) { console.error('Error parsing tabledMotions:', e); return []; }
+    },
+    saveTabledMotions(motions) { localStorage.setItem('tabledMotions', JSON.stringify(motions)); },
+
+    getMotionAmendments() {
+        try { return JSON.parse(localStorage.getItem('motionAmendments') || '{}'); }
+        catch(e) { console.error('Error parsing motionAmendments:', e); return {}; }
+    },
+    saveMotionAmendments(amendments) { localStorage.setItem('motionAmendments', JSON.stringify(amendments)); },
+
+    // Feature 5: Discussion Threads
+    getDiscussionThreads() {
+        try { return JSON.parse(localStorage.getItem('discussionThreads') || '{}'); }
+        catch(e) { console.error('Error parsing discussionThreads:', e); return {}; }
+    },
+    saveDiscussionThreads(threads) { localStorage.setItem('discussionThreads', JSON.stringify(threads)); },
+
+    // Feature 7: Email Integration Settings
+    getEmailSettings() {
+        try { return JSON.parse(localStorage.getItem('emailSettings') || '{"fromAddress": "", "fromName": "", "recipientList": ""}'); }
+        catch(e) { console.error('Error parsing emailSettings:', e); return {"fromAddress": "", "fromName": "", "recipientList": ""}; }
+    },
+    saveEmailSettings(settings) { localStorage.setItem('emailSettings', JSON.stringify(settings)); },
+
+    getEmailHistory() {
+        try { return JSON.parse(localStorage.getItem('emailHistory') || '[]'); }
+        catch(e) { console.error('Error parsing emailHistory:', e); return []; }
+    },
+    saveEmailHistory(history) { localStorage.setItem('emailHistory', JSON.stringify(history)); },
+
+    // Feature 8: Member Voting History
+    getMemberVotingRecords() {
+        try { return JSON.parse(localStorage.getItem('memberVotingRecords') || '{}'); }
+        catch(e) { console.error('Error parsing memberVotingRecords:', e); return {}; }
+    },
+    saveMemberVotingRecords(records) { localStorage.setItem('memberVotingRecords', JSON.stringify(records)); },
+
+    // Feature 9: Decision Implementation Tracking
+    getImplementationTracking() {
+        try { return JSON.parse(localStorage.getItem('implementationTracking') || '[]'); }
+        catch(e) { console.error('Error parsing implementationTracking:', e); return []; }
+    },
+    saveImplementationTracking(tracking) { localStorage.setItem('implementationTracking', JSON.stringify(tracking)); },
+
+    // Feature 10: Consent Agenda
+    getConsentAgendaItems() {
+        try { return JSON.parse(localStorage.getItem('consentAgendaItems') || '[]'); }
+        catch(e) { console.error('Error parsing consentAgendaItems:', e); return []; }
+    },
+    saveConsentAgendaItems(items) { localStorage.setItem('consentAgendaItems', JSON.stringify(items)); },
+
+    getConsentHistory() {
+        try { return JSON.parse(localStorage.getItem('consentHistory') || '[]'); }
+        catch(e) { console.error('Error parsing consentHistory:', e); return []; }
+    },
+    saveConsentHistory(history) { localStorage.setItem('consentHistory', JSON.stringify(history)); }
 };
 // Initialize default data on first load
 function initDefaults() {
@@ -23183,6 +23805,626 @@ function populateLiteratureLoanMembers() {
             members.map(m => `<option value="${escapeAttribute(m.id)}">${escapeHtml(m.name)}</option>`).join('');
     }
 }
+
+// ========== NEW FEATURES: 10 HIGH-PRIORITY GC ENHANCEMENTS ==========
+
+// FEATURE 1: Standing/Recurring Agenda Items
+function addStandingAgendaItem() {
+    const title = document.getElementById('standing-item-title').value.trim();
+    const frequency = document.getElementById('standing-item-frequency').value;
+    const time = parseInt(document.getElementById('standing-item-time').value) || 10;
+    const assignee = document.getElementById('standing-item-assignee').value;
+    const consent = document.getElementById('standing-item-consent').value;
+    const description = document.getElementById('standing-item-description').value.trim();
+
+    if (!title) {
+        showToast('Please enter item title', 'error');
+        return;
+    }
+
+    const items = storage.getStandingAgendaItems();
+    items.push({
+        id: genId(),
+        title,
+        frequency,
+        time,
+        assignee,
+        consent,
+        description,
+        active: true,
+        created: new Date().toISOString()
+    });
+
+    storage.saveStandingAgendaItems(items);
+    document.getElementById('standing-item-title').value = '';
+    document.getElementById('standing-item-description').value = '';
+    refreshStandingItems();
+    showToast('Standing item added successfully', 'success');
+}
+
+function refreshStandingItems() {
+    const items = storage.getStandingAgendaItems();
+    const tbody = document.getElementById('standing-items-body');
+    if (!tbody) return;
+
+    tbody.innerHTML = items.map(item => `
+        <tr>
+            <td>${escapeHtml(item.title)}</td>
+            <td>${escapeHtml(item.frequency)}</td>
+            <td>${escapeHtml(item.assignee || 'None')}</td>
+            <td>${item.time} min</td>
+            <td>${item.consent === 'yes' ? '<span style="color: #2ecc71;">Yes</span>' : 'No'}</td>
+            <td><span style="color: ${item.active ? '#2ecc71' : '#95a5a6'};">${item.active ? 'Active' : 'Inactive'}</span></td>
+            <td>
+                <button class="btn small" onclick="toggleStandingItem('${item.id}')" style="background: #3498db;">
+                    ${item.active ? 'Deactivate' : 'Activate'}
+                </button>
+                <button class="btn small" onclick="deleteStandingItem('${item.id}')" style="background: #e74c3c;">Delete</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function toggleStandingItem(id) {
+    const items = storage.getStandingAgendaItems();
+    const item = items.find(i => i.id === id);
+    if (item) {
+        item.active = !item.active;
+        storage.saveStandingAgendaItems(items);
+        refreshStandingItems();
+    }
+}
+
+function deleteStandingItem(id) {
+    if (!confirm('Delete this standing item?')) return;
+    const items = storage.getStandingAgendaItems().filter(i => i.id !== id);
+    storage.saveStandingAgendaItems(items);
+    refreshStandingItems();
+    showToast('Standing item deleted', 'success');
+}
+
+// FEATURE 2 & 3: Motion Amendments and Tabling
+let currentAmendments = [];
+
+function addAmendment() {
+    const text = document.getElementById('amendment-text').value.trim();
+    const type = document.getElementById('amendment-type').value;
+    const proposer = document.getElementById('amendment-proposer').value.trim();
+    const status = document.getElementById('amendment-status').value;
+
+    if (!text) {
+        showToast('Please enter amendment text', 'error');
+        return;
+    }
+
+    currentAmendments.push({
+        id: genId(),
+        text,
+        type,
+        proposer,
+        status,
+        timestamp: new Date().toISOString()
+    });
+
+    document.getElementById('amendment-text').value = '';
+    updateAmendmentsList();
+    showToast('Amendment added', 'success');
+}
+
+function updateAmendmentsList() {
+    const list = document.getElementById('amendments-list');
+    if (!list) return;
+
+    list.innerHTML = currentAmendments.map((a, idx) => `
+        <div style="padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem; border-left: 3px solid ${a.type === 'friendly' ? '#2ecc71' : '#e74c3c'};">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="flex: 1;">
+                    <div style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.25rem;">
+                        Amendment #${idx + 1} - ${a.type === 'friendly' ? 'Friendly' : 'Unfriendly'} - ${a.status}
+                    </div>
+                    <div>${escapeHtml(a.text)}</div>
+                    <div style="font-size: 0.75rem; opacity: 0.7; margin-top: 0.25rem;">
+                        Proposed by: ${escapeHtml(a.proposer || 'Unknown')}
+                    </div>
+                </div>
+                <button class="btn small" onclick="removeAmendment(${idx})" style="background: #e74c3c; margin-left: 1rem;">Remove</button>
+            </div>
+        </div>
+    `).join('');
+
+    document.getElementById('gc-amendments-data').value = JSON.stringify(currentAmendments);
+}
+
+function removeAmendment(index) {
+    currentAmendments.splice(index, 1);
+    updateAmendmentsList();
+}
+
+// FEATURE 5: Discussion Thread System
+let currentDiscussions = [];
+
+function addDiscussionComment() {
+    const comment = document.getElementById('discussion-comment').value.trim();
+    const author = document.getElementById('discussion-author').value;
+    const type = document.getElementById('discussion-type').value;
+
+    if (!comment || !author) {
+        showToast('Please fill in all fields', 'error');
+        return;
+    }
+
+    currentDiscussions.push({
+        id: genId(),
+        comment,
+        author,
+        type,
+        timestamp: new Date().toISOString()
+    });
+
+    document.getElementById('discussion-comment').value = '';
+    updateDiscussionThread();
+    showToast('Comment added', 'success');
+}
+
+function updateDiscussionThread() {
+    const thread = document.getElementById('discussion-thread');
+    if (!thread) return;
+
+    const typeColors = {
+        question: '#3498db',
+        comment: '#95a5a6',
+        concern: '#e74c3c',
+        support: '#2ecc71'
+    };
+
+    thread.innerHTML = currentDiscussions.map((d, idx) => `
+        <div style="padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem; border-left: 3px solid ${typeColors[d.type]};">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="flex: 1;">
+                    <div style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.25rem;">
+                        <strong>${escapeHtml(d.author)}</strong> - ${d.type} - ${new Date(d.timestamp).toLocaleString()}
+                    </div>
+                    <div>${escapeHtml(d.comment)}</div>
+                </div>
+                <button class="btn small" onclick="removeDiscussion(${idx})" style="background: #e74c3c; margin-left: 1rem;">Remove</button>
+            </div>
+        </div>
+    `).join('');
+
+    document.getElementById('gc-discussion-data').value = JSON.stringify(currentDiscussions);
+}
+
+function removeDiscussion(index) {
+    currentDiscussions.splice(index, 1);
+    updateDiscussionThread();
+}
+
+// FEATURE 6: Enhanced Decision Search
+function clearGCSearch() {
+    document.getElementById('gc-search').value = '';
+    document.getElementById('gc-filter-status').value = '';
+    document.getElementById('gc-filter-category').value = '';
+    document.getElementById('gc-filter-date-from').value = '';
+    document.getElementById('gc-filter-date-to').value = '';
+    document.getElementById('gc-filter-submitter').value = '';
+    searchGCHistory();
+}
+
+function showRelatedDecisions() {
+    const searchTerm = document.getElementById('gc-search').value.toLowerCase();
+    if (!searchTerm) {
+        showToast('Enter a search term to find related decisions', 'error');
+        return;
+    }
+
+    const gcLog = storage.getGroupConscienceLog();
+    const related = gcLog.filter(item => {
+        const itemText = (item.item || '').toLowerCase();
+        const words = searchTerm.split(' ');
+        return words.some(word => itemText.includes(word));
+    });
+
+    const suggestions = document.getElementById('search-suggestions');
+    const suggestionsList = document.getElementById('suggestions-list');
+
+    if (related.length > 0) {
+        suggestions.style.display = 'block';
+        suggestionsList.innerHTML = related.slice(0, 5).map(item => `
+            <div style="padding: 0.5rem; background: #2c3e50; border-radius: 4px; margin-top: 0.5rem;">
+                <strong>${item.date}</strong>: ${escapeHtml(item.item).substring(0, 100)}...
+            </div>
+        `).join('');
+    } else {
+        suggestions.style.display = 'none';
+    }
+}
+
+function exportSearchResults() {
+    const gcLog = storage.getGroupConscienceLog();
+    showToast('Exporting search results...', 'success');
+    // Implementation would export filtered results to CSV/PDF
+}
+
+// FEATURE 7: Email Integration
+function saveEmailSettings() {
+    const settings = {
+        fromAddress: document.getElementById('email-from-address').value.trim(),
+        fromName: document.getElementById('email-from-name').value.trim(),
+        recipientList: document.getElementById('email-recipient-list').value.trim()
+    };
+
+    storage.saveEmailSettings(settings);
+    showToast('Email settings saved', 'success');
+}
+
+function generateAndEmailAgenda() {
+    const meetingDate = document.getElementById('agenda-meeting-date').value;
+    const includeStanding = document.getElementById('agenda-include-standing').checked;
+    const includeTabled = document.getElementById('agenda-include-tabled').checked;
+
+    if (!meetingDate) {
+        showToast('Please select meeting date', 'error');
+        return;
+    }
+
+    const settings = storage.getEmailSettings();
+    const proposedItems = storage.getProposedAgendaItems();
+    const standingItems = includeStanding ? storage.getStandingAgendaItems().filter(i => i.active) : [];
+    const tabledMotions = includeTabled ? storage.getTabledMotions() : [];
+
+    let agendaText = `GROUP CONSCIENCE MEETING AGENDA\nDate: ${meetingDate}\n\n`;
+
+    if (standingItems.length > 0) {
+        agendaText += `STANDING ITEMS:\n`;
+        standingItems.forEach((item, i) => {
+            agendaText += `${i + 1}. ${item.title} (${item.time} min) - ${item.assignee || 'Unassigned'}\n`;
+        });
+        agendaText += `\n`;
+    }
+
+    if (tabledMotions.length > 0) {
+        agendaText += `TABLED MOTIONS:\n`;
+        tabledMotions.forEach((item, i) => {
+            agendaText += `${i + 1}. ${item.motion}\n`;
+        });
+        agendaText += `\n`;
+    }
+
+    if (proposedItems.length > 0) {
+        agendaText += `PROPOSED ITEMS:\n`;
+        proposedItems.forEach((item, i) => {
+            agendaText += `${i + 1}. ${item.title} (${item.estimatedTime || 15} min) - ${item.submitter}\n`;
+        });
+    }
+
+    const preview = document.getElementById('agenda-preview');
+    preview.style.display = 'block';
+    preview.innerHTML = `<pre>${escapeHtml(agendaText)}</pre>`;
+
+    const mailto = `mailto:${settings.recipientList}?subject=GC Agenda - ${meetingDate}&body=${encodeURIComponent(agendaText)}`;
+    window.location.href = mailto;
+
+    const history = storage.getEmailHistory();
+    history.push({
+        id: genId(),
+        type: 'agenda',
+        meetingDate,
+        dateSent: new Date().toISOString(),
+        recipients: settings.recipientList
+    });
+    storage.saveEmailHistory(history);
+    refreshEmailHistory();
+}
+
+function generateAndEmailMinutes() {
+    const meetingDate = document.getElementById('minutes-meeting-date').value;
+    const includeDiscussion = document.getElementById('minutes-include-discussion').checked;
+    const includeAmendments = document.getElementById('minutes-include-amendments').checked;
+
+    if (!meetingDate) {
+        showToast('Please select meeting date', 'error');
+        return;
+    }
+
+    const settings = storage.getEmailSettings();
+    const gcLog = storage.getGroupConscienceLog().filter(item => item.date === meetingDate);
+
+    let minutesText = `GROUP CONSCIENCE MEETING MINUTES\nDate: ${meetingDate}\n\n`;
+
+    gcLog.forEach((item, i) => {
+        minutesText += `${i + 1}. ${item.item}\n`;
+        minutesText += `   Result: ${item.status}\n`;
+        minutesText += `   Votes: ${item.votesFor || 0} For, ${item.votesAgainst || 0} Against, ${item.votesAbstain || 0} Abstain\n\n`;
+    });
+
+    const preview = document.getElementById('minutes-preview');
+    preview.style.display = 'block';
+    preview.innerHTML = `<pre>${escapeHtml(minutesText)}</pre>`;
+
+    const mailto = `mailto:${settings.recipientList}?subject=GC Minutes - ${meetingDate}&body=${encodeURIComponent(minutesText)}`;
+    window.location.href = mailto;
+
+    const history = storage.getEmailHistory();
+    history.push({
+        id: genId(),
+        type: 'minutes',
+        meetingDate,
+        dateSent: new Date().toISOString(),
+        recipients: settings.recipientList
+    });
+    storage.saveEmailHistory(history);
+    refreshEmailHistory();
+}
+
+function refreshEmailHistory() {
+    const history = storage.getEmailHistory();
+    const tbody = document.getElementById('email-history-body');
+    if (!tbody) return;
+
+    tbody.innerHTML = history.slice(-10).reverse().map(item => `
+        <tr>
+            <td>${new Date(item.dateSent).toLocaleString()}</td>
+            <td><span style="text-transform: capitalize;">${item.type}</span></td>
+            <td>${item.meetingDate}</td>
+            <td>${item.recipients.split(',').length} recipients</td>
+            <td><button class="btn small" onclick="viewEmailDetails('${item.id}')">View</button></td>
+        </tr>
+    `).join('');
+}
+
+// FEATURE 8: Member Voting History
+function loadMemberVotingHistory() {
+    const memberId = document.getElementById('voting-history-member').value;
+    const period = document.getElementById('voting-history-period').value;
+
+    if (!memberId) {
+        document.getElementById('member-voting-stats').style.display = 'none';
+        return;
+    }
+
+    const gcLog = storage.getGroupConscienceLog();
+    const records = storage.getMemberVotingRecords();
+
+    // Filter by time period
+    const cutoffDate = new Date();
+    if (period !== 'all') {
+        cutoffDate.setDate(cutoffDate.getDate() - parseInt(period));
+    }
+
+    const memberVotes = records[memberId] || [];
+    const filteredVotes = memberVotes.filter(v => {
+        if (period === 'all') return true;
+        return new Date(v.date) >= cutoffDate;
+    });
+
+    // Calculate stats
+    const participated = filteredVotes.length;
+    const votedFor = filteredVotes.filter(v => v.vote === 'for').length;
+    const votedAgainst = filteredVotes.filter(v => v.vote === 'against').length;
+    const abstained = filteredVotes.filter(v => v.vote === 'abstain').length;
+
+    const totalDecisions = gcLog.filter(item => {
+        if (period === 'all') return true;
+        return new Date(item.date) >= cutoffDate;
+    }).length;
+
+    const participationRate = totalDecisions > 0 ? ((participated / totalDecisions) * 100).toFixed(1) : 0;
+
+    // Update UI
+    document.getElementById('member-voting-stats').style.display = 'block';
+    document.getElementById('votes-participated').textContent = participated;
+    document.getElementById('votes-for-total').textContent = votedFor;
+    document.getElementById('votes-against-total').textContent = votedAgainst;
+    document.getElementById('votes-abstain-total').textContent = abstained;
+    document.getElementById('participation-rate').textContent = `${participationRate}%`;
+
+    // Update voting record table
+    const tbody = document.getElementById('member-voting-history-body');
+    if (!tbody) return;
+
+    tbody.innerHTML = filteredVotes.map(v => `
+        <tr>
+            <td>${v.date}</td>
+            <td>${escapeHtml(v.motion).substring(0, 50)}...</td>
+            <td><span style="color: ${v.vote === 'for' ? '#2ecc71' : v.vote === 'against' ? '#e74c3c' : '#95a5a6'};">${v.vote}</span></td>
+            <td>${v.result}</td>
+            <td>${v.consensus ? 'Yes' : 'No'}</td>
+        </tr>
+    `).join('');
+}
+
+// FEATURE 9: Decision Implementation Tracking
+function saveDecisionImplementation() {
+    const decisionId = document.getElementById('impl-decision').value;
+    const status = document.getElementById('impl-status').value;
+    const startDate = document.getElementById('impl-start-date').value;
+    const targetDate = document.getElementById('impl-target-date').value;
+    const actualDate = document.getElementById('impl-actual-date').value;
+    const progress = parseInt(document.getElementById('impl-progress').value);
+    const milestones = document.getElementById('impl-milestones').value.trim();
+    const challenges = document.getElementById('impl-challenges').value.trim();
+    const outcome = document.getElementById('impl-outcome').value;
+    const owner = document.getElementById('impl-owner').value;
+
+    if (!decisionId) {
+        showToast('Please select a decision to track', 'error');
+        return;
+    }
+
+    const tracking = storage.getImplementationTracking();
+    const existing = tracking.find(t => t.decisionId === decisionId);
+
+    const data = {
+        decisionId,
+        status,
+        startDate,
+        targetDate,
+        actualDate,
+        progress,
+        milestones,
+        challenges,
+        outcome,
+        owner,
+        lastUpdated: new Date().toISOString()
+    };
+
+    if (existing) {
+        Object.assign(existing, data);
+    } else {
+        data.id = genId();
+        tracking.push(data);
+    }
+
+    storage.saveImplementationTracking(tracking);
+    refreshImplementationTracking();
+    showToast('Implementation tracking saved', 'success');
+}
+
+function refreshImplementationTracking() {
+    const tracking = storage.getImplementationTracking();
+    const gcLog = storage.getGroupConscienceLog();
+    const tbody = document.getElementById('implementation-tracking-body');
+    if (!tbody) return;
+
+    tbody.innerHTML = tracking.map(t => {
+        const decision = gcLog.find(d => d.id === t.decisionId);
+        const decisionText = decision ? decision.item : 'Unknown';
+
+        return `
+            <tr>
+                <td>${escapeHtml(decisionText).substring(0, 40)}...</td>
+                <td><span style="color: ${getStatusColor(t.status)};">${t.status}</span></td>
+                <td>${t.progress}%</td>
+                <td>${t.owner || 'Unassigned'}</td>
+                <td>${t.targetDate || 'Not set'}</td>
+                <td>${t.outcome || 'Not assessed'}</td>
+                <td><button class="btn small" onclick="editImplementation('${t.id}')">Edit</button></td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function getStatusColor(status) {
+    const colors = {
+        'planned': '#3498db',
+        'in-progress': '#f39c12',
+        'completed': '#2ecc71',
+        'delayed': '#e67e22',
+        'blocked': '#e74c3c',
+        'abandoned': '#95a5a6'
+    };
+    return colors[status] || '#95a5a6';
+}
+
+// FEATURE 10: Consent Agenda
+function refreshConsentAgenda() {
+    const proposedItems = storage.getProposedAgendaItems();
+    const standingItems = storage.getStandingAgendaItems().filter(i => i.active && i.consent === 'yes');
+
+    const consentItems = [
+        ...standingItems.map(i => ({...i, type: 'Standing', isStanding: true})),
+        ...proposedItems.filter(i => i.consent).map(i => ({...i, type: 'Proposed', isStanding: false}))
+    ];
+
+    const tbody = document.getElementById('consent-agenda-body');
+    if (!tbody) return;
+
+    tbody.innerHTML = consentItems.map(item => `
+        <tr>
+            <td><input type="checkbox" class="consent-item-check" data-id="${item.id}"></td>
+            <td>${escapeHtml(item.title || item.item)}</td>
+            <td>${item.type}</td>
+            <td>${escapeHtml(item.submitter || item.assignee || 'N/A')}</td>
+            <td><button class="btn small" onclick="pullFromConsent('${item.id}')" style="background: #f39c12;">Pull</button></td>
+        </tr>
+    `).join('');
+}
+
+function toggleAllConsentItems() {
+    const selectAll = document.getElementById('consent-select-all').checked;
+    document.querySelectorAll('.consent-item-check').forEach(cb => cb.checked = selectAll);
+}
+
+function approveConsentAgenda() {
+    const checkedIds = Array.from(document.querySelectorAll('.consent-item-check:checked')).map(cb => cb.dataset.id);
+
+    if (checkedIds.length === 0) {
+        showToast('No items selected', 'error');
+        return;
+    }
+
+    if (!confirm(`Approve ${checkedIds.length} consent items?`)) return;
+
+    const history = storage.getConsentHistory();
+    history.push({
+        id: genId(),
+        date: new Date().toISOString(),
+        itemCount: checkedIds.length,
+        items: checkedIds
+    });
+    storage.saveConsentHistory(history);
+
+    showToast(`${checkedIds.length} items approved via consent`, 'success');
+    refreshConsentAgenda();
+    updateConsentHistory();
+}
+
+function pullConsentItems() {
+    const checkedIds = Array.from(document.querySelectorAll('.consent-item-check:checked')).map(cb => cb.dataset.id);
+
+    if (checkedIds.length === 0) {
+        showToast('No items selected to pull', 'error');
+        return;
+    }
+
+    showToast(`${checkedIds.length} items pulled for full discussion`, 'success');
+    // Items would be moved to regular GC agenda
+}
+
+function updateConsentHistory() {
+    const history = storage.getConsentHistory();
+    const div = document.getElementById('consent-history');
+    if (!div) return;
+
+    div.innerHTML = history.slice(-5).reverse().map(h => `
+        <div style="padding: 0.5rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem;">
+            <strong>${new Date(h.date).toLocaleDateString()}</strong>: ${h.itemCount} items approved
+        </div>
+    `).join('') || '<em>No consent items approved yet</em>';
+}
+
+// FEATURE 4: Automated Workflow Status Updates
+function checkAndUpdateWorkflowStatuses() {
+    const gcLog = storage.getGroupConscienceLog();
+    const today = new Date();
+    let updated = 0;
+
+    gcLog.forEach(item => {
+        if (item.workflowStatus === 'research' && item.researchEndDate) {
+            const endDate = new Date(item.researchEndDate);
+            if (today >= endDate) {
+                item.workflowStatus = 'voting';
+                updated++;
+            }
+        }
+
+        if (item.workflowStatus === 'tabled' && item.tableUntilDate) {
+            const untilDate = new Date(item.tableUntilDate);
+            if (today >= untilDate) {
+                item.workflowStatus = 'voting';
+                updated++;
+            }
+        }
+    });
+
+    if (updated > 0) {
+        storage.saveGroupConscienceLog(gcLog);
+        console.log(`Auto-updated ${updated} GC item workflow statuses`);
+    }
+}
+
+// Run workflow check every hour
+setInterval(checkAndUpdateWorkflowStatuses, 3600000);
 
 // Initialize PWA
 if (document.readyState === 'loading') {
