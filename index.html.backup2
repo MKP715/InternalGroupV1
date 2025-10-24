@@ -1459,70 +1459,517 @@
 
         <!-- Hidden GC Form Elements (for JavaScript compatibility - actual forms are in GC sections) -->
         <div style="display: none;">
-            <input type="hidden" id="gc-edit-id">
-            <select id="gc-workflow-status"><option value="decided">Decided</option></select>
-            <input type="date" id="gc-date">
-            <textarea id="gc-item"></textarea>
-            <input type="text" id="gc-submitted-by">
-            <input type="date" id="gc-research-start">
-            <input type="date" id="gc-research-end">
-            <select id="gc-status"><option value="passed">Passed</option></select>
-            <input type="number" id="gc-votes-for">
-            <input type="number" id="gc-votes-against">
-            <input type="number" id="gc-votes-abstain">
-            <select multiple id="gc-attendees"></select>
-            <div id="gc-servant-reports-container"></div>
-            <div id="gc-servant-reports-legacy-container"></div>
-            <div id="gc-research-period-section"></div>
-            <textarea id="gc-servant-reports-legacy"></textarea>
-            <button id="gc-form-btn"></button>
-            <button id="gc-form-cancel-btn"></button>
-            <div id="vote-summary">
-                <span id="total-votes"></span><span id="votes-for-count"></span><span id="percent-for"></span>
-                <div id="progress-bar-for"></div><span id="votes-against-count"></span><span id="percent-against"></span>
-                <div id="progress-bar-against"></div><span id="votes-abstain-count"></span><span id="percent-abstain"></span>
-                <div id="progress-bar-abstain"></div><div id="quorum-status"></div>
+            <select id="gc-workflow-status">
+                                <option value="draft">Draft - Motion being prepared</option>
+                                <option value="research">Research Period - Members reviewing & asking questions</option>
+                                <option value="voting">Ready for Vote - Research complete</option>
+                                <option value="decided" selected>Decided - Vote complete</option>
+                            </select>
+                            <small style="font-size: 0.75rem; opacity: 0.8; display: block; margin-top: 0.5rem;">
+                                Select workflow stage to enable appropriate fields below
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gc-date">Date</label>
+                            <input type="date" id="gc-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-item">Item/Motion</label>
+                            <textarea id="gc-item" rows="2" placeholder="Describe the motion..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-submitted-by">Submitted By</label>
+                            <input type="text" id="gc-submitted-by" placeholder="Name">
+                        </div>
+
+                        <!-- P0-1: Research Period Dates -->
+                        <div id="gc-research-period-section" style="display: none; background: #2c3e50; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border-left: 4px solid #3498db;">
+                            <h4 style="color: #3498db; margin-bottom: 0.75rem;">Research Period Configuration</h4>
+                            <div class="form-group">
+                                <label for="gc-research-start">Research Period Start Date</label>
+                                <input type="date" id="gc-research-start">
+                                <small style="font-size: 0.75rem; opacity: 0.8; display: block; margin-top: 0.25rem;">
+                                    When members can start reviewing and asking questions
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="gc-research-end">Research Period End Date (Vote Date)</label>
+                                <input type="date" id="gc-research-end">
+                                <small style="font-size: 0.75rem; opacity: 0.8; display: block; margin-top: 0.25rem;">
+                                    Research ends; vote will occur on this date
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gc-status">Final Decision Status</label>
+                            <select id="gc-status">
+                                <option value="passed">Passed</option>
+                                <option value="failed">Failed</option>
+                                <option value="tabled">Tabled</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-votes-for">Votes For</label>
+                            <input type="number" id="gc-votes-for" min="0" placeholder="0" oninput="updateVotePercentages()">
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-votes-against">Votes Against</label>
+                            <input type="number" id="gc-votes-against" min="0" placeholder="0" oninput="updateVotePercentages()">
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-votes-abstain">Votes Abstain</label>
+                            <input type="number" id="gc-votes-abstain" min="0" placeholder="0" oninput="updateVotePercentages()">
+                        </div>
+                        <div id="vote-summary" style="padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.75rem; font-size: 0.85rem;">
+                            <div style="margin-bottom: 0.5rem;"><strong>Total Votes:</strong> <span id="total-votes">0</span></div>
+
+                            <!-- Vote Progress Bars -->
+                            <div class="vote-progress-container">
+                                <div class="vote-progress-item">
+                                    <div class="vote-progress-label">
+                                        <span><strong>For:</strong> <span id="votes-for-count">0</span></span>
+                                        <span id="percent-for">0%</span>
+                                    </div>
+                                    <div class="vote-progress-bar-bg">
+                                        <div id="progress-bar-for" class="vote-progress-bar-fill for" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+
+                                <div class="vote-progress-item">
+                                    <div class="vote-progress-label">
+                                        <span><strong>Against:</strong> <span id="votes-against-count">0</span></span>
+                                        <span id="percent-against">0%</span>
+                                    </div>
+                                    <div class="vote-progress-bar-bg">
+                                        <div id="progress-bar-against" class="vote-progress-bar-fill against" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+
+                                <div class="vote-progress-item">
+                                    <div class="vote-progress-label">
+                                        <span><strong>Abstain:</strong> <span id="votes-abstain-count">0</span></span>
+                                        <span id="percent-abstain">0%</span>
+                                    </div>
+                                    <div class="vote-progress-bar-bg">
+                                        <div id="progress-bar-abstain" class="vote-progress-bar-fill abstain" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="quorum-status" style="margin-top: 0.5rem;"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-attendees">Members Present</label>
+                            <select multiple id="gc-attendees" style="height: 120px; background: #34495e; color: #ecf0f1; border: 1px solid #7f8c8d; border-radius: 4px; padding: 0.5rem; width: 100%;" onchange="updateVotePercentages()"></select>
+                            <small style="font-size: 0.75rem; opacity: 0.8;">Hold Ctrl/Cmd to select multiple members</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Servant Reports</label>
+                            <div id="gc-servant-reports-container">
+                                <!-- Servant report inputs will be dynamically generated here -->
+                            </div>
+                            <div id="gc-servant-reports-legacy-container" style="display: none;">
+                                <label for="gc-servant-reports-legacy">Legacy Reports (read-only)</label>
+                                <textarea id="gc-servant-reports-legacy" rows="4" readonly></textarea>
+                            </div>
+                        </div>
+                        <input type="hidden" id="gc-edit-id">
+                        <button id="gc-form-btn" class="btn" onclick="handleGCLogSubmit()">Add GC Entry</button>
+                        <button id="gc-form-cancel-btn" class="btn secondary" onclick="cancelGCEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
+                    </div>
+
+                    <h3 class="mt-4">Current Month's Group Conscience</h3>
+                    <table id="gc-log-table-current">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Item</th>
+                                <th>Submitted By</th>
+                                <th>Status</th>
+                                <th>Votes</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gc-log-body-current"></tbody>
+                    </table>
+
+                    <h3 class="mt-4">Previous Months' Group Conscience</h3>
+                    <table id="gc-log-table-previous">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Item</th>
+                                <th>Submitted By</th>
+                                <th>Status</th>
+                                <th>Votes</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gc-log-body-previous"></tbody>
+                    </table>
+                    <button class="btn mt-2" onclick="exportGroupConscienceLogToPDF()" style="margin-bottom: 1rem;">Export Full GC Log to PDF</button>
+
+                    <!-- Pre-GC Submission System -->
+                    <div class="box mt-4">
+                        <h3>Pre-GC Agenda Submissions</h3>
+                        <p class="mb-2 text-sm" style="font-size: 0.8rem; opacity: 0.8;">
+                            <i class="fas fa-calendar-alt"></i> Collaborative agenda building - Submit items 7 days before meeting
+                        </p>
+
+                        <!-- Submission Deadline Warning -->
+                        <div id="agenda-submission-notice" style="display: none; padding: 1rem; background: #f39c12; border-radius: 4px; margin-bottom: 1rem;">
+                            <i class="fas fa-info-circle"></i> <span id="agenda-notice-text"></span>
+                        </div>
+
+                        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label for="proposed-item-title">Item Title *</label>
+                                <input type="text" id="proposed-item-title" placeholder="Brief title for the item">
+                            </div>
+                            <div class="form-group">
+                                <label for="proposed-item-submitter">Submitted By *</label>
+                                <select id="proposed-item-submitter">
+                                    <option value="">Select your name...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="proposed-item-description">Description & Rationale *</label>
+                            <textarea id="proposed-item-description" rows="3" placeholder="Detailed description and why this is important..."></textarea>
+                        </div>
+
+                        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label for="proposed-item-time">Estimated Time (minutes)</label>
+                                <input type="number" id="proposed-item-time" min="5" max="60" value="15" placeholder="15">
+                                <small style="font-size: 0.75rem; opacity: 0.8;">How long will this discussion need?</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="proposed-item-urgency">Urgency</label>
+                                <select id="proposed-item-urgency">
+                                    <option value="low">Low - Can wait</option>
+                                    <option value="medium" selected>Medium - Should discuss soon</option>
+                                    <option value="high">High - Time-sensitive</option>
+                                    <option value="urgent">Urgent - Immediate attention needed</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="proposed-item-background">Background Materials / Context</label>
+                            <textarea id="proposed-item-background" rows="3" placeholder="Any relevant history, prior discussions, research, or supporting information..."></textarea>
+                            <small style="font-size: 0.75rem; opacity: 0.8;">Help members make informed decisions</small>
+                        </div>
+
+                        <button class="btn" onclick="addProposedAgendaItem()">
+                            <i class="fas fa-paper-plane"></i> Submit Agenda Item
+                        </button>
+
+                        <!-- Enhanced Agenda Items Table -->
+                        <div style="margin-top: 2rem; display: flex; justify-content: space-between; align-items: center;">
+                            <h4 style="margin: 0;">Proposed Agenda Items</h4>
+                            <button class="btn" onclick="viewAgendaSummaryForUpcomingMeeting()" style="background: #9b59b6;">
+                                <i class="fas fa-clipboard-list"></i> Generate Agenda
+                            </button>
+                        </div>
+
+                        <table id="proposed-agenda-table" style="margin-top: 1rem;">
+                            <thead>
+                                <tr>
+                                    <th>Urgency</th>
+                                    <th>Title</th>
+                                    <th>Submitter</th>
+                                    <th>Time</th>
+                                    <th>Interest</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="proposed-agenda-body"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- GC Settings (Quorum Configuration) -->
+                    <div class="box mt-4">
+                        <h3>Group Conscience Settings</h3>
+                        <div class="form-group">
+                            <label for="quorum-percentage">Quorum Percentage (%)</label>
+                            <input type="number" id="quorum-percentage" min="1" max="100" placeholder="50">
+                            <small style="font-size: 0.75rem; opacity: 0.8;">Percentage of total members required for quorum</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="quorum-minimum">Minimum Quorum Count</label>
+                            <input type="number" id="quorum-minimum" min="1" placeholder="5">
+                            <small style="font-size: 0.75rem; opacity: 0.8;">Minimum number of members required regardless of percentage</small>
+                        </div>
+                        <button class="btn" onclick="saveGCSettings()">Save Settings</button>
+                    </div>
+
+                    <!-- Action Items Tracking -->
+                    <div class="box mt-4">
+                        <h3><i class="fas fa-tasks"></i> Action Items & Follow-Up</h3>
+                        <p class="mb-2 text-sm" style="font-size: 0.8rem; opacity: 0.8;">Track action items with accountability, dependencies, and automatic reminders</p>
+
+                        <!-- Enhanced Action Item Form -->
+                        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label for="action-item-description">Action Item *</label>
+                                <textarea id="action-item-description" rows="2" placeholder="What needs to be done?"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="action-item-assignee">Assigned To *</label>
+                                <select id="action-item-assignee"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="action-item-due-date">Due Date *</label>
+                                <input type="date" id="action-item-due-date">
+                            </div>
+                            <div class="form-group">
+                                <label for="action-item-priority">Priority</label>
+                                <select id="action-item-priority">
+                                    <option value="low">Low</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="high">High</option>
+                                    <option value="urgent">Urgent</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="action-item-related-gc">Related GC Motion</label>
+                                <select id="action-item-related-gc">
+                                    <option value="">None</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="action-item-dependencies">Dependencies (Optional)</label>
+                                <select id="action-item-dependencies" multiple style="height: 60px;">
+                                    <option value="">None - select other action items this depends on</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="action-item-edit-id">
+                        <div style="margin-top: 1rem;">
+                            <button id="action-item-btn" class="btn" onclick="handleActionItemSubmit()">Add Action Item</button>
+                            <button id="action-item-cancel-btn" class="btn secondary" onclick="cancelActionItemEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
+                            <button class="btn" onclick="viewActionItemReport()" style="margin-left: 0.5rem; background: #9b59b6;">
+                                <i class="fas fa-chart-bar"></i> Accountability Report
+                            </button>
+                        </div>
+
+                        <!-- Filter and View Options -->
+                        <div style="margin-top: 2rem; display: flex; gap: 1rem; align-items: center;">
+                            <h4 style="margin: 0;">Action Items</h4>
+                            <div style="flex: 1;"></div>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem;">
+                                <input type="checkbox" id="action-item-show-completed" onchange="updateActionItemsTable()"> Show Completed
+                            </label>
+                            <select id="action-item-filter-assignee" onchange="updateActionItemsTable()" style="background: #34495e; color: #ecf0f1; border: 1px solid #7f8c8d; border-radius: 4px; padding: 0.5rem;">
+                                <option value="">All Assignees</option>
+                            </select>
+                        </div>
+
+                        <!-- Enhanced Action Items Table -->
+                        <table id="action-items-table" style="margin-top: 1rem;">
+                            <thead>
+                                <tr>
+                                    <th>Priority</th>
+                                    <th>Item</th>
+                                    <th>Assigned To</th>
+                                    <th>Due Date</th>
+                                    <th>Progress</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="action-items-body"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Historical Analysis & Search -->
+                    <div class="box mt-4">
+                        <h3>Group Conscience History & Analysis</h3>
+                        <div class="form-group">
+                            <label for="gc-search">Search GC History</label>
+                            <input type="text" id="gc-search" placeholder="Search by motion, submitter, or status..." oninput="searchGCHistory()">
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-filter-status">Filter by Status</label>
+                            <select id="gc-filter-status" onchange="searchGCHistory()">
+                                <option value="">All</option>
+                                <option value="passed">Passed</option>
+                                <option value="failed">Failed</option>
+                                <option value="tabled">Tabled</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-filter-date-from">From Date</label>
+                            <input type="date" id="gc-filter-date-from" onchange="searchGCHistory()">
+                        </div>
+                        <div class="form-group">
+                            <label for="gc-filter-date-to">To Date</label>
+                            <input type="date" id="gc-filter-date-to" onchange="searchGCHistory()">
+                        </div>
+
+                        <h4 class="mt-4">Search Results</h4>
+                        <table id="gc-history-search-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Motion</th>
+                                    <th>Status</th>
+                                    <th>Votes</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gc-history-search-body"></tbody>
+                        </table>
+
+                        <h4 class="mt-4">Quick Statistics</h4>
+                        <div id="gc-stats" style="padding: 1rem; background: #2c3e50; border-radius: 6px; margin-bottom: 1rem;">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                                <div>
+                                    <strong style="color: #3498db;">Total Motions:</strong>
+                                    <div id="stat-total-motions">0</div>
+                                </div>
+                                <div>
+                                    <strong style="color: #2ecc71;">Passed:</strong>
+                                    <div id="stat-passed-motions">0</div>
+                                </div>
+                                <div>
+                                    <strong style="color: #e74c3c;">Failed:</strong>
+                                    <div id="stat-failed-motions">0</div>
+                                </div>
+                                <div>
+                                    <strong style="color: #f39c12;">Tabled:</strong>
+                                    <div id="stat-tabled-motions">0</div>
+                                </div>
+                                <div>
+                                    <strong style="color: #3498db;">Pass Rate:</strong>
+                                    <div id="stat-pass-rate">0%</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- GC Trends Dashboard -->
+                        <h4 class="mt-4">Group Conscience Trends & Analysis</h4>
+                        <div class="trends-grid">
+                            <div class="trend-chart-container">
+                                <h4>Monthly Motion Activity</h4>
+                                <div style="position: relative; height: 250px;">
+                                    <canvas id="gc-trends-monthly-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="trend-chart-container">
+                                <h4>Pass/Fail/Tabled Distribution</h4>
+                                <div style="position: relative; height: 250px;">
+                                    <canvas id="gc-trends-status-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="trend-chart-container">
+                                <h4>Voting Participation Trend</h4>
+                                <div style="position: relative; height: 250px;">
+                                    <canvas id="gc-trends-participation-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="trend-chart-container">
+                                <h4>Top Motion Topics (Keywords)</h4>
+                                <div id="gc-top-topics" style="padding: 1rem; max-height: 250px; overflow-y: auto;">
+                                    <!-- Top topics will be listed here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Annual Summary Report Generator -->
+                        <h4 class="mt-4">Annual Summary Report</h4>
+                        <div style="padding: 1rem; background: #2c3e50; border-radius: 6px;">
+                            <div class="form-group">
+                                <label for="annual-report-year">Select Year</label>
+                                <select id="annual-report-year">
+                                    <!-- Years will be populated dynamically -->
+                                </select>
+                            </div>
+                            <button class="btn" onclick="generateAnnualReport()">
+                                <i class="fas fa-file-pdf" style="margin-right: 0.5rem;"></i>Generate Annual PDF Report
+                            </button>
+                            <button class="btn secondary" onclick="refreshGCTrends()" style="margin-left: 0.5rem;">
+                                <i class="fas fa-sync" style="margin-right: 0.5rem;"></i>Refresh Charts
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="box mt-4">
+                        <h3>Record Meeting Audio</h3>
+                        <p class="mb-2 text-sm" style="font-size: 0.8rem; opacity: 0.8;">Record audio from your microphone and save it as a local file.</p>
+                        <div id="audio-recorder-controls" class="flex items-center gap-2" style="display:flex; gap: 0.5rem; align-items: center;">
+                            <button id="record-btn" class="btn"><i class="fas fa-microphone" style="margin-right: 0.5rem;"></i>Start Recording</button>
+                            <button id="stop-btn" class="btn secondary" disabled><i class="fas fa-stop" style="margin-right: 0.5rem;"></i>Stop</button>
+                        </div>
+                        <div id="audio-player-container" class="mt-4" style="display: none;">
+                            <audio id="audio-player" controls style="width: 100%;"></audio>
+                            <a id="download-link" class="btn mt-2" style="display: none;"><i class="fas fa-download" style="margin-right: 0.5rem;"></i>Download Recording</a>
+                        </div>
+                    </div>
+                    <input type="hidden" id="gc-edit-id">
+                    <button id="gc-form-btn" style="display: none;"></button>
+                    <button id="gc-form-cancel-btn" style="display: none;"></button>
+                    <textarea id="gc-servant-reports-legacy" style="display: none;"></textarea>
+                    <input type="date" id="gc-date" style="display: none;">
+                    <textarea id="gc-item" style="display: none;"></textarea>
+                    <input type="text" id="gc-submitted-by" style="display: none;">
+                    <input type="date" id="gc-research-start" style="display: none;">
+                    <input type="date" id="gc-research-end" style="display: none;">
+                    <select id="gc-status" style="display: none;"><option value="passed">Passed</option></select>
+                    <input type="number" id="gc-votes-for" style="display: none;">
+                    <input type="number" id="gc-votes-against" style="display: none;">
+                    <input type="number" id="gc-votes-abstain" style="display: none;">
+                    <select multiple id="gc-attendees" style="display: none;"></select>
+                    <div id="gc-servant-reports-container" style="display: none;"></div>
+                    <div id="gc-servant-reports-legacy-container" style="display: none;"></div>
+                    <div id="gc-research-period-section" style="display: none;"></div>
+                    <div id="vote-summary" style="display: none;">
+                        <span id="total-votes"></span>
+                        <span id="votes-for-count"></span>
+                        <span id="percent-for"></span>
+                        <div id="progress-bar-for"></div>
+                        <span id="votes-against-count"></span>
+                        <span id="percent-against"></span>
+                        <div id="progress-bar-against"></div>
+                        <span id="votes-abstain-count"></span>
+                        <span id="percent-abstain"></span>
+                        <div id="progress-bar-abstain"></div>
+                        <div id="quorum-status"></div>
+                    </div>
+                    <table id="gc-log-table-previous" style="display: none;">
+                        <thead><tr><th>Date</th></tr></thead>
+                        <tbody id="gc-log-body-previous"></tbody>
+                    </table>
+                    <input type="text" id="proposed-item-title" style="display: none;">
+                    <select id="proposed-item-submitter" style="display: none;"></select>
+                    <textarea id="proposed-item-description" style="display: none;"></textarea>
+                    <input type="number" id="proposed-item-time" style="display: none;">
+                    <select id="proposed-item-urgency" style="display: none;"></select>
+                    <textarea id="proposed-item-background" style="display: none;"></textarea>
+                    <input type="number" id="quorum-percentage" style="display: none;">
+                    <input type="number" id="quorum-minimum" style="display: none;">
+                    <textarea id="action-item-description" style="display: none;"></textarea>
+                    <select id="action-item-assignee" style="display: none;"></select>
+                    <input type="date" id="action-item-due-date" style="display: none;">
+                    <select id="action-item-priority" style="display: none;"></select>
+                    <select id="action-item-related-gc" style="display: none;"></select>
+                    <select id="action-item-dependencies" style="display: none;"></select>
+                    <input type="hidden" id="action-item-edit-id">
+                    <button id="action-item-btn" style="display: none;"></button>
+                    <button id="action-item-cancel-btn" style="display: none;"></button>
+                    <input type="text" id="gc-search" style="display: none;">
+                    <select id="gc-filter-status" style="display: none;"></select>
+                    <input type="date" id="gc-filter-date-from" style="display: none;">
+                    <input type="date" id="gc-filter-date-to" style="display: none;">
+                    <select id="annual-report-year" style="display: none;"></select>
+                </div>
             </div>
-            <table id="gc-log-table-previous"><thead><tr><th>Date</th></tr></thead><tbody id="gc-log-body-previous"></tbody></table>
-            <input type="text" id="proposed-item-title">
-            <select id="proposed-item-submitter"></select>
-            <textarea id="proposed-item-description"></textarea>
-            <input type="number" id="proposed-item-time">
-            <select id="proposed-item-urgency"></select>
-            <textarea id="proposed-item-background"></textarea>
-            <input type="number" id="quorum-percentage">
-            <input type="number" id="quorum-minimum">
-            <textarea id="action-item-description"></textarea>
-            <select id="action-item-assignee"></select>
-            <input type="date" id="action-item-due-date">
-            <select id="action-item-priority"></select>
-            <select id="action-item-related-gc"></select>
-            <select id="action-item-dependencies"></select>
-            <input type="hidden" id="action-item-edit-id">
-            <button id="action-item-btn"></button>
-            <button id="action-item-cancel-btn"></button>
-            <input type="text" id="gc-search">
-            <select id="gc-filter-status"></select>
-            <input type="date" id="gc-filter-date-from">
-            <input type="date" id="gc-filter-date-to">
-            <select id="annual-report-year"></select>
-            <table id="proposed-agenda-table"><tbody id="proposed-agenda-body"></tbody></table>
-            <table id="action-items-table"><tbody id="action-items-body"></tbody></table>
-            <table id="gc-history-search-table"><tbody id="gc-history-search-body"></tbody></table>
-            <div id="gc-stats"></div>
-            <div id="stat-total-motions"></div>
-            <div id="stat-passed-motions"></div>
-            <div id="stat-failed-motions"></div>
-            <div id="stat-tabled-motions"></div>
-            <div id="stat-pass-rate"></div>
-            <div id="gc-top-topics"></div>
-            <canvas id="gc-trends-monthly-chart"></canvas>
-            <canvas id="gc-trends-status-chart"></canvas>
-            <canvas id="gc-trends-participation-chart"></canvas>
-            <div id="agenda-submission-notice"><span id="agenda-notice-text"></span></div>
-            <input type="checkbox" id="action-item-show-completed">
-            <select id="action-item-filter-assignee"></select>
-        </div>
         </section>
 
         <!-- Meeting Companion Section -->
