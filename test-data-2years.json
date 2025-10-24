@@ -1,0 +1,2501 @@
+{
+  "version": "5.1",
+  "exportDate": "2025-10-24T12:00:00.000Z",
+  "members": [
+    {
+      "id": "mem-001",
+      "name": "John S.",
+      "cleanDate": "2010-03-15",
+      "birthday": "1975-06-20",
+      "phone": "469-555-0101",
+      "isServant": true,
+      "sobrietyYears": 15
+    },
+    {
+      "id": "mem-002",
+      "name": "Sarah M.",
+      "cleanDate": "2015-08-22",
+      "birthday": "1982-11-05",
+      "phone": "972-555-0102",
+      "isServant": true,
+      "sobrietyYears": 10
+    },
+    {
+      "id": "mem-003",
+      "name": "Michael R.",
+      "cleanDate": "2018-01-10",
+      "birthday": "1990-04-12",
+      "phone": "214-555-0103",
+      "isServant": true,
+      "sobrietyYears": 7
+    },
+    {
+      "id": "mem-004",
+      "name": "Jennifer K.",
+      "cleanDate": "2012-05-18",
+      "birthday": "1978-09-30",
+      "phone": "469-555-0104",
+      "isServant": false,
+      "sobrietyYears": 13
+    },
+    {
+      "id": "mem-005",
+      "name": "David L.",
+      "cleanDate": "2016-11-03",
+      "birthday": "1985-02-14",
+      "phone": "972-555-0105",
+      "isServant": true,
+      "sobrietyYears": 9
+    },
+    {
+      "id": "mem-006",
+      "name": "Lisa P.",
+      "cleanDate": "2019-07-25",
+      "birthday": "1988-12-08",
+      "phone": "214-555-0106",
+      "isServant": false,
+      "sobrietyYears": 6
+    },
+    {
+      "id": "mem-007",
+      "name": "Robert T.",
+      "cleanDate": "2011-09-12",
+      "birthday": "1972-03-22",
+      "phone": "469-555-0107",
+      "isServant": true,
+      "sobrietyYears": 14
+    },
+    {
+      "id": "mem-008",
+      "name": "Amanda W.",
+      "cleanDate": "2017-04-30",
+      "birthday": "1991-07-18",
+      "phone": "972-555-0108",
+      "isServant": false,
+      "sobrietyYears": 8
+    },
+    {
+      "id": "mem-009",
+      "name": "Christopher B.",
+      "cleanDate": "2020-02-15",
+      "birthday": "1986-10-25",
+      "phone": "214-555-0109",
+      "isServant": true,
+      "sobrietyYears": 5
+    },
+    {
+      "id": "mem-010",
+      "name": "Maria G.",
+      "cleanDate": "2013-06-08",
+      "birthday": "1980-01-30",
+      "phone": "469-555-0110",
+      "isServant": false,
+      "sobrietyYears": 12
+    },
+    {
+      "id": "mem-011",
+      "name": "James H.",
+      "cleanDate": "2014-12-20",
+      "birthday": "1983-08-16",
+      "phone": "972-555-0111",
+      "isServant": true,
+      "sobrietyYears": 11
+    },
+    {
+      "id": "mem-012",
+      "name": "Patricia C.",
+      "cleanDate": "2021-03-05",
+      "birthday": "1992-05-11",
+      "phone": "214-555-0112",
+      "isServant": false,
+      "sobrietyYears": 4
+    },
+    {
+      "id": "mem-013",
+      "name": "Daniel F.",
+      "cleanDate": "2009-10-28",
+      "birthday": "1974-12-03",
+      "phone": "469-555-0113",
+      "isServant": true,
+      "sobrietyYears": 16
+    },
+    {
+      "id": "mem-014",
+      "name": "Elizabeth D.",
+      "cleanDate": "2018-08-14",
+      "birthday": "1989-06-27",
+      "phone": "972-555-0114",
+      "isServant": false,
+      "sobrietyYears": 7
+    },
+    {
+      "id": "mem-015",
+      "name": "Thomas N.",
+      "cleanDate": "2022-01-18",
+      "birthday": "1994-11-09",
+      "phone": "214-555-0115",
+      "isServant": false,
+      "sobrietyYears": 3
+    },
+    {
+      "id": "mem-016",
+      "name": "Barbara A.",
+      "cleanDate": "2010-07-22",
+      "birthday": "1976-04-14",
+      "phone": "469-555-0116",
+      "isServant": true,
+      "sobrietyYears": 15
+    },
+    {
+      "id": "mem-017",
+      "name": "Matthew V.",
+      "cleanDate": "2016-02-09",
+      "birthday": "1987-09-21",
+      "phone": "972-555-0117",
+      "isServant": false,
+      "sobrietyYears": 9
+    },
+    {
+      "id": "mem-018",
+      "name": "Susan J.",
+      "cleanDate": "2019-11-30",
+      "birthday": "1981-01-06",
+      "phone": "214-555-0118",
+      "isServant": true,
+      "sobrietyYears": 6
+    },
+    {
+      "id": "mem-019",
+      "name": "Kevin O.",
+      "cleanDate": "2015-05-16",
+      "birthday": "1984-07-28",
+      "phone": "469-555-0119",
+      "isServant": false,
+      "sobrietyYears": 10
+    },
+    {
+      "id": "mem-020",
+      "name": "Nancy E.",
+      "cleanDate": "2023-04-12",
+      "birthday": "1993-10-17",
+      "phone": "972-555-0120",
+      "isServant": false,
+      "sobrietyYears": 2
+    }
+  ],
+  "events": [
+    {
+      "id": "evt-001",
+      "title": "Monday Night Big Book Study",
+      "description": "Chapter study and discussion",
+      "startTime": "19:00",
+      "endTime": "20:30",
+      "location": "Rowlett Community Center, Room A",
+      "recurrence": "weekly",
+      "dayOfWeek": 1,
+      "active": true,
+      "format": "Discussion",
+      "meetingType": "Big Book Study"
+    },
+    {
+      "id": "evt-002",
+      "title": "Tuesday Morning Recovery",
+      "description": "Morning meditation and step work",
+      "startTime": "07:00",
+      "endTime": "08:00",
+      "location": "Rowlett Community Center, Room B",
+      "recurrence": "weekly",
+      "dayOfWeek": 2,
+      "active": true,
+      "format": "Discussion",
+      "meetingType": "Step Study"
+    },
+    {
+      "id": "evt-003",
+      "title": "Tuesday Evening Discussion",
+      "description": "Open discussion meeting",
+      "startTime": "19:30",
+      "endTime": "21:00",
+      "location": "Rowlett Community Center, Room A",
+      "recurrence": "weekly",
+      "dayOfWeek": 2,
+      "active": true,
+      "format": "Discussion",
+      "meetingType": "Open Discussion"
+    },
+    {
+      "id": "evt-004",
+      "title": "Wednesday Noon Meeting",
+      "description": "Lunch hour recovery",
+      "startTime": "12:00",
+      "endTime": "13:00",
+      "location": "Rowlett Community Center, Room C",
+      "recurrence": "weekly",
+      "dayOfWeek": 3,
+      "active": true,
+      "format": "Speaker",
+      "meetingType": "Speaker/Discussion"
+    },
+    {
+      "id": "evt-005",
+      "title": "Wednesday Night Traditions",
+      "description": "12 Traditions study and application",
+      "startTime": "19:00",
+      "endTime": "20:30",
+      "location": "Rowlett Community Center, Room A",
+      "recurrence": "weekly",
+      "dayOfWeek": 3,
+      "active": true,
+      "format": "Discussion",
+      "meetingType": "Traditions Study"
+    },
+    {
+      "id": "evt-006",
+      "title": "Thursday Morning Meditation",
+      "description": "11th Step meditation practice",
+      "startTime": "06:30",
+      "endTime": "07:30",
+      "location": "Rowlett Community Center, Room B",
+      "recurrence": "weekly",
+      "dayOfWeek": 4,
+      "active": true,
+      "format": "Meditation",
+      "meetingType": "11th Step"
+    },
+    {
+      "id": "evt-007",
+      "title": "Thursday Evening Newcomers",
+      "description": "Newcomer focused meeting",
+      "startTime": "19:30",
+      "endTime": "21:00",
+      "location": "Rowlett Community Center, Room A",
+      "recurrence": "weekly",
+      "dayOfWeek": 4,
+      "active": true,
+      "format": "Discussion",
+      "meetingType": "Newcomer"
+    },
+    {
+      "id": "evt-008",
+      "title": "Friday Night Speaker Meeting",
+      "description": "Weekly speaker shares experience",
+      "startTime": "20:00",
+      "endTime": "21:30",
+      "location": "Rowlett Community Center, Main Hall",
+      "recurrence": "weekly",
+      "dayOfWeek": 5,
+      "active": true,
+      "format": "Speaker",
+      "meetingType": "Speaker"
+    },
+    {
+      "id": "evt-009",
+      "title": "Saturday Morning Step Study",
+      "description": "Working the steps together",
+      "startTime": "09:00",
+      "endTime": "10:30",
+      "location": "Rowlett Community Center, Room A",
+      "recurrence": "weekly",
+      "dayOfWeek": 6,
+      "active": true,
+      "format": "Discussion",
+      "meetingType": "Step Study"
+    },
+    {
+      "id": "evt-010",
+      "title": "Saturday Evening Fellowship",
+      "description": "Potluck and fellowship",
+      "startTime": "18:00",
+      "endTime": "20:00",
+      "location": "Rowlett Community Center, Main Hall",
+      "recurrence": "monthly",
+      "dayOfWeek": 6,
+      "weekOfMonth": "last",
+      "active": true,
+      "format": "Social",
+      "meetingType": "Fellowship Event"
+    },
+    {
+      "id": "evt-011",
+      "title": "Sunday Morning Spiritual Principles",
+      "description": "Exploring spiritual principles in recovery",
+      "startTime": "10:00",
+      "endTime": "11:30",
+      "location": "Rowlett Community Center, Room A",
+      "recurrence": "weekly",
+      "dayOfWeek": 0,
+      "active": true,
+      "format": "Discussion",
+      "meetingType": "Spiritual Principles"
+    },
+    {
+      "id": "evt-012",
+      "title": "Sunday Evening Gratitude Meeting",
+      "description": "Sharing gratitude in recovery",
+      "startTime": "19:00",
+      "endTime": "20:30",
+      "location": "Rowlett Community Center, Room A",
+      "recurrence": "weekly",
+      "dayOfWeek": 0,
+      "active": true,
+      "format": "Discussion",
+      "meetingType": "Gratitude"
+    },
+    {
+      "id": "evt-013",
+      "title": "Monday Afternoon Women's Meeting",
+      "description": "Women's discussion and support",
+      "startTime": "14:00",
+      "endTime": "15:30",
+      "location": "Rowlett Community Center, Room C",
+      "recurrence": "weekly",
+      "dayOfWeek": 1,
+      "active": true,
+      "format": "Discussion",
+      "meetingType": "Women's Meeting"
+    },
+    {
+      "id": "evt-014",
+      "title": "Friday Morning Men's Meeting",
+      "description": "Men's step work and accountability",
+      "startTime": "06:00",
+      "endTime": "07:30",
+      "location": "Rowlett Community Center, Room C",
+      "recurrence": "weekly",
+      "dayOfWeek": 5,
+      "active": true,
+      "format": "Discussion",
+      "meetingType": "Men's Meeting"
+    },
+    {
+      "id": "evt-015",
+      "title": "Monthly Group Conscience",
+      "description": "Group business and decision making",
+      "startTime": "18:30",
+      "endTime": "20:30",
+      "location": "Rowlett Community Center, Main Hall",
+      "recurrence": "monthly",
+      "dayOfWeek": 0,
+      "weekOfMonth": "first",
+      "active": true,
+      "format": "Business",
+      "meetingType": "Group Conscience"
+    }
+  ],
+  "announcements": [
+    {
+      "id": "ann-001",
+      "text": "Group Conscience meeting first Sunday of every month at 6:30 PM",
+      "dateCreated": "2023-10-24T10:00:00.000Z",
+      "active": true,
+      "priority": "high"
+    },
+    {
+      "id": "ann-002",
+      "text": "New literature order has arrived - available at Friday night meeting",
+      "dateCreated": "2025-09-15T14:30:00.000Z",
+      "active": true,
+      "priority": "normal"
+    },
+    {
+      "id": "ann-003",
+      "text": "Service positions open: Greeter and Literature Chair",
+      "dateCreated": "2025-10-01T09:00:00.000Z",
+      "active": true,
+      "priority": "high"
+    },
+    {
+      "id": "ann-004",
+      "text": "Halloween potluck - Saturday October 26th at 6 PM",
+      "dateCreated": "2025-10-10T12:00:00.000Z",
+      "active": true,
+      "priority": "normal"
+    }
+  ],
+  "photos": [],
+  "groupConscienceLog": [
+    {
+      "id": "gc-001",
+      "date": "2023-11-05",
+      "item": "Approve $150 monthly rent increase for community center",
+      "motion": "Motion to approve rent increase from $800 to $950 per month starting January 2024",
+      "outcome": "Approved",
+      "votesFor": 18,
+      "votesAgainst": 2,
+      "abstentions": 0,
+      "status": "implemented",
+      "category": "financial",
+      "madeBy": "John S.",
+      "secondedBy": "Sarah M.",
+      "discussion": "Landlord provided notice of rent increase. Group discussed alternatives but decided current location is ideal for our needs.",
+      "implementationDate": "2024-01-01"
+    },
+    {
+      "id": "gc-002",
+      "date": "2023-12-03",
+      "item": "Purchase new coffee maker and supplies",
+      "motion": "Motion to allocate $200 for commercial coffee maker and initial supplies",
+      "outcome": "Approved",
+      "votesFor": 19,
+      "votesAgainst": 0,
+      "abstentions": 1,
+      "status": "completed",
+      "category": "property",
+      "madeBy": "Robert T.",
+      "secondedBy": "David L.",
+      "discussion": "Old coffee maker broke. Need reliable equipment for daily meetings.",
+      "implementationDate": "2023-12-10"
+    },
+    {
+      "id": "gc-003",
+      "date": "2024-01-07",
+      "item": "Change Wednesday noon meeting from speaker to discussion format",
+      "motion": "Motion to change Wednesday noon meeting format from speaker/discussion to open discussion",
+      "outcome": "Approved",
+      "votesFor": 16,
+      "votesAgainst": 3,
+      "abstentions": 1,
+      "status": "completed",
+      "category": "meeting",
+      "madeBy": "Jennifer K.",
+      "secondedBy": "Michael R.",
+      "discussion": "Members requested more participation opportunity during lunch hour. Speaker format will continue at Friday night meeting.",
+      "implementationDate": "2024-01-17"
+    },
+    {
+      "id": "gc-004",
+      "date": "2024-02-04",
+      "item": "Elect new Treasurer - David L. term expiring",
+      "motion": "Election for Treasurer position using Third Legacy procedure",
+      "outcome": "Approved",
+      "votesFor": 0,
+      "votesAgainst": 0,
+      "abstentions": 0,
+      "status": "completed",
+      "category": "service",
+      "madeBy": "John S.",
+      "secondedBy": "Sarah M.",
+      "discussion": "David L. completed 2-year term. Christopher B. elected as new Treasurer.",
+      "implementationDate": "2024-02-04",
+      "electionResult": {
+        "position": "Treasurer",
+        "winner": "Christopher B.",
+        "method": "Third Legacy",
+        "rounds": 2
+      }
+    },
+    {
+      "id": "gc-005",
+      "date": "2024-03-03",
+      "item": "Approve $500 contribution to District 60",
+      "motion": "Motion to send $500 contribution to District 60 from group funds after expenses",
+      "outcome": "Approved",
+      "votesFor": 18,
+      "votesAgainst": 1,
+      "abstentions": 1,
+      "status": "completed",
+      "category": "financial",
+      "madeBy": "Christopher B.",
+      "secondedBy": "Barbara A.",
+      "discussion": "Group has healthy prudent reserve. Supporting district service structure aligns with 7th Tradition.",
+      "implementationDate": "2024-03-15"
+    },
+    {
+      "id": "gc-006",
+      "date": "2024-04-07",
+      "item": "Purchase literature for newcomer packets",
+      "motion": "Motion to spend $300 on newcomer literature packets (Basic Text, White Booklet, IP pamphlets)",
+      "outcome": "Approved",
+      "votesFor": 20,
+      "votesAgainst": 0,
+      "abstentions": 0,
+      "status": "completed",
+      "category": "literature",
+      "madeBy": "James H.",
+      "secondedBy": "Lisa P.",
+      "discussion": "Newcomer packets have been well received. Will create 30 packets to have available at all meetings.",
+      "implementationDate": "2024-04-15"
+    },
+    {
+      "id": "gc-007",
+      "date": "2024-05-05",
+      "item": "Add Saturday morning step study meeting",
+      "motion": "Motion to start new Saturday 9 AM step study meeting beginning June 1st",
+      "outcome": "Approved",
+      "votesFor": 17,
+      "votesAgainst": 2,
+      "abstentions": 1,
+      "status": "completed",
+      "category": "meeting",
+      "madeBy": "Daniel F.",
+      "secondedBy": "Susan J.",
+      "discussion": "Members requested earlier weekend meeting option. Room is available. Michael R. volunteered to chair.",
+      "implementationDate": "2024-06-01"
+    },
+    {
+      "id": "gc-008",
+      "date": "2024-06-02",
+      "item": "Approve air conditioning repair for meeting space",
+      "motion": "Motion to approve up to $800 for emergency AC repair - split cost with landlord",
+      "outcome": "Approved",
+      "votesFor": 19,
+      "votesAgainst": 0,
+      "abstentions": 1,
+      "status": "completed",
+      "category": "property",
+      "madeBy": "John S.",
+      "secondedBy": "Christopher B.",
+      "discussion": "AC failed during heat wave. Landlord agreed to split repair cost. Group voted to pay $400.",
+      "implementationDate": "2024-06-05"
+    },
+    {
+      "id": "gc-009",
+      "date": "2024-07-07",
+      "item": "Send representatives to Area Convention",
+      "motion": "Motion to fund GSR and Alt GSR registration and hotel for Area 26 Convention ($600 total)",
+      "outcome": "Approved",
+      "votesFor": 16,
+      "votesAgainst": 3,
+      "abstentions": 1,
+      "status": "completed",
+      "category": "service",
+      "madeBy": "Sarah M.",
+      "secondedBy": "Robert T.",
+      "discussion": "Supporting service representatives aligns with group's commitment to NA unity and service.",
+      "implementationDate": "2024-08-20"
+    },
+    {
+      "id": "gc-010",
+      "date": "2024-08-04",
+      "item": "Elect new Secretary - Sarah M. stepping down",
+      "motion": "Election for Secretary position using Simple Vote procedure",
+      "outcome": "Approved",
+      "votesFor": 0,
+      "votesAgainst": 0,
+      "abstentions": 0,
+      "status": "completed",
+      "category": "service",
+      "madeBy": "John S.",
+      "secondedBy": "David L.",
+      "discussion": "Sarah M. relocating for work. Amanda W. elected as new Secretary.",
+      "implementationDate": "2024-08-04",
+      "electionResult": {
+        "position": "Secretary",
+        "winner": "Amanda W.",
+        "method": "Simple Vote",
+        "rounds": 1
+      }
+    },
+    {
+      "id": "gc-011",
+      "date": "2024-09-01",
+      "item": "Table motion regarding meeting format changes",
+      "motion": "Motion to table discussion on Monday night format change until October GC",
+      "outcome": "Tabled",
+      "votesFor": 15,
+      "votesAgainst": 4,
+      "abstentions": 1,
+      "status": "tabled",
+      "category": "meeting",
+      "madeBy": "Jennifer K.",
+      "secondedBy": "Michael R.",
+      "discussion": "Need more time to gather member input on proposed format changes. Will survey group.",
+      "tabledDate": "2024-09-01",
+      "returnDate": "2024-10-06"
+    },
+    {
+      "id": "gc-012",
+      "date": "2024-10-06",
+      "item": "Remove Monday night format change from table - Keep current format",
+      "motion": "Motion to remove from table and maintain current Monday night Big Book study format",
+      "outcome": "Approved",
+      "votesFor": 18,
+      "votesAgainst": 1,
+      "abstentions": 1,
+      "status": "completed",
+      "category": "meeting",
+      "madeBy": "Jennifer K.",
+      "secondedBy": "David L.",
+      "discussion": "Survey results showed 75% prefer current format. Group unity maintained.",
+      "implementationDate": "2024-10-06"
+    },
+    {
+      "id": "gc-013",
+      "date": "2024-10-06",
+      "item": "Purchase new meeting literature display rack",
+      "motion": "Motion to spend $250 on professional literature display rack",
+      "outcome": "Approved",
+      "votesFor": 17,
+      "votesAgainst": 2,
+      "abstentions": 1,
+      "status": "in-progress",
+      "category": "property",
+      "madeBy": "James H.",
+      "secondedBy": "Barbara A.",
+      "discussion": "Current display is falling apart. Professional rack will make literature more accessible and attractive.",
+      "implementationDate": "2024-10-20"
+    },
+    {
+      "id": "gc-014",
+      "date": "2024-11-03",
+      "item": "Approve year-end contribution to NAWS",
+      "motion": "Motion to send $1,000 year-end contribution to NA World Services",
+      "outcome": "Approved",
+      "votesFor": 19,
+      "votesAgainst": 0,
+      "abstentions": 1,
+      "status": "completed",
+      "category": "financial",
+      "madeBy": "Christopher B.",
+      "secondedBy": "John S.",
+      "discussion": "Group exceeded financial goals this year. Prudent reserve fully funded. Supporting world services.",
+      "implementationDate": "2024-11-15"
+    },
+    {
+      "id": "gc-015",
+      "date": "2024-12-01",
+      "item": "Holiday meeting schedule adjustments",
+      "motion": "Motion to cancel morning meetings December 24-25 and December 31-January 1, maintain evening meetings",
+      "outcome": "Approved",
+      "votesFor": 18,
+      "votesAgainst": 1,
+      "abstentions": 1,
+      "status": "completed",
+      "category": "meeting",
+      "madeBy": "Amanda W.",
+      "secondedBy": "Susan J.",
+      "discussion": "Evening meetings are well-attended during holidays. Morning meetings have very low attendance.",
+      "implementationDate": "2024-12-24"
+    },
+    {
+      "id": "gc-016",
+      "date": "2025-01-05",
+      "item": "Elect new Chairperson - John S. term expiring",
+      "motion": "Election for Chairperson position using Third Legacy procedure",
+      "outcome": "Approved",
+      "votesFor": 0,
+      "votesAgainst": 0,
+      "abstentions": 0,
+      "status": "completed",
+      "category": "service",
+      "madeBy": "Sarah M.",
+      "secondedBy": "Christopher B.",
+      "discussion": "John S. completed 2-year term with excellence. Robert T. elected as new Chairperson.",
+      "implementationDate": "2025-01-05",
+      "electionResult": {
+        "position": "Chairperson",
+        "winner": "Robert T.",
+        "method": "Third Legacy",
+        "rounds": 3
+      }
+    },
+    {
+      "id": "gc-017",
+      "date": "2025-02-02",
+      "item": "Approve facility security deposit increase",
+      "motion": "Motion to pay additional $500 security deposit to facility per new lease terms",
+      "outcome": "Approved",
+      "votesFor": 17,
+      "votesAgainst": 2,
+      "abstentions": 1,
+      "status": "completed",
+      "category": "financial",
+      "madeBy": "Christopher B.",
+      "secondedBy": "Robert T.",
+      "discussion": "Facility updated lease requirements. Deposit remains refundable. Group has funds available.",
+      "implementationDate": "2025-02-15"
+    },
+    {
+      "id": "gc-018",
+      "date": "2025-03-02",
+      "item": "Create newcomer greeter position",
+      "motion": "Motion to create paid greeter position ($50/month) for Friday night meeting",
+      "outcome": "Defeated",
+      "votesFor": 8,
+      "votesAgainst": 11,
+      "abstentions": 1,
+      "status": "completed",
+      "category": "service",
+      "madeBy": "Lisa P.",
+      "secondedBy": "Kevin O.",
+      "discussion": "Group discussed but decided against paid position. Will continue voluntary greeting.",
+      "implementationDate": "2025-03-02"
+    },
+    {
+      "id": "gc-019",
+      "date": "2025-04-06",
+      "item": "Purchase tablets for literature inventory tracking",
+      "motion": "Motion to purchase 2 tablets ($400 total) for digital literature inventory management",
+      "outcome": "Approved",
+      "votesFor": 15,
+      "votesAgainst": 4,
+      "abstentions": 1,
+      "status": "in-progress",
+      "category": "property",
+      "madeBy": "James H.",
+      "secondedBy": "Michael R.",
+      "discussion": "Will improve inventory accuracy and ordering efficiency. Some members prefer paper system.",
+      "implementationDate": "2025-04-20"
+    },
+    {
+      "id": "gc-020",
+      "date": "2025-05-04",
+      "item": "Reconsider paid greeter position from March GC",
+      "motion": "Motion to reconsider March decision and create volunteer greeter rotation instead",
+      "outcome": "Approved",
+      "votesFor": 18,
+      "votesAgainst": 1,
+      "abstentions": 1,
+      "status": "completed",
+      "category": "service",
+      "madeBy": "Lisa P.",
+      "secondedBy": "Daniel F.",
+      "discussion": "Compromise reached. Created formal greeter rotation schedule without payment.",
+      "implementationDate": "2025-05-11"
+    },
+    {
+      "id": "gc-021",
+      "date": "2025-06-01",
+      "item": "Approve group picnic expenses",
+      "motion": "Motion to allocate $300 for annual group picnic in July",
+      "outcome": "Approved",
+      "votesFor": 19,
+      "votesAgainst": 0,
+      "abstentions": 1,
+      "status": "in-progress",
+      "category": "fellowship",
+      "madeBy": "Jennifer K.",
+      "secondedBy": "Amanda W.",
+      "discussion": "Annual tradition. Will cover park rental, paper goods, and some food. Members bring dishes.",
+      "implementationDate": "2025-07-20"
+    },
+    {
+      "id": "gc-022",
+      "date": "2025-07-06",
+      "item": "Elect new GSR - Barbara A. term expiring",
+      "motion": "Election for GSR position using Consensus procedure",
+      "outcome": "Approved",
+      "votesFor": 0,
+      "votesAgainst": 0,
+      "abstentions": 0,
+      "status": "completed",
+      "category": "service",
+      "madeBy": "Robert T.",
+      "secondedBy": "Christopher B.",
+      "discussion": "Barbara A. served excellently for 2 years. James H. selected by consensus as new GSR.",
+      "implementationDate": "2025-07-06",
+      "electionResult": {
+        "position": "GSR",
+        "winner": "James H.",
+        "method": "Consensus",
+        "rounds": 1
+      }
+    },
+    {
+      "id": "gc-023",
+      "date": "2025-08-03",
+      "item": "Purchase new sound system for main hall",
+      "motion": "Motion to purchase sound system upgrade for Friday night meetings ($800)",
+      "outcome": "Approved",
+      "votesFor": 16,
+      "votesAgainst": 3,
+      "abstentions": 1,
+      "status": "pending",
+      "category": "property",
+      "madeBy": "Michael R.",
+      "secondedBy": "Daniel F.",
+      "discussion": "Current system has poor audio quality. Friday nights have 60+ attendees. Better sound needed.",
+      "implementationDate": "2025-08-20"
+    },
+    {
+      "id": "gc-024",
+      "date": "2025-09-07",
+      "item": "Approve literature order for fall season",
+      "motion": "Motion to spend $600 on literature order: Basic Texts, White Booklets, Just For Today, IPs",
+      "outcome": "Approved",
+      "votesFor": 19,
+      "votesAgainst": 0,
+      "abstentions": 1,
+      "status": "completed",
+      "category": "literature",
+      "madeBy": "James H.",
+      "secondedBy": "Susan J.",
+      "discussion": "Inventory low on key items. Fall typically sees increased meeting attendance.",
+      "implementationDate": "2025-09-15"
+    }
+  ],
+  "chairpersonLog": [],
+  "liveGCItems": [],
+  "proposedAgendaItems": [
+    {
+      "id": "prop-001",
+      "title": "Update group phone number on Area website",
+      "proposedBy": "Amanda W.",
+      "dateProposed": "2025-10-15",
+      "description": "Our current group hotline number listed on Area website is disconnected. Need to update to new number.",
+      "priority": "high",
+      "consent": false,
+      "status": "pending"
+    },
+    {
+      "id": "prop-002",
+      "title": "Consider adding hybrid meeting option for homebound members",
+      "proposedBy": "Kevin O.",
+      "dateProposed": "2025-10-18",
+      "description": "Several long-time members unable to attend due to health issues. Requesting group consider zoom option for one meeting.",
+      "priority": "medium",
+      "consent": false,
+      "status": "pending"
+    }
+  ],
+  "gcComments": [],
+  "gcActionItems": [
+    {
+      "id": "action-001",
+      "description": "Research literature display rack options and prices",
+      "assignedTo": "James H.",
+      "dueDate": "2024-10-15",
+      "status": "completed",
+      "relatedDecision": "gc-013"
+    },
+    {
+      "id": "action-002",
+      "description": "Order and setup new literature display rack",
+      "assignedTo": "James H.",
+      "dueDate": "2024-10-25",
+      "status": "in-progress",
+      "relatedDecision": "gc-013"
+    },
+    {
+      "id": "action-003",
+      "description": "Research tablet options for inventory management",
+      "assignedTo": "Michael R.",
+      "dueDate": "2025-04-15",
+      "status": "completed",
+      "relatedDecision": "gc-019"
+    },
+    {
+      "id": "action-004",
+      "description": "Setup tablets and train literature chair",
+      "assignedTo": "Michael R.",
+      "dueDate": "2025-04-30",
+      "status": "in-progress",
+      "relatedDecision": "gc-019"
+    },
+    {
+      "id": "action-005",
+      "description": "Reserve park pavilion for July picnic",
+      "assignedTo": "Jennifer K.",
+      "dueDate": "2025-06-15",
+      "status": "in-progress",
+      "relatedDecision": "gc-021"
+    },
+    {
+      "id": "action-006",
+      "description": "Research sound system options and get quotes",
+      "assignedTo": "Daniel F.",
+      "dueDate": "2025-08-15",
+      "status": "pending",
+      "relatedDecision": "gc-023"
+    }
+  ],
+  "gcSettings": {
+    "quorumPercentage": 30,
+    "enableLiveVoting": true,
+    "requireMotionSecond": true,
+    "allowAmendments": true,
+    "minutesFormat": "detailed"
+  },
+  "messages": [],
+  "servicePositions": [
+    {
+      "id": "pos-001",
+      "name": "Chairperson",
+      "description": "Facilitates group conscience meetings and represents group leadership",
+      "currentHolder": "Robert T.",
+      "startDate": "2025-01-05",
+      "termLength": "24 Months",
+      "responsibilities": [
+        "Facilitate monthly GC meetings",
+        "Maintain group unity and focus",
+        "Coordinate with other service positions",
+        "Lead by example in applying traditions"
+      ],
+      "qualifications": "2+ years clean time, prior service experience preferred"
+    },
+    {
+      "id": "pos-002",
+      "name": "Secretary",
+      "description": "Takes minutes, maintains records, handles group correspondence",
+      "currentHolder": "Amanda W.",
+      "startDate": "2024-08-04",
+      "termLength": "24 Months",
+      "responsibilities": [
+        "Take detailed meeting minutes",
+        "Maintain group records and archives",
+        "Handle group correspondence",
+        "Track action items and follow-ups"
+      ],
+      "qualifications": "1+ year clean time, organizational skills"
+    },
+    {
+      "id": "pos-003",
+      "name": "Treasurer",
+      "description": "Manages group funds, pays bills, provides financial reports",
+      "currentHolder": "Christopher B.",
+      "startDate": "2024-02-04",
+      "termLength": "24 Months",
+      "responsibilities": [
+        "Manage group bank account",
+        "Pay rent and expenses on time",
+        "Provide monthly treasurer reports",
+        "Maintain prudent reserve",
+        "File any required tax documents"
+      ],
+      "qualifications": "2+ years clean time, financial management experience helpful"
+    },
+    {
+      "id": "pos-004",
+      "name": "GSR (General Service Representative)",
+      "description": "Represents group at District and Area service meetings",
+      "currentHolder": "James H.",
+      "startDate": "2025-07-06",
+      "termLength": "24 Months",
+      "responsibilities": [
+        "Attend monthly District meetings",
+        "Attend quarterly Area assemblies",
+        "Report back to group on service matters",
+        "Carry group conscience to service structure",
+        "Coordinate with Alt GSR"
+      ],
+      "qualifications": "2+ years clean time, service experience, reliable transportation"
+    },
+    {
+      "id": "pos-005",
+      "name": "Alternate GSR",
+      "description": "Supports GSR and attends service meetings when GSR unavailable",
+      "currentHolder": "Susan J.",
+      "startDate": "2024-07-06",
+      "termLength": "24 Months",
+      "responsibilities": [
+        "Attend District meetings with GSR",
+        "Fill in when GSR unavailable",
+        "Learn service structure",
+        "Support GSR in reporting duties"
+      ],
+      "qualifications": "1+ year clean time, willingness to learn service"
+    },
+    {
+      "id": "pos-006",
+      "name": "Literature Chair",
+      "description": "Manages literature inventory, orders supplies, handles sales",
+      "currentHolder": "James H.",
+      "startDate": "2023-11-05",
+      "termLength": "24 Months",
+      "responsibilities": [
+        "Maintain literature inventory",
+        "Order new literature as needed",
+        "Be available at meetings for sales",
+        "Track inventory and sales",
+        "Provide monthly reports"
+      ],
+      "qualifications": "6+ months clean time, organizational skills"
+    },
+    {
+      "id": "pos-007",
+      "name": "Greeter Coordinator",
+      "description": "Organizes volunteer greeter rotation for meetings",
+      "currentHolder": "Lisa P.",
+      "startDate": "2025-05-11",
+      "termLength": "12 Months",
+      "responsibilities": [
+        "Recruit greeter volunteers",
+        "Maintain greeter schedule",
+        "Ensure greeters show up",
+        "Provide newcomer orientation materials"
+      ],
+      "qualifications": "6+ months clean time, friendly and welcoming"
+    },
+    {
+      "id": "pos-008",
+      "name": "Coffee Maker",
+      "description": "Prepares coffee and maintains coffee supplies",
+      "currentHolder": "Thomas N.",
+      "startDate": "2024-06-01",
+      "termLength": "6 Months",
+      "responsibilities": [
+        "Arrive early to prepare coffee",
+        "Maintain coffee supplies",
+        "Clean coffee equipment",
+        "Order supplies as needed"
+      ],
+      "qualifications": "Any clean time, reliable and punctual"
+    }
+  ],
+  "nominations": [],
+  "budgetCategories": [
+    {
+      "id": "cat-001",
+      "name": "Rent",
+      "monthlyBudget": 950,
+      "type": "fixed",
+      "description": "Monthly facility rent"
+    },
+    {
+      "id": "cat-002",
+      "name": "Literature",
+      "monthlyBudget": 200,
+      "type": "variable",
+      "description": "Literature purchases and inventory"
+    },
+    {
+      "id": "cat-003",
+      "name": "Coffee & Supplies",
+      "monthlyBudget": 150,
+      "type": "variable",
+      "description": "Coffee, tea, cups, sugar, creamer"
+    },
+    {
+      "id": "cat-004",
+      "name": "Service Contributions",
+      "monthlyBudget": 300,
+      "type": "variable",
+      "description": "GSO, Area, District contributions"
+    },
+    {
+      "id": "cat-005",
+      "name": "Utilities",
+      "monthlyBudget": 100,
+      "type": "fixed",
+      "description": "Portion of utilities per lease"
+    },
+    {
+      "id": "cat-006",
+      "name": "Maintenance",
+      "monthlyBudget": 75,
+      "type": "variable",
+      "description": "Repairs and equipment maintenance"
+    },
+    {
+      "id": "cat-007",
+      "name": "Chips & Keytags",
+      "monthlyBudget": 50,
+      "type": "variable",
+      "description": "Recovery chips and keytags"
+    }
+  ],
+  "expenses": [
+    {
+      "id": "exp-001",
+      "date": "2023-11-01",
+      "description": "Rent - November 2023",
+      "amount": 800,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "David L."
+    },
+    {
+      "id": "exp-002",
+      "date": "2023-11-05",
+      "description": "Literature order - Basic Texts and IPs",
+      "amount": 285.50,
+      "category": "Literature",
+      "paymentMethod": "Credit Card",
+      "paidBy": "David L."
+    },
+    {
+      "id": "exp-003",
+      "date": "2023-11-12",
+      "description": "Coffee supplies - bulk order",
+      "amount": 127.80,
+      "category": "Coffee & Supplies",
+      "paymentMethod": "Cash",
+      "paidBy": "David L."
+    },
+    {
+      "id": "exp-004",
+      "date": "2023-11-20",
+      "description": "District 60 contribution",
+      "amount": 250,
+      "category": "Service Contributions",
+      "paymentMethod": "Check",
+      "paidBy": "David L."
+    },
+    {
+      "id": "exp-005",
+      "date": "2023-12-01",
+      "description": "Rent - December 2023",
+      "amount": 800,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "David L."
+    },
+    {
+      "id": "exp-006",
+      "date": "2023-12-10",
+      "description": "Commercial coffee maker",
+      "amount": 189.99,
+      "category": "Maintenance",
+      "paymentMethod": "Credit Card",
+      "paidBy": "David L."
+    },
+    {
+      "id": "exp-007",
+      "date": "2023-12-15",
+      "description": "Recovery chips - 30/60/90 day",
+      "amount": 45.25,
+      "category": "Chips & Keytags",
+      "paymentMethod": "Cash",
+      "paidBy": "David L."
+    },
+    {
+      "id": "exp-008",
+      "date": "2023-12-20",
+      "description": "Utilities - December",
+      "amount": 95.40,
+      "category": "Utilities",
+      "paymentMethod": "Check",
+      "paidBy": "David L."
+    },
+    {
+      "id": "exp-009",
+      "date": "2024-01-01",
+      "description": "Rent - January 2024 (new rate)",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-010",
+      "date": "2024-01-08",
+      "description": "Coffee supplies restock",
+      "amount": 98.50,
+      "category": "Coffee & Supplies",
+      "paymentMethod": "Cash",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-011",
+      "date": "2024-01-15",
+      "description": "Literature - White Booklets",
+      "amount": 67.80,
+      "category": "Literature",
+      "paymentMethod": "Credit Card",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-012",
+      "date": "2024-02-01",
+      "description": "Rent - February 2024",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-013",
+      "date": "2024-02-10",
+      "description": "Utilities - February",
+      "amount": 102.35,
+      "category": "Utilities",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-014",
+      "date": "2024-03-01",
+      "description": "Rent - March 2024",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-015",
+      "date": "2024-03-15",
+      "description": "Contribution to District 60",
+      "amount": 500,
+      "category": "Service Contributions",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-016",
+      "date": "2024-03-20",
+      "description": "Coffee supplies",
+      "amount": 115.30,
+      "category": "Coffee & Supplies",
+      "paymentMethod": "Cash",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-017",
+      "date": "2024-04-01",
+      "description": "Rent - April 2024",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-018",
+      "date": "2024-04-15",
+      "description": "Newcomer literature packets",
+      "amount": 287.40,
+      "category": "Literature",
+      "paymentMethod": "Credit Card",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-019",
+      "date": "2024-05-01",
+      "description": "Rent - May 2024",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-020",
+      "date": "2024-05-05",
+      "description": "Recovery chips restock",
+      "amount": 52.80,
+      "category": "Chips & Keytags",
+      "paymentMethod": "Cash",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-021",
+      "date": "2024-06-01",
+      "description": "Rent - June 2024",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-022",
+      "date": "2024-06-05",
+      "description": "Air conditioning repair (group share)",
+      "amount": 400,
+      "category": "Maintenance",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-023",
+      "date": "2024-06-15",
+      "description": "Coffee supplies - summer stock",
+      "amount": 143.25,
+      "category": "Coffee & Supplies",
+      "paymentMethod": "Cash",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-024",
+      "date": "2024-07-01",
+      "description": "Rent - July 2024",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-025",
+      "date": "2024-07-10",
+      "description": "Utilities - July",
+      "amount": 118.60,
+      "category": "Utilities",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-026",
+      "date": "2024-08-01",
+      "description": "Rent - August 2024",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-027",
+      "date": "2024-08-20",
+      "description": "Area Convention registration (GSR + Alt GSR)",
+      "amount": 600,
+      "category": "Service Contributions",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-028",
+      "date": "2024-09-01",
+      "description": "Rent - September 2024",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-029",
+      "date": "2024-09-10",
+      "description": "Literature order - fall stock",
+      "amount": 312.50,
+      "category": "Literature",
+      "paymentMethod": "Credit Card",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-030",
+      "date": "2024-10-01",
+      "description": "Rent - October 2024",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-031",
+      "date": "2024-10-20",
+      "description": "Literature display rack",
+      "amount": 237.89,
+      "category": "Maintenance",
+      "paymentMethod": "Credit Card",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-032",
+      "date": "2024-11-01",
+      "description": "Rent - November 2024",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-033",
+      "date": "2024-11-15",
+      "description": "Year-end contribution to NAWS",
+      "amount": 1000,
+      "category": "Service Contributions",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-034",
+      "date": "2024-12-01",
+      "description": "Rent - December 2024",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-035",
+      "date": "2024-12-10",
+      "description": "Coffee supplies - holiday season",
+      "amount": 156.70,
+      "category": "Coffee & Supplies",
+      "paymentMethod": "Cash",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-036",
+      "date": "2025-01-01",
+      "description": "Rent - January 2025",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-037",
+      "date": "2025-01-15",
+      "description": "Recovery chips - bulk order",
+      "amount": 89.50,
+      "category": "Chips & Keytags",
+      "paymentMethod": "Cash",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-038",
+      "date": "2025-02-01",
+      "description": "Rent - February 2025",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-039",
+      "date": "2025-02-15",
+      "description": "Additional security deposit",
+      "amount": 500,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-040",
+      "date": "2025-03-01",
+      "description": "Rent - March 2025",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-041",
+      "date": "2025-03-10",
+      "description": "Utilities - March",
+      "amount": 97.25,
+      "category": "Utilities",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-042",
+      "date": "2025-04-01",
+      "description": "Rent - April 2025",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-043",
+      "date": "2025-04-20",
+      "description": "Two tablets for inventory management",
+      "amount": 389.98,
+      "category": "Maintenance",
+      "paymentMethod": "Credit Card",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-044",
+      "date": "2025-05-01",
+      "description": "Rent - May 2025",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-045",
+      "date": "2025-05-15",
+      "description": "Literature order - spring stock",
+      "amount": 245.60,
+      "category": "Literature",
+      "paymentMethod": "Credit Card",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-046",
+      "date": "2025-06-01",
+      "description": "Rent - June 2025",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-047",
+      "date": "2025-07-01",
+      "description": "Rent - July 2025",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-048",
+      "date": "2025-07-10",
+      "description": "Coffee supplies - summer restock",
+      "amount": 134.80,
+      "category": "Coffee & Supplies",
+      "paymentMethod": "Cash",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-049",
+      "date": "2025-08-01",
+      "description": "Rent - August 2025",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-050",
+      "date": "2025-09-01",
+      "description": "Rent - September 2025",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-051",
+      "date": "2025-09-15",
+      "description": "Fall literature order",
+      "amount": 578.30,
+      "category": "Literature",
+      "paymentMethod": "Credit Card",
+      "paidBy": "Christopher B."
+    },
+    {
+      "id": "exp-052",
+      "date": "2025-10-01",
+      "description": "Rent - October 2025",
+      "amount": 950,
+      "category": "Rent",
+      "paymentMethod": "Check",
+      "paidBy": "Christopher B."
+    }
+  ],
+  "templates": [],
+  "votingSettings": {
+    "defaultMethod": "Simple Majority",
+    "substantialUnanimityThreshold": 67,
+    "enableMinorityOpinion": true
+  },
+  "literatureInventory": [
+    {
+      "id": "lit-001",
+      "title": "Basic Text (6th Edition)",
+      "itemNumber": "1101",
+      "category": "Basic Literature",
+      "quantity": 15,
+      "costPerUnit": 11.50,
+      "sellPrice": 12.00,
+      "reorderLevel": 5
+    },
+    {
+      "id": "lit-002",
+      "title": "It Works: How and Why",
+      "itemNumber": "1143",
+      "category": "Basic Literature",
+      "quantity": 8,
+      "costPerUnit": 10.75,
+      "sellPrice": 11.50,
+      "reorderLevel": 3
+    },
+    {
+      "id": "lit-003",
+      "title": "Just For Today - Daily Meditation",
+      "itemNumber": "1114",
+      "category": "Daily Readers",
+      "quantity": 12,
+      "costPerUnit": 12.00,
+      "sellPrice": 13.00,
+      "reorderLevel": 5
+    },
+    {
+      "id": "lit-004",
+      "title": "White Booklet (Narcotics Anonymous)",
+      "itemNumber": "1101",
+      "category": "Introductory",
+      "quantity": 45,
+      "costPerUnit": 0.55,
+      "sellPrice": 1.00,
+      "reorderLevel": 20
+    },
+    {
+      "id": "lit-005",
+      "title": "IP #1: Who, What, How, and Why",
+      "itemNumber": "3101",
+      "category": "Info Pamphlets",
+      "quantity": 35,
+      "costPerUnit": 0.35,
+      "sellPrice": 0.50,
+      "reorderLevel": 15
+    },
+    {
+      "id": "lit-006",
+      "title": "IP #7: Am I an Addict?",
+      "itemNumber": "3107",
+      "category": "Info Pamphlets",
+      "quantity": 28,
+      "costPerUnit": 0.35,
+      "sellPrice": 0.50,
+      "reorderLevel": 15
+    },
+    {
+      "id": "lit-007",
+      "title": "IP #16: For the Newcomer",
+      "itemNumber": "3116",
+      "category": "Info Pamphlets",
+      "quantity": 42,
+      "costPerUnit": 0.35,
+      "sellPrice": 0.50,
+      "reorderLevel": 20
+    },
+    {
+      "id": "lit-008",
+      "title": "IP #22: Welcome to NA",
+      "itemNumber": "3122",
+      "category": "Info Pamphlets",
+      "quantity": 38,
+      "costPerUnit": 0.35,
+      "sellPrice": 0.50,
+      "reorderLevel": 20
+    },
+    {
+      "id": "lit-009",
+      "title": "Sponsorship (Booklet)",
+      "itemNumber": "1132",
+      "category": "Recovery Topics",
+      "quantity": 6,
+      "costPerUnit": 3.90,
+      "sellPrice": 4.50,
+      "reorderLevel": 3
+    },
+    {
+      "id": "lit-010",
+      "title": "Living Clean: The Journey Continues",
+      "itemNumber": "1150",
+      "category": "Basic Literature",
+      "quantity": 5,
+      "costPerUnit": 11.50,
+      "sellPrice": 12.50,
+      "reorderLevel": 2
+    }
+  ],
+  "literatureLoans": [],
+  "serviceElections": [
+    {
+      "id": "elec-001",
+      "position": "Treasurer",
+      "date": "2024-02-04",
+      "method": "Third Legacy",
+      "candidates": ["Christopher B.", "Michael R.", "David L."],
+      "winner": "Christopher B.",
+      "totalRounds": 2,
+      "notes": "David L. declining renomination after excellent service. Christopher elected on 2nd ballot."
+    },
+    {
+      "id": "elec-002",
+      "position": "Secretary",
+      "date": "2024-08-04",
+      "method": "Simple Vote",
+      "candidates": ["Amanda W.", "Jennifer K."],
+      "winner": "Amanda W.",
+      "totalRounds": 1,
+      "notes": "Sarah M. relocating. Amanda won with 13 votes to 7."
+    },
+    {
+      "id": "elec-003",
+      "position": "Chairperson",
+      "date": "2025-01-05",
+      "method": "Third Legacy",
+      "candidates": ["Robert T.", "Daniel F.", "John S.", "Barbara A."],
+      "winner": "Robert T.",
+      "totalRounds": 3,
+      "notes": "Competitive election. John S. stepping down. Robert elected after 3 ballots."
+    },
+    {
+      "id": "elec-004",
+      "position": "GSR",
+      "date": "2025-07-06",
+      "method": "Consensus",
+      "candidates": ["James H."],
+      "winner": "James H.",
+      "totalRounds": 1,
+      "notes": "Group reached consensus. James has strong service background and availability."
+    }
+  ],
+  "electionBallots": [],
+  "speakingQueue": [],
+  "motionTemplates": [
+    {
+      "id": "template-001",
+      "title": "Standard Rent Payment Authorization",
+      "motionText": "Motion to authorize Treasurer to pay monthly rent of $[AMOUNT] for [MONTH] [YEAR]",
+      "category": "financial",
+      "requiresSecond": true
+    },
+    {
+      "id": "template-002",
+      "title": "Service Position Election",
+      "motionText": "Motion to conduct election for [POSITION] position using [METHOD] procedure",
+      "category": "service",
+      "requiresSecond": true
+    },
+    {
+      "id": "template-003",
+      "title": "Literature Order Authorization",
+      "motionText": "Motion to authorize Literature Chair to order literature not to exceed $[AMOUNT]",
+      "category": "literature",
+      "requiresSecond": true
+    }
+  ],
+  "traditionChecks": [
+    {
+      "id": "trad-001",
+      "decisionId": "gc-018",
+      "checker": "Robert T.",
+      "date": "2025-03-02",
+      "traditions": [7, 9],
+      "concerns": "Paid position may violate 7th Tradition principle of self-support. Could create professionalism concern from 9th Tradition.",
+      "resolved": true,
+      "resolution": "Motion defeated. Group chose volunteer rotation instead."
+    }
+  ],
+  "budgetProposals": [],
+  "districtMotions": [
+    {
+      "id": "dist-001",
+      "title": "Support Area Convention 2024",
+      "description": "District requesting groups contribute to Area Convention fund",
+      "dateReceived": "2024-06-15",
+      "district": "District 60",
+      "groupAction": "approved",
+      "groupVote": {
+        "for": 16,
+        "against": 3,
+        "abstain": 1
+      },
+      "groupResponse": "Rowlett Group approves funding GSR and Alt GSR attendance at Area Convention"
+    },
+    {
+      "id": "dist-002",
+      "title": "Update District Meeting Location",
+      "description": "District moving meeting location to new facility in Garland",
+      "dateReceived": "2025-05-20",
+      "district": "District 60",
+      "groupAction": "noted",
+      "groupVote": null,
+      "groupResponse": "Information shared with group. GSR will attend at new location."
+    }
+  ],
+  "groupPositions": [],
+  "quorumRules": {
+    "gcMeetings": "30% of average monthly attendance",
+    "specialMeetings": "40% of average monthly attendance",
+    "calculationPeriod": "Last 6 months"
+  },
+  "meetingMinutes": [],
+  "inventorySchedules": [
+    {
+      "id": "inv-001",
+      "itemType": "literature",
+      "frequency": "weekly",
+      "assignedTo": "James H.",
+      "lastCompleted": "2025-10-20",
+      "nextDue": "2025-10-27"
+    },
+    {
+      "id": "inv-002",
+      "itemType": "coffee-supplies",
+      "frequency": "weekly",
+      "assignedTo": "Thomas N.",
+      "lastCompleted": "2025-10-21",
+      "nextDue": "2025-10-28"
+    },
+    {
+      "id": "inv-003",
+      "itemType": "recovery-chips",
+      "frequency": "monthly",
+      "assignedTo": "James H.",
+      "lastCompleted": "2025-10-01",
+      "nextDue": "2025-11-01"
+    }
+  ],
+  "decisionImpacts": [
+    {
+      "id": "impact-001",
+      "decisionId": "gc-001",
+      "impactType": "financial",
+      "description": "Monthly expenses increased by $150",
+      "actualCost": 150,
+      "projectedCost": 150,
+      "dateAssessed": "2024-02-01"
+    },
+    {
+      "id": "impact-002",
+      "decisionId": "gc-007",
+      "impactType": "attendance",
+      "description": "Saturday morning meeting averaging 18 attendees",
+      "actualCost": 0,
+      "projectedCost": 0,
+      "dateAssessed": "2024-08-01",
+      "notes": "Successful new meeting. Consistent attendance."
+    },
+    {
+      "id": "impact-003",
+      "decisionId": "gc-014",
+      "impactType": "financial",
+      "description": "$1000 contribution to NAWS sent as planned",
+      "actualCost": 1000,
+      "projectedCost": 1000,
+      "dateAssessed": "2024-11-15"
+    }
+  ],
+  "participationData": [
+    {
+      "month": "2023-11",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 28,
+      "votingMembers": 20
+    },
+    {
+      "month": "2023-12",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 26,
+      "votingMembers": 20
+    },
+    {
+      "month": "2024-01",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 30,
+      "votingMembers": 20
+    },
+    {
+      "month": "2024-02",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 29,
+      "votingMembers": 20
+    },
+    {
+      "month": "2024-03",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 31,
+      "votingMembers": 20
+    },
+    {
+      "month": "2024-04",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 32,
+      "votingMembers": 20
+    },
+    {
+      "month": "2024-05",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 33,
+      "votingMembers": 20
+    },
+    {
+      "month": "2024-06",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 35,
+      "votingMembers": 20
+    },
+    {
+      "month": "2024-07",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 34,
+      "votingMembers": 20
+    },
+    {
+      "month": "2024-08",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 36,
+      "votingMembers": 20
+    },
+    {
+      "month": "2024-09",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 38,
+      "votingMembers": 20
+    },
+    {
+      "month": "2024-10",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 37,
+      "votingMembers": 20
+    },
+    {
+      "month": "2024-11",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 35,
+      "votingMembers": 20
+    },
+    {
+      "month": "2024-12",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 33,
+      "votingMembers": 20
+    },
+    {
+      "month": "2025-01",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 32,
+      "votingMembers": 20
+    },
+    {
+      "month": "2025-02",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 34,
+      "votingMembers": 20
+    },
+    {
+      "month": "2025-03",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 36,
+      "votingMembers": 20
+    },
+    {
+      "month": "2025-04",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 37,
+      "votingMembers": 20
+    },
+    {
+      "month": "2025-05",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 39,
+      "votingMembers": 20
+    },
+    {
+      "month": "2025-06",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 38,
+      "votingMembers": 20
+    },
+    {
+      "month": "2025-07",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 40,
+      "votingMembers": 20
+    },
+    {
+      "month": "2025-08",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 41,
+      "votingMembers": 20
+    },
+    {
+      "month": "2025-09",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 42,
+      "votingMembers": 20
+    },
+    {
+      "month": "2025-10",
+      "gcAttendance": 20,
+      "avgMeetingAttendance": 43,
+      "votingMembers": 20
+    }
+  ],
+  "userRole": {
+    "role": "member",
+    "permissions": ["view", "vote"]
+  },
+  "educationalProgress": [],
+  "privacySettings": {
+    "anonymousVoting": false,
+    "publicFinancials": true,
+    "memberDirectoryAccess": "members-only"
+  },
+  "accessLevels": {},
+  "traditionOfDay": null,
+  "spiritualPrinciples": [],
+  "unityChecks": [],
+  "minorityOpinions": [
+    {
+      "id": "min-001",
+      "decisionId": "gc-018",
+      "submittedBy": "Lisa P.",
+      "date": "2025-03-02",
+      "opinion": "While I understand the group conscience, I believe having a dedicated paid greeter would significantly improve newcomer experience and retention. The $50/month cost is minimal compared to potential benefit of welcoming newcomers effectively.",
+      "acknowledged": true,
+      "groupResponse": "Minority opinion recorded and appreciated. Group chose volunteer approach but will monitor newcomer feedback."
+    }
+  ],
+  "serviceStructure": {
+    "district": "District 60",
+    "area": "North Texas Area 26",
+    "region": "Southern California Region"
+  },
+  "standingAgendaItems": [
+    {
+      "id": "standing-001",
+      "title": "Treasurer Report",
+      "description": "Monthly financial report including income, expenses, and prudent reserve status",
+      "frequency": "monthly",
+      "assignee": "Christopher B.",
+      "estimatedDuration": 10,
+      "consent": "no",
+      "active": true
+    },
+    {
+      "id": "standing-002",
+      "title": "GSR Report",
+      "description": "Report on District and Area service activities and motions",
+      "frequency": "monthly",
+      "assignee": "James H.",
+      "estimatedDuration": 8,
+      "consent": "no",
+      "active": true
+    },
+    {
+      "id": "standing-003",
+      "title": "Literature Inventory Report",
+      "description": "Current inventory levels and sales update",
+      "frequency": "monthly",
+      "assignee": "James H.",
+      "estimatedDuration": 5,
+      "consent": "yes",
+      "active": true
+    },
+    {
+      "id": "standing-004",
+      "title": "Rent Payment Authorization",
+      "description": "Monthly authorization for treasurer to pay facility rent",
+      "frequency": "monthly",
+      "assignee": "Christopher B.",
+      "estimatedDuration": 2,
+      "consent": "yes",
+      "active": true
+    }
+  ],
+  "tabledMotions": [
+    {
+      "id": "tabled-001",
+      "originalDecisionId": "gc-011",
+      "title": "Monday night format change discussion",
+      "tabledDate": "2024-09-01",
+      "returnDate": "2024-10-06",
+      "reason": "insufficient-information",
+      "assignedResearch": "Jennifer K.",
+      "researchNotes": "Conducted group survey - 75% prefer current Big Book format",
+      "status": "resolved",
+      "resolution": "Removed from table at October GC. Motion to keep current format approved."
+    }
+  ],
+  "motionAmendments": [
+    {
+      "id": "amend-001",
+      "originalMotionId": "gc-013",
+      "proposedBy": "Michael R.",
+      "date": "2024-10-06",
+      "amendmentText": "Change budget from $250 to $200 for literature rack",
+      "type": "unfriendly",
+      "voteResult": "rejected",
+      "votesFor": 7,
+      "votesAgainst": 12,
+      "votesAbstain": 1,
+      "outcome": "Original motion amount of $250 maintained"
+    }
+  ],
+  "discussionThreads": [
+    {
+      "id": "thread-001",
+      "decisionId": "gc-018",
+      "topic": "Paid greeter position discussion",
+      "startDate": "2025-03-02",
+      "status": "closed",
+      "posts": [
+        {
+          "author": "Lisa P.",
+          "date": "2025-03-02T18:45:00.000Z",
+          "content": "I really think a paid greeter would help newcomers feel more welcome. We have the funds."
+        },
+        {
+          "author": "Daniel F.",
+          "date": "2025-03-02T18:50:00.000Z",
+          "content": "I'm concerned about 7th Tradition implications. We've always been volunteer-based."
+        },
+        {
+          "author": "Robert T.",
+          "date": "2025-03-02T18:55:00.000Z",
+          "content": "What if we tried a volunteer rotation first? We could create a formal schedule."
+        },
+        {
+          "author": "John S.",
+          "date": "2025-03-02T19:00:00.000Z",
+          "content": "I support Robert's suggestion. Formal rotation with backup could work well."
+        }
+      ]
+    },
+    {
+      "id": "thread-002",
+      "decisionId": "gc-019",
+      "topic": "Digital inventory management discussion",
+      "startDate": "2025-04-06",
+      "status": "closed",
+      "posts": [
+        {
+          "author": "James H.",
+          "date": "2025-04-06T18:40:00.000Z",
+          "content": "Digital tracking would really help with reordering. I'm tired of running out of popular items."
+        },
+        {
+          "author": "Barbara A.",
+          "date": "2025-04-06T18:45:00.000Z",
+          "content": "How will older members handle tablets? Not everyone is tech-savvy."
+        },
+        {
+          "author": "Michael R.",
+          "date": "2025-04-06T18:50:00.000Z",
+          "content": "I can provide training. The apps are very simple to use. I volunteer to set it up."
+        },
+        {
+          "author": "Christopher B.",
+          "date": "2025-04-06T18:55:00.000Z",
+          "content": "We have the funds. This is a good investment in better inventory management."
+        }
+      ]
+    }
+  ],
+  "emailSettings": {
+    "enabled": false,
+    "smtpServer": "",
+    "fromAddress": "rowlettnagroup@example.com",
+    "agendaRecipients": [],
+    "minutesRecipients": []
+  },
+  "emailHistory": [
+    {
+      "id": "email-001",
+      "type": "agenda",
+      "subject": "November 2024 Group Conscience Agenda",
+      "sentDate": "2024-10-28T10:00:00.000Z",
+      "recipients": ["John S.", "Sarah M.", "Christopher B.", "Barbara A.", "James H."],
+      "content": "Group Conscience Meeting - November 3, 2024\n\nAgenda:\n1. Treasurer Report\n2. GSR Report\n3. Year-end contribution to NAWS ($1,000)\n4. Old Business\n5. New Business",
+      "status": "sent"
+    },
+    {
+      "id": "email-002",
+      "type": "minutes",
+      "subject": "November 2024 GC Minutes",
+      "sentDate": "2024-11-05T14:00:00.000Z",
+      "recipients": ["All Service Members"],
+      "content": "Group Conscience Minutes - November 3, 2024\n\nAttendance: 20 members\n\nDecisions:\n- Approved $1,000 year-end contribution to NAWS (19-0-1)\n\nAction Items:\n- Treasurer to send contribution by Nov 15",
+      "status": "sent"
+    }
+  ],
+  "memberVotingRecords": [
+    {
+      "memberId": "mem-001",
+      "memberName": "John S.",
+      "votingHistory": [
+        {
+          "decisionId": "gc-001",
+          "vote": "for",
+          "date": "2023-11-05"
+        },
+        {
+          "decisionId": "gc-002",
+          "vote": "for",
+          "date": "2023-12-03"
+        },
+        {
+          "decisionId": "gc-003",
+          "vote": "for",
+          "date": "2024-01-07"
+        }
+      ],
+      "participationRate": 95,
+      "totalVotes": 23
+    },
+    {
+      "memberId": "mem-002",
+      "memberName": "Sarah M.",
+      "votingHistory": [
+        {
+          "decisionId": "gc-001",
+          "vote": "for",
+          "date": "2023-11-05"
+        },
+        {
+          "decisionId": "gc-002",
+          "vote": "for",
+          "date": "2023-12-03"
+        }
+      ],
+      "participationRate": 92,
+      "totalVotes": 22
+    }
+  ],
+  "implementationTracking": [
+    {
+      "id": "impl-001",
+      "decisionId": "gc-013",
+      "title": "Purchase literature display rack",
+      "assignedTo": "James H.",
+      "dueDate": "2024-10-25",
+      "status": "in-progress",
+      "progress": 75,
+      "milestones": [
+        {
+          "description": "Research options",
+          "completed": true,
+          "date": "2024-10-10"
+        },
+        {
+          "description": "Get group approval",
+          "completed": true,
+          "date": "2024-10-06"
+        },
+        {
+          "description": "Place order",
+          "completed": true,
+          "date": "2024-10-15"
+        },
+        {
+          "description": "Install rack",
+          "completed": false,
+          "date": null
+        }
+      ],
+      "notes": "Rack ordered. Delivery expected Oct 23. Will install that weekend."
+    },
+    {
+      "id": "impl-002",
+      "decisionId": "gc-019",
+      "title": "Setup tablets for inventory",
+      "assignedTo": "Michael R.",
+      "dueDate": "2025-04-30",
+      "status": "in-progress",
+      "progress": 60,
+      "milestones": [
+        {
+          "description": "Research tablet options",
+          "completed": true,
+          "date": "2025-04-10"
+        },
+        {
+          "description": "Get group approval",
+          "completed": true,
+          "date": "2025-04-06"
+        },
+        {
+          "description": "Purchase tablets",
+          "completed": true,
+          "date": "2025-04-20"
+        },
+        {
+          "description": "Install inventory app",
+          "completed": false,
+          "date": null
+        },
+        {
+          "description": "Train literature chair",
+          "completed": false,
+          "date": null
+        }
+      ],
+      "notes": "Tablets purchased. Working on app selection and setup."
+    },
+    {
+      "id": "impl-003",
+      "decisionId": "gc-021",
+      "title": "Plan group picnic",
+      "assignedTo": "Jennifer K.",
+      "dueDate": "2025-07-20",
+      "status": "pending",
+      "progress": 30,
+      "milestones": [
+        {
+          "description": "Reserve park pavilion",
+          "completed": true,
+          "date": "2025-06-15"
+        },
+        {
+          "description": "Create signup sheet",
+          "completed": false,
+          "date": null
+        },
+        {
+          "description": "Purchase supplies",
+          "completed": false,
+          "date": null
+        },
+        {
+          "description": "Coordinate volunteers",
+          "completed": false,
+          "date": null
+        }
+      ],
+      "notes": "Park reserved. Will announce at meetings in July."
+    }
+  ],
+  "consentAgendaItems": [
+    {
+      "id": "consent-001",
+      "itemId": "standing-003",
+      "title": "Literature Inventory Report - October",
+      "type": "standing",
+      "dateAdded": "2025-10-06",
+      "status": "approved"
+    },
+    {
+      "id": "consent-002",
+      "itemId": "standing-004",
+      "title": "Rent Payment Authorization - October",
+      "type": "standing",
+      "dateAdded": "2025-10-06",
+      "status": "approved"
+    }
+  ],
+  "consentHistory": [
+    {
+      "date": "2025-10-06",
+      "totalItems": 2,
+      "itemsPulled": 0,
+      "approvedByConsent": 2
+    }
+  ],
+  "reconsiderationRequests": [
+    {
+      "id": "recon-001",
+      "originalDecisionId": "gc-018",
+      "requestedBy": "Lisa P.",
+      "dateRequested": "2025-04-15",
+      "reason": "new-information",
+      "newInformation": "Discussed with other groups who have successful volunteer greeter rotations. Want to propose formal rotation system instead of paid position.",
+      "status": "approved",
+      "reviewDate": "2025-05-04",
+      "outcome": "Motion to reconsider approved. Group created volunteer greeter rotation system."
+    }
+  ],
+  "calendarEvents": [
+    {
+      "id": "cal-001",
+      "title": "November Group Conscience",
+      "date": "2025-11-02",
+      "time": "18:30",
+      "location": "Rowlett Community Center, Main Hall",
+      "type": "group-conscience",
+      "description": "Monthly GC meeting",
+      "reminder": true
+    },
+    {
+      "id": "cal-002",
+      "title": "December Group Conscience",
+      "date": "2025-12-07",
+      "time": "18:30",
+      "location": "Rowlett Community Center, Main Hall",
+      "type": "group-conscience",
+      "description": "Monthly GC meeting",
+      "reminder": true
+    },
+    {
+      "id": "cal-003",
+      "title": "District 60 Meeting",
+      "date": "2025-11-15",
+      "time": "19:00",
+      "location": "Garland Meeting Center",
+      "type": "service-meeting",
+      "description": "Monthly District service meeting",
+      "reminder": true
+    }
+  ],
+  "roiCalculations": [
+    {
+      "id": "roi-001",
+      "decisionId": "gc-002",
+      "title": "Coffee Maker ROI Analysis",
+      "dateCreated": "2023-11-28",
+      "initialCost": 200,
+      "monthlyBenefit": 50,
+      "monthlyCost": 20,
+      "projectedYears": 3,
+      "calculatedROI": 440,
+      "paybackPeriod": 6.67,
+      "notes": "Reliable coffee maker will reduce downtime and complaints. Old maker broke frequently requiring temporary replacements."
+    },
+    {
+      "id": "roi-002",
+      "decisionId": "gc-013",
+      "title": "Literature Display Rack ROI",
+      "dateCreated": "2024-09-30",
+      "initialCost": 250,
+      "monthlyBenefit": 75,
+      "monthlyCost": 0,
+      "projectedYears": 5,
+      "calculatedROI": 4250,
+      "paybackPeriod": 3.33,
+      "notes": "Professional display expected to increase literature sales by 30%. Better visibility and accessibility."
+    },
+    {
+      "id": "roi-003",
+      "decisionId": "gc-019",
+      "title": "Inventory Tablets ROI",
+      "dateCreated": "2025-03-25",
+      "initialCost": 400,
+      "monthlyBenefit": 100,
+      "monthlyCost": 10,
+      "projectedYears": 3,
+      "calculatedROI": 2840,
+      "paybackPeriod": 4.44,
+      "notes": "Digital inventory will prevent stockouts (lost sales) and reduce over-ordering. Estimated $100/month benefit from better inventory management."
+    },
+    {
+      "id": "roi-004",
+      "decisionId": "gc-023",
+      "title": "Sound System ROI",
+      "dateCreated": "2025-07-30",
+      "initialCost": 800,
+      "monthlyBenefit": 0,
+      "monthlyCost": 0,
+      "projectedYears": 5,
+      "calculatedROI": -800,
+      "paybackPeriod": null,
+      "notes": "Not a financial ROI but quality of life improvement. Better sound quality will improve message clarity for 60+ Friday night attendees. Value is in member experience and message accessibility."
+    }
+  ],
+  "proxyVotes": [
+    {
+      "id": "proxy-001",
+      "gcDate": "2024-05-05",
+      "memberName": "Jennifer K.",
+      "designatedVoter": "Michael R.",
+      "scope": "general",
+      "instructions": "",
+      "dateSubmitted": "2024-05-03",
+      "status": "used",
+      "votescast": 3
+    },
+    {
+      "id": "proxy-002",
+      "gcDate": "2024-11-03",
+      "memberName": "David L.",
+      "designatedVoter": "Sarah M.",
+      "scope": "general",
+      "instructions": "",
+      "dateSubmitted": "2024-11-01",
+      "status": "used",
+      "votesCast": 1
+    },
+    {
+      "id": "proxy-003",
+      "gcDate": "2025-02-02",
+      "memberName": "Lisa P.",
+      "designatedVoter": "Amanda W.",
+      "scope": "directed",
+      "instructions": "Please vote YES on security deposit motion. Otherwise use your best judgment.",
+      "dateSubmitted": "2025-01-30",
+      "status": "used",
+      "votesCast": 1
+    }
+  ],
+  "decisionReversals": [
+    {
+      "id": "rev-001",
+      "originalDecisionId": "gc-018",
+      "newDecisionId": "gc-020",
+      "reversalDate": "2025-05-04",
+      "timeBetween": 63,
+      "originalOutcome": "Defeated - Paid greeter position rejected",
+      "newOutcome": "Approved - Volunteer greeter rotation created",
+      "reason": "compromise-reached",
+      "lessonsLearned": "When group strongly divided, look for compromise solutions that address underlying concerns without violating traditions. The volunteer rotation solved the newcomer welcome issue without creating paid position.",
+      "financialImpact": 0
+    },
+    {
+      "id": "rev-002",
+      "originalDecisionId": "gc-011",
+      "newDecisionId": "gc-012",
+      "reversalDate": "2024-10-06",
+      "timeBetween": 35,
+      "originalOutcome": "Tabled - Monday format change discussion",
+      "newOutcome": "Approved - Keep current format",
+      "reason": "new-information",
+      "lessonsLearned": "Tabling motions for member input is valuable. Survey showed clear preference (75%) for current format. Taking time to gather data prevented premature decision that could have divided group.",
+      "financialImpact": 0
+    }
+  ]
+}
