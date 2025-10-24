@@ -1275,19 +1275,35 @@
 
         <!-- Chairperson's Corner Section -->
         <section id="chairperson-section">
-            <h2>Chairperson's Corner</h2>
-            <p class="mb-4">Track meeting attendance and contributions. All data is stored locally.</p>
-            <div class="box mb-4">
-                <h3 class="text-lg font-bold">Member Management</h3>
-                <button class="btn" onclick="openRosterModal()">View Full Member Roster</button>
+            <h2><i class="fas fa-user-tie"></i> Chairperson's Corner</h2>
+            <p class="mb-4">Track meeting attendance, contributions, and manage group affairs efficiently.</p>
+
+            <!-- Quick Actions Bar -->
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; padding: 1rem; background: #2c3e50; border-radius: 6px;">
+                <button class="btn" onclick="openRosterModal()">
+                    <i class="fas fa-users"></i> Member Roster
+                </button>
+                <button class="btn" onclick="exportChairpersonLogToPDF()">
+                    <i class="fas fa-file-pdf"></i> Export Report
+                </button>
+                <button class="btn" onclick="goToSection('gc-live-section')">
+                    <i class="fas fa-gavel"></i> Live GC Session
+                </button>
+                <button class="btn" onclick="goToSection('gc-decisions-section')">
+                    <i class="fas fa-history"></i> GC Decisions
+                </button>
             </div>
+
+            <!-- Main Content: Two Column Layout -->
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
-                <!-- Left column for form and table -->
+                <!-- Left Column: Meeting Attendance Logging -->
                 <div>
-                    <div class="box">
-                        <h3 id="chairperson-form-title">Log New Entry</h3>
+                    <div class="box" style="border-left: 4px solid #3498db;">
+                        <h3><i class="fas fa-clipboard-check"></i> <span id="chairperson-form-title">Log New Meeting</span></h3>
+                        <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 1rem;">Record attendance and contributions for each meeting.</p>
+
                         <div class="form-group">
-                            <label for="log-date">Meeting Date</label>
+                            <label for="log-date">Meeting Date *</label>
                             <input type="date" id="log-date">
                         </div>
                         <div class="form-group">
@@ -1295,85 +1311,140 @@
                             <input type="time" id="log-time">
                         </div>
                         <div class="form-group">
-                            <label for="log-chairperson">Chairperson's Name</label>
+                            <label for="log-chairperson">Chairperson's Name *</label>
                             <select id="log-chairperson"></select>
                         </div>
                         <div class="form-group">
-                            <label for="log-headcount">Head Count</label>
-                            <input type="number" id="log-headcount" placeholder="0">
+                            <label for="log-headcount"><i class="fas fa-users"></i> Head Count</label>
+                            <input type="number" id="log-headcount" placeholder="0" min="0">
                         </div>
                         <div class="form-group">
-                            <label for="log-7th-tradition">7th Tradition ($)</label>
-                            <input type="number" id="log-7th-tradition" step="0.01" placeholder="0.00">
+                            <label for="log-7th-tradition"><i class="fas fa-hand-holding-usd"></i> 7th Tradition ($)</label>
+                            <input type="number" id="log-7th-tradition" step="0.01" placeholder="0.00" min="0">
                         </div>
                         <div class="form-group">
-                            <label for="log-orange-can">Orange Can ($)</label>
-                            <input type="number" id="log-orange-can" step="0.01" placeholder="0.00">
+                            <label for="log-orange-can"><i class="fas fa-donate"></i> Orange Can ($)</label>
+                            <input type="number" id="log-orange-can" step="0.01" placeholder="0.00" min="0">
                         </div>
                         <input type="hidden" id="log-edit-id">
-                        <button id="log-form-btn" class="btn" onclick="handleChairpersonLogSubmit()">Add Log Entry</button>
-                        <button id="log-form-cancel-btn" class="btn secondary" onclick="cancelLogEdit()" style="display:none; margin-left: 0.5rem;">Cancel</button>
-                    </div>
-
-                    <h3 class="mt-4">Contribution Log</h3>
-                    <button class="btn" onclick="exportChairpersonLogToPDF()" style="margin-bottom: 1rem;">Export Log to PDF</button>
-                    <table id="chairperson-log-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Chairperson</th>
-                                <th>Head Count</th>
-                                <th>7th Tradition</th>
-                                <th>Orange Can</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="chairperson-log-body"></tbody>
-                    </table>
-                </div>
-
-                <!-- Right column for Group Conscience Log -->
-                <div>
-                    <div class="box mb-4">
-                        <h3>Active Announcements</h3>
-                        <ul id="chairperson-announcements-list"></ul>
-                    </div>
-
-                    <!-- Live Group Conscience Module -->
-                    <div class="box mb-4">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <h3>Live Group Conscience</h3>
-                            <button class="btn secondary" onclick="toggleLiveGC()">Show/Hide</button>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button id="log-form-btn" class="btn" onclick="handleChairpersonLogSubmit()">
+                                <i class="fas fa-save"></i> Save Entry
+                            </button>
+                            <button id="log-form-cancel-btn" class="btn secondary" onclick="cancelLogEdit()" style="display:none;">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
                         </div>
-                        <div id="live-gc-module" style="display: none;">
-                            <h4 class="mt-4">New Business / Open Motions</h4>
-                            <div class="form-group">
-                                <label for="new-business-item">New Item</label>
-                                <textarea id="new-business-item" rows="2" placeholder="Describe the new business item or motion..."></textarea>
-                            </div>
-                            <button class="btn" onclick="addNewBusinessItem()">Add New Item</button>
+                    </div>
 
-                            <h4 class="mt-4">Motions Queue</h4>
-                            <table id="live-gc-table">
+                    <!-- Meeting Log Table -->
+                    <div class="box mt-4">
+                        <h3><i class="fas fa-table"></i> Recent Meetings</h3>
+                        <div style="overflow-x: auto; margin-top: 1rem;">
+                            <table id="chairperson-log-table">
                                 <thead>
                                     <tr>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Chairperson</th>
+                                        <th>Count</th>
+                                        <th>7th Trad.</th>
+                                        <th>Orange Can</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="chairperson-log-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Quick Links & Info -->
+                <div>
+                    <!-- Active Announcements -->
+                    <div class="box" style="border-left: 4px solid #f39c12;">
+                        <h3><i class="fas fa-bullhorn"></i> Active Announcements</h3>
+                        <ul id="chairperson-announcements-list" style="min-height: 80px;"></ul>
+                        <button class="btn" onclick="goToSection('announcements-section')" style="width: 100%; margin-top: 0.5rem;">
+                            <i class="fas fa-edit"></i> Manage Announcements
+                        </button>
+                    </div>
+
+                    <!-- Live GC Queue Preview -->
+                    <div class="box mt-4" style="border-left: 4px solid #e74c3c;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3><i class="fas fa-gavel"></i> Live GC Queue</h3>
+                            <button class="btn secondary" onclick="toggleLiveGC()" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+                                <i class="fas fa-eye"></i> Toggle
+                            </button>
+                        </div>
+                        <div id="live-gc-module" style="display: none;">
+                            <div class="form-group">
+                                <label for="new-business-item">Quick Add Item</label>
+                                <textarea id="new-business-item" rows="2" placeholder="Describe new business..."></textarea>
+                            </div>
+                            <button class="btn" onclick="addNewBusinessItem()" style="width: 100%; margin-bottom: 1rem;">
+                                <i class="fas fa-plus"></i> Add Item
+                            </button>
+                            <div style="max-height: 250px; overflow-y: auto;">
+                                <table id="live-gc-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="live-gc-body"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <button class="btn" onclick="goToSection('gc-live-section')" style="width: 100%; margin-top: 0.5rem;">
+                            <i class="fas fa-arrow-right"></i> Full GC Session
+                        </button>
+                    </div>
+
+                    <!-- Recent GC Decisions Preview -->
+                    <div class="box mt-4" style="border-left: 4px solid #9b59b6;">
+                        <h3><i class="fas fa-history"></i> Recent GC Decisions</h3>
+                        <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 1rem;">Current month's decisions</p>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            <table id="gc-log-table-current" style="font-size: 0.85rem;">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
                                         <th>Item</th>
                                         <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="live-gc-body"></tbody>
+                                <tbody id="gc-log-body-current"></tbody>
                             </table>
                         </div>
+                        <button class="btn" onclick="goToSection('gc-decisions-section')" style="width: 100%; margin-top: 1rem;">
+                            <i class="fas fa-arrow-right"></i> View All GC Decisions
+                        </button>
                     </div>
-                    <div class="box">
-                        <h3 id="gc-form-title">Log Group Conscience Item</h3>
+                </div>
+            </div>
 
-                        <!-- P0-1: Workflow Status Indicator -->
-                        <div class="form-group" style="background: #34495e; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
-                            <label for="gc-workflow-status">Motion Workflow Status</label>
-                            <select id="gc-workflow-status" onchange="toggleGCWorkflowSections()">
+            <!-- Note about GC Logging -->
+            <div class="box mt-4" style="background: #2c3e50; border-left: 4px solid #3498db;">
+                <h4><i class="fas fa-info-circle"></i> Need to Log Group Conscience Decisions?</h4>
+                <p style="margin-top: 0.5rem; margin-bottom: 1rem;">For detailed Group Conscience logging with workflow tracking, research periods, and complete voting records, please visit the dedicated GC sections.</p>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn" onclick="goToSection('gc-live-section')">
+                        <i class="fas fa-play"></i> Live GC Session
+                    </button>
+                    <button class="btn" onclick="goToSection('gc-decisions-section')">
+                        <i class="fas fa-archive"></i> GC Decision History
+                    </button>
+                </div>
+            </div>
+
+            <!-- Hidden GC Form Elements (keep for compatibility) -->
+            <div style="display: none;">
+                <select id="gc-workflow-status" onchange="toggleGCWorkflowSections()">
                                 <option value="draft">Draft - Motion being prepared</option>
                                 <option value="research">Research Period - Members reviewing & asking questions</option>
                                 <option value="voting">Ready for Vote - Research complete</option>
@@ -1826,6 +1897,62 @@
                             <a id="download-link" class="btn mt-2" style="display: none;"><i class="fas fa-download" style="margin-right: 0.5rem;"></i>Download Recording</a>
                         </div>
                     </div>
+                    <input type="hidden" id="gc-edit-id">
+                    <button id="gc-form-btn" style="display: none;"></button>
+                    <button id="gc-form-cancel-btn" style="display: none;"></button>
+                    <textarea id="gc-servant-reports-legacy" style="display: none;"></textarea>
+                    <input type="date" id="gc-date" style="display: none;">
+                    <textarea id="gc-item" style="display: none;"></textarea>
+                    <input type="text" id="gc-submitted-by" style="display: none;">
+                    <input type="date" id="gc-research-start" style="display: none;">
+                    <input type="date" id="gc-research-end" style="display: none;">
+                    <select id="gc-status" style="display: none;"><option value="passed">Passed</option></select>
+                    <input type="number" id="gc-votes-for" style="display: none;">
+                    <input type="number" id="gc-votes-against" style="display: none;">
+                    <input type="number" id="gc-votes-abstain" style="display: none;">
+                    <select multiple id="gc-attendees" style="display: none;"></select>
+                    <div id="gc-servant-reports-container" style="display: none;"></div>
+                    <div id="gc-servant-reports-legacy-container" style="display: none;"></div>
+                    <div id="gc-research-period-section" style="display: none;"></div>
+                    <div id="vote-summary" style="display: none;">
+                        <span id="total-votes"></span>
+                        <span id="votes-for-count"></span>
+                        <span id="percent-for"></span>
+                        <div id="progress-bar-for"></div>
+                        <span id="votes-against-count"></span>
+                        <span id="percent-against"></span>
+                        <div id="progress-bar-against"></div>
+                        <span id="votes-abstain-count"></span>
+                        <span id="percent-abstain"></span>
+                        <div id="progress-bar-abstain"></div>
+                        <div id="quorum-status"></div>
+                    </div>
+                    <table id="gc-log-table-previous" style="display: none;">
+                        <thead><tr><th>Date</th></tr></thead>
+                        <tbody id="gc-log-body-previous"></tbody>
+                    </table>
+                    <input type="text" id="proposed-item-title" style="display: none;">
+                    <select id="proposed-item-submitter" style="display: none;"></select>
+                    <textarea id="proposed-item-description" style="display: none;"></textarea>
+                    <input type="number" id="proposed-item-time" style="display: none;">
+                    <select id="proposed-item-urgency" style="display: none;"></select>
+                    <textarea id="proposed-item-background" style="display: none;"></textarea>
+                    <input type="number" id="quorum-percentage" style="display: none;">
+                    <input type="number" id="quorum-minimum" style="display: none;">
+                    <textarea id="action-item-description" style="display: none;"></textarea>
+                    <select id="action-item-assignee" style="display: none;"></select>
+                    <input type="date" id="action-item-due-date" style="display: none;">
+                    <select id="action-item-priority" style="display: none;"></select>
+                    <select id="action-item-related-gc" style="display: none;"></select>
+                    <select id="action-item-dependencies" style="display: none;"></select>
+                    <input type="hidden" id="action-item-edit-id">
+                    <button id="action-item-btn" style="display: none;"></button>
+                    <button id="action-item-cancel-btn" style="display: none;"></button>
+                    <input type="text" id="gc-search" style="display: none;">
+                    <select id="gc-filter-status" style="display: none;"></select>
+                    <input type="date" id="gc-filter-date-from" style="display: none;">
+                    <input type="date" id="gc-filter-date-to" style="display: none;">
+                    <select id="annual-report-year" style="display: none;"></select>
                 </div>
             </div>
         </section>
