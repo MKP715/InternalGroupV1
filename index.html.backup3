@@ -1109,8 +1109,8 @@
 
     <main>
         <!-- Home Section -->
-        <section id="home-section" class="active" style="border-left: 4px solid #3498db;">
-            <h1><i class="fas fa-home"></i> Welcome to the Rowlett Group</h1>
+        <section id="home-section" class="active">
+            <h1>Welcome to the Rowlett Group</h1>
             <p class="mb-4">This internal site serves as your one-stop hub for meeting schedules, member birthdays, group announcements, and more. All data you add here is stored locally in your browser.</p>
             <div class="grid grid-cols-2">
                 <div class="box">
@@ -1274,7 +1274,7 @@
         </section>
 
         <!-- Chairperson's Corner Section -->
-        <section id="chairperson-section" style="border-left: 4px solid #1abc9c;">
+        <section id="chairperson-section">
             <h2><i class="fas fa-user-tie"></i> Chairperson's Corner</h2>
             <p class="mb-4">Track meeting attendance, contributions, and manage group affairs efficiently.</p>
 
@@ -1526,8 +1526,8 @@
         </section>
 
         <!-- Meeting Companion Section -->
-        <section id="companion-section" style="border-left: 4px solid #3498db;">
-            <h2><i class="fas fa-book-open"></i> Meeting Companion</h2>
+        <section id="companion-section">
+            <h2>Meeting Companion</h2>
             <p class="mb-4">Select a meeting type to view the format and readings.</p>
             <div id="meeting-format-buttons" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
                 <button class="btn" onclick="showMeetingFormat('open-discussion')">Open Discussion</button>
@@ -1560,8 +1560,8 @@
         </section>
 
         <!-- Schedule Section -->
-        <section id="schedule-section" style="border-left: 4px solid #3498db;">
-            <h2><i class="fas fa-calendar-alt"></i> Schedule of Meetings & Events</h2>
+        <section id="schedule-section">
+            <h2>Schedule of Meetings & Events</h2>
             <p class="mb-2">Add recurring weekly meetings or special one-time events. Use the calendar to browse by month. Upcoming events for the next 60 days are listed below.</p>
 
             <!-- Calendar Controls -->
@@ -1665,8 +1665,8 @@
         </section>
 
         <!-- Members Section -->
-        <section id="birthdays-section" style="border-left: 4px solid #f39c12;">
-            <h2><i class="fas fa-birthday-cake"></i> Member Roster & Birthdays</h2>
+        <section id="birthdays-section">
+            <h2>Member Roster & Birthdays</h2>
             <p class="mb-2">Add and manage member information and see upcoming sobriety birthdays.</p>
             <button class="btn" onclick="toggleMemberForm()">Add Member</button>
             <div id="add-member-form" class="box" style="display:none; margin-top: 1rem;">
@@ -1743,8 +1743,8 @@
         </section>
 
         <!-- Announcements Section -->
-        <section id="announcements-section" style="border-left: 4px solid #f39c12;">
-            <h2><i class="fas fa-bullhorn"></i> Announcements</h2>
+        <section id="announcements-section">
+            <h2>Announcements</h2>
             <div class="form-group">
                 <label for="announcement-text">Announcement</label>
                 <textarea id="announcement-text" rows="2" placeholder="Enter announcement..."></textarea>
@@ -1770,8 +1770,8 @@
         </section>
 
         <!-- Member Messaging Section -->
-        <section id="messaging-section" style="border-left: 4px solid #f39c12;">
-            <h2><i class="fas fa-comments"></i> Member Messaging</h2>
+        <section id="messaging-section">
+            <h2>Member Messaging</h2>
             <p>Send messages to other members for service work coordination.</p>
 
             <div class="form-group">
@@ -1799,8 +1799,8 @@
         </section>
 
         <!-- Service Positions Section -->
-        <section id="service-positions-section" style="border-left: 4px solid #2ecc71;">
-            <h2><i class="fas fa-users-cog"></i> Service Position Management</h2>
+        <section id="service-positions-section">
+            <h2>Service Position Management</h2>
 
             <h3>Add/Edit Service Position</h3>
             <div class="form-group">
@@ -1865,8 +1865,8 @@
         </section>
 
         <!-- Finance Section -->
-        <section id="finance-section" style="border-left: 4px solid #f1c40f;">
-            <h2><i class="fas fa-money-bill-wave"></i> Financial Tracking</h2>
+        <section id="finance-section">
+            <h2>Financial Tracking</h2>
 
             <div class="history-nav">
                 <button onclick="showFinanceTab('budget')" class="active" id="budget-tab">Budget</button>
@@ -1970,8 +1970,8 @@
         </section>
 
         <!-- Meeting Format Templates Section -->
-        <section id="templates-section" style="border-left: 4px solid #95a5a6;">
-            <h2><i class="fas fa-file-alt"></i> Meeting Format Templates</h2>
+        <section id="templates-section">
+            <h2>Meeting Format Templates</h2>
 
             <h3>Create/Edit Template</h3>
             <div class="form-group">
@@ -2003,8 +2003,8 @@
         </section>
 
         <!-- Gallery Section -->
-        <section id="gallery-section" style="border-left: 4px solid #f39c12;">
-            <h2><i class="fas fa-images"></i> Photo Gallery</h2>
+        <section id="gallery-section">
+            <h2>Photo Gallery</h2>
             <p class="mb-2">Upload pictures of fliers or events. Add comma-separated tags to help organize them.</p>
             <div class="form-group">
                 <label for="photo-upload">Select Photos</label>
@@ -2038,8 +2038,8 @@
         </div>
 
         <!-- History Section -->
-        <section id="history-section" style="border-left: 4px solid #95a5a6;">
-            <h2><i class="fas fa-history"></i> History &amp; Resources</h2>
+        <section id="history-section">
+            <h2>History &amp; Resources</h2>
             <!-- History navigation buttons for different timelines -->
             <div class="history-nav">
                 <button id="genesis-btn" onclick="showHistory('genesis-history')">Genesis of AA</button>
@@ -2764,8 +2764,8 @@
         </section>
 
         <!-- Analytics Dashboard Section -->
-        <section id="analytics-section" style="border-left: 4px solid #1abc9c;">
-            <h2><i class="fas fa-chart-bar"></i> Analytics Dashboard</h2>
+        <section id="analytics-section">
+            <h2>Analytics Dashboard</h2>
             <p class="mb-4">Track group engagement, attendance trends, and participation metrics.</p>
 
             <!-- Attendance Trends -->
@@ -2819,8 +2819,8 @@
         </section>
 
         <!-- Accessibility Features Section -->
-        <section id="accessibility-section" style="border-left: 4px solid #34495e;">
-            <h2><i class="fas fa-universal-access"></i> Accessibility Settings</h2>
+        <section id="accessibility-section">
+            <h2>Accessibility Settings</h2>
             <p class="mb-4">Customize your viewing experience for better accessibility.</p>
 
             <!-- Dark Mode Toggle -->
@@ -2924,8 +2924,8 @@
         </section>
 
         <!-- Settings Section -->
-        <section id="settings-section" style="border-left: 4px solid #34495e;">
-            <h2><i class="fas fa-cog"></i> Settings & Data Management</h2>
+        <section id="settings-section">
+            <h2>Settings & Data Management</h2>
 
             <div class="box mb-4">
                 <h3>Group Settings</h3>
@@ -3056,8 +3056,8 @@
         </section>
 
         <!-- FORMAT ROTATION SECTION -->
-        <section id="format-rotation-section" style="border-left: 4px solid #3498db;">
-            <h2><i class="fas fa-sync-alt"></i> Meeting Format Rotation</h2>
+        <section id="format-rotation-section">
+            <h2>Meeting Format Rotation</h2>
             <p class="mb-4">Manage automated format rotation patterns for weekly meetings.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -3116,8 +3116,8 @@
         </section>
 
         <!-- COMMITMENT BOARD SECTION -->
-        <section id="commitment-board-section" style="border-left: 4px solid #3498db;">
-            <h2><i class="fas fa-clipboard-check"></i> Meeting Commitment Board</h2>
+        <section id="commitment-board-section">
+            <h2>Meeting Commitment Board</h2>
             <p class="mb-4">Sign-up system for meeting responsibilities with automated reminders.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -3180,8 +3180,8 @@
         </section>
 
         <!-- SECRETARY FUNCTIONS SECTION -->
-        <section id="secretary-section" style="border-left: 4px solid #3498db;">
-            <h2><i class="fas fa-pen"></i> Meeting Secretary Functions</h2>
+        <section id="secretary-section">
+            <h2>Meeting Secretary Functions</h2>
             <p class="mb-4">Attendance tracking, automated minutes, and meeting statistics.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -3240,8 +3240,8 @@
         </section>
 
         <!-- GC LIVE SESSION (moved from chairperson) -->
-        <section id="gc-live-section" style="border-left: 4px solid #9b59b6;">
-            <h2><i class="fas fa-broadcast-tower"></i> Live Group Conscience Session</h2>
+        <section id="gc-live-section">
+            <h2>Live Group Conscience Session</h2>
             <p class="mb-4">Real-time motion tracking during Group Conscience meetings.</p>
 
             <div class="box">
@@ -3269,7 +3269,7 @@
         </section>
 
         <!-- EMERGENCY GC PROTOCOL SECTION -->
-        <section id="emergency-gc-section" style="border-left: 4px solid #e74c3c; display: none;">
+        <section id="emergency-gc-section" style="display: none;">
             <div style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); padding: 2rem; border-radius: 8px; margin-bottom: 2rem;">
                 <h2 style="color: white; margin: 0 0 0.5rem 0;">
                     <i class="fas fa-exclamation-triangle"></i> EMERGENCY GROUP CONSCIENCE PROTOCOL
@@ -3415,7 +3415,7 @@
         </section>
 
         <!-- GC DECISION HISTORY & REFERENCE SECTION -->
-        <section id="gc-decisions-section" style="border-left: 4px solid #9b59b6;">
+        <section id="gc-decisions-section">
             <h2><i class="fas fa-gavel"></i> Group Conscience Decision Management</h2>
             <p class="mb-4">Log GC decisions, submit agenda items, track action items, and analyze historical patterns.</p>
 
@@ -3953,8 +3953,8 @@
         </section>
 
         <!-- GC INVENTORY SECTION -->
-        <section id="gc-inventory-section" style="border-left: 4px solid #9b59b6;">
-            <h2><i class="fas fa-tasks"></i> Group Conscience Inventory</h2>
+        <section id="gc-inventory-section">
+            <h2>Group Conscience Inventory</h2>
             <p class="mb-4">Tradition inventory questions, Concept templates, and anonymous feedback collection.</p>
 
             <div class="box mb-4">
@@ -3992,8 +3992,8 @@
         </section>
 
         <!-- GC BY-LAWS SECTION -->
-        <section id="gc-bylaws-section" style="border-left: 4px solid #9b59b6;">
-            <h2><i class="fas fa-book-open"></i> Group Guidelines & By-Laws Repository</h2>
+        <section id="gc-bylaws-section">
+            <h2>Group Guidelines & By-Laws Repository</h2>
             <p class="mb-4">Store group documents with version control and amendment tracking.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -4060,8 +4060,8 @@
         </section>
 
         <!-- SPONSORSHIP TRACKING SECTION -->
-        <section id="sponsorship-section" style="border-left: 4px solid #2ecc71;">
-            <h2><i class="fas fa-handshake"></i> Sponsorship Tracking</h2>
+        <section id="sponsorship-section">
+            <h2>Sponsorship Tracking</h2>
             <p class="mb-4">Track sponsorship relationships with tree visualization and service sponsorship.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -4138,8 +4138,8 @@
         </section>
 
         <!-- DISTRICT/AREA INTEGRATION SECTION -->
-        <section id="district-area-section" style="border-left: 4px solid #2ecc71;">
-            <h2><i class="fas fa-sitemap"></i> District/Area Committee Integration</h2>
+        <section id="district-area-section">
+            <h2>District/Area Committee Integration</h2>
             <p class="mb-4">GSR reports, district meeting schedules, and area assembly tracking.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -4218,8 +4218,8 @@
         </section>
 
         <!-- PRUDENT RESERVE SECTION -->
-        <section id="prudent-reserve-section" style="border-left: 4px solid #f1c40f;">
-            <h2><i class="fas fa-piggy-bank"></i> Prudent Reserve Tracking</h2>
+        <section id="prudent-reserve-section">
+            <h2>Financial Prudent Reserve Tracking</h2>
             <p class="mb-4">Set reserve targets, visualize operational vs reserve balance, and track trends.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -4292,8 +4292,8 @@
         </section>
 
         <!-- 7TH TRADITION ANALYSIS SECTION -->
-        <section id="seventh-tradition-section" style="border-left: 4px solid #f1c40f;">
-            <h2><i class="fas fa-hand-holding-usd"></i> 7th Tradition Analysis</h2>
+        <section id="seventh-tradition-section">
+            <h2>7th Tradition Analysis</h2>
             <p class="mb-4">Detailed analysis of contribution patterns and trends.</p>
 
             <div class="box mb-4">
@@ -4332,8 +4332,8 @@
         </section>
 
         <!-- CHIP INVENTORY SECTION -->
-        <section id="chip-inventory-section" style="border-left: 4px solid #f1c40f;">
-            <h2><i class="fas fa-medal"></i> Sobriety Chip Inventory</h2>
+        <section id="chip-inventory-section">
+            <h2>Sobriety Chip Inventory</h2>
             <p class="mb-4">Track chip stock levels, set low stock alerts, and log distributions.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -4432,8 +4432,8 @@
         </section>
 
         <!-- VOTING SETTINGS SECTION -->
-        <section id="voting-settings-section" style="border-left: 4px solid #9b59b6;">
-            <h2><i class="fas fa-vote-yea"></i> Voting Settings & Methods</h2>
+        <section id="voting-settings-section">
+            <h2>Voting Settings & Methods</h2>
             <p class="mb-4">Configure your group's preferred voting method for Group Conscience decisions.</p>
 
             <div class="box mb-4">
@@ -4499,8 +4499,8 @@
         </section>
 
         <!-- MOTION TEMPLATES SECTION -->
-        <section id="motion-templates-section" style="border-left: 4px solid #9b59b6;">
-            <h2><i class="fas fa-file-signature"></i> Motion Templates</h2>
+        <section id="motion-templates-section">
+            <h2>Motion Templates</h2>
             <p class="mb-4">Pre-formatted motion templates for common AA Group Conscience items.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -4556,8 +4556,8 @@
         </section>
 
         <!-- TRADITION & CONCEPT CHECKER SECTION -->
-        <section id="tradition-checker-section" style="border-left: 4px solid #9b59b6;">
-            <h2><i class="fas fa-check-circle"></i> Tradition & Concept Checker</h2>
+        <section id="tradition-checker-section">
+            <h2>Tradition & Concept Checker</h2>
             <p class="mb-4">Ensure your motions align with AA's 12 Traditions and 12 Concepts.</p>
 
             <div class="box mb-4">
@@ -4601,8 +4601,8 @@
         </section>
 
         <!-- PARLIAMENTARY PROCEDURE SECTION -->
-        <section id="parliamentary-section" style="border-left: 4px solid #9b59b6;">
-            <h2><i class="fas fa-gavel"></i> Parliamentary Procedure Assistant</h2>
+        <section id="parliamentary-section">
+            <h2>Parliamentary Procedure Assistant</h2>
             <p class="mb-4">Guide motions through proper parliamentary procedure.</p>
 
             <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 2rem;">
@@ -4790,8 +4790,8 @@
         </section>
 
         <!-- SERVICE ELECTIONS SECTION -->
-        <section id="service-elections-section" style="border-left: 4px solid #2ecc71;">
-            <h2><i class="fas fa-poll"></i> Service Position Elections</h2>
+        <section id="service-elections-section">
+            <h2>Service Position Elections</h2>
             <p class="mb-4">Conduct elections for service positions with eligibility checking and term tracking.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -4875,8 +4875,8 @@
         </section>
 
         <!-- BUDGET APPROVAL SECTION -->
-        <section id="budget-approval-section" style="border-left: 4px solid #f1c40f;">
-            <h2><i class="fas fa-file-invoice-dollar"></i> Budget Approval Workflow</h2>
+        <section id="budget-approval-section">
+            <h2>Budget Approval Workflow</h2>
             <p class="mb-4">Propose, review, and vote on annual budgets and budget amendments.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -4928,8 +4928,8 @@
         </section>
 
         <!-- LITERATURE INVENTORY SECTION -->
-        <section id="literature-inventory-section" style="border-left: 4px solid #95a5a6;">
-            <h2><i class="fas fa-book-reader"></i> Literature & Supplies Inventory</h2>
+        <section id="literature-inventory-section">
+            <h2>Literature & Supplies Inventory</h2>
             <p class="mb-4">Track AA literature, supplies, and loan management.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -5053,8 +5053,8 @@
         </section>
 
         <!-- DISTRICT MOTIONS SECTION -->
-        <section id="district-motions-section" style="border-left: 4px solid #2ecc71;">
-            <h2><i class="fas fa-building"></i> District & Area Motions</h2>
+        <section id="district-motions-section">
+            <h2>District & Area Motions</h2>
             <p class="mb-4">Track district and area motions that require group input, and record the group's positions.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -5134,7 +5134,7 @@
         </section>
 
         <!-- QUORUM MANAGEMENT SECTION -->
-        <section id="quorum-management-section" style="border-left: 4px solid #34495e;">
+        <section id="quorum-management-section">
             <h2><i class="fas fa-users-cog"></i> Quorum Management</h2>
             <p class="mb-4">Configure quorum requirements for group conscience voting and different types of decisions.</p>
 
@@ -5233,8 +5233,8 @@
         </section>
 
         <!-- MEETING MINUTES SECTION -->
-        <section id="meeting-minutes-section" style="border-left: 4px solid #1abc9c;">
-            <h2><i class="fas fa-file-alt"></i> Meeting Minutes</h2>
+        <section id="meeting-minutes-section">
+            <h2>Meeting Minutes</h2>
             <p class="mb-4">Auto-generated minutes from Group Conscience meetings with approval workflow.</p>
 
             <div class="box mb-4">
@@ -5288,8 +5288,8 @@
         </section>
 
         <!-- PARTICIPATION ANALYTICS SECTION -->
-        <section id="participation-analytics-section" style="border-left: 4px solid #1abc9c;">
-            <h2><i class="fas fa-chart-line"></i> Participation Analytics</h2>
+        <section id="participation-analytics-section">
+            <h2>Participation Analytics</h2>
             <p class="mb-4">Privacy-conscious analytics on meeting attendance and voting participation.</p>
 
             <div class="grid" style="grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
@@ -5329,8 +5329,8 @@
         </section>
 
         <!-- DECISION IMPACT TRACKING SECTION -->
-        <section id="decision-impact-section" style="border-left: 4px solid #1abc9c;">
-            <h2><i class="fas fa-chart-line"></i> Decision Impact Tracking</h2>
+        <section id="decision-impact-section">
+            <h2>Decision Impact Tracking</h2>
             <p class="mb-4">Follow up on past decisions to see if they achieved their intended goals.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -5514,8 +5514,8 @@
         </section>
 
         <!-- FINANCIAL HEALTH DASHBOARD SECTION -->
-        <section id="financial-health-section" style="border-left: 4px solid #1abc9c;">
-            <h2><i class="fas fa-heartbeat"></i> Financial Health Dashboard</h2>
+        <section id="financial-health-section">
+            <h2>Financial Health Dashboard</h2>
             <p class="mb-4">Monitor financial health and impact of spending decisions.</p>
 
             <div class="grid" style="grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem;">
@@ -5568,8 +5568,8 @@
         </section>
 
         <!-- GROUP INVENTORY SCHEDULER SECTION -->
-        <section id="inventory-scheduler-section" style="border-left: 4px solid #34495e;">
-            <h2><i class="fas fa-calendar-check"></i> Group Inventory Scheduler</h2>
+        <section id="inventory-scheduler-section">
+            <h2>Group Inventory Scheduler</h2>
             <p class="mb-4">Schedule and track regular group inventories.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -5626,8 +5626,8 @@
         </section>
 
         <!-- ROLE SETTINGS SECTION -->
-        <section id="role-settings-section" style="border-left: 4px solid #34495e;">
-            <h2><i class="fas fa-user-shield"></i> Role & View Settings</h2>
+        <section id="role-settings-section">
+            <h2>Role & View Settings</h2>
             <p class="mb-4">Customize your view based on your service position.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 2fr; gap: 2rem;">
@@ -5684,8 +5684,8 @@
         </section>
 
         <!-- PRIVACY & ANONYMITY PROTECTION SECTION -->
-        <section id="privacy-section" style="border-left: 4px solid #34495e;">
-            <h2><i class="fas fa-user-secret"></i> Privacy & Anonymity Protection</h2>
+        <section id="privacy-section">
+            <h2>Privacy & Anonymity Protection</h2>
             <p class="mb-4">Configure privacy settings to protect member anonymity and sensitive information.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -5764,8 +5764,8 @@
         </section>
 
         <!-- TRADITION MOMENTS SECTION -->
-        <section id="tradition-moments-section" style="border-left: 4px solid #9b59b6;">
-            <h2><i class="fas fa-lightbulb"></i> Tradition Moments</h2>
+        <section id="tradition-moments-section">
+            <h2>Tradition Moments</h2>
             <p class="mb-4">Daily reminders of AA's 12 Traditions to guide group decisions.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -5822,8 +5822,8 @@
         </section>
 
         <!-- SPIRITUAL PRINCIPLES INTEGRATION SECTION -->
-        <section id="spiritual-principles-section" style="border-left: 4px solid #9b59b6;">
-            <h2><i class="fas fa-praying-hands"></i> Spiritual Principles Integration</h2>
+        <section id="spiritual-principles-section">
+            <h2>Spiritual Principles Integration</h2>
             <p class="mb-4">Tag motions with spiritual principles and guide decisions based on AA's spiritual foundation.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -5901,8 +5901,8 @@
         </section>
 
         <!-- UNITY CHECKER SECTION -->
-        <section id="unity-checker-section" style="border-left: 4px solid #9b59b6;">
-            <h2><i class="fas fa-handshake"></i> Unity Checker & Minority Opinion</h2>
+        <section id="unity-checker-section">
+            <h2>Unity Checker & Minority Opinion</h2>
             <p class="mb-4">Ensure decisions promote unity and respect minority voices.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -5979,8 +5979,8 @@
         </section>
 
         <!-- SERVICE STRUCTURE VISUALIZER SECTION -->
-        <section id="service-structure-section" style="border-left: 4px solid #2ecc71;">
-            <h2><i class="fas fa-sitemap"></i> Service Structure Visualizer</h2>
+        <section id="service-structure-section">
+            <h2>Service Structure Visualizer</h2>
             <p class="mb-4">Visual representation of AA's service structure and how group conscience flows.</p>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">

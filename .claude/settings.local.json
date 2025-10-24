@@ -4,7 +4,11 @@
       "Bash(awk:*)",
       "Bash(start index.html)",
       "Bash(node --version:*)",
-      "Bash(node -c:*)"
+      "Bash(node -c:*)",
+      "Bash({ echo \"=== CHECKING SECTION HEADERS FOR CONSISTENCY ===\" echo \"\" grep -A 1 '<section id=' index.html)",
+      "Bash(head:*)",
+      "Bash({ echo \"=== CHECKING SECTION HEADERS FOR CONSISTENCY ===\")",
+      "Bash(})"
     ],
     "deny": [],
     "ask": []
