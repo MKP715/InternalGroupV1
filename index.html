@@ -11745,8 +11745,25 @@ function exportData(dataType) {
             unityChecks: storage.getUnityChecks(),
             minorityOpinions: storage.getMinorityOpinions(),
             serviceStructure: storage.getServiceStructure(),
+            // High Priority GC Features
+            standingAgendaItems: storage.getStandingAgendaItems(),
+            tabledMotions: storage.getTabledMotions(),
+            motionAmendments: storage.getMotionAmendments(),
+            discussionThreads: storage.getDiscussionThreads(),
+            emailSettings: storage.getEmailSettings(),
+            emailHistory: storage.getEmailHistory(),
+            memberVotingRecords: storage.getMemberVotingRecords(),
+            implementationTracking: storage.getImplementationTracking(),
+            consentAgendaItems: storage.getConsentAgendaItems(),
+            consentHistory: storage.getConsentHistory(),
+            // Medium Priority GC Features
+            reconsiderationRequests: storage.getReconsiderationRequests(),
+            calendarEvents: storage.getCalendarEvents(),
+            roiCalculations: storage.getROICalculations(),
+            proxyVotes: storage.getProxyVotes(),
+            decisionReversals: storage.getDecisionReversals(),
             exportDate: new Date().toISOString(),
-            version: '5.0'
+            version: '5.1'
         };
         const dateStr = new Date().toISOString().split('T')[0];
         filename = `rowlett-group-backup-${dateStr}.json`;
@@ -11870,6 +11887,23 @@ function importData() {
             if (data.unityChecks) { storage.saveUnityChecks(data.unityChecks); imported = true; }
             if (data.minorityOpinions) { storage.saveMinorityOpinions(data.minorityOpinions); imported = true; }
             if (data.serviceStructure) { storage.saveServiceStructure(data.serviceStructure); imported = true; }
+            // Import High Priority GC Features
+            if (data.standingAgendaItems) { storage.saveStandingAgendaItems(data.standingAgendaItems); imported = true; }
+            if (data.tabledMotions) { storage.saveTabledMotions(data.tabledMotions); imported = true; }
+            if (data.motionAmendments) { storage.saveMotionAmendments(data.motionAmendments); imported = true; }
+            if (data.discussionThreads) { storage.saveDiscussionThreads(data.discussionThreads); imported = true; }
+            if (data.emailSettings) { storage.saveEmailSettings(data.emailSettings); imported = true; }
+            if (data.emailHistory) { storage.saveEmailHistory(data.emailHistory); imported = true; }
+            if (data.memberVotingRecords) { storage.saveMemberVotingRecords(data.memberVotingRecords); imported = true; }
+            if (data.implementationTracking) { storage.saveImplementationTracking(data.implementationTracking); imported = true; }
+            if (data.consentAgendaItems) { storage.saveConsentAgendaItems(data.consentAgendaItems); imported = true; }
+            if (data.consentHistory) { storage.saveConsentHistory(data.consentHistory); imported = true; }
+            // Import Medium Priority GC Features
+            if (data.reconsiderationRequests) { storage.saveReconsiderationRequests(data.reconsiderationRequests); imported = true; }
+            if (data.calendarEvents) { storage.saveCalendarEvents(data.calendarEvents); imported = true; }
+            if (data.roiCalculations) { storage.saveROICalculations(data.roiCalculations); imported = true; }
+            if (data.proxyVotes) { storage.saveProxyVotes(data.proxyVotes); imported = true; }
+            if (data.decisionReversals) { storage.saveDecisionReversals(data.decisionReversals); imported = true; }
 
             if (imported) {
                 // Store successful import timestamp
@@ -13353,6 +13387,63 @@ function populateMemberDropdowns() {
         });
 
         select.value = currentValue;
+    });
+}
+
+// Populate dropdowns for new GC features
+function populateNewFeatureDropdowns() {
+    const allMembers = storage.getMembers().sort((a, b) => a.name.localeCompare(b.name));
+    const gcLog = storage.getGroupConscienceLog();
+
+    // Populate member dropdowns
+    const memberDropdownIds = [
+        'reconsider-requested-by',
+        'proxy-member',
+        'proxy-designated-voter',
+        'voting-history-member',
+        'standing-item-assignee'
+    ];
+
+    memberDropdownIds.forEach(dropdownId => {
+        const select = document.getElementById(dropdownId);
+        if (!select) return;
+
+        const currentValue = select.value;
+        select.innerHTML = '<option value="">Select member...</option>';
+
+        allMembers.forEach(member => {
+            const option = document.createElement('option');
+            option.value = member.id || member.name;
+            option.textContent = member.name;
+            select.appendChild(option);
+        });
+
+        if (currentValue) select.value = currentValue;
+    });
+
+    // Populate GC decision dropdowns
+    const decisionDropdownIds = [
+        'reconsider-original-decision',
+        'reversal-original-decision',
+        'reversal-new-decision',
+        'impl-decision'
+    ];
+
+    decisionDropdownIds.forEach(dropdownId => {
+        const select = document.getElementById(dropdownId);
+        if (!select) return;
+
+        const currentValue = select.value;
+        select.innerHTML = '<option value="">Select a decision...</option>';
+
+        gcLog.slice().reverse().forEach(decision => {
+            const option = document.createElement('option');
+            option.value = decision.id;
+            option.textContent = `${decision.date} - ${decision.item.substring(0, 60)}${decision.item.length > 60 ? '...' : ''}`;
+            select.appendChild(option);
+        });
+
+        if (currentValue) select.value = currentValue;
     });
 }
 
@@ -18247,6 +18338,17 @@ function init() {
     performGCHistorySearch(); // Call direct function to avoid debounce on init
     updateGCStatistics();
     refreshGCTrends();
+
+    // Initialize high priority GC features
+    populateNewFeatureDropdowns();
+    refreshStandingItems();
+    refreshConsentAgenda();
+    refreshEmailHistory();
+
+    // Initialize medium priority GC features
+    refreshReconsiderationRequests();
+    refreshProxyVotes();
+    refreshDecisionReversals();
 
     // Initialize new features
     loadGroupSettings();
@@ -24654,6 +24756,60 @@ function refreshEmailHistory() {
     `).join('');
 }
 
+function viewEmailDetails(emailId) {
+    const history = storage.getEmailHistory();
+    const email = history.find(e => e.id === emailId);
+
+    if (!email) {
+        showToast('Email record not found', 'error');
+        return;
+    }
+
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 2rem;';
+
+    modal.innerHTML = `
+        <div style="background: #2c3e50; border-radius: 8px; max-width: 900px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 2rem; position: relative;">
+            <button onclick="this.closest('div[style*=fixed]').remove()" style="position: absolute; top: 1rem; right: 1rem; background: #e74c3c; border: none; color: white; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
+                <i class="fas fa-times"></i> Close
+            </button>
+
+            <h2 style="color: #e67e22; margin-bottom: 1.5rem;"><i class="fas fa-envelope"></i> Email Details</h2>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <strong>Type:</strong> <span style="text-transform: capitalize;">${email.type}</span>
+                </div>
+                <div>
+                    <strong>Meeting Date:</strong> ${email.meetingDate}
+                </div>
+                <div>
+                    <strong>Date Sent:</strong> ${new Date(email.dateSent).toLocaleString()}
+                </div>
+                <div>
+                    <strong>Recipients:</strong> ${email.recipients.split(',').length} people
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <h4 style="margin-bottom: 0.5rem;">Recipients List</h4>
+                <div style="padding: 1rem; background: #34495e; border-radius: 4px; font-size: 0.9rem;">
+                    ${email.recipients.split(',').map(r => r.trim()).join(', ')}
+                </div>
+            </div>
+
+            <div style="padding: 1.5rem; background: #34495e; border-radius: 4px;">
+                <h4 style="margin-bottom: 1rem;">Email Preview</h4>
+                <div style="background: white; color: #2c3e50; padding: 1.5rem; border-radius: 4px; font-family: Arial, sans-serif; white-space: pre-wrap;">
+                    ${email.content || 'No content preview available'}
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+}
+
 // FEATURE 8: Member Voting History
 function loadMemberVotingHistory() {
     const memberId = document.getElementById('voting-history-member').value;
@@ -24861,6 +25017,35 @@ function pullConsentItems() {
 
     showToast(`${checkedIds.length} items pulled for full discussion`, 'success');
     // Items would be moved to regular GC agenda
+}
+
+function pullFromConsent(itemId) {
+    const proposedItems = storage.getProposedAgendaItems();
+    const standingItems = storage.getStandingAgendaItems();
+
+    // Check if it's a proposed item
+    const proposedItem = proposedItems.find(i => i.id === itemId);
+    if (proposedItem) {
+        proposedItem.consent = false;
+        storage.saveProposedAgendaItems(proposedItems);
+        showToast('Item pulled from consent agenda for full discussion', 'success');
+        refreshConsentAgenda();
+        updateProposedAgendaTable();
+        return;
+    }
+
+    // Check if it's a standing item
+    const standingItem = standingItems.find(i => i.id === itemId);
+    if (standingItem) {
+        standingItem.consent = 'no';
+        storage.saveStandingAgendaItems(standingItems);
+        showToast('Standing item pulled from consent agenda for full discussion', 'success');
+        refreshConsentAgenda();
+        refreshStandingItems();
+        return;
+    }
+
+    showToast('Item not found', 'error');
 }
 
 function updateConsentHistory() {
@@ -25481,6 +25666,61 @@ function refreshDecisionReversals() {
         // Render reversal reasons chart
         renderReversalReasonsChart(reasonCounts);
     }
+}
+
+function viewReversalDetails(reversalId) {
+    const reversals = storage.getDecisionReversals();
+    const reversal = reversals.find(r => r.id === reversalId);
+
+    if (!reversal) {
+        showToast('Reversal not found', 'error');
+        return;
+    }
+
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 2rem;';
+
+    modal.innerHTML = `
+        <div style="background: #2c3e50; border-radius: 8px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 2rem; position: relative;">
+            <button onclick="this.closest('div[style*=fixed]').remove()" style="position: absolute; top: 1rem; right: 1rem; background: #e74c3c; border: none; color: white; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
+                <i class="fas fa-times"></i> Close
+            </button>
+
+            <h2 style="color: #e74c3c; margin-bottom: 1.5rem;"><i class="fas fa-exchange-alt"></i> Decision Reversal Details</h2>
+
+            <div style="margin-bottom: 1.5rem; padding: 1rem; background: #34495e; border-radius: 4px;">
+                <h3 style="color: #f39c12; margin-bottom: 1rem;">Original Decision</h3>
+                <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">${escapeHtml(reversal.originalMotion)}</p>
+            </div>
+
+            <div style="margin-bottom: 1.5rem; padding: 1rem; background: #34495e; border-radius: 4px;">
+                <h3 style="color: #2ecc71; margin-bottom: 1rem;">New Decision</h3>
+                <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">${escapeHtml(reversal.newMotion)}</p>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <strong>Reversal Date:</strong> ${reversal.reversalDate}
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <strong>Time Elapsed:</strong> ${reversal.monthsElapsed} months
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <strong>Reason Category:</strong> <span style="color: #f39c12;">${reversal.reason.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</span>
+            </div>
+
+            <div style="margin-bottom: 1.5rem; padding: 1rem; background: #34495e; border-radius: 4px;">
+                <h4 style="margin-bottom: 0.5rem;">Detailed Explanation</h4>
+                <p style="white-space: pre-wrap;">${escapeHtml(reversal.explanation)}</p>
+            </div>
+
+            <div style="padding: 1rem; background: #16a085; border-radius: 4px;">
+                <h4 style="margin-bottom: 0.5rem;"><i class="fas fa-lightbulb"></i> Lessons Learned</h4>
+                <p style="white-space: pre-wrap;">${escapeHtml(reversal.lessonsLearned)}</p>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
 }
 
 let reversalReasonsChart;
