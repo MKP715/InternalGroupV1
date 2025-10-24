@@ -4503,6 +4503,451 @@
                     <i class="fas fa-info-circle"></i> <strong>Note:</strong> This uses your device's default email client (mailto:). For automated email delivery, consider integrating with an email service provider.
                 </div>
             </div>
+
+            <!-- MEDIUM PRIORITY FEATURE 11: Motion Reconsideration Workflow -->
+            <div class="box mb-4" style="border-left: 4px solid #8e44ad;">
+                <h3><i class="fas fa-redo"></i> Motion Reconsideration Workflow</h3>
+                <p class="mb-3" style="font-size: 0.85rem; opacity: 0.8;">
+                    Formally reconsider a previously decided motion with new information
+                </p>
+
+                <div style="padding: 1rem; background: #8e44ad; border-radius: 4px; margin-bottom: 1.5rem;">
+                    <i class="fas fa-info-circle"></i> <strong>AA Tradition Note:</strong> Reconsideration should be rare and only when significant new information emerges or circumstances change substantially.
+                </div>
+
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="reconsider-original-decision">Original Decision to Reconsider *</label>
+                        <select id="reconsider-original-decision" onchange="loadOriginalDecision()">
+                            <option value="">Select a past decision...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="reconsider-requested-by">Requested By *</label>
+                        <select id="reconsider-requested-by"></select>
+                    </div>
+                </div>
+
+                <div id="original-decision-summary" style="display: none; padding: 1rem; background: #2c3e50; border-radius: 4px; margin-bottom: 1rem;">
+                    <h4 style="margin-bottom: 0.5rem;">Original Decision Summary</h4>
+                    <div id="original-decision-details"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reconsider-reason">Reason for Reconsideration *</label>
+                    <select id="reconsider-reason">
+                        <option value="new-information">Significant New Information</option>
+                        <option value="changed-circumstances">Changed Circumstances</option>
+                        <option value="implementation-issues">Implementation Issues Discovered</option>
+                        <option value="tradition-conflict">Potential Tradition Conflict</option>
+                        <option value="financial-impact">Unexpected Financial Impact</option>
+                        <option value="member-feedback">Substantial Member Feedback</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="reconsider-justification">Detailed Justification *</label>
+                    <textarea id="reconsider-justification" rows="4" placeholder="Explain what new information or changes justify reconsidering this decision..."></textarea>
+                </div>
+
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="reconsider-proposed-date">Proposed Reconsideration Date</label>
+                        <input type="date" id="reconsider-proposed-date">
+                    </div>
+                    <div class="form-group">
+                        <label for="reconsider-research-period">Research Period (days)</label>
+                        <input type="number" id="reconsider-research-period" min="7" max="90" value="14" placeholder="14">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reconsider-proposed-change">Proposed Change/Alternative</label>
+                    <textarea id="reconsider-proposed-change" rows="3" placeholder="What specific change are you proposing?"></textarea>
+                </div>
+
+                <button class="btn" onclick="submitReconsiderationRequest()" style="background: #8e44ad;">
+                    <i class="fas fa-paper-plane"></i> Submit Reconsideration Request
+                </button>
+
+                <h4 class="mt-4">Pending Reconsideration Requests</h4>
+                <div style="overflow-x: auto; margin-top: 1rem;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Original Motion</th>
+                                <th>Requested By</th>
+                                <th>Reason</th>
+                                <th>Proposed Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reconsideration-requests-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MEDIUM PRIORITY FEATURE 12: Calendar Integration -->
+            <div class="box mb-4" style="border-left: 4px solid #16a085;">
+                <h3><i class="fas fa-calendar-plus"></i> Calendar Integration</h3>
+                <p class="mb-3" style="font-size: 0.85rem; opacity: 0.8;">
+                    Sync GC meetings and decision deadlines to Google Calendar, Outlook, or Apple Calendar
+                </p>
+
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div style="padding: 1rem; background: #3498db; border-radius: 6px;">
+                        <h4 style="color: white; margin-bottom: 0.75rem;"><i class="fas fa-calendar-alt"></i> Add GC Meeting to Calendar</h4>
+
+                        <div class="form-group">
+                            <label for="cal-meeting-date" style="color: white;">Meeting Date *</label>
+                            <input type="date" id="cal-meeting-date">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cal-meeting-time" style="color: white;">Meeting Time</label>
+                            <input type="time" id="cal-meeting-time" value="18:00">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cal-duration" style="color: white;">Duration (hours)</label>
+                            <input type="number" id="cal-duration" min="0.5" max="4" step="0.5" value="1.5">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cal-location" style="color: white;">Location</label>
+                            <input type="text" id="cal-location" placeholder="Meeting location">
+                        </div>
+
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem;">
+                            <button class="btn" onclick="exportToGoogleCalendar()" style="background: white; color: #4285F4;">
+                                <i class="fab fa-google"></i> Google
+                            </button>
+                            <button class="btn" onclick="exportToOutlook()" style="background: white; color: #0078D4;">
+                                <i class="fab fa-microsoft"></i> Outlook
+                            </button>
+                            <button class="btn" onclick="exportToICS()" style="background: white; color: #3498db;">
+                                <i class="fas fa-download"></i> .ICS
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="padding: 1rem; background: #e74c3c; border-radius: 6px;">
+                        <h4 style="color: white; margin-bottom: 0.75rem;"><i class="fas fa-clock"></i> Add Decision Deadline</h4>
+
+                        <div class="form-group">
+                            <label for="cal-decision-title" style="color: white;">Decision Title *</label>
+                            <input type="text" id="cal-decision-title" placeholder="e.g., Vote on Rent Increase">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cal-deadline-date" style="color: white;">Deadline Date *</label>
+                            <input type="date" id="cal-deadline-date">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cal-reminder" style="color: white;">Reminder</label>
+                            <select id="cal-reminder">
+                                <option value="0">None</option>
+                                <option value="1">1 day before</option>
+                                <option value="3">3 days before</option>
+                                <option value="7" selected>1 week before</option>
+                            </select>
+                        </div>
+
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem;">
+                            <button class="btn" onclick="exportDeadlineToGoogleCalendar()" style="background: white; color: #4285F4;">
+                                <i class="fab fa-google"></i> Google
+                            </button>
+                            <button class="btn" onclick="exportDeadlineToOutlook()" style="background: white; color: #0078D4;">
+                                <i class="fab fa-microsoft"></i> Outlook
+                            </button>
+                            <button class="btn" onclick="exportDeadlineToICS()" style="background: white; color: #e74c3c;">
+                                <i class="fas fa-download"></i> .ICS
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem; padding: 1rem; background: #34495e; border-radius: 4px;">
+                    <h4 style="margin-bottom: 0.75rem;"><i class="fas fa-list"></i> Upcoming Calendar Events</h4>
+                    <div id="upcoming-calendar-events"></div>
+                </div>
+            </div>
+
+            <!-- MEDIUM PRIORITY FEATURE 13: Decision ROI/Impact Calculator -->
+            <div class="box mb-4" style="border-left: 4px solid #f39c12;">
+                <h3><i class="fas fa-calculator"></i> Decision ROI/Impact Calculator</h3>
+                <p class="mb-3" style="font-size: 0.85rem; opacity: 0.8;">
+                    Predict financial impact and return on investment before voting on financial decisions
+                </p>
+
+                <div class="grid" style="grid-template-columns: 1fr 2fr; gap: 2rem;">
+                    <div>
+                        <div class="form-group">
+                            <label for="roi-decision-title">Decision Title *</label>
+                            <input type="text" id="roi-decision-title" placeholder="e.g., Purchase New Coffee Maker">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="roi-initial-cost">Initial Cost ($) *</label>
+                            <input type="number" id="roi-initial-cost" step="0.01" placeholder="0.00">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="roi-ongoing-cost">Monthly Ongoing Cost ($)</label>
+                            <input type="number" id="roi-ongoing-cost" step="0.01" placeholder="0.00">
+                            <small style="font-size: 0.75rem; opacity: 0.7;">Maintenance, supplies, etc.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="roi-revenue-impact">Monthly Revenue Impact ($)</label>
+                            <input type="number" id="roi-revenue-impact" step="0.01" placeholder="0.00">
+                            <small style="font-size: 0.75rem; opacity: 0.7;">Increased 7th tradition, etc.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="roi-expense-savings">Monthly Expense Savings ($)</label>
+                            <input type="number" id="roi-expense-savings" step="0.01" placeholder="0.00">
+                            <small style="font-size: 0.75rem; opacity: 0.7;">What costs will this reduce?</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="roi-timeframe">Timeframe (months)</label>
+                            <input type="number" id="roi-timeframe" min="1" max="60" value="12" placeholder="12">
+                        </div>
+
+                        <button class="btn" onclick="calculateROI()" style="background: #f39c12;">
+                            <i class="fas fa-chart-line"></i> Calculate Impact
+                        </button>
+                    </div>
+
+                    <div>
+                        <div id="roi-results" style="display: none;">
+                            <div style="padding: 1.5rem; background: #2c3e50; border-radius: 6px; margin-bottom: 1rem;">
+                                <h4 style="color: #f39c12; margin-bottom: 1rem;">Financial Impact Summary</h4>
+
+                                <div class="grid" style="grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 2rem; font-weight: bold;" id="roi-total-cost-display">$0</div>
+                                        <div style="font-size: 0.85rem; opacity: 0.8;">Total Cost</div>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 2rem; font-weight: bold;" id="roi-net-impact-display">$0</div>
+                                        <div style="font-size: 0.85rem; opacity: 0.8;">Net Impact</div>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 2rem; font-weight: bold;" id="roi-payback-display">N/A</div>
+                                        <div style="font-size: 0.85rem; opacity: 0.8;">Payback Period</div>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 2rem; font-weight: bold;" id="roi-percentage-display">0%</div>
+                                        <div style="font-size: 0.85rem; opacity: 0.8;">ROI</div>
+                                    </div>
+                                </div>
+
+                                <div id="roi-recommendation" style="padding: 1rem; border-radius: 4px; margin-bottom: 1rem;"></div>
+
+                                <canvas id="roi-chart"></canvas>
+                            </div>
+
+                            <div style="padding: 1rem; background: #34495e; border-radius: 4px;">
+                                <h4 style="margin-bottom: 0.75rem;">Budget Impact Analysis</h4>
+                                <div id="budget-impact-details"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MEDIUM PRIORITY FEATURE 14: Proxy Voting System -->
+            <div class="box mb-4" style="border-left: 4px solid #9b59b6;">
+                <h3><i class="fas fa-user-friends"></i> Proxy Voting System</h3>
+                <p class="mb-3" style="font-size: 0.85rem; opacity: 0.8;">
+                    Allow members to designate proxy voters when unable to attend GC meetings
+                </p>
+
+                <div style="padding: 1rem; background: #e67e22; border-radius: 4px; margin-bottom: 1.5rem;">
+                    <i class="fas fa-exclamation-triangle"></i> <strong>Important:</strong> Proxy voting should align with group guidelines. Some groups may not allow proxies. Check your bylaws first.
+                </div>
+
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div>
+                        <h4><i class="fas fa-user-plus"></i> Designate Proxy</h4>
+
+                        <div class="form-group">
+                            <label for="proxy-member">Your Name *</label>
+                            <select id="proxy-member"></select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="proxy-designated-voter">Designate Proxy To *</label>
+                            <select id="proxy-designated-voter"></select>
+                            <small style="font-size: 0.75rem; opacity: 0.7;">This person will vote on your behalf</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="proxy-meeting-date">For Meeting Date *</label>
+                            <input type="date" id="proxy-meeting-date">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="proxy-scope">Proxy Scope</label>
+                            <select id="proxy-scope" onchange="toggleProxyInstructions()">
+                                <option value="general">General Proxy - Vote as they see fit</option>
+                                <option value="directed">Directed Proxy - Vote as I specify</option>
+                            </select>
+                        </div>
+
+                        <div id="proxy-directed-instructions" style="display: none;">
+                            <div class="form-group">
+                                <label for="proxy-instructions">Voting Instructions</label>
+                                <textarea id="proxy-instructions" rows="3" placeholder="Specify how you want your proxy to vote on each item..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="proxy-reason">Reason for Proxy</label>
+                            <select id="proxy-reason">
+                                <option value="travel">Travel</option>
+                                <option value="work">Work Conflict</option>
+                                <option value="health">Health Issue</option>
+                                <option value="emergency">Emergency</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <button class="btn" onclick="submitProxyDesignation()" style="background: #9b59b6;">
+                            <i class="fas fa-save"></i> Submit Proxy Designation
+                        </button>
+                    </div>
+
+                    <div>
+                        <h4><i class="fas fa-list-alt"></i> Active Proxies</h4>
+                        <div style="overflow-x: auto; margin-top: 1rem;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Member</th>
+                                        <th>Proxy</th>
+                                        <th>Meeting</th>
+                                        <th>Type</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="active-proxies-body"></tbody>
+                            </table>
+                        </div>
+
+                        <h4 class="mt-4"><i class="fas fa-user-check"></i> My Proxy Assignments</h4>
+                        <p style="font-size: 0.85rem; opacity: 0.8;">Meetings where others have designated you to vote for them</p>
+                        <div id="my-proxy-assignments"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MEDIUM PRIORITY FEATURE 15: Decision Reversal Tracking -->
+            <div class="box mb-4" style="border-left: 4px solid #e74c3c;">
+                <h3><i class="fas fa-exchange-alt"></i> Decision Reversal Tracking</h3>
+                <p class="mb-3" style="font-size: 0.85rem; opacity: 0.8;">
+                    Track when and why decisions are reversed to learn from past patterns
+                </p>
+
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="reversal-original-decision">Original Decision *</label>
+                        <select id="reversal-original-decision" onchange="loadReversalDecision()"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="reversal-new-decision">New/Replacement Decision *</label>
+                        <select id="reversal-new-decision"></select>
+                    </div>
+                </div>
+
+                <div id="reversal-original-summary" style="display: none; padding: 1rem; background: #2c3e50; border-radius: 4px; margin-bottom: 1rem;">
+                    <h4>Original Decision</h4>
+                    <div id="reversal-original-details"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reversal-reason-category">Reversal Reason Category *</label>
+                    <select id="reversal-reason-category">
+                        <option value="ineffective">Original Decision Ineffective</option>
+                        <option value="unintended-consequences">Unintended Consequences</option>
+                        <option value="financial">Financial Reasons</option>
+                        <option value="changed-circumstances">Circumstances Changed</option>
+                        <option value="tradition-conflict">Tradition/Principle Conflict</option>
+                        <option value="member-feedback">Member Feedback/Unity Issues</option>
+                        <option value="better-alternative">Better Alternative Found</option>
+                        <option value="implementation-failed">Implementation Failed</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="reversal-explanation">Detailed Explanation *</label>
+                    <textarea id="reversal-explanation" rows="4" placeholder="Explain why the original decision is being reversed and what we learned..."></textarea>
+                </div>
+
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="reversal-date">Reversal Date</label>
+                        <input type="date" id="reversal-date">
+                    </div>
+                    <div class="form-group">
+                        <label for="reversal-months-elapsed">Months Since Original</label>
+                        <input type="number" id="reversal-months-elapsed" readonly>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reversal-lessons-learned">Lessons Learned *</label>
+                    <textarea id="reversal-lessons-learned" rows="3" placeholder="What can we learn to avoid similar issues in the future?"></textarea>
+                </div>
+
+                <button class="btn" onclick="saveDecisionReversal()" style="background: #e74c3c;">
+                    <i class="fas fa-save"></i> Record Reversal
+                </button>
+
+                <h4 class="mt-4">Reversal History & Analysis</h4>
+                <div style="overflow-x: auto; margin-top: 1rem;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Original Decision</th>
+                                <th>Reversed To</th>
+                                <th>Reason</th>
+                                <th>Time Elapsed</th>
+                                <th>Lessons Learned</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="decision-reversals-body"></tbody>
+                    </table>
+                </div>
+
+                <div class="mt-4" style="padding: 1.5rem; background: #2c3e50; border-radius: 6px;">
+                    <h4 style="margin-bottom: 1rem;"><i class="fas fa-chart-pie"></i> Reversal Patterns Analysis</h4>
+                    <div class="grid" style="grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 2rem; font-weight: bold; color: #e74c3c;" id="total-reversals-count">0</div>
+                            <div style="font-size: 0.85rem; opacity: 0.8;">Total Reversals</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2rem; font-weight: bold; color: #f39c12;" id="avg-reversal-time">0</div>
+                            <div style="font-size: 0.85rem; opacity: 0.8;">Avg Time to Reversal</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2rem; font-weight: bold; color: #3498db;" id="most-common-reason">N/A</div>
+                            <div style="font-size: 0.85rem; opacity: 0.8;">Most Common Reason</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1.5rem;">
+                        <canvas id="reversal-reasons-chart"></canvas>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- GC INVENTORY SECTION -->
@@ -7251,7 +7696,44 @@ const storage = {
         try { return JSON.parse(localStorage.getItem('consentHistory') || '[]'); }
         catch(e) { console.error('Error parsing consentHistory:', e); return []; }
     },
-    saveConsentHistory(history) { localStorage.setItem('consentHistory', JSON.stringify(history)); }
+    saveConsentHistory(history) { localStorage.setItem('consentHistory', JSON.stringify(history)); },
+
+    // MEDIUM PRIORITY FEATURE STORAGE METHODS
+
+    // Feature 11: Motion Reconsideration
+    getReconsiderationRequests() {
+        try { return JSON.parse(localStorage.getItem('reconsiderationRequests') || '[]'); }
+        catch(e) { console.error('Error parsing reconsiderationRequests:', e); return []; }
+    },
+    saveReconsiderationRequests(requests) { localStorage.setItem('reconsiderationRequests', JSON.stringify(requests)); },
+
+    // Feature 12: Calendar Events
+    getCalendarEvents() {
+        try { return JSON.parse(localStorage.getItem('calendarEvents') || '[]'); }
+        catch(e) { console.error('Error parsing calendarEvents:', e); return []; }
+    },
+    saveCalendarEvents(events) { localStorage.setItem('calendarEvents', JSON.stringify(events)); },
+
+    // Feature 13: ROI Calculations
+    getROICalculations() {
+        try { return JSON.parse(localStorage.getItem('roiCalculations') || '[]'); }
+        catch(e) { console.error('Error parsing roiCalculations:', e); return []; }
+    },
+    saveROICalculations(calculations) { localStorage.setItem('roiCalculations', JSON.stringify(calculations)); },
+
+    // Feature 14: Proxy Voting
+    getProxyVotes() {
+        try { return JSON.parse(localStorage.getItem('proxyVotes') || '[]'); }
+        catch(e) { console.error('Error parsing proxyVotes:', e); return []; }
+    },
+    saveProxyVotes(proxies) { localStorage.setItem('proxyVotes', JSON.stringify(proxies)); },
+
+    // Feature 15: Decision Reversals
+    getDecisionReversals() {
+        try { return JSON.parse(localStorage.getItem('decisionReversals') || '[]'); }
+        catch(e) { console.error('Error parsing decisionReversals:', e); return []; }
+    },
+    saveDecisionReversals(reversals) { localStorage.setItem('decisionReversals', JSON.stringify(reversals)); }
 };
 // Initialize default data on first load
 function initDefaults() {
@@ -24425,6 +24907,622 @@ function checkAndUpdateWorkflowStatuses() {
 
 // Run workflow check every hour
 setInterval(checkAndUpdateWorkflowStatuses, 3600000);
+
+// ========== MEDIUM PRIORITY FEATURES: 5 ENHANCEMENTS ==========
+
+// FEATURE 11: Motion Reconsideration Workflow
+function loadOriginalDecision() {
+    const decisionId = document.getElementById('reconsider-original-decision').value;
+    if (!decisionId) {
+        document.getElementById('original-decision-summary').style.display = 'none';
+        return;
+    }
+
+    const gcLog = storage.getGroupConscienceLog();
+    const decision = gcLog.find(d => d.id === decisionId);
+
+    if (decision) {
+        const summary = document.getElementById('original-decision-summary');
+        summary.style.display = 'block';
+
+        const details = document.getElementById('original-decision-details');
+        details.innerHTML = `
+            <div style="margin-bottom: 0.5rem;"><strong>Date:</strong> ${decision.date}</div>
+            <div style="margin-bottom: 0.5rem;"><strong>Motion:</strong> ${escapeHtml(decision.item)}</div>
+            <div style="margin-bottom: 0.5rem;"><strong>Result:</strong> ${decision.status}</div>
+            <div><strong>Votes:</strong> ${decision.votesFor || 0} For, ${decision.votesAgainst || 0} Against, ${decision.votesAbstain || 0} Abstain</div>
+        `;
+    }
+}
+
+function submitReconsiderationRequest() {
+    const decisionId = document.getElementById('reconsider-original-decision').value;
+    const requestedBy = document.getElementById('reconsider-requested-by').value;
+    const reason = document.getElementById('reconsider-reason').value;
+    const justification = document.getElementById('reconsider-justification').value.trim();
+    const proposedDate = document.getElementById('reconsider-proposed-date').value;
+    const researchPeriod = parseInt(document.getElementById('reconsider-research-period').value);
+    const proposedChange = document.getElementById('reconsider-proposed-change').value.trim();
+
+    if (!decisionId || !requestedBy || !justification) {
+        showToast('Please fill in all required fields', 'error');
+        return;
+    }
+
+    const requests = storage.getReconsiderationRequests();
+    const gcLog = storage.getGroupConscienceLog();
+    const originalDecision = gcLog.find(d => d.id === decisionId);
+
+    requests.push({
+        id: genId(),
+        decisionId,
+        originalMotion: originalDecision ? originalDecision.item : 'Unknown',
+        requestedBy,
+        reason,
+        justification,
+        proposedDate,
+        researchPeriod,
+        proposedChange,
+        status: 'pending',
+        submittedDate: new Date().toISOString()
+    });
+
+    storage.saveReconsiderationRequests(requests);
+    refreshReconsiderationRequests();
+    showToast('Reconsideration request submitted', 'success');
+
+    // Clear form
+    document.getElementById('reconsider-original-decision').value = '';
+    document.getElementById('reconsider-justification').value = '';
+    document.getElementById('reconsider-proposed-change').value = '';
+    document.getElementById('original-decision-summary').style.display = 'none';
+}
+
+function refreshReconsiderationRequests() {
+    const requests = storage.getReconsiderationRequests();
+    const tbody = document.getElementById('reconsideration-requests-body');
+    if (!tbody) return;
+
+    tbody.innerHTML = requests.filter(r => r.status === 'pending').map(req => `
+        <tr>
+            <td>${escapeHtml(req.originalMotion).substring(0, 50)}...</td>
+            <td>${escapeHtml(req.requestedBy)}</td>
+            <td>${escapeHtml(req.reason)}</td>
+            <td>${req.proposedDate || 'TBD'}</td>
+            <td><span style="color: #f39c12;">${req.status}</span></td>
+            <td>
+                <button class="btn small" onclick="approveReconsideration('${req.id}')" style="background: #2ecc71;">Approve</button>
+                <button class="btn small" onclick="denyReconsideration('${req.id}')" style="background: #e74c3c;">Deny</button>
+            </td>
+        </tr>
+    `).join('') || '<tr><td colspan="6" style="text-align: center; opacity: 0.7;">No pending requests</td></tr>';
+}
+
+function approveReconsideration(requestId) {
+    const requests = storage.getReconsiderationRequests();
+    const request = requests.find(r => r.id === requestId);
+    if (request) {
+        request.status = 'approved';
+        storage.saveReconsiderationRequests(requests);
+        refreshReconsiderationRequests();
+        showToast('Reconsideration request approved', 'success');
+    }
+}
+
+function denyReconsideration(requestId) {
+    if (!confirm('Deny this reconsideration request?')) return;
+    const requests = storage.getReconsiderationRequests();
+    const request = requests.find(r => r.id === requestId);
+    if (request) {
+        request.status = 'denied';
+        storage.saveReconsiderationRequests(requests);
+        refreshReconsiderationRequests();
+        showToast('Reconsideration request denied', 'success');
+    }
+}
+
+// FEATURE 12: Calendar Integration
+function exportToGoogleCalendar() {
+    const date = document.getElementById('cal-meeting-date').value;
+    const time = document.getElementById('cal-meeting-time').value;
+    const duration = parseFloat(document.getElementById('cal-duration').value);
+    const location = document.getElementById('cal-location').value;
+
+    if (!date) {
+        showToast('Please select a meeting date', 'error');
+        return;
+    }
+
+    const startDateTime = `${date}T${time || '18:00'}:00`;
+    const endTime = new Date(`${date}T${time || '18:00'}:00`);
+    endTime.setHours(endTime.getHours() + (duration || 1.5));
+    const endDateTime = endTime.toISOString().slice(0, 19);
+
+    const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Group Conscience Meeting')}&dates=${startDateTime.replace(/[-:]/g, '')}/${endDateTime.replace(/[-:]/g, '')}&details=${encodeURIComponent('Group Conscience Meeting')}&location=${encodeURIComponent(location || '')}`;
+
+    window.open(googleUrl, '_blank');
+    saveCalendarEvent('GC Meeting', date, time, 'google');
+}
+
+function exportToOutlook() {
+    const date = document.getElementById('cal-meeting-date').value;
+    const time = document.getElementById('cal-meeting-time').value;
+    const duration = parseFloat(document.getElementById('cal-duration').value);
+    const location = document.getElementById('cal-location').value;
+
+    if (!date) {
+        showToast('Please select a meeting date', 'error');
+        return;
+    }
+
+    const startDateTime = `${date}T${time || '18:00'}:00`;
+    const endTime = new Date(`${date}T${time || '18:00'}:00`);
+    endTime.setHours(endTime.getHours() + (duration || 1.5));
+    const endDateTime = endTime.toISOString().slice(0, 19);
+
+    const outlookUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent('Group Conscience Meeting')}&startdt=${startDateTime}&enddt=${endDateTime}&location=${encodeURIComponent(location || '')}`;
+
+    window.open(outlookUrl, '_blank');
+    saveCalendarEvent('GC Meeting', date, time, 'outlook');
+}
+
+function exportToICS() {
+    const date = document.getElementById('cal-meeting-date').value;
+    const time = document.getElementById('cal-meeting-time').value;
+    const duration = parseFloat(document.getElementById('cal-duration').value);
+    const location = document.getElementById('cal-location').value;
+
+    if (!date) {
+        showToast('Please select a meeting date', 'error');
+        return;
+    }
+
+    const startDateTime = new Date(`${date}T${time || '18:00'}:00`);
+    const endTime = new Date(startDateTime);
+    endTime.setHours(endTime.getHours() + (duration || 1.5));
+
+    const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+DTSTART:${startDateTime.toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+DTEND:${endTime.toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+SUMMARY:Group Conscience Meeting
+LOCATION:${location || ''}
+DESCRIPTION:Group Conscience Meeting
+END:VEVENT
+END:VCALENDAR`;
+
+    const blob = new Blob([icsContent], { type: 'text/calendar' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `gc-meeting-${date}.ics`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    saveCalendarEvent('GC Meeting', date, time, 'ics');
+    showToast('Calendar file downloaded', 'success');
+}
+
+function exportDeadlineToGoogleCalendar() {
+    const title = document.getElementById('cal-decision-title').value.trim();
+    const date = document.getElementById('cal-deadline-date').value;
+    const reminder = document.getElementById('cal-reminder').value;
+
+    if (!title || !date) {
+        showToast('Please fill in required fields', 'error');
+        return;
+    }
+
+    const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title + ' - Deadline')}&dates=${date.replace(/-/g, '')}/${date.replace(/-/g, '')}&details=${encodeURIComponent('Decision deadline: ' + title)}`;
+
+    window.open(googleUrl, '_blank');
+    saveCalendarEvent(title, date, null, 'google');
+}
+
+function exportDeadlineToOutlook() {
+    const title = document.getElementById('cal-decision-title').value.trim();
+    const date = document.getElementById('cal-deadline-date').value;
+
+    if (!title || !date) {
+        showToast('Please fill in required fields', 'error');
+        return;
+    }
+
+    const outlookUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(title + ' - Deadline')}&startdt=${date}T09:00:00&enddt=${date}T10:00:00&allday=true`;
+
+    window.open(outlookUrl, '_blank');
+    saveCalendarEvent(title, date, null, 'outlook');
+}
+
+function exportDeadlineToICS() {
+    const title = document.getElementById('cal-decision-title').value.trim();
+    const date = document.getElementById('cal-deadline-date').value;
+
+    if (!title || !date) {
+        showToast('Please fill in required fields', 'error');
+        return;
+    }
+
+    const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:${date.replace(/-/g, '')}
+SUMMARY:${title} - Deadline
+DESCRIPTION:Decision deadline: ${title}
+END:VEVENT
+END:VCALENDAR`;
+
+    const blob = new Blob([icsContent], { type: 'text/calendar' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `decision-deadline-${date}.ics`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    saveCalendarEvent(title, date, null, 'ics');
+    showToast('Calendar file downloaded', 'success');
+}
+
+function saveCalendarEvent(title, date, time, platform) {
+    const events = storage.getCalendarEvents();
+    events.push({
+        id: genId(),
+        title,
+        date,
+        time,
+        platform,
+        exported: new Date().toISOString()
+    });
+    storage.saveCalendarEvents(events);
+}
+
+// FEATURE 13: Decision ROI/Impact Calculator
+let roiChart;
+
+function calculateROI() {
+    const title = document.getElementById('roi-decision-title').value.trim();
+    const initialCost = parseFloat(document.getElementById('roi-initial-cost').value) || 0;
+    const ongoingCost = parseFloat(document.getElementById('roi-ongoing-cost').value) || 0;
+    const revenueImpact = parseFloat(document.getElementById('roi-revenue-impact').value) || 0;
+    const expenseSavings = parseFloat(document.getElementById('roi-expense-savings').value) || 0;
+    const timeframe = parseInt(document.getElementById('roi-timeframe').value) || 12;
+
+    if (!title || initialCost === 0) {
+        showToast('Please enter decision title and initial cost', 'error');
+        return;
+    }
+
+    const monthlyBenefit = revenueImpact + expenseSavings - ongoingCost;
+    const totalCost = initialCost + (ongoingCost * timeframe);
+    const totalBenefit = monthlyBenefit * timeframe;
+    const netImpact = totalBenefit - totalCost;
+    const roiPercentage = totalCost > 0 ? ((netImpact / totalCost) * 100) : 0;
+    const paybackMonths = monthlyBenefit > 0 ? Math.ceil(initialCost / monthlyBenefit) : null;
+
+    // Update display
+    document.getElementById('roi-results').style.display = 'block';
+    document.getElementById('roi-total-cost-display').textContent = `$${totalCost.toFixed(2)}`;
+    document.getElementById('roi-net-impact-display').textContent = `$${netImpact.toFixed(2)}`;
+    document.getElementById('roi-net-impact-display').style.color = netImpact >= 0 ? '#2ecc71' : '#e74c3c';
+    document.getElementById('roi-payback-display').textContent = paybackMonths ? `${paybackMonths} months` : 'N/A';
+    document.getElementById('roi-percentage-display').textContent = `${roiPercentage.toFixed(1)}%`;
+    document.getElementById('roi-percentage-display').style.color = roiPercentage >= 0 ? '#2ecc71' : '#e74c3c';
+
+    // Recommendation
+    const recommendation = document.getElementById('roi-recommendation');
+    if (netImpact > 0) {
+        recommendation.style.background = '#2ecc71';
+        recommendation.innerHTML = `<strong>✓ Recommended:</strong> Positive financial impact of $${netImpact.toFixed(2)} over ${timeframe} months`;
+    } else if (netImpact === 0) {
+        recommendation.style.background = '#f39c12';
+        recommendation.innerHTML = `<strong>⚠ Neutral:</strong> Break-even decision with no financial gain or loss`;
+    } else {
+        recommendation.style.background = '#e74c3c';
+        recommendation.innerHTML = `<strong>✗ Not Recommended:</strong> Negative financial impact of $${Math.abs(netImpact).toFixed(2)} over ${timeframe} months`;
+    }
+
+    // Budget impact
+    const currentBalance = calculateCurrentBalance();
+    const budgetImpact = document.getElementById('budget-impact-details');
+    budgetImpact.innerHTML = `
+        <div style="margin-bottom: 0.5rem;"><strong>Current Balance:</strong> $${currentBalance.toFixed(2)}</div>
+        <div style="margin-bottom: 0.5rem;"><strong>After Initial Purchase:</strong> $${(currentBalance - initialCost).toFixed(2)}</div>
+        <div style="margin-bottom: 0.5rem;"><strong>Monthly Cash Flow Impact:</strong> ${monthlyBenefit >= 0 ? '+' : ''}$${monthlyBenefit.toFixed(2)}</div>
+        <div><strong>Balance after ${timeframe} months:</strong> $${(currentBalance - initialCost + (monthlyBenefit * timeframe)).toFixed(2)}</div>
+    `;
+
+    // Create chart
+    renderROIChart(timeframe, initialCost, monthlyBenefit, currentBalance);
+
+    // Save calculation
+    const calculations = storage.getROICalculations();
+    calculations.push({
+        id: genId(),
+        title,
+        initialCost,
+        ongoingCost,
+        revenueImpact,
+        expenseSavings,
+        timeframe,
+        netImpact,
+        roiPercentage,
+        calculatedDate: new Date().toISOString()
+    });
+    storage.saveROICalculations(calculations);
+}
+
+function renderROIChart(timeframe, initialCost, monthlyBenefit, currentBalance) {
+    const ctx = document.getElementById('roi-chart');
+    if (!ctx) return;
+
+    const labels = [];
+    const balanceData = [];
+    let balance = currentBalance - initialCost;
+
+    for (let i = 0; i <= timeframe; i++) {
+        labels.push(`Month ${i}`);
+        balanceData.push(balance);
+        if (i < timeframe) balance += monthlyBenefit;
+    }
+
+    if (roiChart) roiChart.destroy();
+
+    roiChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [{
+                label: 'Projected Balance',
+                data: balanceData,
+                borderColor: monthlyBenefit >= 0 ? '#2ecc71' : '#e74c3c',
+                backgroundColor: monthlyBenefit >= 0 ? 'rgba(46, 204, 113, 0.1)' : 'rgba(231, 76, 60, 0.1)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: true },
+                title: { display: true, text: 'Financial Impact Over Time' }
+            }
+        }
+    });
+}
+
+// FEATURE 14: Proxy Voting System
+function toggleProxyInstructions() {
+    const scope = document.getElementById('proxy-scope').value;
+    const instructionsDiv = document.getElementById('proxy-directed-instructions');
+    instructionsDiv.style.display = scope === 'directed' ? 'block' : 'none';
+}
+
+function submitProxyDesignation() {
+    const member = document.getElementById('proxy-member').value;
+    const designatedVoter = document.getElementById('proxy-designated-voter').value;
+    const meetingDate = document.getElementById('proxy-meeting-date').value;
+    const scope = document.getElementById('proxy-scope').value;
+    const instructions = document.getElementById('proxy-instructions').value.trim();
+    const reason = document.getElementById('proxy-reason').value;
+
+    if (!member || !designatedVoter || !meetingDate) {
+        showToast('Please fill in all required fields', 'error');
+        return;
+    }
+
+    if (member === designatedVoter) {
+        showToast('Cannot designate yourself as proxy', 'error');
+        return;
+    }
+
+    const proxies = storage.getProxyVotes();
+    proxies.push({
+        id: genId(),
+        member,
+        designatedVoter,
+        meetingDate,
+        scope,
+        instructions: scope === 'directed' ? instructions : '',
+        reason,
+        status: 'active',
+        createdDate: new Date().toISOString()
+    });
+
+    storage.saveProxyVotes(proxies);
+    refreshProxyVotes();
+    showToast('Proxy designation submitted', 'success');
+
+    // Clear form
+    document.getElementById('proxy-meeting-date').value = '';
+    document.getElementById('proxy-instructions').value = '';
+}
+
+function refreshProxyVotes() {
+    const proxies = storage.getProxyVotes();
+    const members = storage.getMembers();
+    const tbody = document.getElementById('active-proxies-body');
+    if (!tbody) return;
+
+    const activeTodayProxies = proxies.filter(p => p.status === 'active' && new Date(p.meetingDate) >= new Date());
+
+    tbody.innerHTML = activeTodayProxies.map(proxy => {
+        const memberName = members.find(m => m.id === proxy.member)?.name || proxy.member;
+        const voterName = members.find(m => m.id === proxy.designatedVoter)?.name || proxy.designatedVoter;
+
+        return `
+            <tr>
+                <td>${escapeHtml(memberName)}</td>
+                <td>${escapeHtml(voterName)}</td>
+                <td>${proxy.meetingDate}</td>
+                <td>${proxy.scope === 'general' ? 'General' : 'Directed'}</td>
+                <td><button class="btn small" onclick="revokeProxy('${proxy.id}')" style="background: #e74c3c;">Revoke</button></td>
+            </tr>
+        `;
+    }).join('') || '<tr><td colspan="5" style="text-align: center; opacity: 0.7;">No active proxies</td></tr>';
+}
+
+function revokeProxy(proxyId) {
+    if (!confirm('Revoke this proxy designation?')) return;
+    const proxies = storage.getProxyVotes();
+    const proxy = proxies.find(p => p.id === proxyId);
+    if (proxy) {
+        proxy.status = 'revoked';
+        storage.saveProxyVotes(proxies);
+        refreshProxyVotes();
+        showToast('Proxy revoked', 'success');
+    }
+}
+
+// FEATURE 15: Decision Reversal Tracking
+function loadReversalDecision() {
+    const decisionId = document.getElementById('reversal-original-decision').value;
+    if (!decisionId) {
+        document.getElementById('reversal-original-summary').style.display = 'none';
+        return;
+    }
+
+    const gcLog = storage.getGroupConscienceLog();
+    const decision = gcLog.find(d => d.id === decisionId);
+
+    if (decision) {
+        const summary = document.getElementById('reversal-original-summary');
+        summary.style.display = 'block';
+
+        const details = document.getElementById('reversal-original-details');
+        details.innerHTML = `
+            <div style="margin-bottom: 0.5rem;"><strong>Date:</strong> ${decision.date}</div>
+            <div style="margin-bottom: 0.5rem;"><strong>Motion:</strong> ${escapeHtml(decision.item)}</div>
+            <div style="margin-bottom: 0.5rem;"><strong>Result:</strong> ${decision.status}</div>
+        `;
+
+        // Calculate months elapsed
+        const originalDate = new Date(decision.date);
+        const today = new Date();
+        const monthsElapsed = Math.floor((today - originalDate) / (1000 * 60 * 60 * 24 * 30));
+        document.getElementById('reversal-months-elapsed').value = monthsElapsed;
+    }
+}
+
+function saveDecisionReversal() {
+    const originalId = document.getElementById('reversal-original-decision').value;
+    const newId = document.getElementById('reversal-new-decision').value;
+    const reason = document.getElementById('reversal-reason-category').value;
+    const explanation = document.getElementById('reversal-explanation').value.trim();
+    const reversalDate = document.getElementById('reversal-date').value;
+    const monthsElapsed = parseInt(document.getElementById('reversal-months-elapsed').value);
+    const lessonsLearned = document.getElementById('reversal-lessons-learned').value.trim();
+
+    if (!originalId || !newId || !explanation || !lessonsLearned) {
+        showToast('Please fill in all required fields', 'error');
+        return;
+    }
+
+    const gcLog = storage.getGroupConscienceLog();
+    const originalDecision = gcLog.find(d => d.id === originalId);
+    const newDecision = gcLog.find(d => d.id === newId);
+
+    const reversals = storage.getDecisionReversals();
+    reversals.push({
+        id: genId(),
+        originalId,
+        newId,
+        originalMotion: originalDecision ? originalDecision.item : 'Unknown',
+        newMotion: newDecision ? newDecision.item : 'Unknown',
+        reason,
+        explanation,
+        reversalDate: reversalDate || new Date().toISOString().split('T')[0],
+        monthsElapsed,
+        lessonsLearned,
+        recordedDate: new Date().toISOString()
+    });
+
+    storage.saveDecisionReversals(reversals);
+    refreshDecisionReversals();
+    showToast('Decision reversal recorded', 'success');
+
+    // Clear form
+    document.getElementById('reversal-explanation').value = '';
+    document.getElementById('reversal-lessons-learned').value = '';
+    document.getElementById('reversal-original-summary').style.display = 'none';
+}
+
+function refreshDecisionReversals() {
+    const reversals = storage.getDecisionReversals();
+    const tbody = document.getElementById('decision-reversals-body');
+    if (!tbody) return;
+
+    tbody.innerHTML = reversals.map(rev => `
+        <tr>
+            <td>${escapeHtml(rev.originalMotion).substring(0, 40)}...</td>
+            <td>${escapeHtml(rev.newMotion).substring(0, 40)}...</td>
+            <td>${escapeHtml(rev.reason)}</td>
+            <td>${rev.monthsElapsed} months</td>
+            <td>${escapeHtml(rev.lessonsLearned).substring(0, 50)}...</td>
+            <td><button class="btn small" onclick="viewReversalDetails('${rev.id}')">View</button></td>
+        </tr>
+    `).join('') || '<tr><td colspan="6" style="text-align: center; opacity: 0.7;">No reversals recorded</td></tr>';
+
+    // Update stats
+    document.getElementById('total-reversals-count').textContent = reversals.length;
+
+    if (reversals.length > 0) {
+        const avgTime = reversals.reduce((sum, r) => sum + r.monthsElapsed, 0) / reversals.length;
+        document.getElementById('avg-reversal-time').textContent = `${avgTime.toFixed(1)} mo`;
+
+        const reasonCounts = {};
+        reversals.forEach(r => {
+            reasonCounts[r.reason] = (reasonCounts[r.reason] || 0) + 1;
+        });
+        const mostCommon = Object.keys(reasonCounts).reduce((a, b) => reasonCounts[a] > reasonCounts[b] ? a : b, '');
+        document.getElementById('most-common-reason').textContent = mostCommon;
+
+        // Render reversal reasons chart
+        renderReversalReasonsChart(reasonCounts);
+    }
+}
+
+let reversalReasonsChart;
+
+function renderReversalReasonsChart(reasonCounts) {
+    const ctx = document.getElementById('reversal-reasons-chart');
+    if (!ctx) return;
+
+    const labels = Object.keys(reasonCounts);
+    const data = Object.values(reasonCounts);
+    const colors = ['#e74c3c', '#f39c12', '#3498db', '#2ecc71', '#9b59b6', '#1abc9c', '#e67e22', '#95a5a6', '#34495e'];
+
+    if (reversalReasonsChart) reversalReasonsChart.destroy();
+
+    reversalReasonsChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels.map(l => l.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())),
+            datasets: [{
+                data: data,
+                backgroundColor: colors.slice(0, labels.length),
+                borderWidth: 2,
+                borderColor: '#2c3e50'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                },
+                title: {
+                    display: true,
+                    text: 'Reversal Reasons Distribution',
+                    color: '#ecf0f1'
+                }
+            }
+        }
+    });
+}
 
 // Initialize PWA
 if (document.readyState === 'loading') {
