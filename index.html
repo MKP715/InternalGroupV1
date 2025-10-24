@@ -22108,21 +22108,72 @@ function populateImpactGCMotions() {
 
 // ========== FINANCIAL HEALTH DASHBOARD ==========
 function renderFinancialHealth() {
-    // This would pull from existing financial data
-    const balance = 1500; // Placeholder
-    const reserve = 1200; // Placeholder
-    const health = 85; // Placeholder
+    // Calculate actual balance from financial data
+    const balance = calculateCurrentBalance();
+    const reserve = calculatePrudentReserveAmount();
+    const health = calculateContributionHealth();
 
     document.getElementById('current-balance').textContent = '$' + balance.toFixed(2);
     document.getElementById('prudent-reserve').textContent = '$' + reserve.toFixed(2);
-    document.getElementById('contribution-health').textContent = health + '%';
+    document.getElementById('contribution-health').textContent = health.toFixed(0) + '%';
+}
+
+// Helper function to calculate current balance
+function calculateCurrentBalance() {
+    const expenses = storage.getExpenses();
+    const chairpersonLogs = storage.getChairpersonLog();
+
+    // Calculate total income from 7th tradition and orange can
+    const totalIncome = chairpersonLogs.reduce((sum, log) => {
+        return sum + (parseFloat(log.tradition) || 0) + (parseFloat(log.orangeCan) || 0);
+    }, 0);
+
+    // Calculate total expenses
+    const totalExpenses = expenses.reduce((sum, exp) => sum + (parseFloat(exp.amount) || 0), 0);
+
+    // Return balance (income - expenses)
+    return totalIncome - totalExpenses;
+}
+
+// Helper function to calculate prudent reserve amount (3 months of expenses)
+function calculatePrudentReserveAmount() {
+    const expenses = storage.getExpenses();
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+    const recentExpenses = expenses.filter(e => new Date(e.date) >= threeMonthsAgo);
+    const avgMonthlyExpenses = recentExpenses.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0) / 3;
+
+    return avgMonthlyExpenses * 3; // 3 months prudent reserve
+}
+
+// Helper function to calculate contribution health percentage
+function calculateContributionHealth() {
+    const chairpersonLogs = storage.getChairpersonLog();
+    if (chairpersonLogs.length === 0) return 0;
+
+    // Get last 6 months of logs
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+    const recentLogs = chairpersonLogs.filter(log => new Date(log.date) >= sixMonthsAgo);
+
+    if (recentLogs.length === 0) return 0;
+
+    // Calculate average contribution per meeting
+    const avgContribution = recentLogs.reduce((sum, log) => {
+        return sum + (parseFloat(log.tradition) || 0);
+    }, 0) / recentLogs.length;
+
+    // Assume healthy is $100 per meeting, calculate percentage
+    const healthyTarget = 100;
+    return Math.min(100, (avgContribution / healthyTarget) * 100);
 }
 
 function calculateAffordability() {
     const amount = parseFloat(document.getElementById('afford-amount').value) || 0;
     const category = document.getElementById('afford-category').value;
-    const balance = 1500; // Would pull from actual data
-    const reserve = 1200; // Would pull from actual data
+    const balance = calculateCurrentBalance();
+    const reserve = calculatePrudentReserveAmount();
 
     let annualizedCost = amount;
     if (category === 'monthly') annualizedCost = amount * 12;
@@ -22173,9 +22224,8 @@ function runFinancialProjection() {
     // Assume 4 meetings per month
     const monthlyIncome = avgContribution * 4;
 
-    // Get current balance (from latest log or default)
-    const latestLog = logs[logs.length - 1];
-    let currentBalance = 1500; // Default starting balance
+    // Get current balance from actual financial data
+    let currentBalance = calculateCurrentBalance();
 
     // Calculate projections
     const projections = [];
