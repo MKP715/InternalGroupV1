@@ -5196,6 +5196,131 @@
                     </div>
                 </div>
             </div>
+
+            <!-- FINANCIAL PROJECTION SIMULATOR -->
+            <div class="box mt-4" style="border-left: 4px solid #f39c12;">
+                <h3><i class="fas fa-chart-line"></i> Financial Projection Simulator</h3>
+                <p class="mb-4" style="font-size: 0.9rem; opacity: 0.8;">
+                    Model the long-term financial impact of proposed decisions before voting.
+                </p>
+
+                <div class="grid" style="grid-template-columns: 1fr 2fr; gap: 2rem;">
+                    <div>
+                        <div class="form-group">
+                            <label for="projection-amount">Proposed Amount ($)</label>
+                            <input type="number" id="projection-amount" step="0.01" placeholder="500.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="projection-type">Expense Type</label>
+                            <select id="projection-type">
+                                <option value="oneTime">One-time expense</option>
+                                <option value="monthly">Monthly recurring</option>
+                                <option value="annual">Annual recurring</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="projection-period">Projection Period</label>
+                            <select id="projection-period">
+                                <option value="6">6 months</option>
+                                <option value="12" selected>12 months</option>
+                                <option value="24">24 months</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="projection-revenue-type">Expected Revenue Change</label>
+                            <select id="projection-revenue-type">
+                                <option value="none">No change</option>
+                                <option value="increase">Will increase contributions</option>
+                                <option value="decrease">Will decrease contributions</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="projection-revenue-amount-group" style="display: none;">
+                            <label for="projection-revenue-amount">Revenue Change ($/month)</label>
+                            <input type="number" id="projection-revenue-amount" step="0.01" placeholder="50.00">
+                        </div>
+                        <button class="btn" onclick="runFinancialProjection()" style="width: 100%; background: #f39c12;">
+                            <i class="fas fa-calculator"></i> Run Projection
+                        </button>
+                    </div>
+
+                    <div>
+                        <div id="projection-summary" style="display: none; padding: 1rem; background: #2c3e50; border-radius: 6px; margin-bottom: 1rem;">
+                            <!-- Summary will be populated here -->
+                        </div>
+                        <canvas id="projection-chart" style="display: none; max-height: 350px;"></canvas>
+                        <div id="projection-insights" style="margin-top: 1rem; font-size: 0.9rem;">
+                            <p style="opacity: 0.7; text-align: center; padding: 2rem;">
+                                Enter values and click "Run Projection" to see the financial impact over time.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INSTITUTIONAL MEMORY & LEARNING SYSTEM -->
+            <div class="box mt-4" style="border-left: 4px solid #9b59b6;">
+                <h3><i class="fas fa-brain"></i> Institutional Memory & Learning System</h3>
+                <p class="mb-4" style="font-size: 0.9rem; opacity: 0.8;">
+                    Searchable database of lessons learned from past decisions. Learn from history to make better decisions.
+                </p>
+
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div>
+                        <div class="form-group">
+                            <label for="memory-search">Search Lessons Learned</label>
+                            <input type="text" id="memory-search" placeholder="Search by keyword, category, or date..." oninput="searchLessonsLearned()">
+                        </div>
+                        <div class="form-group">
+                            <label for="memory-category-filter">Filter by Category</label>
+                            <select id="memory-category-filter" onchange="searchLessonsLearned()">
+                                <option value="">All Categories</option>
+                                <option value="financial">Financial Decisions</option>
+                                <option value="service">Service Structure</option>
+                                <option value="meeting">Meeting Format</option>
+                                <option value="fellowship">Fellowship</option>
+                                <option value="traditions">Traditions/Concepts</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="memory-rating-filter">Filter by Effectiveness</label>
+                            <select id="memory-rating-filter" onchange="searchLessonsLearned()">
+                                <option value="">All Ratings</option>
+                                <option value="5">5 Stars - Excellent</option>
+                                <option value="4">4 Stars - Good</option>
+                                <option value="3">3 Stars - Neutral</option>
+                                <option value="2">2 Stars - Poor</option>
+                                <option value="1">1 Star - Should Reverse</option>
+                            </select>
+                        </div>
+                        <div style="margin-top: 1rem; padding: 1rem; background: #2c3e50; border-radius: 6px;">
+                            <h4 style="margin-bottom: 0.5rem; color: #9b59b6;">Memory Insights</h4>
+                            <div id="memory-stats" style="font-size: 0.85rem;">
+                                <p><strong>Total Lessons:</strong> <span id="total-lessons">0</span></p>
+                                <p><strong>Avg. Rating:</strong> <span id="avg-lesson-rating">--</span>/5</p>
+                                <p><strong>Most Common Category:</strong> <span id="common-category">--</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 style="margin-bottom: 0.75rem;">Lessons Learned Archive</h4>
+                        <div id="lessons-list" style="max-height: 500px; overflow-y: auto;">
+                            <p style="opacity: 0.7; text-align: center; padding: 2rem;">
+                                No lessons learned yet. Add impact assessments to build your institutional memory.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern Recognition -->
+                <div style="margin-top: 1.5rem; padding: 1rem; background: #2c3e50; border-radius: 6px; border-left: 3px solid #9b59b6;">
+                    <h4><i class="fas fa-lightbulb"></i> Pattern Recognition</h4>
+                    <div id="pattern-insights" style="margin-top: 0.75rem; font-size: 0.9rem;">
+                        <p style="opacity: 0.7;">Patterns will appear here once you have multiple lessons logged.</p>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- FINANCIAL HEALTH DASHBOARD SECTION -->
@@ -16872,6 +16997,24 @@ function init() {
     checkActionItemReminders();
     updatePrudentReserveProgressBar();
 
+    // Initialize Decision Impact & Institutional Memory features
+    renderDecisionImpacts();
+    populateImpactGCMotions();
+    searchLessonsLearned();
+
+    // Add event listener for projection revenue type
+    const projRevenueType = document.getElementById('projection-revenue-type');
+    if (projRevenueType) {
+        projRevenueType.addEventListener('change', function() {
+            const amountGroup = document.getElementById('projection-revenue-amount-group');
+            if (this.value === 'none') {
+                amountGroup.style.display = 'none';
+            } else {
+                amountGroup.style.display = 'block';
+            }
+        });
+    }
+
     // Run periodic checks
     setInterval(() => {
         checkUpcomingTermExpirations();
@@ -21686,6 +21829,9 @@ function saveDecisionImpact() {
     const logs = storage.getGroupConscienceLog();
     const motion = logs.find(l => l.id === gcId);
 
+    // Auto-categorize based on motion text
+    const category = categorizeLesson(motion ? motion.item : '');
+
     const impacts = storage.getDecisionImpacts();
     impacts.push({
         id: genId(),
@@ -21695,6 +21841,7 @@ function saveDecisionImpact() {
         achieved,
         rating,
         lessons,
+        category: category,
         assessmentDate: new Date().toISOString()
     });
 
@@ -21703,11 +21850,18 @@ function saveDecisionImpact() {
 
     document.getElementById('impact-lessons').value = '';
     renderDecisionImpacts();
+    searchLessonsLearned(); // Update institutional memory
 }
 
 function renderDecisionImpacts() {
     const impacts = storage.getDecisionImpacts().sort((a, b) => new Date(b.assessmentDate) - new Date(a.assessmentDate));
     const list = document.getElementById('impact-list');
+    const insightsDiv = document.getElementById('decision-insights');
+
+    // Safety check: ensure DOM elements exist
+    if (!list || !insightsDiv) {
+        return;
+    }
 
     if (impacts.length === 0) {
         list.innerHTML = '<p style="opacity: 0.7;">No impact assessments yet</p>';
@@ -21734,7 +21888,7 @@ function renderDecisionImpacts() {
 
     const achievedCount = impacts.filter(i => i.achieved === 'yes').length;
 
-    document.getElementById('decision-insights').innerHTML = `
+    insightsDiv.innerHTML = `
         <p><strong>Average Decision Rating:</strong> ${avgRating}/5 ★</p>
         <p><strong>Goals Fully Achieved:</strong> ${achievedCount} of ${impacts.length} (${impacts.length > 0 ? Math.round((achievedCount / impacts.length) * 100) : 0}%)</p>
         <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">Groups that track decision impacts tend to make better decisions over time.</p>
@@ -21793,6 +21947,404 @@ function calculateAffordability() {
         <p><strong>Remaining Above Reserve:</strong> $${Math.max(0, afterExpense - reserve).toFixed(2)}</p>
         ${!canAfford ? '<p style="color: #f1c40f; margin-top: 0.5rem;"><strong>Warning:</strong> This would put us below prudent reserve!</p>' : ''}
     `;
+}
+
+// ========== FINANCIAL PROJECTION SIMULATOR ==========
+let projectionChart = null;
+
+function runFinancialProjection() {
+    const amount = parseFloat(document.getElementById('projection-amount').value) || 0;
+    const type = document.getElementById('projection-type').value;
+    const period = parseInt(document.getElementById('projection-period').value);
+    const revenueType = document.getElementById('projection-revenue-type').value;
+    const revenueAmount = parseFloat(document.getElementById('projection-revenue-amount').value) || 0;
+
+    if (amount <= 0) {
+        showToast('Please enter a valid amount', 'error');
+        return;
+    }
+
+    // Get financial data from chairperson logs
+    const logs = storage.getChairpersonLog();
+    const recentLogs = logs.slice(-6); // Last 6 entries
+
+    const avgContribution = recentLogs.length > 0
+        ? recentLogs.reduce((sum, l) => sum + (parseFloat(l.seventhTradition) || 0), 0) / recentLogs.length
+        : 100; // Default $100/meeting
+
+    // Assume 4 meetings per month
+    const monthlyIncome = avgContribution * 4;
+
+    // Get current balance (from latest log or default)
+    const latestLog = logs[logs.length - 1];
+    let currentBalance = 1500; // Default starting balance
+
+    // Calculate projections
+    const projections = [];
+    let balance = currentBalance;
+
+    for (let month = 0; month <= period; month++) {
+        let monthlyExpense = 0;
+
+        if (type === 'oneTime' && month === 0) {
+            monthlyExpense = amount;
+        } else if (type === 'monthly') {
+            monthlyExpense = amount;
+        } else if (type === 'annual') {
+            monthlyExpense = month % 12 === 0 ? amount : 0;
+        }
+
+        // Calculate revenue change
+        let monthlyRevenue = monthlyIncome;
+        if (revenueType === 'increase') {
+            monthlyRevenue += revenueAmount;
+        } else if (revenueType === 'decrease') {
+            monthlyRevenue -= revenueAmount;
+        }
+
+        balance = balance + monthlyRevenue - monthlyExpense;
+
+        projections.push({
+            month: month,
+            balance: balance,
+            revenue: monthlyRevenue,
+            expense: monthlyExpense
+        });
+    }
+
+    // Display summary
+    const finalBalance = projections[projections.length - 1].balance;
+    const totalExpense = projections.reduce((sum, p) => sum + p.expense, 0);
+    const totalRevenue = projections.reduce((sum, p) => sum + p.revenue, 0);
+    const prudentReserve = monthlyIncome * 3; // 3 months operating
+
+    const summaryDiv = document.getElementById('projection-summary');
+    summaryDiv.style.display = 'block';
+
+    const belowReserve = finalBalance < prudentReserve;
+    summaryDiv.style.borderLeft = `4px solid ${belowReserve ? '#e74c3c' : '#2ecc71'}`;
+
+    summaryDiv.innerHTML = `
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; text-align: center;">
+            <div>
+                <div style="font-size: 1.5rem; font-weight: bold; color: ${finalBalance > currentBalance ? '#2ecc71' : '#e74c3c'};">
+                    $${finalBalance.toFixed(2)}
+                </div>
+                <div style="font-size: 0.75rem; opacity: 0.8; margin-top: 0.25rem;">Final Balance</div>
+            </div>
+            <div>
+                <div style="font-size: 1.5rem; font-weight: bold; color: #3498db;">
+                    $${totalRevenue.toFixed(2)}
+                </div>
+                <div style="font-size: 0.75rem; opacity: 0.8; margin-top: 0.25rem;">Total Revenue</div>
+            </div>
+            <div>
+                <div style="font-size: 1.5rem; font-weight: bold; color: #e74c3c;">
+                    $${totalExpense.toFixed(2)}
+                </div>
+                <div style="font-size: 0.75rem; opacity: 0.8; margin-top: 0.25rem;">Total Expense</div>
+            </div>
+            <div>
+                <div style="font-size: 1.5rem; font-weight: bold; color: ${!belowReserve ? '#2ecc71' : '#f39c12'};">
+                    ${!belowReserve ? '✓' : '⚠'}
+                </div>
+                <div style="font-size: 0.75rem; opacity: 0.8; margin-top: 0.25rem;">Reserve Status</div>
+            </div>
+        </div>
+        ${belowReserve ? `<p style="color: #f39c12; margin-top: 0.75rem; font-size: 0.85rem;"><strong>⚠ Warning:</strong> This decision would put the group below prudent reserve ($${prudentReserve.toFixed(2)}) by month ${projections.findIndex(p => p.balance < prudentReserve)}.</p>` : ''}
+    `;
+
+    // Render chart
+    const chartCanvas = document.getElementById('projection-chart');
+    chartCanvas.style.display = 'block';
+
+    if (projectionChart) {
+        projectionChart.destroy();
+    }
+
+    const ctx = chartCanvas.getContext('2d');
+    projectionChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: projections.map(p => `Month ${p.month}`),
+            datasets: [
+                {
+                    label: 'Projected Balance',
+                    data: projections.map(p => p.balance),
+                    borderColor: '#3498db',
+                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                },
+                {
+                    label: 'Prudent Reserve',
+                    data: projections.map(() => prudentReserve),
+                    borderColor: '#2ecc71',
+                    borderDash: [5, 5],
+                    fill: false,
+                    pointRadius: 0
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    labels: { color: '#ecf0f1' }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': $' + context.parsed.y.toFixed(2);
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: '#ecf0f1' },
+                    grid: { color: 'rgba(127, 140, 141, 0.2)' }
+                },
+                y: {
+                    ticks: {
+                        color: '#ecf0f1',
+                        callback: function(value) {
+                            return '$' + value.toFixed(0);
+                        }
+                    },
+                    grid: { color: 'rgba(127, 140, 141, 0.2)' }
+                }
+            }
+        }
+    });
+
+    // Generate insights
+    const insightsDiv = document.getElementById('projection-insights');
+    const netChange = finalBalance - currentBalance;
+
+    insightsDiv.innerHTML = `
+        <h4 style="margin-bottom: 0.5rem;">Key Insights</h4>
+        <ul style="list-style: none; padding: 0;">
+            <li style="padding: 0.5rem; background: #34495e; margin-bottom: 0.5rem; border-radius: 4px;">
+                <strong>Net Change:</strong> ${netChange >= 0 ? '+' : ''}$${netChange.toFixed(2)} over ${period} months
+            </li>
+            <li style="padding: 0.5rem; background: #34495e; margin-bottom: 0.5rem; border-radius: 4px;">
+                <strong>Monthly Impact:</strong> ${type === 'monthly' ? `Ongoing -$${amount.toFixed(2)}/month` : type === 'oneTime' ? 'One-time expense' : `-$${amount.toFixed(2)}/year`}
+            </li>
+            <li style="padding: 0.5rem; background: #34495e; margin-bottom: 0.5rem; border-radius: 4px;">
+                <strong>Reserve Cushion:</strong> ${!belowReserve ? `Maintains $${(finalBalance - prudentReserve).toFixed(2)} above reserve` : `Falls below reserve`}
+            </li>
+            ${revenueType !== 'none' ? `
+            <li style="padding: 0.5rem; background: #34495e; margin-bottom: 0.5rem; border-radius: 4px;">
+                <strong>Revenue Assumption:</strong> ${revenueType === 'increase' ? 'Increases' : 'Decreases'} by $${revenueAmount.toFixed(2)}/month
+            </li>
+            ` : ''}
+        </ul>
+        <p style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.7; font-style: italic;">
+            💡 These projections assume current contribution levels remain stable. Actual results may vary.
+        </p>
+    `;
+}
+
+// ========== INSTITUTIONAL MEMORY & LEARNING SYSTEM ==========
+function categorizeLesson(motionText) {
+    const text = motionText.toLowerCase();
+
+    if (text.includes('budget') || text.includes('money') || text.includes('expense') || text.includes('contribution') || text.includes('financial') || text.includes('$')) {
+        return 'financial';
+    } else if (text.includes('service') || text.includes('gsr') || text.includes('secretary') || text.includes('treasurer') || text.includes('position')) {
+        return 'service';
+    } else if (text.includes('meeting') || text.includes('format') || text.includes('schedule') || text.includes('time')) {
+        return 'meeting';
+    } else if (text.includes('tradition') || text.includes('concept') || text.includes('warranty')) {
+        return 'traditions';
+    } else if (text.includes('fellowship') || text.includes('social') || text.includes('event')) {
+        return 'fellowship';
+    } else {
+        return 'other';
+    }
+}
+
+function searchLessonsLearned() {
+    // Safety check: ensure DOM elements exist
+    const searchInput = document.getElementById('memory-search');
+    const categorySelect = document.getElementById('memory-category-filter');
+    const ratingSelect = document.getElementById('memory-rating-filter');
+
+    if (!searchInput || !categorySelect || !ratingSelect) {
+        // DOM not ready yet, skip this call
+        return;
+    }
+
+    const searchTerm = searchInput.value.toLowerCase();
+    const categoryFilter = categorySelect.value;
+    const ratingFilter = ratingSelect.value;
+
+    let impacts = storage.getDecisionImpacts();
+
+    // Apply filters
+    if (searchTerm) {
+        impacts = impacts.filter(i =>
+            (i.motionText && i.motionText.toLowerCase().includes(searchTerm)) ||
+            (i.lessons && i.lessons.toLowerCase().includes(searchTerm))
+        );
+    }
+
+    if (categoryFilter) {
+        impacts = impacts.filter(i => i.category === categoryFilter);
+    }
+
+    if (ratingFilter) {
+        impacts = impacts.filter(i => i.rating === parseInt(ratingFilter));
+    }
+
+    // Sort by date (newest first)
+    impacts.sort((a, b) => new Date(b.assessmentDate) - new Date(a.assessmentDate));
+
+    // Render lessons list
+    const listDiv = document.getElementById('lessons-list');
+
+    // Safety check: ensure DOM element exists
+    if (!listDiv) {
+        return;
+    }
+
+    if (impacts.length === 0) {
+        listDiv.innerHTML = '<p style="opacity: 0.7; text-align: center; padding: 2rem;">No lessons match your search criteria.</p>';
+    } else {
+        listDiv.innerHTML = impacts.map(i => {
+            const date = new Date(i.assessmentDate).toLocaleDateString();
+            const categoryColors = {
+                financial: '#f39c12',
+                service: '#3498db',
+                meeting: '#9b59b6',
+                fellowship: '#e74c3c',
+                traditions: '#2ecc71',
+                other: '#95a5a6'
+            };
+
+            return `
+                <div style="padding: 1rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.75rem; border-left: 4px solid ${categoryColors[i.category] || '#95a5a6'};">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                        <span style="font-size: 0.75rem; background: ${categoryColors[i.category] || '#95a5a6'}; padding: 0.2rem 0.5rem; border-radius: 3px;">
+                            ${i.category ? i.category.charAt(0).toUpperCase() + i.category.slice(1) : 'Other'}
+                        </span>
+                        <span style="font-size: 0.75rem; opacity: 0.7;">${date}</span>
+                    </div>
+                    <p style="font-size: 0.9rem; font-weight: bold; margin-bottom: 0.5rem;">${escapeHtml(i.motionText)}</p>
+                    <div style="margin-bottom: 0.5rem;">
+                        <span style="font-size: 0.85rem;">Rating: ${'★'.repeat(i.rating)}${'☆'.repeat(5 - i.rating)}</span>
+                        <span style="margin-left: 1rem; font-size: 0.85rem; color: ${i.achieved === 'yes' ? '#2ecc71' : i.achieved === 'no' ? '#e74c3c' : '#f39c12'};">
+                            ${i.achieved === 'yes' ? '✓ Achieved' : i.achieved === 'no' ? '✗ Not Achieved' : '⊙ Partial'}
+                        </span>
+                    </div>
+                    <p style="font-size: 0.85rem; opacity: 0.9; font-style: italic; background: #34495e; padding: 0.5rem; border-radius: 3px; margin-top: 0.5rem;">
+                        "${escapeHtml(i.lessons)}"
+                    </p>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Update stats
+    updateMemoryStats();
+    generatePatternInsights();
+}
+
+function updateMemoryStats() {
+    // Safety check: ensure DOM elements exist
+    const totalLessonsEl = document.getElementById('total-lessons');
+    const avgRatingEl = document.getElementById('avg-lesson-rating');
+    const commonCategoryEl = document.getElementById('common-category');
+
+    if (!totalLessonsEl || !avgRatingEl || !commonCategoryEl) {
+        // DOM not ready yet, skip this call
+        return;
+    }
+
+    const impacts = storage.getDecisionImpacts();
+
+    totalLessonsEl.textContent = impacts.length;
+
+    const avgRating = impacts.length > 0
+        ? (impacts.reduce((sum, i) => sum + i.rating, 0) / impacts.length).toFixed(1)
+        : '--';
+    avgRatingEl.textContent = avgRating;
+
+    // Find most common category
+    const categoryCounts = {};
+    impacts.forEach(i => {
+        const cat = i.category || 'other';
+        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+    });
+
+    const mostCommon = Object.entries(categoryCounts).sort((a, b) => b[1] - a[1])[0];
+    commonCategoryEl.textContent = mostCommon
+        ? `${mostCommon[0].charAt(0).toUpperCase() + mostCommon[0].slice(1)} (${mostCommon[1]})`
+        : '--';
+}
+
+function generatePatternInsights() {
+    const impacts = storage.getDecisionImpacts();
+    const insightsDiv = document.getElementById('pattern-insights');
+
+    // Safety check: ensure DOM element exists
+    if (!insightsDiv) {
+        return;
+    }
+
+    if (impacts.length < 3) {
+        insightsDiv.innerHTML = '<p style="opacity: 0.7;">Patterns will appear here once you have 3 or more lessons logged.</p>';
+        return;
+    }
+
+    const patterns = [];
+
+    // Pattern 1: Financial decision success rate
+    const financialDecisions = impacts.filter(i => i.category === 'financial');
+    if (financialDecisions.length >= 2) {
+        const successRate = (financialDecisions.filter(i => i.achieved === 'yes').length / financialDecisions.length) * 100;
+        patterns.push(`💰 Financial decisions have a ${successRate.toFixed(0)}% success rate (${financialDecisions.length} decisions tracked)`);
+    }
+
+    // Pattern 2: Service structure insights
+    const serviceDecisions = impacts.filter(i => i.category === 'service');
+    if (serviceDecisions.length >= 2) {
+        const avgRating = serviceDecisions.reduce((sum, i) => sum + i.rating, 0) / serviceDecisions.length;
+        patterns.push(`🤝 Service structure decisions average ${avgRating.toFixed(1)}/5 stars (${serviceDecisions.length} decisions)`);
+    }
+
+    // Pattern 3: High-rated decisions
+    const highRatedDecisions = impacts.filter(i => i.rating >= 4);
+    if (highRatedDecisions.length >= 2) {
+        patterns.push(`⭐ ${highRatedDecisions.length} decisions rated 4+ stars - review their lessons for best practices`);
+    }
+
+    // Pattern 4: Low-rated decisions
+    const lowRatedDecisions = impacts.filter(i => i.rating <= 2);
+    if (lowRatedDecisions.length >= 1) {
+        patterns.push(`⚠️ ${lowRatedDecisions.length} decision(s) rated 2 stars or lower - consider reviewing or reversing`);
+    }
+
+    // Pattern 5: Recent trend
+    const recentDecisions = impacts.slice(-5);
+    const recentAvgRating = recentDecisions.reduce((sum, i) => sum + i.rating, 0) / recentDecisions.length;
+    const olderDecisions = impacts.slice(0, -5);
+    if (olderDecisions.length > 0) {
+        const olderAvgRating = olderDecisions.reduce((sum, i) => sum + i.rating, 0) / olderDecisions.length;
+        if (recentAvgRating > olderAvgRating + 0.5) {
+            patterns.push(`📈 Decision quality is improving! Recent avg: ${recentAvgRating.toFixed(1)} vs historical: ${olderAvgRating.toFixed(1)}`);
+        } else if (recentAvgRating < olderAvgRating - 0.5) {
+            patterns.push(`📉 Decision quality declining. Recent avg: ${recentAvgRating.toFixed(1)} vs historical: ${olderAvgRating.toFixed(1)}`);
+        }
+    }
+
+    insightsDiv.innerHTML = patterns.length > 0
+        ? '<ul style="list-style: none; padding: 0;">' +
+          patterns.map(p => `<li style="padding: 0.5rem 0; border-bottom: 1px solid #34495e;">${p}</li>`).join('') +
+          '</ul>'
+        : '<p style="opacity: 0.7;">No significant patterns detected yet. Keep logging lessons to discover insights!</p>';
 }
 
 // ========== GROUP INVENTORY SCHEDULER ==========
