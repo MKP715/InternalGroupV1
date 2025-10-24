@@ -6387,6 +6387,14 @@ const storage = {
         catch(e) { console.error('Error parsing spiritualPrinciples:', e); return []; }
     },
     saveSpiritualPrinciples(principles) { localStorage.setItem('spiritualPrinciples', JSON.stringify(principles)); },
+
+    // P2-2: Notification System Storage
+    getNotifications() {
+        try { return JSON.parse(localStorage.getItem('notifications') || '[]'); }
+        catch(e) { console.error('Error parsing notifications:', e); return []; }
+    },
+    saveNotifications(notifications) { localStorage.setItem('notifications', JSON.stringify(notifications)); },
+
     getUnityChecks() {
         try { return JSON.parse(localStorage.getItem('unityChecks') || '[]'); }
         catch(e) { console.error('Error parsing unityChecks:', e); return []; }
