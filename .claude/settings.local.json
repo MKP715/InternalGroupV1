@@ -12,7 +12,8 @@
       "Bash(for id in \"standing-items-body\" \"reconsideration-requests-body\" \"active-proxies-body\" \"decision-reversals-body\" \"roi-chart\" \"reversal-reasons-chart\" \"email-history-body\" \"consent-agenda-body\")",
       "Bash(do echo -n \"$id: \")",
       "Bash(done)",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "Read(//c/Users/MKP715/Documents/GitHub/RowlettAA/rowlettaa.org/**)"
     ],
     "deny": [],
     "ask": []
