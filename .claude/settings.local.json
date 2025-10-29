@@ -21,7 +21,8 @@
       "Read(//c/Users/MKP715/Documents/GitHub/DailyReflictionsAA/DailyReflections-1/**)",
       "Bash(dir:*)",
       "Bash(cat:*)",
-      "Bash(node generate-api-files.js:*)"
+      "Bash(node generate-api-files.js:*)",
+      "Read(//c/Users/MKP715/Documents/GitHub/BigBook.Study/bigbook.study/**)"
     ],
     "deny": [],
     "ask": []
