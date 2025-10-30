@@ -3,9 +3,10 @@
     <!-- Outer circle for the AA homegroup logo -->
     <circle cx="50" cy="50" r="48" fill="#0ea5e9" stroke="#0ea5e9" stroke-width="2"/>
     <!-- The group acronym in the center -->
-    <text x="50" y="63" text-anchor="middle" font-family="Verdana, sans-serif" font-size="40" fill="#ffffff" font-weight="700">RG</text>
+    <text x="50" y="63" text-anchor="middle" font-family="Verdana, sans-serif" font-size="40" fill="#ffffff" font-weight="700">HG</text>
     <!-- Three smaller circles around the main logo representing unity and fellowship -->
     <circle cx="20" cy="22" r="7" fill="#ffffff" opacity="0.7"/>
     <circle cx="80" cy="22" r="7" fill="#ffffff" opacity="0.7"/>
     <circle cx="50" cy="86" r="7" fill="#ffffff" opacity="0.7"/>
+
 </svg>
