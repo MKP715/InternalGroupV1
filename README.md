@@ -1,4 +1,4 @@
-# Rowlett Group - AA Group Conscience Application
+# AA HomeGroup Conscience Application
 
 A comprehensive single-page web application (SPA) for managing AA group operations, meetings, finances, service positions, and group conscience activities. This application stores all data locally in your browser using localStorage - no server or internet connection required after initial load.
 
