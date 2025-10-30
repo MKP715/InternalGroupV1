@@ -4962,7 +4962,7 @@
                 <label for="photo-tags">Tags (comma-separated)</label>
                 <input type="text" id="photo-tags" placeholder="e.g. bbq, anniversary, 2024" />
             </div>
-            <button class="btn" onclick="uploadPhotos()">Upload Selected</button>
+            <button id="upload-btn" class="btn" onclick="uploadPhotos()" disabled>Upload Selected</button>
             <h3 class="mt-4">Filter Photos</h3>
             <div class="form-group">
                 <input type="text" id="tag-filter" onkeyup="updateGallery()" placeholder="Filter by tag..." />
@@ -4980,7 +4980,27 @@
                 <div id="modal-caption" style="text-align: center; color: #ccc; padding: 10px 0; font-size: 1rem; height: 2rem;"></div>
             </div>
         </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const photoUpload = document.getElementById('photo-upload');
+                const uploadBtn = document.getElementById('upload-btn');
 
+                if (photoUpload && uploadBtn) {
+                    photoUpload.addEventListener('change', () => {
+                        console.log('File input changed');
+                        if (photoUpload.files.length > 0) {
+                            console.log('Files selected, enabling button');
+                            uploadBtn.disabled = false;
+                        } else {
+                            console.log('No files selected, disabling button');
+                            uploadBtn.disabled = true;
+                        }
+                    });
+                } else {
+                    console.log('Could not find photo-upload or upload-btn');
+                }
+            });
+        </script>
         <section id="communication-lists-section" style="border-left: 4px solid #3498db;">
             <h2><i class="fas fa-envelope-open-text"></i> Text/Email Lists</h2>
             <p class="mb-4">Manage segmented communication lists.</p>
@@ -12523,6 +12543,183 @@ function sanitizeInput(input) {
     div.textContent = input;
     return div.innerHTML;
 }
+
+let db;
+function initDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('photo_gallery', 1);
+
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('images')) {
+                db.createObjectStore('images', { keyPath: 'id' });
+            }
+        };
+
+        request.onerror = (event) => {
+            console.error('IndexedDB error:', event.target.errorCode);
+            reject(event.target.errorCode);
+        };
+
+        request.onsuccess = (event) => {
+            db = event.target.result;
+
+            // Check for old photos in localStorage
+            const oldPhotosJSON = localStorage.getItem('photos');
+            if (oldPhotosJSON) {
+                try {
+                    const oldPhotos = JSON.parse(oldPhotosJSON);
+                    if (Array.isArray(oldPhotos) && oldPhotos.length > 0) {
+                        console.log('Migrating photos from localStorage to IndexedDB...');
+                        const transaction = db.transaction(['images'], 'readwrite');
+                        const store = transaction.objectStore('images');
+
+                        oldPhotos.forEach(photo => {
+                            const photoObject = typeof photo === 'string' ? { src: photo, tags: [] } : photo;
+                            if (!photoObject.id) photoObject.id = genId();
+                            if (!photoObject.uploadedAt) photoObject.uploadedAt = new Date().toISOString();
+                            store.add(photoObject);
+                        });
+
+                        transaction.oncomplete = () => {
+                            console.log('Photo migration complete. Removing from localStorage.');
+                            localStorage.removeItem('photos');
+                            migratePhotos().then(() => resolve(db));
+                        };
+                        transaction.onerror = (err) => {
+                             console.error('Photo migration transaction error:', err);
+                             migratePhotos().then(() => resolve(db));
+                        }
+                    } else {
+                         localStorage.removeItem('photos'); // empty or invalid array
+                         migratePhotos().then(() => resolve(db));
+                    }
+                } catch (e) {
+                    console.error('Error parsing or migrating photos from localStorage:', e);
+                    localStorage.removeItem('photos'); // Corrupted data
+                    migratePhotos().then(() => resolve(db));
+                }
+            } else {
+                migratePhotos().then(() => resolve(db));
+            }
+        };
+    });
+}
+
+function addPhotoToDB(photo) {
+    return new Promise((resolve, reject) => {
+        if (!db) {
+            reject('DB not initialized');
+            return;
+        }
+        // Convert base64 to Blob if necessary
+        if (typeof photo.src === 'string' && photo.src.startsWith('data:image')) {
+            const byteString = atob(photo.src.split(',')[1]);
+            const mimeString = photo.src.split(',')[0].split(':')[1].split(';')[0];
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            photo.src = new Blob([ab], { type: mimeString });
+        }
+
+        const transaction = db.transaction(['images'], 'readwrite');
+        const store = transaction.objectStore('images');
+        const request = store.add(photo);
+        request.onsuccess = () => resolve();
+        request.onerror = (event) => reject(event.target.error);
+    });
+}
+
+function getPhotosFromDB() {
+    return new Promise((resolve, reject) => {
+        if (!db) {
+            reject('DB not initialized');
+            return;
+        }
+        const transaction = db.transaction(['images'], 'readonly');
+        const store = transaction.objectStore('images');
+        const request = store.getAll();
+        request.onsuccess = (event) => resolve(event.target.result);
+        request.onerror = (event) => reject(event.target.error);
+    });
+}
+
+function deletePhotoFromDB(id) {
+    return new Promise((resolve, reject) => {
+        if (!db) {
+            reject('DB not initialized');
+            return;
+        }
+        const transaction = db.transaction(['images'], 'readwrite');
+        const store = transaction.objectStore('images');
+        const request = store.delete(id);
+        request.onsuccess = () => resolve();
+        request.onerror = (event) => reject(event.target.error);
+    });
+}
+
+function base64ToBlob(base64, contentType = '') {
+    const sliceSize = 512;
+    const byteCharacters = atob(base64.split(',')[1]);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        const slice = byteCharacters.slice(offset, offset + sliceSize);
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+    }
+
+    const blob = new Blob(byteArrays, {type: contentType});
+    return blob;
+}
+
+
+async function migratePhotos() {
+    console.log("Checking for photo data that needs migration...");
+    try {
+        const photos = await getPhotosFromDB();
+        const photosToMigrate = photos.filter(p => typeof p.src === 'string' && p.src.startsWith('data:image'));
+
+        if (photosToMigrate.length === 0) {
+            console.log("No photos to migrate.");
+            return;
+        }
+
+        console.log(`Found ${photosToMigrate.length} photos to migrate from Base64 to Blob.`);
+
+        const transaction = db.transaction(['images'], 'readwrite');
+        const store = transaction.objectStore('images');
+
+        for (const photo of photosToMigrate) {
+            const contentType = photo.src.split(';')[0].split(':')[1];
+            const blob = base64ToBlob(photo.src, contentType);
+            const updatedPhoto = { ...photo, src: blob };
+            store.put(updatedPhoto);
+        }
+
+        return new Promise((resolve, reject) => {
+            transaction.oncomplete = () => {
+                console.log("Photo migration completed successfully.");
+                showToast(`${photosToMigrate.length} photos migrated to a more efficient format!`, 'success');
+                resolve();
+            };
+            transaction.onerror = (event) => {
+                console.error("Error during photo migration transaction:", event.target.error);
+                reject(event.target.error);
+            };
+        });
+
+    } catch (error) {
+        console.error("Error migrating photos:", error);
+    }
+}
+
 function sanitizeHTML(html) {
     if (typeof html !== 'string') return html;
     if (typeof DOMPurify !== 'undefined') {
@@ -14982,50 +15179,63 @@ function closeModal() {
         document.removeEventListener('keydown', handleModalKeys);
     }
 }
-function uploadPhotos() {
+async function uploadPhotos() {
     const input = document.getElementById('photo-upload');
     const tagsInput = document.getElementById('photo-tags');
     const files = Array.from(input.files);
-    if (!files || files.length === 0) {
-        showToast('Select one or more images to upload.', 'error');
+
+    if (files.length === 0) {
+        showToast('Please select one or more images to upload.', 'error');
         return;
     }
-    if (!checkLocalStorageQuota()) {
-        showToast('Cannot upload photos: storage quota warning. Please free up space.', 'error');
-        return;
-    }
-    const tags = tagsInput.value.split(',').map(tag => tag.trim()).filter(tag => tag);
-    const photos = storage.getPhotos();
-    let remaining = files.length;
-    files.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            photos.push({ src: e.target.result, tags: tags });
-            remaining--;
-            if (remaining === 0) {
-                try {
-                    storage.savePhotos(photos);
-                    showToast(`${files.length} photo(s) uploaded!`, 'success');
-                    input.value = '';
-                    tagsInput.value = '';
-                    updateGallery();
-                    updateHome();
-                } catch (err) {
-                    showToast('Failed to save photos: ' + err.message, 'error');
-                }
-            }
+
+    const tags = tagsInput.value.split(',').map(tag => tag.trim()).filter(Boolean);
+    let uploadedCount = 0;
+    let failedCount = 0;
+
+    for (const file of files) {
+        // No need for FileReader, we can store the File object (which is a Blob) directly
+        const photo = {
+            id: genId(),
+            src: file,
+            tags: tags,
+            uploadedAt: new Date().toISOString()
         };
-        reader.readAsDataURL(file);
-    });
+
+        try {
+            await addPhotoToDB(photo);
+            uploadedCount++;
+        } catch (err) {
+            failedCount++;
+            showToast(`Failed to save photo "${file.name}": ${err.message}`, 'error');
+            console.error('Error saving photo to IndexedDB:', err);
+        }
+    }
+
+    if (uploadedCount > 0) {
+        showToast(`${uploadedCount} photo(s) uploaded successfully!`, 'success');
+        input.value = '';
+        tagsInput.value = '';
+        await updateGallery();
+        await updateHome();
+    }
+    if (failedCount > 0) {
+        showToast(`${failedCount} photo(s) failed to upload.`, 'error');
+    }
 }
-function deletePhoto(index) {
-    if (!confirm('Delete this photo?')) return;
-    const photos = storage.getPhotos();
-    photos.splice(index, 1);
-    storage.savePhotos(photos);
-    showToast('Photo deleted.', 'info');
-    updateGallery();
-    updateHome();
+
+
+async function deletePhoto(photoId) {
+    if (!confirm('Are you sure you want to delete this photo?')) return;
+    try {
+        await deletePhotoFromDB(photoId);
+        showToast('Photo deleted successfully!', 'success');
+        await updateGallery();
+        await updateHome();
+    } catch (error) {
+        showToast(`Error deleting photo: ${error.message}`, 'error');
+        console.error('Error deleting photo from DB:', error);
+    }
 }
 function handleChairpersonLogSubmit() {
     const editId = document.getElementById('log-edit-id').value;
@@ -18699,8 +18909,8 @@ const contentData = {
     'promises': {
         title: 'The 9th Step Promises',
         content: [
-            { type: 'p', text: 'If we are painstaking about this phase of our development, we will be amazed before we are halfway through. We are going to know a new freedom and a new happiness. We will not regret the past nor wish to shut the door on it. We will comprehend the word serenity and we will know peace. No matter how far down the scale we have gone, we will see how our experience can benefit others. That feeling of uselessness and self pity will disappear. We will lose interest in selfish things and gain interest in our fellows. Self seeking will slip away. Our whole attitude and outlook upon life will change. Fear of a Meda and of economic insecurity will leave us. We will intuitively know how to handle situations which used to baffle us. We will suddenly realize that God is doing for us what we could not do for ourselves.' },
-            { type: 'p', text: 'Are these extravagant promises? We think not! They are being fulfilled among us – Sometimes quickly, sometimes slowly. They will always materialize if we work for them.' }
+                { type: 'p', text: 'If we are painstaking about this phase of our development, we will be amazed before we are halfway through. We are going to know a new freedom and a new happiness. We will not regret the past nor wish to shut the door on it. We will comprehend the word serenity and we will know peace. No matter how far down the scale we have gone, we will see how our experience can benefit others. That feeling of uselessness and self pity will disappear. We will lose interest in selfish things and gain interest in our fellows. Self seeking will slip away. Our whole attitude and outlook upon life will change. Fear of people and of economic insecurity will leave us. We will intuitively know how to handle situations which used to baffle us. We will suddenly realize that God is doing for us what we could not do for ourselves.' },
+            { type: 'p', text: 'Are these extravagant promises? We think not. They are being fulfilled among us—sometimes quickly, sometimes slowly. They will always materialize if we work for them.' }
         ]
     }
 };
