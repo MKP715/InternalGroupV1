@@ -8,9 +8,28 @@ A comprehensive single-page web application (SPA) for managing AA group operatio
 - ✅ **Navigation Restructuring** - New "District & Area" top-level menu for better organization (14 menus total)
 - ✅ **WCAG 2.1 Level AA Compliance** - Skip links, ARIA labels, enhanced focus indicators, full keyboard navigation
 - ✅ **100+ Features** - Expanded from 90+ to 100+ comprehensive features
-- ✅ **Enhanced Parliamentary Procedures** - Complete Roberts Rules implementation with speaking queue, motion stack, amendments
-- ✅ **Comprehensive Help Guide** - Step-by-step GC meeting workflow, all features documented
-- ✅ **Data Export v6.0** - All 100 localStorage keys included in backup/restore
+- ✅ **Complete Roberts Rules Implementation (25 Procedures)** - Added 8 advanced parliamentary procedures for comprehensive group conscience coverage:
+  - **Take from the Table** - Resume discussion of tabled motions (majority vote)
+  - **Division of Assembly** - Verify voice votes with counted votes (member right)
+  - **Withdraw Motion** - Proposer can withdraw before vote (unanimous consent)
+  - **Parliamentary Inquiry** - Ask procedural questions to chair
+  - **Division of Question** - Split complex motions into separate votes
+  - **Appeal Chair's Ruling** - Challenge chair's procedural decisions (requires second, majority vote)
+  - **Objection to Consideration** - Block inappropriate topics before discussion (requires 2/3)
+  - **Suspend the Rules** - Emergency bypass of procedures (requires 2/3)
+- ✅ **Comprehensive PDF Export System (14+ Functions)** - Professional PDF reports for all key sections:
+  - **Member Directory PDF** - Complete member roster with contact info
+  - **Service Positions PDF** - Current positions with terms and holders
+  - **Literature Inventory PDF** - Complete stock with values and totals
+  - **Service Hours PDF** - Member service hours leaderboard
+  - **Analytics Dashboard PDF** - Group overview and engagement metrics
+  - **Attendance Report PDF** - Meeting attendance trends
+  - **Budget Report PDF** - Budget vs actual with variance analysis
+  - **District & Area PDF** - Service involvement and facility management
+  - **Financial Analytics PDF** - Comprehensive financial reporting
+  - **Plus existing PDFs**: Chairperson Log, GC Decisions, Treasurer Report, Audit Log, Meeting Minutes
+- ✅ **Comprehensive Help Guide** - Step-by-step GC meeting workflow, all features documented, complete parliamentary procedure guide
+- ✅ **Data Export v6.0** - All 104 localStorage keys included in backup/restore
 
 ---
 
@@ -82,12 +101,14 @@ A comprehensive single-page web application (SPA) for managing AA group operatio
 - **Group Census**: Detailed membership demographics
 - **Growth Metrics**: Track and chart membership trends
 
-### ⚖️ Group Conscience (16 Features)
+### ⚖️ Group Conscience (16 Features) - **Complete Roberts Rules!**
 - **Live GC Session**: Real-time parliamentary procedure with motion tracking
 - **Emergency GC**: Urgent decision-making process
 - **Decision History**: Searchable archive of all GC decisions with implementation tracking
 - **Motion Templates**: Pre-formatted motions for common scenarios
-- **Parliamentary Procedure Assistant**: Speaking queue, motion stack, points of order
+- **Parliamentary Procedure Assistant (25 Procedures)**: Complete Roberts Rules implementation
+  - **Basic Procedures**: Speaking queue, motion stack, points of order/information/privilege, parliamentary inquiry
+  - **Advanced Procedures**: Take from table, division of assembly, withdraw motion, division of question, appeal chair, objection to consideration, suspend rules
 - **Tradition & Concept Checker**: Validate motions against AA principles
 - **Tradition Moments**: Share tradition insights
 - **Spiritual Principles**: Integrate spiritual principles into decisions
@@ -669,9 +690,10 @@ For urgent matters:
 
 ### Regular Backups (Version 6.0)
 
-**Backup Includes (100 localStorage Keys)**:
+**Backup Includes (104 localStorage Keys)**:
 - All 144 features worth of data
 - All 10 District & Area service features
+- Complete Roberts Rules implementation data (25 procedures)
 - Complete member database
 - Full GC decision history
 - Financial records
@@ -871,5 +893,6 @@ Thank you for using this tool in service to your AA group!
 **Last Updated**: January 2025
 **WCAG Level**: AA Compliant
 **Features**: 144 (100+ categories)
-**Data Export**: Version 6.0 (100 localStorage keys)
+**Roberts Rules**: 25 Parliamentary Procedures (Complete Coverage)
+**Data Export**: Version 6.0 (104 localStorage keys)
 **For**: AA Home Group Internal Use

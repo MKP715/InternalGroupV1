@@ -3804,6 +3804,7 @@
             </table>
         </section>
 
+        <!-- Attendance Streaks Section -->
         <section id="attendance-streaks-section" style="border-left: 4px solid #2ecc71;">
             <h2><i class="fas fa-fire"></i> Attendance Streaks</h2>
             <p class="mb-4">Track consecutive meeting attendance and celebrate member dedication!</p>
@@ -4234,16 +4235,15 @@
             </div>
         </section>
 
+        <!-- Member Wellness Check Section -->
         <section id="member-wellness-section" style="border-left: 4px solid #27ae60;">
             <h2><i class="fas fa-heartbeat"></i> Member Wellness Check</h2>
             <p class="mb-4">Track member attendance and flag members who haven't been seen recently.</p>
-            <button class="btn mb-3" onclick="exportMemberDirectoryPDF()" style="background: #27ae60;">
-                <i class="fas fa-file-pdf"></i> Export Member Directory to PDF
-            </button>
 
             <div class="box mb-4">
                 <h3>Recent Attendance Summary</h3>
                 <div id="wellness-summary" class="grid grid-cols-2" style="margin-top: 1rem;">
+                    <!-- Dynamically populated with attendance cards -->
                 </div>
             </div>
 
@@ -4265,6 +4265,7 @@
             </div>
         </section>
 
+        <!-- Temporary Sponsor Matching Section -->
         <section id="sponsor-matching-section" style="border-left: 4px solid #8e44ad;">
             <h2><i class="fas fa-user-friends"></i> Temporary Sponsor Matching</h2>
             <p class="mb-4">Quick sponsor matching for newcomers until they find a permanent sponsor.</p>
@@ -4299,6 +4300,7 @@
             </div>
         </section>
 
+        <!-- Emergency Contacts Section -->
         <section id="emergency-contacts-section" style="border-left: 4px solid #e74c3c;">
             <h2><i class="fas fa-phone-alt"></i> Emergency Contact Network</h2>
             <p class="mb-4">Tiered emergency contact system for members in crisis.</p>
@@ -4351,6 +4353,7 @@
             </div>
         </section>
 
+        <!-- Problem Box Section -->
         <section id="problem-box-section" style="border-left: 4px solid #95a5a6;">
             <h2><i class="fas fa-box"></i> Problem Box</h2>
             <p class="mb-4">Anonymous suggestions and concerns for group improvement.</p>
@@ -4390,6 +4393,7 @@
             </div>
         </section>
 
+        <!-- Member Satisfaction Survey Section -->
         <section id="satisfaction-survey-section" style="border-left: 4px solid #16a085;">
             <h2><i class="fas fa-poll"></i> Member Satisfaction Survey</h2>
             <p class="mb-4">Regular pulse checks on member satisfaction and group health.</p>
@@ -4516,9 +4520,6 @@
         </section>
         <section id="service-positions-section" style="border-left: 4px solid #2ecc71;">
             <h2><i class="fas fa-users-cog"></i> Service Position Management</h2>
-            <button class="btn mb-3" onclick="exportServicePositionsPDF()" style="background: #2ecc71;">
-                <i class="fas fa-file-pdf"></i> Export Positions to PDF
-            </button>
             <h3>Add/Edit Service Position</h3>
             <div class="form-group">
                 <label for="position-name">Position Name</label>
@@ -4578,9 +4579,6 @@
         </section>
         <section id="finance-section" style="border-left: 4px solid #f1c40f;">
             <h2><i class="fas fa-money-bill-wave"></i> Financial Tracking</h2>
-            <button class="btn mb-3" onclick="exportFinancialAnalyticsPDF()" style="background: #f1c40f;">
-                <i class="fas fa-file-pdf"></i> Export Financial Analytics to PDF
-            </button>
             <div class="history-nav">
                 <button onclick="showFinanceTab('budget')" class="active" id="budget-tab">Budget</button>
                 <button onclick="showFinanceTab('expenses')" id="expenses-tab">Expenses</button>
@@ -4673,6 +4671,7 @@
             </div>
         </section>
 
+        <!-- Contribution Comparison Section -->
         <section id="contribution-comparison-section" style="border-left: 4px solid #27ae60;">
             <h2><i class="fas fa-chart-bar"></i> Contribution Comparison</h2>
             <p class="mb-4">Year-over-year contribution analysis.</p>
@@ -4686,6 +4685,7 @@
             </div>
         </section>
 
+        <!-- Expense Approval Section -->
         <section id="expense-approval-section" style="border-left: 4px solid #e67e22;">
             <h2><i class="fas fa-check-circle"></i> Expense Approval Workflow</h2>
             <p class="mb-4">Approval system for large expenses.</p>
@@ -4704,6 +4704,7 @@
             <div class="box"><h3>Pending Approvals</h3><div id="pending-approvals"></div></div>
         </section>
 
+        <!-- Bill Reminders Section -->
         <section id="bill-reminders-section" style="border-left: 4px solid #c0392b;">
             <h2><i class="fas fa-calendar-check"></i> Bill Payment Reminders</h2>
             <div class="box mb-4">
@@ -4725,6 +4726,7 @@
             <div class="box"><h3>Upcoming Bills</h3><div id="upcoming-bills"></div></div>
         </section>
 
+        <!-- Contribution Calculator Section -->
         <section id="contribution-calculator-section" style="border-left: 4px solid #16a085;">
             <h2><i class="fas fa-calculator"></i> Group Contribution Calculator</h2>
             <div class="box mb-4">
@@ -4742,6 +4744,7 @@
             <div class="box"><h3>Result</h3><div id="contribution-result"></div></div>
         </section>
 
+        <!-- Financial Goals Section -->
         <section id="financial-goals-section" style="border-left: 4px solid #8e44ad;">
             <h2><i class="fas fa-bullseye"></i> Financial Goals Tracker</h2>
             <div class="box mb-4">
@@ -4763,6 +4766,7 @@
             <div class="box"><h3>Active Goals</h3><div id="financial-goals-list"></div></div>
         </section>
 
+        <!-- Expense Receipts Section -->
         <section id="expense-receipts-section" style="border-left: 4px solid #d35400;">
             <h2><i class="fas fa-receipt"></i> Expense Receipt Upload</h2>
             <div class="box mb-4">
@@ -4784,6 +4788,7 @@
             <div class="box"><h3>Receipts</h3><div id="receipts-list"></div></div>
         </section>
 
+        <!-- Quarterly Reports Section -->
         <section id="quarterly-reports-section" style="border-left: 4px solid #2980b9;">
             <h2><i class="fas fa-chart-pie"></i> Quarterly Financial Reports</h2>
             <div class="box mb-4">
@@ -4806,6 +4811,7 @@
             <div class="box"><div id="quarterly-report-output"></div></div>
         </section>
 
+        <!-- Sponsorship Tree Section -->
         <section id="sponsorship-tree-section" style="border-left: 4px solid #1abc9c;">
             <h2><i class="fas fa-sitemap"></i> Sponsorship Tree Visualization</h2>
             <p class="mb-4">Visual representation of sponsorship relationships.</p>
@@ -4817,6 +4823,7 @@
             </div>
         </section>
 
+        <!-- H&I Commitments Section -->
         <section id="hi-commitments-section" style="border-left: 4px solid #34495e;">
             <h2><i class="fas fa-hospital"></i> H&I Commitments</h2>
             <p class="mb-4">Track Hospitals & Institutions service commitments.</p>
@@ -4843,11 +4850,9 @@
             <div class="box"><h3>Active Commitments</h3><div id="hi-commitments-list"></div></div>
         </section>
 
+        <!-- Service Hours Section -->
         <section id="service-hours-section" style="border-left: 4px solid #f39c12;">
             <h2><i class="fas fa-clock"></i> Service Hours Tracking</h2>
-            <button class="btn mb-3" onclick="exportServiceHoursReportPDF()" style="background: #f39c12;">
-                <i class="fas fa-file-pdf"></i> Export Service Hours to PDF
-            </button>
             <div class="box mb-4">
                 <h3>Log Service Hours</h3>
                 <div class="form-group">
@@ -4871,6 +4876,7 @@
             <div class="box"><h3>Service Leaderboard</h3><div id="service-hours-leaderboard"></div></div>
         </section>
 
+        <!-- Conflict Resolution Section -->
         <section id="conflict-resolution-section" style="border-left: 4px solid #e74c3c;">
             <h2><i class="fas fa-handshake"></i> Conflict Resolution Tracker</h2>
             <div class="box mb-4">
@@ -4892,6 +4898,7 @@
             <div class="box"><h3>Active Conflicts</h3><div id="conflicts-list"></div></div>
         </section>
 
+        <!-- Inventory Questions Section -->
         <section id="inventory-questions-section" style="border-left: 4px solid #9b59b6;">
             <h2><i class="fas fa-question-circle"></i> Group Inventory Question Bank</h2>
             <div class="box">
@@ -4900,6 +4907,7 @@
             </div>
         </section>
 
+        <!-- Tradition Study Section -->
         <section id="tradition-study-section" style="border-left: 4px solid #3498db;">
             <h2><i class="fas fa-book-open"></i> Tradition Study Curriculum</h2>
             <div class="box">
@@ -4908,6 +4916,7 @@
             </div>
         </section>
 
+        <!-- Concept Study Section -->
         <section id="concept-study-section" style="border-left: 4px solid #1abc9c;">
             <h2><i class="fas fa-lightbulb"></i> Concept Study Curriculum</h2>
             <div class="box">
@@ -4975,6 +4984,7 @@
             </div>
         </div>
 
+        <!-- Communication Lists Section -->
         <section id="communication-lists-section" style="border-left: 4px solid #3498db;">
             <h2><i class="fas fa-envelope-open-text"></i> Text/Email Lists</h2>
             <p class="mb-4">Manage segmented communication lists.</p>
@@ -4993,6 +5003,7 @@
             <div class="box"><h3>Active Lists</h3><div id="comm-lists-display"></div></div>
         </section>
 
+        <!-- Meeting Reminders, Notifications, Action Items, Cancellations, Welcome Packets -->
         <section id="meeting-reminders-section" style="border-left: 4px solid #f39c12;">
             <h2><i class="fas fa-bell"></i> Meeting Reminders</h2>
             <p class="mb-4">Set up automated meeting reminders.</p>
@@ -5070,6 +5081,7 @@
             <div class="box"><div id="welcome-packets-list"></div></div>
         </section>
 
+        <!-- Literature Sections -->
         <section id="bigbook-tracker-section" style="border-left: 4px solid #8e44ad;">
             <h2><i class="fas fa-book"></i> Big Book Study Tracker</h2>
             <div class="box mb-4">
@@ -5775,9 +5787,6 @@
         <section id="analytics-section" style="border-left: 4px solid #1abc9c;">
             <h2><i class="fas fa-chart-bar"></i> Analytics Dashboard</h2>
             <p class="mb-4">Track group engagement, attendance trends, and participation metrics.</p>
-            <button class="btn mb-3" onclick="exportAnalyticsDashboardPDF()" style="background: #1abc9c;">
-                <i class="fas fa-file-pdf"></i> Export Dashboard to PDF
-            </button>
             <div class="box mb-4">
                 <h3>Attendance Trends Over Time</h3>
                 <div class="form-group">
@@ -6191,6 +6200,7 @@
             </div>
         </section>
 
+        <!-- Commitment Tracking Section -->
         <section id="commitment-tracking-section" style="border-left: 4px solid #16a085;">
             <h2><i class="fas fa-tasks"></i> Commitment Tracking</h2>
             <p class="mb-4">Track non-position commitments like making coffee, greeting newcomers, and setting up chairs.</p>
@@ -6238,6 +6248,7 @@
             </div>
         </section>
 
+        <!-- Meeting Format Feedback Section -->
         <section id="meeting-feedback-section" style="border-left: 4px solid #3498db;">
             <h2><i class="fas fa-comment-dots"></i> Meeting Format Feedback</h2>
             <p class="mb-4">Anonymous feedback on meeting formats to help improve the group experience.</p>
@@ -6283,6 +6294,7 @@
             </div>
         </section>
 
+        <!-- Speaker Meeting Booking Section -->
         <section id="speaker-booking-section" style="border-left: 4px solid #9b59b6;">
             <h2><i class="fas fa-microphone"></i> Speaker Meeting Booking</h2>
             <p class="mb-4">Schedule speakers for speaker meetings and manage the speaker rotation.</p>
@@ -6333,6 +6345,7 @@
             </div>
         </section>
 
+        <!-- Chip Ceremony Scheduler Section -->
         <section id="chip-ceremony-section" style="border-left: 4px solid #f39c12;">
             <h2><i class="fas fa-medal"></i> Chip Ceremony Scheduler</h2>
             <p class="mb-4">Schedule and track sobriety chip celebrations.</p>
@@ -6392,12 +6405,10 @@
             </div>
         </section>
 
+        <!-- Meeting Attendance Analytics Section -->
         <section id="meeting-analytics-section" style="border-left: 4px solid #1abc9c;">
             <h2><i class="fas fa-chart-line"></i> Meeting Attendance Analytics</h2>
             <p class="mb-4">Track which meetings are most popular and identify trends.</p>
-            <button class="btn mb-3" onclick="exportAttendanceReportPDF()" style="background: #1abc9c;">
-                <i class="fas fa-file-pdf"></i> Export Attendance Report to PDF
-            </button>
             <div class="box mb-4">
                 <h3>Meeting Popularity</h3>
                 <canvas id="meeting-popularity-chart" style="max-height: 300px;"></canvas>
@@ -6408,6 +6419,7 @@
             </div>
         </section>
 
+        <!-- Meeting Role Rotation Section -->
         <section id="role-rotation-section" style="border-left: 4px solid #34495e;">
             <h2><i class="fas fa-sync-alt"></i> Meeting Role Rotation Calendar</h2>
             <p class="mb-4">Automatically rotate meeting roles like chairperson, reader, timekeeper.</p>
@@ -6434,6 +6446,7 @@
             </div>
         </section>
 
+        <!-- Virtual Meeting Integration Section -->
         <section id="virtual-meeting-section" style="border-left: 4px solid #3498db;">
             <h2><i class="fas fa-video"></i> Virtual Meeting Integration</h2>
             <p class="mb-4">Manage Zoom/hybrid meeting links and settings.</p>
@@ -6472,6 +6485,7 @@
             </div>
         </section>
 
+        <!-- QR Code Check-in Section -->
         <section id="qr-checkin-section" style="border-left: 4px solid #e74c3c;">
             <h2><i class="fas fa-qrcode"></i> QR Code Check-in</h2>
             <p class="mb-4">Generate QR codes for quick meeting attendance scanning.</p>
@@ -7519,91 +7533,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="box mb-4" style="border-left: 4px solid #f39c12;">
-                <h3><i class="fas fa-hand-holding-up"></i> Take from the Table</h3>
-                <p class="mb-3" style="font-size: 0.85rem; opacity: 0.8;">
-                    Resume discussion of previously tabled motions
-                </p>
-                <div style="padding: 1rem; background: #f39c12; border-radius: 4px; margin-bottom: 1.5rem;">
-                    <i class="fas fa-info-circle"></i> <strong>Roberts Rules:</strong> "Take from the Table" allows the group to resume discussion of a motion that was previously tabled. Requires majority vote. Must be done in the same session or next meeting.
-                </div>
-                <div style="overflow-x: auto; margin-top: 1rem;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Date Tabled</th>
-                                <th>Motion</th>
-                                <th>Proposed By</th>
-                                <th>Days Tabled</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabled-motions-body"></tbody>
-                    </table>
-                </div>
-                <div id="no-tabled-motions" style="padding: 2rem; text-align: center; opacity: 0.6;">
-                    <i class="fas fa-check-circle" style="font-size: 2rem; color: #2ecc71;"></i>
-                    <div style="margin-top: 1rem;">No tabled motions - all items resolved</div>
-                </div>
-            </div>
-
-            <div class="box mb-4" style="border-left: 4px solid #e74c3c;">
-                <h3><i class="fas fa-gavel"></i> Chair's Rulings Log</h3>
-                <p class="mb-3" style="font-size: 0.85rem; opacity: 0.8;">
-                    Track chair's procedural decisions and any appeals
-                </p>
-                <div style="padding: 1rem; background: #e74c3c; border-radius: 4px; margin-bottom: 1.5rem;">
-                    <i class="fas fa-info-circle"></i> <strong>Roberts Rules:</strong> The chair makes rulings on procedural questions. Any member can appeal a ruling (requires second). If appealed, the assembly votes to sustain or overturn the ruling (majority vote).
-                </div>
-                <div style="overflow-x: auto; margin-top: 1rem;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Question/Issue</th>
-                                <th>Chair's Ruling</th>
-                                <th>Appealed?</th>
-                                <th>Appeal Result</th>
-                            </tr>
-                        </thead>
-                        <tbody id="chair-rulings-body"></tbody>
-                    </table>
-                </div>
-                <div id="no-chair-rulings" style="padding: 2rem; text-align: center; opacity: 0.6;">
-                    <i class="fas fa-check-circle" style="font-size: 2rem; color: #2ecc71;"></i>
-                    <div style="margin-top: 1rem;">No chair rulings recorded</div>
-                </div>
-            </div>
-
-            <div class="box mb-4" style="border-left: 4px solid #8e44ad;">
-                <h3><i class="fas fa-exclamation-triangle"></i> Rules Suspension Log</h3>
-                <p class="mb-3" style="font-size: 0.85rem; opacity: 0.8;">
-                    Track temporary suspensions of procedural rules
-                </p>
-                <div style="padding: 1rem; background: #8e44ad; border-radius: 4px; margin-bottom: 1.5rem;">
-                    <i class="fas fa-info-circle"></i> <strong>Roberts Rules:</strong> Rules can be temporarily suspended to expedite business or allow special procedures. Requires 2/3 vote. Cannot suspend rules related to fundamental rights or bylaws.
-                </div>
-                <div style="overflow-x: auto; margin-top: 1rem;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Rule(s) Suspended</th>
-                                <th>Purpose</th>
-                                <th>Duration</th>
-                                <th>Vote Result</th>
-                            </tr>
-                        </thead>
-                        <tbody id="rules-suspensions-body"></tbody>
-                    </table>
-                </div>
-                <div id="no-rules-suspensions" style="padding: 2rem; text-align: center; opacity: 0.6;">
-                    <i class="fas fa-check-circle" style="font-size: 2rem; color: #2ecc71;"></i>
-                    <div style="margin-top: 1rem;">No rules suspensions recorded</div>
-                </div>
-            </div>
-
             <div class="box mb-4" style="border-left: 4px solid #e67e22;">
                 <h3><i class="fas fa-envelope"></i> Email Integration - Agendas & Minutes</h3>
                 <p class="mb-3" style="font-size: 0.85rem; opacity: 0.8;">
@@ -8323,9 +8252,6 @@
         <section id="area-assembly-section" style="border-left: 4px solid #9b59b6;">
             <h2><i class="fas fa-users-cog"></i> Area Assembly Integration</h2>
             <p class="mb-4">Track area motions and votes, record group positions on area issues, and manage GSR voting instructions.</p>
-            <button class="btn mb-3" onclick="exportDistrictAreaReportPDF()" style="background: #9b59b6;">
-                <i class="fas fa-file-pdf"></i> Export District & Area Report to PDF
-            </button>
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
                 <div>
                     <div class="box">
@@ -10237,55 +10163,6 @@
                         <button class="btn secondary mb-2" onclick="pointOfInformation()" style="width: 100%; font-size: 0.85rem;">Point of Information</button>
                         <button class="btn secondary mb-2" onclick="pointOfOrder()" style="width: 100%; font-size: 0.85rem;">Point of Order</button>
                         <button class="btn secondary mb-2" onclick="pointOfPrivilege()" style="width: 100%; font-size: 0.85rem;">Point of Privilege</button>
-                        <button class="btn secondary mb-2" onclick="parliamentaryInquiry()" style="width: 100%; font-size: 0.85rem;">Parliamentary Inquiry</button>
-                    </div>
-                    <div class="box mt-4">
-                        <h3>Advanced Procedures</h3>
-                        <button class="btn mb-2" onclick="divisionOfAssembly()" style="width: 100%; font-size: 0.85rem; background: #e67e22;">
-                            <i class="fas fa-users-viewfinder"></i> Division of Assembly
-                        </button>
-                        <button class="btn mb-2" onclick="withdrawMotion()" style="width: 100%; font-size: 0.85rem; background: #95a5a6;">
-                            <i class="fas fa-ban"></i> Withdraw Motion
-                        </button>
-                        <button class="btn mb-2" onclick="divisionOfQuestion()" style="width: 100%; font-size: 0.85rem; background: #3498db;">
-                            <i class="fas fa-divide"></i> Division of Question
-                        </button>
-                        <button class="btn mb-2" onclick="appealChairRuling()" style="width: 100%; font-size: 0.85rem; background: #e74c3c;">
-                            <i class="fas fa-gavel"></i> Appeal Chair's Ruling
-                        </button>
-                        <button class="btn mb-2" onclick="objectionToConsideration()" style="width: 100%; font-size: 0.85rem; background: #c0392b;">
-                            <i class="fas fa-hand"></i> Objection to Consideration
-                        </button>
-                        <button class="btn mb-2" onclick="suspendRules()" style="width: 100%; font-size: 0.85rem; background: #8e44ad;">
-                            <i class="fas fa-exclamation-triangle"></i> Suspend the Rules
-                        </button>
-                    </div>
-                    <div class="box mt-4" style="border-left: 4px solid #3498db;">
-                        <h3><i class="fas fa-divide"></i> Division of Question Workspace</h3>
-                        <p class="mb-3" style="font-size: 0.85rem; opacity: 0.8;">
-                            Split a complex motion into separate votable parts
-                        </p>
-                        <div style="padding: 1rem; background: #3498db; border-radius: 4px; margin-bottom: 1.5rem;">
-                            <i class="fas fa-info-circle"></i> <strong>Roberts Rules:</strong> Division of Question allows splitting a complex motion into separate questions for independent voting. Each part is voted on separately. Requires 2/3 vote to divide.
-                        </div>
-                        <div class="form-group">
-                            <label for="original-motion-text">Original Motion</label>
-                            <textarea id="original-motion-text" rows="3" placeholder="Enter the original complex motion..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="divided-part-1">Part 1</label>
-                            <textarea id="divided-part-1" rows="2" placeholder="First independent part..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="divided-part-2">Part 2</label>
-                            <textarea id="divided-part-2" rows="2" placeholder="Second independent part..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="divided-part-3">Part 3 (Optional)</label>
-                            <textarea id="divided-part-3" rows="2" placeholder="Third independent part (if needed)..."></textarea>
-                        </div>
-                        <button class="btn" onclick="processDivisionOfQuestion()">Process Division</button>
-                        <div id="division-status" class="mt-3"></div>
                     </div>
                     <div class="box mt-4">
                         <h3>Amendments</h3>
@@ -10469,9 +10346,6 @@
         <section id="budget-approval-section" style="border-left: 4px solid #f1c40f;">
             <h2><i class="fas fa-file-invoice-dollar"></i> Budget Approval Workflow</h2>
             <p class="mb-4">Propose, review, and vote on annual budgets and budget amendments.</p>
-            <button class="btn mb-3" onclick="exportBudgetReportPDF()" style="background: #f1c40f;">
-                <i class="fas fa-file-pdf"></i> Export Budget Report to PDF
-            </button>
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
                 <div>
                     <div class="box">
@@ -10519,9 +10393,6 @@
         <section id="literature-inventory-section" style="border-left: 4px solid #95a5a6;">
             <h2><i class="fas fa-book-reader"></i> Literature & Supplies Inventory</h2>
             <p class="mb-4">Track AA literature, supplies, and loan management.</p>
-            <button class="btn mb-3" onclick="exportLiteratureInventoryPDF()" style="background: #95a5a6;">
-                <i class="fas fa-file-pdf"></i> Export Inventory to PDF
-            </button>
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
                 <div>
                     <div class="box">
@@ -11627,6 +11498,7 @@
         </div>
     </div>
 
+    <!-- Home Group Specific Sections -->
     <section id="inter-group-section" style="border-left: 4px solid #16a085;">
         <h2><i class="fas fa-network-wired"></i> Inter-Group Connections</h2>
         <p class="mb-4">Track members who attend other AA groups to understand fellowship connections and encourage group unity across the wider AA community.</p>
@@ -11825,6 +11697,7 @@
         </div>
     </section>
 
+    <!-- Integration Sections -->
     <section id="calendar-integration-section" style="border-left: 4px solid #3498db;">
         <h2><i class="fab fa-google"></i> Google Calendar Integration</h2>
         <p class="mb-4">Sync your AA group meetings with Google Calendar for easy scheduling and reminders.</p>
@@ -12022,6 +11895,7 @@
         </div>
     </section>
 
+    <!-- Mobile Sections -->
     <section id="offline-mode-section" style="border-left: 4px solid #34495e;">
         <h2><i class="fas fa-wifi"></i> Offline Mode</h2>
         <p class="mb-4">This application works offline! Once loaded, you can use core features without an internet connection.</p>
@@ -12165,6 +12039,7 @@
         </div>
     </section>
 
+    <!-- Accessibility Sections -->
     <section id="multi-language-section" style="border-left: 4px solid #e67e22;">
         <h2><i class="fas fa-language"></i> Multi-Language Support</h2>
         <p class="mb-4">Make AA accessible to all by providing the application interface in multiple languages.</p>
@@ -12326,6 +12201,7 @@
         </div>
     </section>
 
+    <!-- Archival Sections -->
     <section id="digital-archive-section" style="border-left: 4px solid #95a5a6;">
         <h2><i class="fas fa-archive"></i> Digital Archive</h2>
         <p class="mb-4">Preserve important group documents, photos, and records for future generations.</p>
@@ -12636,6 +12512,7 @@ function goToSection(sectionId) {
     } else if (sectionId === 'literature-sales-section') {
         updateLiteratureSalesSummary();
     } else if (sectionId === 'study-guide-section') {
+        // No init needed
     } else if (sectionId === 'contribution-comparison-section') {
         updateContributionComparison();
     } else if (sectionId === 'expense-approval-section') {
@@ -12647,7 +12524,9 @@ function goToSection(sectionId) {
     } else if (sectionId === 'expense-receipts-section') {
         updateReceiptsList();
     } else if (sectionId === 'quarterly-reports-section') {
+        // No init needed
     } else if (sectionId === 'sponsorship-tree-section') {
+        // Generate on button click
     } else if (sectionId === 'hi-commitments-section') {
         populateHIMember();
         updateHICommitmentsList();
@@ -13137,6 +13016,7 @@ const storage = {
         catch(e) { console.error('Error parsing decisionReversals:', e); return []; }
     },
     saveDecisionReversals(reversals) { localStorage.setItem('decisionReversals', JSON.stringify(reversals)); },
+    // Area Assembly Integration
     getAreaMotions() {
         try { return JSON.parse(localStorage.getItem('areaMotions') || '[]'); }
         catch(e) { console.error('Error parsing areaMotions:', e); return []; }
@@ -13147,6 +13027,7 @@ const storage = {
         catch(e) { console.error('Error parsing assemblyAgendas:', e); return []; }
     },
     saveAssemblyAgendas(agendas) { localStorage.setItem('assemblyAgendas', JSON.stringify(agendas)); },
+    // Intergroup Representative
     getIRMeetings() {
         try { return JSON.parse(localStorage.getItem('irMeetings') || '[]'); }
         catch(e) { console.error('Error parsing irMeetings:', e); return []; }
@@ -13167,6 +13048,7 @@ const storage = {
         catch(e) { console.error('Error parsing piActivities:', e); return []; }
     },
     savePIActivities(activities) { localStorage.setItem('piActivities', JSON.stringify(activities)); },
+    // H&I Panel Management
     getFacilities() {
         try { return JSON.parse(localStorage.getItem('facilities') || '[]'); }
         catch(e) { console.error('Error parsing facilities:', e); return []; }
@@ -13182,6 +13064,7 @@ const storage = {
         catch(e) { console.error('Error parsing memberCertifications:', e); return []; }
     },
     saveMemberCertifications(certs) { localStorage.setItem('memberCertifications', JSON.stringify(certs)); },
+    // CPC (Professional Community)
     getProfessionals() {
         try { return JSON.parse(localStorage.getItem('professionals') || '[]'); }
         catch(e) { console.error('Error parsing professionals:', e); return []; }
@@ -13197,6 +13080,7 @@ const storage = {
         catch(e) { console.error('Error parsing btgReferrals:', e); return []; }
     },
     saveBTGReferrals(referrals) { localStorage.setItem('btgReferrals', JSON.stringify(referrals)); },
+    // PI (Public Information)
     getMediaContacts() {
         try { return JSON.parse(localStorage.getItem('mediaContacts') || '[]'); }
         catch(e) { console.error('Error parsing mediaContacts:', e); return []; }
@@ -13217,6 +13101,7 @@ const storage = {
         catch(e) { console.error('Error parsing outreachLogs:', e); return []; }
     },
     saveOutreachLogs(logs) { localStorage.setItem('outreachLogs', JSON.stringify(logs)); },
+    // Treatment Facilities Liaison
     getTreatmentFacilities() {
         try { return JSON.parse(localStorage.getItem('treatmentFacilities') || '[]'); }
         catch(e) { console.error('Error parsing treatmentFacilities:', e); return []; }
@@ -13232,6 +13117,7 @@ const storage = {
         catch(e) { console.error('Error parsing followUps:', e); return []; }
     },
     saveFollowUps(followups) { localStorage.setItem('followUps', JSON.stringify(followups)); },
+    // Corrections Committee
     getCorrectionsFacilities() {
         try { return JSON.parse(localStorage.getItem('correctionsFacilities') || '[]'); }
         catch(e) { console.error('Error parsing correctionsFacilities:', e); return []; }
@@ -13252,6 +13138,7 @@ const storage = {
         catch(e) { console.error('Error parsing correspondenceLog:', e); return []; }
     },
     saveCorrespondenceLog(log) { localStorage.setItem('correspondenceLog', JSON.stringify(log)); },
+    // Special Events Management
     getEventsMgmt() {
         try { return JSON.parse(localStorage.getItem('eventsMgmt') || '[]'); }
         catch(e) { console.error('Error parsing eventsMgmt:', e); return []; }
@@ -13277,6 +13164,7 @@ const storage = {
         catch(e) { console.error('Error parsing ticketSales:', e); return []; }
     },
     saveTicketSales(sales) { localStorage.setItem('ticketSales', JSON.stringify(sales)); },
+    // Archives Management
     getArchiveDocuments() {
         try { return JSON.parse(localStorage.getItem('archiveDocuments') || '[]'); }
         catch(e) { console.error('Error parsing archiveDocuments:', e); return []; }
@@ -13287,6 +13175,7 @@ const storage = {
         catch(e) { console.error('Error parsing interviews:', e); return []; }
     },
     saveInterviews(interviews) { localStorage.setItem('interviews', JSON.stringify(interviews)); },
+    // Language Accessibility
     getTranslators() {
         try { return JSON.parse(localStorage.getItem('translators') || '[]'); }
         catch(e) { console.error('Error parsing translators:', e); return []; }
@@ -13311,28 +13200,7 @@ const storage = {
         try { return JSON.parse(localStorage.getItem('captionSetup') || '{}'); }
         catch(e) { console.error('Error parsing captionSetup:', e); return {}; }
     },
-    saveCaptionSetup(setup) { localStorage.setItem('captionSetup', JSON.stringify(setup)); },
-
-    getChairRulings() {
-        try { return JSON.parse(localStorage.getItem('chairRulings') || '[]'); }
-        catch(e) { console.error('Error parsing chairRulings:', e); return []; }
-    },
-    saveChairRulings(rulings) { localStorage.setItem('chairRulings', JSON.stringify(rulings)); },
-    getRulesSuspensions() {
-        try { return JSON.parse(localStorage.getItem('rulesSuspensions') || '[]'); }
-        catch(e) { console.error('Error parsing rulesSuspensions:', e); return []; }
-    },
-    saveRulesSuspensions(suspensions) { localStorage.setItem('rulesSuspensions', JSON.stringify(suspensions)); },
-    getDividedQuestions() {
-        try { return JSON.parse(localStorage.getItem('dividedQuestions') || '[]'); }
-        catch(e) { console.error('Error parsing dividedQuestions:', e); return []; }
-    },
-    saveDividedQuestions(questions) { localStorage.setItem('dividedQuestions', JSON.stringify(questions)); },
-    getParliamentaryInquiries() {
-        try { return JSON.parse(localStorage.getItem('parliamentaryInquiries') || '[]'); }
-        catch(e) { console.error('Error parsing parliamentaryInquiries:', e); return []; }
-    },
-    saveParliamentaryInquiries(inquiries) { localStorage.setItem('parliamentaryInquiries', JSON.stringify(inquiries)); }
+    saveCaptionSetup(setup) { localStorage.setItem('captionSetup', JSON.stringify(setup)); }
 };
 function initDefaults() {
     if (localStorage.getItem('birthdays') && !localStorage.getItem('members')) {
@@ -13977,19 +13845,23 @@ function generatePhoneList() {
         showToast('No members to generate phone list.', 'error');
         return;
     }
+    // Sort members by name
     const sortedMembers = members.sort((a, b) => a.name.localeCompare(b.name));
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
+    // Title
     doc.setFontSize(18);
     doc.setFont(undefined, 'bold');
     doc.text('HomeGroup Phone List', doc.internal.pageSize.width / 2, 20, { align: 'center' });
 
+    // Date
     doc.setFontSize(10);
     doc.setFont(undefined, 'normal');
     doc.text(`Generated: ${new Date().toLocaleDateString()}`, doc.internal.pageSize.width / 2, 28, { align: 'center' });
 
+    // Table headers and data
     const tableData = [];
     const statusLabels = {
         'home-group-member': 'Home Group',
@@ -14019,6 +13891,7 @@ function generatePhoneList() {
         margin: { top: 35, left: 14, right: 14 }
     });
 
+    // Add anonymity notice at bottom
     const pageCount = doc.internal.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
         doc.setPage(i);
@@ -14137,6 +14010,7 @@ function logNewcomerAttendance() {
 
     const attendance = getNewcomerAttendance(newcomerId);
 
+    // Check for duplicate
     if (attendance.some(a => a.date === meetingDate)) {
         showToast('Attendance already logged for this date.', 'error');
         return;
@@ -14241,14 +14115,18 @@ function updateAvailableSponsors() {
     const members = storage.getMembers();
     const sponsors = members.filter(m => m.availableToSponsor === true);
 
+    // Get filter values
     const genderFilter = document.getElementById('filter-sponsor-gender')?.value || '';
     const minYears = parseInt(document.getElementById('filter-min-years')?.value || '0');
 
+    // Apply filters
     const filteredSponsors = sponsors.filter(sponsor => {
+        // Gender filter
         if (genderFilter && sponsor.gender !== genderFilter) {
             return false;
         }
 
+        // Minimum years sober filter
         const soberTime = calculateSoberTime(sponsor.birthday);
         if (soberTime.years < minYears) {
             return false;
@@ -14257,6 +14135,7 @@ function updateAvailableSponsors() {
         return true;
     });
 
+    // Sort by years sober (descending)
     filteredSponsors.sort((a, b) => {
         const aTime = calculateSoberTime(a.birthday);
         const bTime = calculateSoberTime(b.birthday);
@@ -14303,6 +14182,7 @@ function updateAvailableSponsors() {
         sponsorsList.appendChild(card);
     });
 }
+// Topic Suggestions Functions
 function submitTopicSuggestion() {
     const title = document.getElementById('topic-title').value.trim();
     if (!title) {
@@ -14369,6 +14249,7 @@ function voteForTopic(topicId) {
         updateTopicsList();
     }
 }
+// 12-Step Call Roster Functions
 function updateCallRosterAvailability() {
     const available = document.getElementById('call-available').checked;
     const prefs = document.getElementById('call-time-preference');
@@ -14432,6 +14313,7 @@ function updateCallRosterList() {
         list.appendChild(card);
     });
 }
+// Daily Reflections Functions
 function loadDailyReflection() {
     const today = new Date();
     const dateStr = today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -14467,6 +14349,7 @@ function saveReflectionNotes() {
 function viewReflectionHistory() {
     alert('Reflection history feature - implementation complete in full version.');
 }
+// Step Work Tracker Functions
 function updateStepProgress() {
     const stepNum = document.getElementById('step-select').value;
     const status = document.getElementById('step-status').value;
@@ -14509,6 +14392,7 @@ function displayStepProgress() {
     html += '</div>';
     display.innerHTML = html;
 }
+// Service Opportunities Functions
 function postServiceOpportunity() {
     const task = document.getElementById('service-task').value.trim();
     if (!task) {
@@ -14565,6 +14449,7 @@ function updateServiceOpportunitiesList() {
         list.appendChild(card);
     });
 }
+// Temperature Check Functions
 function submitTemperatureCheck() {
     const health = document.querySelector('input[name="overall-health"]:checked');
     const welcome = document.querySelector('input[name="feel-welcome"]:checked');
@@ -14615,6 +14500,7 @@ function displayTemperatureResults() {
         </div>
     `;
 }
+// Group Vision Functions
 function loadGroupVision() {
     const vision = JSON.parse(localStorage.getItem('groupVision') || '{}');
     const display = document.getElementById('vision-display');
@@ -14651,6 +14537,7 @@ function saveGroupVision() {
 function cancelGroupVision() {
     document.getElementById('vision-editor').style.display = 'none';
 }
+// iCalendar Export Function
 function exportToICalendar() {
     const events = storage.getEvents();
     if (events.length === 0) {
@@ -14674,6 +14561,7 @@ function exportToICalendar() {
         const location = event.location || '';
 
         if (event.dayOfWeek !== undefined && event.dayOfWeek !== null) {
+            // Recurring weekly event
             const today = new Date();
             const startDate = new Date(today);
             startDate.setDate(today.getDate() + ((parseInt(event.dayOfWeek) - today.getDay() + 7) % 7));
@@ -14694,6 +14582,7 @@ function exportToICalendar() {
                 'END:VEVENT'
             );
         } else if (event.date) {
+            // One-time event
             const eventDate = new Date(event.date);
             const dtstart = formatICSDate(eventDate, event.time);
             const dtend = formatICSDate(eventDate, event.endTime || event.time);
@@ -14745,6 +14634,7 @@ function escapeICS(text) {
     if (!text) return '';
     return text.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
 }
+// QR Code Generation Functions
 function generateMeetingQRCode() {
     const groupName = localStorage.getItem('groupName') || 'HomeGroup';
     const location = localStorage.getItem('meetingLocation') || '';
@@ -14775,6 +14665,7 @@ function generateMeetingQRCode() {
     showToast('QR Code generated!', 'success');
 }
 function generateQRCodeCanvas(text, canvasId) {
+    // Simple QR code using canvas (placeholder - in production use a QR library)
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
 
@@ -14782,6 +14673,7 @@ function generateQRCodeCanvas(text, canvasId) {
     canvas.width = 200;
     canvas.height = 200;
 
+    // Draw a placeholder pattern
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, 200, 200);
 
@@ -17491,45 +17383,51 @@ function exportData(dataType) {
             roiCalculations: storage.getROICalculations(),
             proxyVotes: storage.getProxyVotes(),
             decisionReversals: storage.getDecisionReversals(),
+            // Area Assembly Integration
             areaMotions: storage.getAreaMotions(),
             assemblyAgendas: storage.getAssemblyAgendas(),
+            // Intergroup Representative
             irMeetings: storage.getIRMeetings(),
             hotlineShifts: storage.getHotlineShifts(),
             specialEvents: storage.getSpecialEvents(),
             piActivities: storage.getPIActivities(),
+            // H&I Panel Management
             facilities: storage.getFacilities(),
             hiPanels: storage.getHIPanels(),
             memberCertifications: storage.getMemberCertifications(),
+            // CPC (Professional Community)
             professionals: storage.getProfessionals(),
             presentations: storage.getPresentations(),
             btgReferrals: storage.getBTGReferrals(),
+            // PI (Public Information)
             mediaContacts: storage.getMediaContacts(),
             pressReleases: storage.getPressReleases(),
             outreachEvents: storage.getOutreachEvents(),
             outreachLogs: storage.getOutreachLogs(),
+            // Treatment Facilities Liaison
             treatmentFacilities: storage.getTreatmentFacilities(),
             bridgingCommitments: storage.getBridgingCommitments(),
             followUps: storage.getFollowUps(),
+            // Corrections Committee
             correctionsFacilities: storage.getCorrectionsFacilities(),
             correctionsClearances: storage.getCorrectionsClearances(),
             preReleaseContacts: storage.getPreReleaseContacts(),
             correspondenceLog: storage.getCorrespondenceLog(),
+            // Special Events Management
             eventsMgmt: storage.getEventsMgmt(),
             speakers: storage.getSpeakers(),
             eventVolunteers: storage.getEventVolunteers(),
             eventExpenses: storage.getEventExpenses(),
             ticketSales: storage.getTicketSales(),
+            // Archives Management
             archiveDocuments: storage.getArchiveDocuments(),
             interviews: storage.getInterviews(),
+            // Language Accessibility
             translators: storage.getTranslators(),
             languageMaterials: storage.getLanguageMaterials(),
             interpreters: storage.getInterpreters(),
             interpreterSchedule: storage.getInterpreterSchedule(),
             captionSetup: storage.getCaptionSetup(),
-            chairRulings: storage.getChairRulings(),
-            rulesSuspensions: storage.getRulesSuspensions(),
-            dividedQuestions: storage.getDividedQuestions(),
-            parliamentaryInquiries: storage.getParliamentaryInquiries(),
             exportDate: new Date().toISOString(),
             version: '6.0'
         };
@@ -17651,45 +17549,51 @@ function importData() {
             if (data.roiCalculations) { storage.saveROICalculations(data.roiCalculations); imported = true; }
             if (data.proxyVotes) { storage.saveProxyVotes(data.proxyVotes); imported = true; }
             if (data.decisionReversals) { storage.saveDecisionReversals(data.decisionReversals); imported = true; }
+            // Area Assembly Integration
             if (data.areaMotions) { storage.saveAreaMotions(data.areaMotions); imported = true; }
             if (data.assemblyAgendas) { storage.saveAssemblyAgendas(data.assemblyAgendas); imported = true; }
+            // Intergroup Representative
             if (data.irMeetings) { storage.saveIRMeetings(data.irMeetings); imported = true; }
             if (data.hotlineShifts) { storage.saveHotlineShifts(data.hotlineShifts); imported = true; }
             if (data.specialEvents) { storage.saveSpecialEvents(data.specialEvents); imported = true; }
             if (data.piActivities) { storage.savePIActivities(data.piActivities); imported = true; }
+            // H&I Panel Management
             if (data.facilities) { storage.saveFacilities(data.facilities); imported = true; }
             if (data.hiPanels) { storage.saveHIPanels(data.hiPanels); imported = true; }
             if (data.memberCertifications) { storage.saveMemberCertifications(data.memberCertifications); imported = true; }
+            // CPC (Professional Community)
             if (data.professionals) { storage.saveProfessionals(data.professionals); imported = true; }
             if (data.presentations) { storage.savePresentations(data.presentations); imported = true; }
             if (data.btgReferrals) { storage.saveBTGReferrals(data.btgReferrals); imported = true; }
+            // PI (Public Information)
             if (data.mediaContacts) { storage.saveMediaContacts(data.mediaContacts); imported = true; }
             if (data.pressReleases) { storage.savePressReleases(data.pressReleases); imported = true; }
             if (data.outreachEvents) { storage.saveOutreachEvents(data.outreachEvents); imported = true; }
             if (data.outreachLogs) { storage.saveOutreachLogs(data.outreachLogs); imported = true; }
+            // Treatment Facilities Liaison
             if (data.treatmentFacilities) { storage.saveTreatmentFacilities(data.treatmentFacilities); imported = true; }
             if (data.bridgingCommitments) { storage.saveBridgingCommitments(data.bridgingCommitments); imported = true; }
             if (data.followUps) { storage.saveFollowUps(data.followUps); imported = true; }
+            // Corrections Committee
             if (data.correctionsFacilities) { storage.saveCorrectionsFacilities(data.correctionsFacilities); imported = true; }
             if (data.correctionsClearances) { storage.saveCorrectionsClearances(data.correctionsClearances); imported = true; }
             if (data.preReleaseContacts) { storage.savePreReleaseContacts(data.preReleaseContacts); imported = true; }
             if (data.correspondenceLog) { storage.saveCorrespondenceLog(data.correspondenceLog); imported = true; }
+            // Special Events Management
             if (data.eventsMgmt) { storage.saveEventsMgmt(data.eventsMgmt); imported = true; }
             if (data.speakers) { storage.saveSpeakers(data.speakers); imported = true; }
             if (data.eventVolunteers) { storage.saveEventVolunteers(data.eventVolunteers); imported = true; }
             if (data.eventExpenses) { storage.saveEventExpenses(data.eventExpenses); imported = true; }
             if (data.ticketSales) { storage.saveTicketSales(data.ticketSales); imported = true; }
+            // Archives Management
             if (data.archiveDocuments) { storage.saveArchiveDocuments(data.archiveDocuments); imported = true; }
             if (data.interviews) { storage.saveInterviews(data.interviews); imported = true; }
+            // Language Accessibility
             if (data.translators) { storage.saveTranslators(data.translators); imported = true; }
             if (data.languageMaterials) { storage.saveLanguageMaterials(data.languageMaterials); imported = true; }
             if (data.interpreters) { storage.saveInterpreters(data.interpreters); imported = true; }
             if (data.interpreterSchedule) { storage.saveInterpreterSchedule(data.interpreterSchedule); imported = true; }
             if (data.captionSetup) { storage.saveCaptionSetup(data.captionSetup); imported = true; }
-            if (data.chairRulings) { storage.saveChairRulings(data.chairRulings); imported = true; }
-            if (data.rulesSuspensions) { storage.saveRulesSuspensions(data.rulesSuspensions); imported = true; }
-            if (data.dividedQuestions) { storage.saveDividedQuestions(data.dividedQuestions); imported = true; }
-            if (data.parliamentaryInquiries) { storage.saveParliamentaryInquiries(data.parliamentaryInquiries); imported = true; }
             if (imported) {
                 localStorage.setItem('lastImportDate', new Date().toISOString());
                 showToast('✓ Data imported successfully! The page will reload in 2 seconds...', 'success');
@@ -22194,11 +22098,13 @@ function getGroupHealthMetrics() {
 }
 function getAllApplicationData() {
     return {
+        // Core Data
         events: storage.getEvents(),
         members: storage.getMembers(),
         announcements: storage.getAnnouncements(),
         photos: storage.getPhotos(),
 
+        // Meeting Management
         chairpersonLog: storage.getChairpersonLog(),
         meetingMinutes: storage.getMeetingMinutes(),
         meetingFeedback: JSON.parse(localStorage.getItem('meetingFeedback') || '[]'),
@@ -22207,6 +22113,7 @@ function getAllApplicationData() {
         qrCheckInSettings: JSON.parse(localStorage.getItem('qrCheckInSettings') || '{}'),
         meetingAnalytics: JSON.parse(localStorage.getItem('meetingAnalytics') || '[]'),
 
+        // Group Conscience
         groupConscienceLog: storage.getGroupConscienceLog(),
         liveGCItems: storage.getLiveGCItems(),
         proposedAgendaItems: storage.getProposedAgendaItems(),
@@ -22220,6 +22127,7 @@ function getAllApplicationData() {
         conflicts: JSON.parse(localStorage.getItem('conflicts') || '[]'),
         inventoryQuestions: JSON.parse(localStorage.getItem('inventoryQuestions') || '[]'),
 
+        // Communications
         messages: storage.getMessages(),
         commLists: JSON.parse(localStorage.getItem('commLists') || '[]'),
         reminderSettings: JSON.parse(localStorage.getItem('reminderSettings') || '{}'),
@@ -22228,6 +22136,7 @@ function getAllApplicationData() {
         cancellationAlerts: JSON.parse(localStorage.getItem('cancellationAlerts') || '[]'),
         welcomePacketSettings: JSON.parse(localStorage.getItem('welcomePacketSettings') || '{}'),
 
+        // Service & Positions
         servicePositions: storage.getServicePositions(),
         serviceElections: storage.getServiceElections(),
         electionBallots: storage.getElectionBallots(),
@@ -22237,6 +22146,7 @@ function getAllApplicationData() {
         hiCommitments: JSON.parse(localStorage.getItem('hiCommitments') || '[]'),
         serviceHours: JSON.parse(localStorage.getItem('serviceHours') || '[]'),
 
+        // Financial Management
         budgetCategories: storage.getBudgetCategories(),
         expenses: storage.getExpenses(),
         budgetProposals: storage.getBudgetProposals(),
@@ -22249,9 +22159,11 @@ function getAllApplicationData() {
         monthlyExpenses: localStorage.getItem('monthlyExpenses'),
         reserveMonths: localStorage.getItem('reserveMonths'),
 
+        // Sponsorship
         sponsorships: JSON.parse(localStorage.getItem('sponsorships') || '[]'),
         sponsorshipTree: JSON.parse(localStorage.getItem('sponsorshipTree') || '[]'),
 
+        // Literature & Resources
         literatureInventory: storage.getLiteratureInventory(),
         literatureLoans: storage.getLiteratureLoans(),
         bigBookStudy: JSON.parse(localStorage.getItem('bigBookStudy') || '[]'),
@@ -22259,6 +22171,7 @@ function getAllApplicationData() {
         literatureSales: JSON.parse(localStorage.getItem('literatureSales') || '[]'),
         digitalLibrary: JSON.parse(localStorage.getItem('digitalLibrary') || '[]'),
 
+        // Home Group Specific
         interGroupAttendance: JSON.parse(localStorage.getItem('interGroupAttendance') || '[]'),
         homeGroupTransfers: JSON.parse(localStorage.getItem('homeGroupTransfers') || '[]'),
         homeGroupBenefits: JSON.parse(localStorage.getItem('homeGroupBenefits') || '[]'),
@@ -22266,24 +22179,29 @@ function getAllApplicationData() {
         censusStat: JSON.parse(localStorage.getItem('censusStats') || '[]'),
         growthMetrics: JSON.parse(localStorage.getItem('growthMetrics') || '[]'),
 
+        // Integration & Settings
         multiGroups: JSON.parse(localStorage.getItem('multiGroups') || '[]'),
         calendarIntegration: JSON.parse(localStorage.getItem('calendarIntegration') || '{}'),
         smsSettings: JSON.parse(localStorage.getItem('smsSettings') || '{}'),
         emailAutomation: JSON.parse(localStorage.getItem('emailAutomation') || '{}'),
         cloudBackupSettings: JSON.parse(localStorage.getItem('cloudBackupSettings') || '{}'),
 
+        // Accessibility
         accessibilityConcerns: JSON.parse(localStorage.getItem('accessibilityConcerns') || '[]'),
         languageSettings: JSON.parse(localStorage.getItem('languageSettings') || '{"language": "en"}'),
         largePrintEnabled: localStorage.getItem('largePrintEnabled') === 'true',
 
+        // Archival & History
         digitalArchive: JSON.parse(localStorage.getItem('digitalArchive') || '[]'),
         oralHistories: JSON.parse(localStorage.getItem('oralHistories') || '[]'),
         milestones: JSON.parse(localStorage.getItem('milestones') || '[]'),
         legacies: JSON.parse(localStorage.getItem('legacies') || '[]'),
         historicalMinutes: JSON.parse(localStorage.getItem('historicalMinutes') || '[]'),
 
+        // District/Area
         districtMotions: storage.getDistrictMotions(),
 
+        // Settings & Configuration
         templates: storage.getTemplates(),
         votingSettings: storage.getVotingSettings(),
         quorumRules: storage.getQuorumRules(),
@@ -22301,8 +22219,10 @@ function getAllApplicationData() {
         backupSettings: JSON.parse(localStorage.getItem('backupSettings') || '{"enabled": true, "frequency": "daily"}'),
         currentUser: localStorage.getItem('currentUser'),
 
+        // Audit & Logs
         auditLog: JSON.parse(localStorage.getItem('auditLog') || '[]'),
 
+        // Metadata
         exportDate: new Date().toISOString(),
         version: '7.0',
         backupType: 'full',
@@ -22440,6 +22360,7 @@ function exportFullBackupCSV() {
             csvFiles.push({ name: 'meeting_feedback.csv', content: csv });
         }
 
+        // Meeting Management - Additional
         if (data.roleRotation && data.roleRotation.length > 0) {
             const csv = arrayToCSV(data.roleRotation, ['id', 'role', 'member', 'startDate', 'endDate', 'status']);
             csvFiles.push({ name: 'role_rotation.csv', content: csv });
@@ -22453,6 +22374,7 @@ function exportFullBackupCSV() {
             csvFiles.push({ name: 'meeting_analytics.csv', content: csv });
         }
 
+        // Communications
         if (data.commLists && data.commLists.length > 0) {
             const csv = arrayToCSV(data.commLists, ['id', 'name', 'description', 'members', 'createdDate']);
             csvFiles.push({ name: 'communication_lists.csv', content: csv });
@@ -22466,6 +22388,7 @@ function exportFullBackupCSV() {
             csvFiles.push({ name: 'cancellation_alerts.csv', content: csv });
         }
 
+        // Financial Management - Additional
         if (data.expenseApprovals && data.expenseApprovals.length > 0) {
             const csv = arrayToCSV(data.expenseApprovals, ['id', 'expenseId', 'requestedBy', 'amount', 'status', 'approvedBy', 'approvalDate']);
             csvFiles.push({ name: 'expense_approvals.csv', content: csv });
@@ -22483,6 +22406,7 @@ function exportFullBackupCSV() {
             csvFiles.push({ name: 'expense_receipts.csv', content: csv });
         }
 
+        // Sponsorship
         if (data.hiCommitments && data.hiCommitments.length > 0) {
             const csv = arrayToCSV(data.hiCommitments, ['id', 'memberId', 'memberName', 'commitmentDate', 'type', 'notes']);
             csvFiles.push({ name: 'hi_commitments.csv', content: csv });
@@ -22500,6 +22424,7 @@ function exportFullBackupCSV() {
             csvFiles.push({ name: 'sponsorship_tree.csv', content: csv });
         }
 
+        // Literature & Resources
         if (data.bigBookStudy && data.bigBookStudy.length > 0) {
             const csv = arrayToCSV(data.bigBookStudy, ['id', 'date', 'chapter', 'facilitator', 'attendees', 'notes']);
             csvFiles.push({ name: 'big_book_study.csv', content: csv });
@@ -22517,6 +22442,7 @@ function exportFullBackupCSV() {
             csvFiles.push({ name: 'digital_library.csv', content: csv });
         }
 
+        // Home Group Specific
         if (data.interGroupAttendance && data.interGroupAttendance.length > 0) {
             const csv = arrayToCSV(data.interGroupAttendance, ['id', 'memberId', 'memberName', 'otherGroup', 'date', 'frequency']);
             csvFiles.push({ name: 'inter_group_attendance.csv', content: csv });
@@ -22542,16 +22468,19 @@ function exportFullBackupCSV() {
             csvFiles.push({ name: 'growth_metrics.csv', content: csv });
         }
 
+        // Integration & Settings
         if (data.multiGroups && data.multiGroups.length > 0) {
             const csv = arrayToCSV(data.multiGroups, ['id', 'groupName', 'meetingDay', 'meetingTime', 'location', 'isActive']);
             csvFiles.push({ name: 'multi_groups.csv', content: csv });
         }
 
+        // Accessibility
         if (data.accessibilityConcerns && data.accessibilityConcerns.length > 0) {
             const csv = arrayToCSV(data.accessibilityConcerns, ['id', 'memberId', 'memberName', 'concern', 'accommodation', 'dateReported']);
             csvFiles.push({ name: 'accessibility_concerns.csv', content: csv });
         }
 
+        // Archival & History
         if (data.digitalArchive && data.digitalArchive.length > 0) {
             const csv = arrayToCSV(data.digitalArchive, ['id', 'title', 'date', 'type', 'description', 'fileUrl', 'uploadedBy']);
             csvFiles.push({ name: 'digital_archive.csv', content: csv });
@@ -22573,6 +22502,7 @@ function exportFullBackupCSV() {
             csvFiles.push({ name: 'historical_minutes.csv', content: csv });
         }
 
+        // Settings & Configuration (as simple CSV)
         const settingsData = [];
         if (data.qrCheckInSettings && Object.keys(data.qrCheckInSettings).length > 0) {
             settingsData.push({ setting: 'qrCheckInSettings', value: JSON.stringify(data.qrCheckInSettings) });
@@ -22646,11 +22576,13 @@ function importFullBackupCSV() {
     showToast('⚠️ CSV import requires the JSON backup file. Please use JSON Import for full restore, or manually import CSV files into a spreadsheet to review data.', 'info');
 }
 function restoreAllApplicationData(data) {
+    // Core Data
     if (data.events) storage.saveEvents(data.events);
     if (data.members) storage.saveMembers(data.members);
     if (data.announcements) storage.saveAnnouncements(data.announcements);
     if (data.photos) storage.savePhotos(data.photos);
 
+    // Meeting Management
     if (data.chairpersonLog) storage.saveChairpersonLog(data.chairpersonLog);
     if (data.meetingMinutes) storage.saveMeetingMinutes(data.meetingMinutes);
     if (data.meetingFeedback) localStorage.setItem('meetingFeedback', JSON.stringify(data.meetingFeedback));
@@ -22659,6 +22591,7 @@ function restoreAllApplicationData(data) {
     if (data.qrCheckInSettings) localStorage.setItem('qrCheckInSettings', JSON.stringify(data.qrCheckInSettings));
     if (data.meetingAnalytics) localStorage.setItem('meetingAnalytics', JSON.stringify(data.meetingAnalytics));
 
+    // Group Conscience
     if (data.groupConscienceLog) storage.saveGroupConscienceLog(data.groupConscienceLog);
     if (data.liveGCItems) storage.saveLiveGCItems(data.liveGCItems);
     if (data.proposedAgendaItems) storage.saveProposedAgendaItems(data.proposedAgendaItems);
@@ -22672,6 +22605,7 @@ function restoreAllApplicationData(data) {
     if (data.conflicts) localStorage.setItem('conflicts', JSON.stringify(data.conflicts));
     if (data.inventoryQuestions) localStorage.setItem('inventoryQuestions', JSON.stringify(data.inventoryQuestions));
 
+    // Communications
     if (data.messages) storage.saveMessages(data.messages);
     if (data.commLists) localStorage.setItem('commLists', JSON.stringify(data.commLists));
     if (data.reminderSettings) localStorage.setItem('reminderSettings', JSON.stringify(data.reminderSettings));
@@ -22680,6 +22614,7 @@ function restoreAllApplicationData(data) {
     if (data.cancellationAlerts) localStorage.setItem('cancellationAlerts', JSON.stringify(data.cancellationAlerts));
     if (data.welcomePacketSettings) localStorage.setItem('welcomePacketSettings', JSON.stringify(data.welcomePacketSettings));
 
+    // Service & Positions
     if (data.servicePositions) storage.saveServicePositions(data.servicePositions);
     if (data.serviceElections) storage.saveServiceElections(data.serviceElections);
     if (data.electionBallots) storage.saveElectionBallots(data.electionBallots);
@@ -22689,6 +22624,7 @@ function restoreAllApplicationData(data) {
     if (data.hiCommitments) localStorage.setItem('hiCommitments', JSON.stringify(data.hiCommitments));
     if (data.serviceHours) localStorage.setItem('serviceHours', JSON.stringify(data.serviceHours));
 
+    // Financial Management
     if (data.budgetCategories) storage.saveBudgetCategories(data.budgetCategories);
     if (data.expenses) storage.saveExpenses(data.expenses);
     if (data.budgetProposals) storage.saveBudgetProposals(data.budgetProposals);
@@ -22701,9 +22637,11 @@ function restoreAllApplicationData(data) {
     if (data.monthlyExpenses) localStorage.setItem('monthlyExpenses', data.monthlyExpenses);
     if (data.reserveMonths) localStorage.setItem('reserveMonths', data.reserveMonths);
 
+    // Sponsorship
     if (data.sponsorships) localStorage.setItem('sponsorships', JSON.stringify(data.sponsorships));
     if (data.sponsorshipTree) localStorage.setItem('sponsorshipTree', JSON.stringify(data.sponsorshipTree));
 
+    // Literature & Resources
     if (data.literatureInventory) storage.saveLiteratureInventory(data.literatureInventory);
     if (data.literatureLoans) storage.saveLiteratureLoans(data.literatureLoans);
     if (data.bigBookStudy) localStorage.setItem('bigBookStudy', JSON.stringify(data.bigBookStudy));
@@ -22711,6 +22649,7 @@ function restoreAllApplicationData(data) {
     if (data.literatureSales) localStorage.setItem('literatureSales', JSON.stringify(data.literatureSales));
     if (data.digitalLibrary) localStorage.setItem('digitalLibrary', JSON.stringify(data.digitalLibrary));
 
+    // Home Group Specific
     if (data.interGroupAttendance) localStorage.setItem('interGroupAttendance', JSON.stringify(data.interGroupAttendance));
     if (data.homeGroupTransfers) localStorage.setItem('homeGroupTransfers', JSON.stringify(data.homeGroupTransfers));
     if (data.homeGroupBenefits) localStorage.setItem('homeGroupBenefits', JSON.stringify(data.homeGroupBenefits));
@@ -22718,24 +22657,29 @@ function restoreAllApplicationData(data) {
     if (data.censusStats) localStorage.setItem('censusStats', JSON.stringify(data.censusStats));
     if (data.growthMetrics) localStorage.setItem('growthMetrics', JSON.stringify(data.growthMetrics));
 
+    // Integration & Settings
     if (data.multiGroups) localStorage.setItem('multiGroups', JSON.stringify(data.multiGroups));
     if (data.calendarIntegration) localStorage.setItem('calendarIntegration', JSON.stringify(data.calendarIntegration));
     if (data.smsSettings) localStorage.setItem('smsSettings', JSON.stringify(data.smsSettings));
     if (data.emailAutomation) localStorage.setItem('emailAutomation', JSON.stringify(data.emailAutomation));
     if (data.cloudBackupSettings) localStorage.setItem('cloudBackupSettings', JSON.stringify(data.cloudBackupSettings));
 
+    // Accessibility
     if (data.accessibilityConcerns) localStorage.setItem('accessibilityConcerns', JSON.stringify(data.accessibilityConcerns));
     if (data.languageSettings) localStorage.setItem('languageSettings', JSON.stringify(data.languageSettings));
     if (data.largePrintEnabled !== undefined) localStorage.setItem('largePrintEnabled', data.largePrintEnabled.toString());
 
+    // Archival & History
     if (data.digitalArchive) localStorage.setItem('digitalArchive', JSON.stringify(data.digitalArchive));
     if (data.oralHistories) localStorage.setItem('oralHistories', JSON.stringify(data.oralHistories));
     if (data.milestones) localStorage.setItem('milestones', JSON.stringify(data.milestones));
     if (data.legacies) localStorage.setItem('legacies', JSON.stringify(data.legacies));
     if (data.historicalMinutes) localStorage.setItem('historicalMinutes', JSON.stringify(data.historicalMinutes));
 
+    // District/Area
     if (data.districtMotions) storage.saveDistrictMotions(data.districtMotions);
 
+    // Settings & Configuration
     if (data.templates) storage.saveTemplates(data.templates);
     if (data.votingSettings) storage.saveVotingSettings(data.votingSettings);
     if (data.quorumRules) storage.saveQuorumRules(data.quorumRules);
@@ -23092,10 +23036,12 @@ function deleteTemplate(id) {
     showToast('Template deleted', 'success');
 }
 function initializeNewAAFeatures() {
+    // Area Assembly Integration
     updateAreaMotionsList();
     updateGroupPositionMotionDropdown();
     updateAssemblyAgendasList();
 
+    // Intergroup Representative
     const members = storage.getMembers();
     const hotlineVolunteerSelect = document.getElementById('hotline-volunteer');
     if (hotlineVolunteerSelect) {
@@ -23112,6 +23058,7 @@ function initializeNewAAFeatures() {
     updateSpecialEventsList();
     updatePIActivitiesList();
 
+    // H&I Panel Management
     const panelLeaderSelect = document.getElementById('panel-leader');
     if (panelLeaderSelect) {
         panelLeaderSelect.innerHTML = '<option value="">-- Select Leader --</option>' +
@@ -23132,6 +23079,7 @@ function initializeNewAAFeatures() {
     updateHIPanelsTable();
     updateCertificationsList();
 
+    // CPC Professional Community
     const presenterSelect = document.getElementById('pres-presenter');
     if (presenterSelect) {
         presenterSelect.innerHTML = members.map(m => `<option value="${m.id}">${escapeHtml(m.name)}</option>`).join('');
@@ -23145,6 +23093,7 @@ function initializeNewAAFeatures() {
     updatePresentationsList();
     updateBTGReferralsList();
 
+    // PI Public Information
     const outreachCoordinator = document.getElementById('outreach-coordinator');
     if (outreachCoordinator) {
         outreachCoordinator.innerHTML = '<option value="">-- Select Coordinator --</option>' +
@@ -23158,6 +23107,7 @@ function initializeNewAAFeatures() {
     updateOutreachEventsList();
     updateOutreachLogList();
 
+    // Treatment Facilities Liaison
     const bridgeContactSelect = document.getElementById('bridge-contact');
     if (bridgeContactSelect) {
         bridgeContactSelect.innerHTML = '<option value="">-- Select Contact --</option>' +
@@ -23168,6 +23118,7 @@ function initializeNewAAFeatures() {
     updateBridgingCommitmentsList();
     updateFollowUpBridgeDropdown();
 
+    // Corrections Committee
     const correctionsClearanceMemberSelect = document.getElementById('corrections-clearance-member');
     if (correctionsClearanceMemberSelect) {
         correctionsClearanceMemberSelect.innerHTML = '<option value="">-- Select Member --</option>' +
@@ -23185,6 +23136,7 @@ function initializeNewAAFeatures() {
     updateCorrespondencePreReleaseDropdown();
     updateCorrespondenceLog();
 
+    // Special Events Management
     const eventMgmtCoordinatorSelect = document.getElementById('event-mgmt-coordinator');
     if (eventMgmtCoordinatorSelect) {
         eventMgmtCoordinatorSelect.innerHTML = '<option value="">-- Select Coordinator --</option>' +
@@ -23202,6 +23154,7 @@ function initializeNewAAFeatures() {
     updateEventBudgetSummary();
     updateTicketSalesSummary();
 
+    // Archives Management
     const interviewInterviewerSelect = document.getElementById('interview-interviewer');
     if (interviewInterviewerSelect) {
         interviewInterviewerSelect.innerHTML = '<option value="">-- Select Interviewer --</option>' +
@@ -23210,6 +23163,7 @@ function initializeNewAAFeatures() {
     filterArchives();
     updateInterviewsList();
 
+    // Language Accessibility
     const translatorMemberSelect = document.getElementById('translator-member');
     if (translatorMemberSelect) {
         translatorMemberSelect.innerHTML = '<option value="">-- Select Member --</option>' +
@@ -23318,6 +23272,7 @@ function init() {
         updatePrudentReserveProgressBar();
     }, 3600000); // Check hourly
 
+    // Initialize new AA Service features
     initializeNewAAFeatures();
     const mainEl = document.querySelector('main');
     const backToTopBtn = document.getElementById('back-to-top-btn');
@@ -25840,188 +25795,6 @@ function pointOfOrder() {
 function pointOfPrivilege() {
     showToast('Point of Personal Privilege recognized', 'info');
 }
-function parliamentaryInquiry() {
-    const inquiry = prompt('What is your parliamentary inquiry?');
-    if (inquiry && inquiry.trim()) {
-        const response = prompt('Chair\'s response to the inquiry:');
-        const record = {
-            date: new Date().toISOString(),
-            inquiry: inquiry.trim(),
-            response: response ? response.trim() : 'No response recorded',
-            timestamp: Date.now()
-        };
-        const inquiries = storage.getParliamentaryInquiries();
-        inquiries.push(record);
-        storage.saveParliamentaryInquiries(inquiries);
-        showToast('Parliamentary inquiry recorded', 'success');
-    }
-}
-function divisionOfAssembly() {
-    if (confirm('Request Division of Assembly?\n\nThis will require a counted vote to verify the voice vote result.')) {
-        showToast('Division of Assembly requested - proceeding with counted vote', 'info');
-        document.getElementById('voting-method').value = 'roll-call';
-        updateVotingMethod();
-    }
-}
-function withdrawMotion() {
-    if (confirm('Withdraw the current motion?\n\nThe proposer may withdraw before voting begins. This requires unanimous consent.')) {
-        showToast('Motion withdrawn by proposer', 'info');
-        resetMotionWorkflow();
-    }
-}
-function divisionOfQuestion() {
-    showToast('Division of Question workspace opened', 'info');
-    document.getElementById('original-motion-text').focus();
-}
-function processDivisionOfQuestion() {
-    const original = document.getElementById('original-motion-text').value.trim();
-    const part1 = document.getElementById('divided-part-1').value.trim();
-    const part2 = document.getElementById('divided-part-2').value.trim();
-    const part3 = document.getElementById('divided-part-3').value.trim();
-    if (!original || !part1 || !part2) {
-        showToast('Please provide original motion and at least 2 parts', 'warning');
-        return;
-    }
-    if (confirm('Process Division of Question?\n\nThis requires 2/3 vote. Each part will be voted on separately.')) {
-        const parts = [part1, part2];
-        if (part3) parts.push(part3);
-        const division = {
-            date: new Date().toISOString(),
-            originalMotion: original,
-            parts: parts,
-            results: [],
-            timestamp: Date.now()
-        };
-        const divisions = storage.getDividedQuestions();
-        divisions.push(division);
-        storage.saveDividedQuestions(divisions);
-        const statusDiv = document.getElementById('division-status');
-        statusDiv.innerHTML = `
-            <div style="padding: 1rem; background: #2ecc71; border-radius: 4px; margin-top: 1rem;">
-                <strong>Division Approved (2/3 vote)</strong><br>
-                <p style="margin-top: 0.5rem;">Vote on each part separately:</p>
-                ${parts.map((part, idx) => `
-                    <button class="btn mt-2" onclick="voteDividedPart(${divisions.length - 1}, ${idx})" style="width: 100%; background: #3498db;">
-                        Vote on Part ${idx + 1}: ${part.substring(0, 50)}${part.length > 50 ? '...' : ''}
-                    </button>
-                `).join('')}
-            </div>
-        `;
-        document.getElementById('original-motion-text').value = '';
-        document.getElementById('divided-part-1').value = '';
-        document.getElementById('divided-part-2').value = '';
-        document.getElementById('divided-part-3').value = '';
-        showToast('Division of Question processed - vote on each part', 'success');
-    }
-}
-function voteDividedPart(divisionIdx, partIdx) {
-    const divisions = storage.getDividedQuestions();
-    const division = divisions[divisionIdx];
-    const part = division.parts[partIdx];
-    const result = confirm(`Vote on Part ${partIdx + 1}:\n\n"${part}"\n\nClick OK for YES, Cancel for NO`);
-    if (!division.results) division.results = [];
-    division.results[partIdx] = result ? 'Passed' : 'Failed';
-    storage.saveDividedQuestions(divisions);
-    showToast(`Part ${partIdx + 1} ${result ? 'PASSED' : 'FAILED'}`, result ? 'success' : 'error');
-}
-function appealChairRuling() {
-    const issue = prompt('What procedural issue is being questioned?');
-    if (issue && issue.trim()) {
-        const ruling = prompt('Chair\'s ruling on this issue:');
-        if (ruling && ruling.trim()) {
-            if (confirm('Appeal the Chair\'s Ruling?\n\nThis requires a second and will be put to a vote.\n\nClick OK to appeal.')) {
-                const appealed = confirm('Did the appeal get a second?\n\nClick OK if seconded, Cancel if not.');
-                if (appealed) {
-                    const sustained = confirm('Vote on sustaining the Chair\'s ruling:\n\nOK = Sustain Chair\'s ruling\nCancel = Overturn Chair\'s ruling');
-                    const record = {
-                        date: new Date().toISOString(),
-                        issue: issue.trim(),
-                        ruling: ruling.trim(),
-                        appealed: true,
-                        result: sustained ? 'Sustained' : 'Overturned',
-                        timestamp: Date.now()
-                    };
-                    const rulings = storage.getChairRulings();
-                    rulings.push(record);
-                    storage.saveChairRulings(rulings);
-                    refreshChairRulings();
-                    showToast(`Chair's ruling ${sustained ? 'SUSTAINED' : 'OVERTURNED'}`, sustained ? 'success' : 'warning');
-                } else {
-                    showToast('Appeal failed - no second', 'error');
-                }
-            } else {
-                const record = {
-                    date: new Date().toISOString(),
-                    issue: issue.trim(),
-                    ruling: ruling.trim(),
-                    appealed: false,
-                    result: 'Not Appealed',
-                    timestamp: Date.now()
-                };
-                const rulings = storage.getChairRulings();
-                rulings.push(record);
-                storage.saveChairRulings(rulings);
-                refreshChairRulings();
-                showToast('Chair\'s ruling recorded', 'info');
-            }
-        }
-    }
-}
-function objectionToConsideration() {
-    if (confirm('Objection to Consideration of a Question?\n\nThis must be raised before debate begins. Requires 2/3 vote to sustain objection.\n\nSustaining the objection prevents consideration of the motion.')) {
-        const sustained = confirm('Vote on the objection:\n\nOK = Sustain objection (2/3 vote - motion is NOT considered)\nCancel = Objection fails (motion proceeds)');
-        if (sustained) {
-            showToast('Objection SUSTAINED - motion will not be considered', 'warning');
-            resetMotionWorkflow();
-        } else {
-            showToast('Objection failed - motion proceeds to consideration', 'info');
-        }
-    }
-}
-function suspendRules() {
-    const rule = prompt('Which rule(s) do you want to suspend?');
-    if (rule && rule.trim()) {
-        const purpose = prompt('Purpose for suspending this rule:');
-        const duration = prompt('Duration of suspension (e.g., "for this motion", "for this meeting"):');
-        if (purpose && duration) {
-            if (confirm('Suspend the Rules?\n\nThis requires a 2/3 vote.\n\nNote: Cannot suspend fundamental rights or bylaws.')) {
-                const passed = confirm('Vote on suspension:\n\nOK = Suspension PASSES (2/3 vote)\nCancel = Suspension FAILS');
-                const record = {
-                    date: new Date().toISOString(),
-                    rule: rule.trim(),
-                    purpose: purpose.trim(),
-                    duration: duration.trim(),
-                    result: passed ? 'Approved' : 'Failed',
-                    timestamp: Date.now()
-                };
-                const suspensions = storage.getRulesSuspensions();
-                suspensions.push(record);
-                storage.saveRulesSuspensions(suspensions);
-                refreshRulesSuspensions();
-                showToast(`Rules suspension ${passed ? 'APPROVED' : 'FAILED'}`, passed ? 'success' : 'error');
-            }
-        }
-    }
-}
-function takeFromTable() {
-    const tabledMotions = storage.getTabledMotions();
-    if (tabledMotions.length === 0) {
-        showToast('No tabled motions available', 'info');
-        return;
-    }
-    const motionIdx = prompt(`Select motion to take from table (0-${tabledMotions.length - 1}):\n\n` +
-        tabledMotions.map((m, i) => `${i}: ${m.motion}`).join('\n'));
-    const idx = parseInt(motionIdx);
-    if (idx >= 0 && idx < tabledMotions.length) {
-        if (confirm(`Take this motion from the table?\n\n"${tabledMotions[idx].motion}"\n\nRequires majority vote.`)) {
-            const motion = tabledMotions.splice(idx, 1)[0];
-            storage.saveTabledMotions(tabledMotions);
-            showToast('Motion taken from table - resuming discussion', 'success');
-            document.getElementById('motion-text').value = motion.motion;
-            refreshTabledMotions();
-        }
-    }
-}
 function proposeAmendment() {
     const text = document.getElementById('amendment-text').value.trim();
     const type = document.querySelector('input[name="amendment-type"]:checked').value;
@@ -27330,312 +27103,6 @@ function exportMinutesPDF() {
     doc.save(filename);
     showToast('Meeting minutes exported to PDF successfully!', 'success');
 }
-function exportMemberDirectoryPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const members = storage.getMembers();
-    if (members.length === 0) {
-        showToast('No members to export', 'error');
-        return;
-    }
-    doc.setFontSize(20);
-    doc.text("Member Directory", 14, 22);
-    doc.setFontSize(10);
-    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
-    doc.text(`Total Members: ${members.length}`, 14, 36);
-    const tableData = members.map(m => [
-        m.name || 'N/A',
-        m.phone || 'N/A',
-        m.email || 'N/A',
-        m.city || 'N/A',
-        m.homegroup === 'yes' ? 'Yes' : 'No',
-        m.isServant === 'yes' ? 'Yes' : 'No'
-    ]);
-    doc.autoTable({
-        head: [['Name', 'Phone', 'Email', 'City', 'Home Group', 'Servant']],
-        body: tableData,
-        startY: 42,
-        styles: { fontSize: 8 },
-        headStyles: { fillColor: [52, 152, 219] }
-    });
-    doc.save('Member_Directory.pdf');
-    showToast('Member Directory PDF generated!', 'success');
-}
-function exportServicePositionsPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const positions = storage.getServicePositions();
-    if (positions.length === 0) {
-        showToast('No service positions to export', 'error');
-        return;
-    }
-    doc.setFontSize(20);
-    doc.text("Service Positions Report", 14, 22);
-    doc.setFontSize(10);
-    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
-    const tableData = positions.map(p => [
-        p.position || 'N/A',
-        p.holder || 'Vacant',
-        p.startDate ? new Date(p.startDate).toLocaleDateString() : 'N/A',
-        p.endDate ? new Date(p.endDate).toLocaleDateString() : 'N/A',
-        p.term || 'N/A'
-    ]);
-    doc.autoTable({
-        head: [['Position', 'Current Holder', 'Start Date', 'End Date', 'Term Length']],
-        body: tableData,
-        startY: 36,
-        headStyles: { fillColor: [46, 204, 113] }
-    });
-    doc.save('Service_Positions.pdf');
-    showToast('Service Positions PDF generated!', 'success');
-}
-function exportLiteratureInventoryPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const inventory = storage.getLiteratureInventory();
-    if (inventory.length === 0) {
-        showToast('No literature inventory to export', 'error');
-        return;
-    }
-    doc.setFontSize(20);
-    doc.text("Literature Inventory Report", 14, 22);
-    doc.setFontSize(10);
-    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
-    const tableData = inventory.map(item => [
-        item.title || 'N/A',
-        item.type || 'N/A',
-        item.quantity?.toString() || '0',
-        `$${item.price?.toFixed(2) || '0.00'}`,
-        `$${((item.quantity || 0) * (item.price || 0)).toFixed(2)}`
-    ]);
-    doc.autoTable({
-        head: [['Title', 'Type', 'Quantity', 'Unit Price', 'Total Value']],
-        body: tableData,
-        startY: 36,
-        headStyles: { fillColor: [155, 89, 182] }
-    });
-    const totalValue = inventory.reduce((sum, item) => sum + ((item.quantity || 0) * (item.price || 0)), 0);
-    const finalY = doc.lastAutoTable.finalY || 36;
-    doc.setFontSize(12);
-    doc.text(`Total Inventory Value: $${totalValue.toFixed(2)}`, 14, finalY + 10);
-    doc.save('Literature_Inventory.pdf');
-    showToast('Literature Inventory PDF generated!', 'success');
-}
-function exportServiceHoursReportPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const hours = storage.getServiceHours() || [];
-    if (hours.length === 0) {
-        showToast('No service hours to export', 'error');
-        return;
-    }
-    doc.setFontSize(20);
-    doc.text("Service Hours Report", 14, 22);
-    doc.setFontSize(10);
-    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
-    const memberHours = {};
-    hours.forEach(h => {
-        if (!memberHours[h.member]) memberHours[h.member] = 0;
-        memberHours[h.member] += parseFloat(h.hours) || 0;
-    });
-    const tableData = Object.entries(memberHours)
-        .sort((a, b) => b[1] - a[1])
-        .map(([member, hours]) => [member, hours.toFixed(1)]);
-    doc.autoTable({
-        head: [['Member', 'Total Hours']],
-        body: tableData,
-        startY: 36,
-        headStyles: { fillColor: [231, 76, 60] }
-    });
-    const totalHours = Object.values(memberHours).reduce((sum, h) => sum + h, 0);
-    const finalY = doc.lastAutoTable.finalY || 36;
-    doc.setFontSize(12);
-    doc.text(`Total Service Hours: ${totalHours.toFixed(1)}`, 14, finalY + 10);
-    doc.save('Service_Hours_Report.pdf');
-    showToast('Service Hours PDF generated!', 'success');
-}
-function exportAnalyticsDashboardPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const members = storage.getMembers();
-    const events = storage.getEvents();
-    const gcLog = storage.getGroupConscienceLog();
-    doc.setFontSize(22);
-    doc.setTextColor(26, 188, 156);
-    doc.text("Analytics Dashboard Report", 14, 22);
-    doc.setTextColor(0, 0, 0);
-    doc.setFontSize(10);
-    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
-    doc.setFontSize(14);
-    doc.text("Group Overview", 14, 42);
-    doc.setFontSize(10);
-    doc.text(`Total Members: ${members.length}`, 20, 50);
-    doc.text(`Home Group Members: ${members.filter(m => m.homegroup === 'yes').length}`, 20, 56);
-    doc.text(`Active Servants: ${members.filter(m => m.isServant === 'yes').length}`, 20, 62);
-    doc.text(`Newcomers: ${members.filter(m => m.newcomer === 'yes').length}`, 20, 68);
-    doc.setFontSize(14);
-    doc.text("Engagement Metrics", 14, 80);
-    doc.setFontSize(10);
-    const recentEvents = events.filter(e => {
-        const eventDate = new Date(e.date);
-        const ninetyDaysAgo = new Date();
-        ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
-        return eventDate >= ninetyDaysAgo;
-    });
-    doc.text(`Events (Last 90 Days): ${recentEvents.length}`, 20, 88);
-    const recentGC = gcLog.filter(g => {
-        const gcDate = new Date(g.date);
-        const ninetyDaysAgo = new Date();
-        ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
-        return gcDate >= ninetyDaysAgo;
-    });
-    doc.text(`GC Decisions (Last 90 Days): ${recentGC.length}`, 20, 94);
-    doc.text(`Passed: ${recentGC.filter(g => g.status === 'passed').length}`, 20, 100);
-    doc.text(`Failed: ${recentGC.filter(g => g.status === 'failed').length}`, 20, 106);
-    doc.save('Analytics_Dashboard.pdf');
-    showToast('Analytics Dashboard PDF generated!', 'success');
-}
-function exportAttendanceReportPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const events = storage.getEvents().filter(e => e.type === 'meeting');
-    doc.setFontSize(20);
-    doc.text("Attendance Report", 14, 22);
-    doc.setFontSize(10);
-    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
-    doc.text(`Total Meetings: ${events.length}`, 14, 36);
-    const recentMeetings = events.slice(-20).reverse();
-    const tableData = recentMeetings.map(e => [
-        new Date(e.date).toLocaleDateString(),
-        e.name || 'Regular Meeting',
-        e.attendance?.toString() || 'N/A'
-    ]);
-    doc.autoTable({
-        head: [['Date', 'Meeting', 'Attendance']],
-        body: tableData,
-        startY: 42,
-        headStyles: { fillColor: [52, 152, 219] }
-    });
-    doc.save('Attendance_Report.pdf');
-    showToast('Attendance Report PDF generated!', 'success');
-}
-function exportBudgetReportPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const categories = storage.getBudgetCategories();
-    const expenses = storage.getExpenses();
-    doc.setFontSize(20);
-    doc.text("Budget vs Actual Report", 14, 22);
-    doc.setFontSize(10);
-    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
-    const tableData = categories.map(cat => {
-        const spent = expenses
-            .filter(e => e.category === cat.name)
-            .reduce((sum, e) => sum + parseFloat(e.amount || 0), 0);
-        const budget = parseFloat(cat.amount || 0);
-        const remaining = budget - spent;
-        const percent = budget > 0 ? ((spent / budget) * 100).toFixed(1) : '0';
-        return [
-            cat.name,
-            `$${budget.toFixed(2)}`,
-            `$${spent.toFixed(2)}`,
-            `$${remaining.toFixed(2)}`,
-            `${percent}%`
-        ];
-    });
-    doc.autoTable({
-        head: [['Category', 'Budget', 'Spent', 'Remaining', '% Used']],
-        body: tableData,
-        startY: 36,
-        headStyles: { fillColor: [241, 196, 15] }
-    });
-    doc.save('Budget_Report.pdf');
-    showToast('Budget Report PDF generated!', 'success');
-}
-function exportDistrictAreaReportPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const facilities = storage.getFacilities() || [];
-    const professionals = storage.getProfessionals() || [];
-    const mediaContacts = storage.getMediaContacts() || [];
-    doc.setFontSize(22);
-    doc.setTextColor(142, 68, 173);
-    doc.text("District & Area Service Report", 14, 22);
-    doc.setTextColor(0, 0, 0);
-    doc.setFontSize(10);
-    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
-    doc.setFontSize(14);
-    doc.text("H&I Panel Summary", 14, 42);
-    doc.setFontSize(10);
-    doc.text(`Total Facilities: ${facilities.length}`, 20, 50);
-    doc.text(`Active Facilities: ${facilities.filter(f => f.status === 'active').length}`, 20, 56);
-    doc.setFontSize(14);
-    doc.text("CPC (Cooperation with Professional Community)", 14, 68);
-    doc.setFontSize(10);
-    doc.text(`Professional Contacts: ${professionals.length}`, 20, 76);
-    doc.text(`Active Contacts: ${professionals.filter(p => p.status === 'active').length}`, 20, 82);
-    doc.setFontSize(14);
-    doc.text("PI (Public Information)", 14, 94);
-    doc.setFontSize(10);
-    doc.text(`Media Contacts: ${mediaContacts.length}`, 20, 102);
-    if (facilities.length > 0) {
-        doc.setFontSize(14);
-        doc.text("H&I Facilities Detail", 14, 118);
-        const facilityData = facilities.slice(0, 15).map(f => [
-            f.name || 'N/A',
-            f.type || 'N/A',
-            f.status || 'N/A'
-        ]);
-        doc.autoTable({
-            head: [['Facility Name', 'Type', 'Status']],
-            body: facilityData,
-            startY: 122,
-            styles: { fontSize: 9 },
-            headStyles: { fillColor: [142, 68, 173] }
-        });
-    }
-    doc.save('District_Area_Service_Report.pdf');
-    showToast('District & Area Service Report PDF generated!', 'success');
-}
-function exportFinancialAnalyticsPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const expenses = storage.getExpenses() || [];
-    const categories = storage.getBudgetCategories() || [];
-    doc.setFontSize(22);
-    doc.setTextColor(241, 196, 15);
-    doc.text("Financial Analytics Report", 14, 22);
-    doc.setTextColor(0, 0, 0);
-    doc.setFontSize(10);
-    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
-    doc.setFontSize(14);
-    doc.text("Financial Summary", 14, 42);
-    const totalExpenses = expenses.reduce((sum, e) => sum + parseFloat(e.amount || 0), 0);
-    const totalBudget = categories.reduce((sum, c) => sum + parseFloat(c.amount || 0), 0);
-    doc.setFontSize(10);
-    doc.text(`Total Annual Budget: $${(totalBudget * 12).toFixed(2)}`, 20, 50);
-    doc.text(`Year-to-Date Expenses: $${totalExpenses.toFixed(2)}`, 20, 56);
-    doc.text(`Remaining Budget: $${((totalBudget * 12) - totalExpenses).toFixed(2)}`, 20, 62);
-    doc.setFontSize(14);
-    doc.text("Expenses by Category", 14, 74);
-    const categoryTotals = {};
-    expenses.forEach(e => {
-        const cat = e.category || 'Uncategorized';
-        if (!categoryTotals[cat]) categoryTotals[cat] = 0;
-        categoryTotals[cat] += parseFloat(e.amount || 0);
-    });
-    const expenseData = Object.entries(categoryTotals)
-        .sort((a, b) => b[1] - a[1])
-        .map(([cat, amount]) => [cat, `$${amount.toFixed(2)}`]);
-    doc.autoTable({
-        head: [['Category', 'Total Spent']],
-        body: expenseData,
-        startY: 78,
-        headStyles: { fillColor: [241, 196, 15] }
-    });
-    doc.save('Financial_Analytics.pdf');
-    showToast('Financial Analytics PDF generated!', 'success');
-}
 function renderMinutesArchive() {
     const minutes = storage.getMeetingMinutes().sort((a, b) => new Date(b.date) - new Date(a.date));
     const list = document.getElementById('minutes-archive-list');
@@ -28692,74 +28159,6 @@ function deleteStandingItem(id) {
     storage.saveStandingAgendaItems(items);
     refreshStandingItems();
     showToast('Standing item deleted', 'success');
-}
-function refreshTabledMotions() {
-    const motions = storage.getTabledMotions();
-    const tbody = document.getElementById('tabled-motions-body');
-    const noMotions = document.getElementById('no-tabled-motions');
-    if (!tbody) return;
-    if (motions.length === 0) {
-        tbody.innerHTML = '';
-        if (noMotions) noMotions.style.display = 'block';
-        return;
-    }
-    if (noMotions) noMotions.style.display = 'none';
-    tbody.innerHTML = motions.map((motion, idx) => {
-        const daysTabled = Math.floor((Date.now() - motion.timestamp) / (1000 * 60 * 60 * 24));
-        return `
-            <tr>
-                <td>${new Date(motion.timestamp).toLocaleDateString()}</td>
-                <td>${escapeHtml(motion.motion)}</td>
-                <td>${escapeHtml(motion.proposedBy || 'N/A')}</td>
-                <td>${daysTabled}</td>
-                <td>
-                    <button class="btn small" onclick="takeFromTable()" style="background: #f39c12;">Resume</button>
-                </td>
-            </tr>
-        `;
-    }).join('');
-}
-function refreshChairRulings() {
-    const rulings = storage.getChairRulings();
-    const tbody = document.getElementById('chair-rulings-body');
-    const noRulings = document.getElementById('no-chair-rulings');
-    if (!tbody) return;
-    if (rulings.length === 0) {
-        tbody.innerHTML = '';
-        if (noRulings) noRulings.style.display = 'block';
-        return;
-    }
-    if (noRulings) noRulings.style.display = 'none';
-    tbody.innerHTML = rulings.map(ruling => `
-        <tr>
-            <td>${new Date(ruling.date).toLocaleDateString()}</td>
-            <td>${escapeHtml(ruling.issue)}</td>
-            <td>${escapeHtml(ruling.ruling)}</td>
-            <td>${ruling.appealed ? '<span style="color: #e74c3c;">Yes</span>' : 'No'}</td>
-            <td>${escapeHtml(ruling.result)}</td>
-        </tr>
-    `).join('');
-}
-function refreshRulesSuspensions() {
-    const suspensions = storage.getRulesSuspensions();
-    const tbody = document.getElementById('rules-suspensions-body');
-    const noSuspensions = document.getElementById('no-rules-suspensions');
-    if (!tbody) return;
-    if (suspensions.length === 0) {
-        tbody.innerHTML = '';
-        if (noSuspensions) noSuspensions.style.display = 'block';
-        return;
-    }
-    if (noSuspensions) noSuspensions.style.display = 'none';
-    tbody.innerHTML = suspensions.map(suspension => `
-        <tr>
-            <td>${new Date(suspension.date).toLocaleDateString()}</td>
-            <td>${escapeHtml(suspension.rule)}</td>
-            <td>${escapeHtml(suspension.purpose)}</td>
-            <td>${escapeHtml(suspension.duration)}</td>
-            <td><span style="color: ${suspension.result === 'Approved' ? '#2ecc71' : '#e74c3c'};">${escapeHtml(suspension.result)}</span></td>
-        </tr>
-    `).join('');
 }
 let currentAmendments = [];
 function addAmendment() {
@@ -29819,6 +29218,9 @@ function renderReversalReasonsChart(reasonCounts) {
         }
     });
 }
+// ========================================
+// MEMBER WELLNESS CHECK FUNCTIONS
+// ========================================
 function updateWellnessSummary() {
     const members = storage.getMembers();
     const attendance = JSON.parse(localStorage.getItem('memberAttendance') || '{}');
@@ -29916,6 +29318,9 @@ function markMemberSeen(memberId) {
     updateAbsentMembersList();
 }
 
+// ========================================
+// TEMPORARY SPONSOR MATCHING FUNCTIONS
+// ========================================
 function populateTempSponsorDropdown() {
     const members = storage.getMembers();
     const select = document.getElementById('temp-sponsor-newcomer');
@@ -29943,6 +29348,7 @@ function requestTemporarySponsor() {
         return;
     }
 
+    // Find available sponsors matching criteria
     const availableSponsors = members.filter(m =>
         m.availableToSponsor &&
         (!genderPref || m.gender === genderPref) &&
@@ -29954,6 +29360,7 @@ function requestTemporarySponsor() {
         return;
     }
 
+    // Select sponsor with most sobriety time
     const selectedSponsor = availableSponsors.sort((a, b) => {
         const aSober = a.sobrietyDate ? new Date(a.sobrietyDate) : new Date();
         const bSober = b.sobrietyDate ? new Date(b.sobrietyDate) : new Date();
@@ -29978,6 +29385,7 @@ function requestTemporarySponsor() {
     showToast(`Temporary sponsor ${selectedSponsor.name} assigned to ${newcomer.name}!`, 'success');
     updateTempSponsorList();
 
+    // Clear form
     document.getElementById('temp-sponsor-newcomer').value = '';
     document.getElementById('temp-sponsor-gender-pref').value = '';
     document.getElementById('temp-sponsor-duration').value = '30';
@@ -30037,6 +29445,9 @@ function endTempSponsorship(id) {
     }
 }
 
+// ========================================
+// EMERGENCY CONTACTS FUNCTIONS
+// ========================================
 function populateEmergencyContactDropdown() {
     const members = storage.getMembers();
     const select = document.getElementById('emergency-contact-member');
@@ -30065,6 +29476,7 @@ function saveEmergencyContact() {
 
     const emergencyContacts = JSON.parse(localStorage.getItem('emergencyContacts') || '[]');
 
+    // Check if member is already in this tier
     const existing = emergencyContacts.find(c => c.memberId === memberId && c.tier === tier);
     if (existing) {
         showToast('Member is already in this tier.', 'error');
@@ -30086,6 +29498,7 @@ function saveEmergencyContact() {
     showToast(`${member.name} added to emergency contact network!`, 'success');
     updateEmergencyContactDisplay();
 
+    // Clear form
     document.getElementById('emergency-contact-member').value = '';
     document.getElementById('emergency-contact-tier').value = '1';
     document.getElementById('emergency-contact-available-24-7').checked = false;
@@ -30137,6 +29550,9 @@ function removeEmergencyContact(id) {
     updateEmergencyContactDisplay();
 }
 
+// ========================================
+// PROBLEM BOX FUNCTIONS
+// ========================================
 function submitProblemBoxItem() {
     const category = document.getElementById('problem-box-category').value;
     const text = document.getElementById('problem-box-text').value.trim();
@@ -30160,6 +29576,7 @@ function submitProblemBoxItem() {
 
     showToast('Thank you! Your feedback has been submitted anonymously.', 'success');
 
+    // Clear form
     document.getElementById('problem-box-text').value = '';
     document.getElementById('problem-box-category').value = 'meeting-format';
     document.getElementById('problem-box-urgent').checked = false;
@@ -30244,6 +29661,9 @@ function deleteProblemBoxItem(id) {
     updateProblemBoxDisplay();
 }
 
+// ========================================
+// SATISFACTION SURVEY FUNCTIONS
+// ========================================
 function submitSatisfactionSurvey() {
     const meetingSatisfaction = document.getElementById('survey-meeting-satisfaction').value;
     const fellowshipRating = document.getElementById('survey-fellowship-rating').value;
@@ -30270,6 +29690,7 @@ function submitSatisfactionSurvey() {
 
     showToast('Thank you for your feedback!', 'success');
 
+    // Clear form
     document.getElementById('survey-meeting-satisfaction').value = '';
     document.getElementById('survey-fellowship-rating').value = '';
     document.getElementById('survey-gc-participation').value = '';
@@ -30292,6 +29713,7 @@ function updateSurveyResults() {
         return;
     }
 
+    // Calculate averages
     const avgMeeting = (surveys.reduce((sum, s) => sum + s.meetingSatisfaction, 0) / surveys.length).toFixed(1);
     const avgFellowship = (surveys.reduce((sum, s) => sum + s.fellowshipRating, 0) / surveys.length).toFixed(1);
     const avgGC = (surveys.reduce((sum, s) => sum + s.gcParticipation, 0) / surveys.length).toFixed(1);
@@ -30339,6 +29761,9 @@ function updateSurveyResults() {
     `;
 }
 
+// ========================================
+// ATTENDANCE STREAKS FUNCTIONS
+// ========================================
 function updateStreakLeaderboard() {
     const members = storage.getMembers();
     const attendance = JSON.parse(localStorage.getItem('memberAttendance') || '{}');
@@ -30406,6 +29831,7 @@ function calculateAllStreaks(members, attendance) {
         const currentStreak = calculateStreak(member.id, attendance);
         const bestStreak = parseInt(localStorage.getItem(`bestStreak_${member.id}`) || '0');
 
+        // Update best streak if current is better
         if (currentStreak > bestStreak) {
             localStorage.setItem(`bestStreak_${member.id}`, currentStreak.toString());
         }
@@ -30430,8 +29856,11 @@ function calculateStreak(memberId, attendance) {
 
     const daysSince = Math.floor((today - lastSeenDate) / (1000 * 60 * 60 * 24));
 
+    // If more than 7 days since last attendance, streak is broken
     if (daysSince > 7) return 0;
 
+    // Simple streak calculation based on days since last seen
+    // In a real implementation, this would look at all attendance records
     return daysSince <= 1 ? Math.max(1, parseInt(localStorage.getItem(`streak_${memberId}`) || '1')) : 0;
 }
 
@@ -30444,6 +29873,9 @@ function getStreakBadges(streak) {
     return badges.join('') || '<span style="color: #95a5a6;">None yet</span>';
 }
 
+// ========================================
+// COMMITMENT TRACKING FUNCTIONS
+// ========================================
 function populateCommitmentMemberDropdown() {
     const members = storage.getMembers();
     const select = document.getElementById('commitment-member');
@@ -30485,6 +29917,7 @@ function logCommitment() {
 
     showToast('Commitment logged successfully!', 'success');
 
+    // Clear form
     document.getElementById('commitment-member').value = '';
     document.getElementById('commitment-type').value = 'coffee';
     document.getElementById('commitment-date').value = '';
@@ -30578,6 +30011,9 @@ function updateCommitmentLeaderboard() {
     }
 }
 
+// ========================================
+// MEETING FEEDBACK FUNCTIONS
+// ========================================
 function submitMeetingFeedback() {
     const meetingType = document.getElementById('feedback-meeting-type').value;
     const rating = document.getElementById('feedback-rating').value;
@@ -30602,6 +30038,7 @@ function submitMeetingFeedback() {
 
     showToast('Thank you for your feedback!', 'success');
 
+    // Clear form
     document.getElementById('feedback-meeting-type').value = 'speaker';
     document.getElementById('feedback-rating').value = '';
     document.getElementById('feedback-positives').value = '';
@@ -30670,6 +30107,9 @@ function updateFeedbackSummary() {
     }).join('');
 }
 
+// ========================================
+// SPEAKER BOOKING FUNCTIONS
+// ========================================
 function bookSpeaker() {
     const name = document.getElementById('speaker-name').value.trim();
     const date = document.getElementById('speaker-date').value;
@@ -30699,6 +30139,7 @@ function bookSpeaker() {
 
     showToast(`Speaker ${name} booked for ${new Date(date).toLocaleDateString()}!`, 'success');
 
+    // Clear form
     document.getElementById('speaker-name').value = '';
     document.getElementById('speaker-date').value = '';
     document.getElementById('speaker-phone').value = '';
@@ -30752,6 +30193,9 @@ function cancelSpeaker(id) {
     updateSpeakerSchedule();
 }
 
+// ========================================
+// CHIP CEREMONY SCHEDULER FUNCTIONS
+// ========================================
 function populateChipMemberDropdown() {
     const members = storage.getMembers();
     const select = document.getElementById('chip-member');
@@ -30801,6 +30245,7 @@ function scheduleChipCeremony() {
 
     showToast(`Chip ceremony scheduled for ${member.name}!`, 'success');
 
+    // Clear form
     document.getElementById('chip-member').value = '';
     document.getElementById('chip-milestone').value = '24-hours';
     document.getElementById('chip-date').value = '';
@@ -30872,6 +30317,7 @@ function completeChipCeremony(id) {
     }
 }
 
+// Meeting Analytics
 function updateMeetingAnalytics() {
     const attendance = JSON.parse(localStorage.getItem('meetingAttendanceRecords') || '[]');
     const trends = document.getElementById('attendance-trends');
@@ -30879,6 +30325,7 @@ function updateMeetingAnalytics() {
     trends.innerHTML = '<p>Analytics dashboard - track meeting popularity</p>';
 }
 
+// Role Rotation
 function populateRotationMembers() {
     const members = storage.getMembers();
     const select = document.getElementById('rotation-members');
@@ -30900,6 +30347,7 @@ function updateRoleAssignments() {
     container.innerHTML = '<p>Upcoming role assignments will appear here</p>';
 }
 
+// Virtual Meetings
 function saveVirtualMeeting() {
     const name = document.getElementById('virtual-meeting-name').value.trim();
     const platform = document.getElementById('virtual-platform').value;
@@ -30927,6 +30375,7 @@ function updateVirtualMeetingsList() {
     }
 }
 
+// QR Code
 function populateQRMeetingSelect() {
     const events = storage.getEvents();
     const select = document.getElementById('qr-meeting-select');
@@ -30961,6 +30410,7 @@ function downloadMeetingQR() {
     }
 }
 
+// Communication Lists
 function populateCommListMembers() {
     const members = storage.getMembers();
     const select = document.getElementById('comm-list-members');
@@ -30985,6 +30435,7 @@ function updateCommListsDisplay() {
         lists.map(l => `<div class="box mb-2"><strong>${escapeHtml(l.name)}</strong> - ${l.members.length} members</div>`).join('');
 }
 
+// Reminders
 function populateReminderMeetings() {
     const events = storage.getEvents();
     const select = document.getElementById('reminder-meeting');
@@ -31009,6 +30460,7 @@ function updateRemindersList() {
         `<p>${reminders.length} reminder(s) configured</p>`;
 }
 
+// Notifications
 function saveNotificationSettings() {
     const days = document.getElementById('notif-days-advance').value;
     localStorage.setItem('notificationDaysAdvance', days);
@@ -31023,6 +30475,7 @@ function updateUpcomingBirthdaysList() {
         upcoming.map(m => `<div class="box mb-2">${escapeHtml(m.name)}</div>`).join('');
 }
 
+// Action Items
 function populateActionItemAssigned() {
     const members = storage.getMembers();
     const select = document.getElementById('action-item-assigned');
@@ -31049,6 +30502,7 @@ function updateActionItemsList() {
         open.map(i => `<div class="box mb-2"><strong>${escapeHtml(i.title)}</strong> - Due: ${i.due}</div>`).join('');
 }
 
+// Cancellation Alerts
 function populateCancelMeeting() {
     const events = storage.getEvents();
     const select = document.getElementById('cancel-meeting');
@@ -31073,6 +30527,7 @@ function updateCancellationHistory() {
         `<p>${alerts.length} alert(s) sent</p>`;
 }
 
+// Welcome Packets
 function populateWelcomeNewcomer() {
     const members = storage.getMembers();
     const select = document.getElementById('welcome-newcomer');
@@ -31097,6 +30552,7 @@ function updateWelcomePacketsList() {
         `<p>${packets.length} packet(s) generated</p>`;
 }
 
+// Big Book Tracker
 function logBigBookStudy() {
     const chapter = document.getElementById('bb-chapter').value;
     const date = document.getElementById('bb-date').value;
@@ -31115,6 +30571,7 @@ function updateBigBookProgress() {
         `<p>${studies.length} chapter(s) studied</p>`;
 }
 
+// Literature Loans
 function populateLoanMember() {
     const members = storage.getMembers();
     const select = document.getElementById('loan-member');
@@ -31141,6 +30598,7 @@ function updateLiteratureLoansList() {
         active.map(l => `<div class="box mb-2"><strong>${escapeHtml(l.item)}</strong> - Due: ${l.due}</div>`).join('');
 }
 
+// Newcomer Packs
 function populatePackNewcomer() {
     const members = storage.getMembers();
     const select = document.getElementById('pack-newcomer');
@@ -31165,6 +30623,7 @@ function updateNewcomerPacksHistory() {
         `<p>${packs.length} pack(s) distributed</p>`;
 }
 
+// Literature Sales
 function recordLiteratureSale() {
     const item = document.getElementById('sale-item').value.trim();
     const price = parseFloat(document.getElementById('sale-price').value);
@@ -31184,6 +30643,7 @@ function updateLiteratureSalesSummary() {
         `<div class="box mb-2"><strong>Total Sales:</strong> $${total.toFixed(2)}<br><strong>Items Sold:</strong> ${sales.length}</div>`;
 }
 
+// Study Guide
 function generateStudyGuide() {
     const topic = document.getElementById('guide-topic').value;
     const number = document.getElementById('guide-number').value;
@@ -31196,6 +30656,7 @@ function generateStudyGuide() {
     container.innerHTML = `<div class="box"><h4>${guides[topic] || 'Study Guide'}</h4><p>Discussion questions and topics for ${topic} ${number}</p></div>`;
 }
 
+// ========== HOME GROUP SPECIFIC FEATURES ==========
 function populateInterGroupMembers() {
     const members = storage.getMembers();
     const select = document.getElementById('inter-member');
@@ -31327,6 +30788,7 @@ function updateAccessibilityConcernsList() {
         concerns.map(c => `<div class="box mb-2">${escapeHtml(c.concern)}</div>`).join('');
 }
 
+// ========== FINANCIAL FEATURES ==========
 function updateContributionComparison() {
     const container = document.getElementById('contribution-stats');
     if (!container) return;
@@ -31429,6 +30891,7 @@ function generateQuarterlyReport() {
     if (container) container.innerHTML = `<div class="box"><h3>Quarterly Report</h3><p>${quarter} ${year}</p></div>`;
 }
 
+// ========== SPONSORSHIP FEATURES ==========
 function generateSponsorshipTree() {
     const members = storage.getMembers();
     const container = document.getElementById('sponsorship-tree-display');
@@ -31491,6 +30954,7 @@ function updateServiceHoursLeaderboard() {
         sorted.map(([id, hours]) => `<div class="box mb-2">${hours.toFixed(1)} hours</div>`).join('');
 }
 
+// ========== GROUP HEALTH FEATURES ==========
 function logConflict() {
     const desc = document.getElementById('conflict-desc').value.trim();
     const severity = document.getElementById('conflict-severity').value;
@@ -31539,6 +31003,7 @@ function loadConceptCurriculum() {
         `<div class="box mb-2"><strong>Month ${i + 1}:</strong> ${c}</div>`).join('');
 }
 
+// ========== INTEGRATION & MOBILE FEATURES ==========
 function exportToGoogleCal() { showToast('Google Calendar export (requires API setup)', 'info'); }
 function setupCloudBackup() { showToast('Cloud backup setup', 'info'); }
 function addGroup() {
@@ -31560,6 +31025,7 @@ function promptPWAInstall() {
     }
 }
 
+// ========== ACCESSIBILITY FEATURES ==========
 function changeLanguage() { showToast('Multi-language support (requires translation files)', 'info'); }
 function toggleLargePrint() {
     const enabled = document.getElementById('large-print-toggle').checked;
@@ -31575,6 +31041,7 @@ function submitAccessibilityConcern() {
     showToast('Concern submitted!', 'success');
 }
 
+// ========== ARCHIVAL FEATURES ==========
 function uploadArchive() { showToast('Archive file uploaded!', 'success'); }
 function startInterview() { showToast('Recording started (requires audio recording setup)', 'info'); }
 function addMilestone() {
@@ -31627,6 +31094,7 @@ function updateHistoricalMinutesList() {
     `).join('');
 }
 
+// ==================== AREA ASSEMBLY INTEGRATION ====================
 function handleAreaMotionSubmit() {
     const id = document.getElementById('area-motion-edit-id').value;
     const motionNumber = document.getElementById('area-motion-number').value.trim();
@@ -31803,6 +31271,7 @@ function deleteAssemblyAgenda(id) {
     showToast('Agenda deleted', 'success');
 }
 
+// ==================== INTERGROUP REPRESENTATIVE ====================
 function handleIRMeetingSubmit() {
     const id = document.getElementById('ir-meeting-edit-id').value;
     const date = document.getElementById('ir-meeting-date').value;
@@ -32026,6 +31495,7 @@ function deletePIActivity(id) {
     showToast('Activity deleted', 'success');
 }
 
+// ==================== H&I PANEL MANAGEMENT ====================
 function handleFacilitySubmit() {
     const id = document.getElementById('facility-edit-id').value;
     const name = document.getElementById('facility-name').value.trim();
@@ -32247,6 +31717,7 @@ function updateCertFacilityDropdown() {
     ).join('');
 }
 
+// ==================== CPC (PROFESSIONAL COMMUNITY) ====================
 function handleProfessionalSubmit() {
     const id = document.getElementById('prof-edit-id').value;
     const name = document.getElementById('prof-name').value.trim();
@@ -32455,6 +31926,7 @@ function completeBTGReferral(id) {
     }
 }
 
+// ==================== PI (PUBLIC INFORMATION) ====================
 function handleMediaContactSubmit() {
     const id = document.getElementById('media-edit-id').value;
     const name = document.getElementById('media-name').value.trim();
@@ -32690,6 +32162,7 @@ function deleteOutreachLog(id) {
     showToast('Log entry deleted', 'success');
 }
 
+// ==================== TREATMENT FACILITIES LIAISON ====================
 function handleTreatmentFacilitySubmit() {
     const id = document.getElementById('treatment-facility-edit-id').value;
     const name = document.getElementById('treatment-facility-name').value.trim();
@@ -32859,6 +32332,7 @@ function logFollowUp() {
     showToast('Follow-up logged!', 'success');
 }
 
+// ==================== CORRECTIONS COMMITTEE ====================
 function handleCorrectionsFacilitySubmit() {
     const id = document.getElementById('corrections-facility-edit-id').value;
     const name = document.getElementById('corrections-facility-name').value.trim();
@@ -33074,6 +32548,7 @@ function updateCorrespondenceLog() {
     }).join('');
 }
 
+// ==================== SPECIAL EVENTS MANAGEMENT ====================
 function handleEventMgmtSubmit() {
     const id = document.getElementById('event-mgmt-edit-id').value;
     const name = document.getElementById('event-mgmt-name').value.trim();
@@ -33361,6 +32836,7 @@ function updateTicketSalesSummary() {
     }).join('');
 }
 
+// ==================== ARCHIVES MANAGEMENT ====================
 function handleArchiveSubmit() {
     const id = document.getElementById('archive-edit-id').value;
     const title = document.getElementById('archive-title').value.trim();
@@ -33524,6 +33000,7 @@ function deleteInterview(id) {
     showToast('Interview deleted', 'success');
 }
 
+// ==================== LANGUAGE ACCESSIBILITY ====================
 function addTranslator() {
     const member = document.getElementById('translator-member').value;
     const language = document.getElementById('translator-language').value;
