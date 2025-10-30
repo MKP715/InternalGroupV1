@@ -4786,6 +4786,9 @@
 
         <section id="quarterly-reports-section" style="border-left: 4px solid #2980b9;">
             <h2><i class="fas fa-chart-pie"></i> Quarterly Financial Reports</h2>
+            <button class="btn mb-3" onclick="exportQuarterlyReportPDF()" style="background: #2980b9;">
+                <i class="fas fa-file-pdf"></i> Export Quarterly Report to PDF
+            </button>
             <div class="box mb-4">
                 <h3>Generate Quarterly Report</h3>
                 <div class="form-group">
@@ -4809,6 +4812,9 @@
         <section id="sponsorship-tree-section" style="border-left: 4px solid #1abc9c;">
             <h2><i class="fas fa-sitemap"></i> Sponsorship Tree Visualization</h2>
             <p class="mb-4">Visual representation of sponsorship relationships.</p>
+            <button class="btn mb-3" onclick="exportSponsorshipReportPDF()" style="background: #1abc9c;">
+                <i class="fas fa-file-pdf"></i> Export Sponsorship Report to PDF
+            </button>
             <div class="box mb-4">
                 <button class="btn" onclick="generateSponsorshipTree()"><i class="fas fa-project-diagram"></i> Generate Tree</button>
             </div>
@@ -9264,6 +9270,9 @@
         <section id="special-events-mgmt-section" style="border-left: 4px solid #9b59b6;">
             <h2><i class="fas fa-calendar-star"></i> Special Events Management</h2>
             <p class="mb-4">Event planning checklists, speaker booking, budget planning, volunteer sign-ups, and ticket sales.</p>
+            <button class="btn mb-3" onclick="exportSpecialEventsPDF()" style="background: #9b59b6;">
+                <i class="fas fa-file-pdf"></i> Export Events Report to PDF
+            </button>
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
                 <div>
                     <div class="box">
@@ -27635,6 +27644,169 @@ function exportFinancialAnalyticsPDF() {
     });
     doc.save('Financial_Analytics.pdf');
     showToast('Financial Analytics PDF generated!', 'success');
+}
+function exportQuarterlyReportPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const expenses = storage.getExpenses() || [];
+    const categories = storage.getBudgetCategories() || [];
+    const quarter = document.getElementById('quarter-select')?.value || 'Q1 (Jan-Mar)';
+    const year = document.getElementById('quarter-year')?.value || new Date().getFullYear();
+    doc.setFontSize(22);
+    doc.setTextColor(41, 128, 185);
+    doc.text(`Quarterly Financial Report - ${quarter} ${year}`, 14, 22);
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
+    doc.setFontSize(14);
+    doc.text("Financial Summary", 14, 42);
+    const totalExpenses = expenses.reduce((sum, e) => sum + parseFloat(e.amount || 0), 0);
+    const totalBudget = categories.reduce((sum, c) => sum + parseFloat(c.amount || 0), 0);
+    doc.setFontSize(10);
+    doc.text(`Total Quarterly Budget: $${(totalBudget * 3).toFixed(2)}`, 20, 50);
+    doc.text(`Total Expenses This Quarter: $${totalExpenses.toFixed(2)}`, 20, 56);
+    doc.text(`Remaining Budget: $${((totalBudget * 3) - totalExpenses).toFixed(2)}`, 20, 62);
+    doc.text(`Budget Utilization: ${totalBudget > 0 ? ((totalExpenses / (totalBudget * 3)) * 100).toFixed(1) : '0'}%`, 20, 68);
+    doc.setFontSize(14);
+    doc.text("Expense Breakdown by Category", 14, 80);
+    const categoryTotals = {};
+    expenses.forEach(e => {
+        const cat = e.category || 'Uncategorized';
+        if (!categoryTotals[cat]) categoryTotals[cat] = 0;
+        categoryTotals[cat] += parseFloat(e.amount || 0);
+    });
+    const expenseData = Object.entries(categoryTotals)
+        .sort((a, b) => b[1] - a[1])
+        .map(([cat, amount]) => {
+            const budgetCat = categories.find(c => c.name === cat);
+            const budget = budgetCat ? parseFloat(budgetCat.amount || 0) * 3 : 0;
+            const variance = budget - amount;
+            return [cat, `$${amount.toFixed(2)}`, `$${budget.toFixed(2)}`, `$${variance.toFixed(2)}`];
+        });
+    doc.autoTable({
+        head: [['Category', 'Actual', 'Budget', 'Variance']],
+        body: expenseData,
+        startY: 84,
+        headStyles: { fillColor: [41, 128, 185] }
+    });
+    const finalY = doc.lastAutoTable.finalY || 84;
+    doc.setFontSize(12);
+    doc.text("Recommendations:", 14, finalY + 15);
+    doc.setFontSize(10);
+    const overBudget = expenseData.filter(e => parseFloat(e[3].replace('$', '').replace('-', '')) < 0);
+    if (overBudget.length > 0) {
+        doc.text(`• ${overBudget.length} category(ies) over budget - review necessary`, 20, finalY + 22);
+    } else {
+        doc.text("• All categories within budget", 20, finalY + 22);
+    }
+    doc.save(`Quarterly_Report_${quarter.replace(/\s+/g, '_')}_${year}.pdf`);
+    showToast('Quarterly Report PDF generated!', 'success');
+}
+function exportSponsorshipReportPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const members = storage.getMembers() || [];
+    const sponsorships = members.filter(m => m.sponsor || m.isServant === 'yes');
+    doc.setFontSize(22);
+    doc.setTextColor(26, 188, 156);
+    doc.text("Sponsorship Network Report", 14, 22);
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
+    doc.text(`Total Members: ${members.length}`, 14, 36);
+    doc.text(`Members with Sponsors: ${members.filter(m => m.sponsor).length}`, 14, 42);
+    doc.text(`Active Sponsors: ${sponsorships.filter(m => m.isServant === 'yes').length}`, 14, 48);
+    doc.setFontSize(14);
+    doc.text("Sponsorship Relationships", 14, 60);
+    const sponsorData = members
+        .filter(m => m.sponsor)
+        .map(m => [
+            m.name || 'N/A',
+            m.sponsor || 'N/A',
+            m.stepProgress || 'Not Started',
+            m.lastContact || 'N/A'
+        ]);
+    if (sponsorData.length > 0) {
+        doc.autoTable({
+            head: [['Sponsee', 'Sponsor', 'Step Progress', 'Last Contact']],
+            body: sponsorData,
+            startY: 64,
+            headStyles: { fillColor: [26, 188, 156] },
+            styles: { fontSize: 9 }
+        });
+    } else {
+        doc.text("No sponsorship relationships recorded", 20, 70);
+    }
+    const finalY = doc.lastAutoTable?.finalY || 70;
+    doc.setFontSize(14);
+    doc.text("Sponsorship Statistics", 14, finalY + 15);
+    doc.setFontSize(10);
+    const avgSponsees = members.filter(m => m.isServant === 'yes').length > 0
+        ? (members.filter(m => m.sponsor).length / members.filter(m => m.isServant === 'yes').length).toFixed(1)
+        : '0';
+    doc.text(`Average sponsees per sponsor: ${avgSponsees}`, 20, finalY + 22);
+    doc.text(`Sponsorship coverage: ${((members.filter(m => m.sponsor).length / members.length) * 100).toFixed(1)}%`, 20, finalY + 28);
+    doc.save('Sponsorship_Network_Report.pdf');
+    showToast('Sponsorship Report PDF generated!', 'success');
+}
+function exportSpecialEventsPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const events = storage.getEventsMgmt() || [];
+    const speakers = storage.getSpeakers() || [];
+    const volunteers = storage.getEventVolunteers() || [];
+    doc.setFontSize(22);
+    doc.setTextColor(155, 89, 182);
+    doc.text("Special Events Report", 14, 22);
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
+    doc.text(`Total Events: ${events.length}`, 14, 36);
+    doc.text(`Upcoming Events: ${events.filter(e => new Date(e.date) > new Date()).length}`, 14, 42);
+    doc.text(`Total Speakers Booked: ${speakers.length}`, 14, 48);
+    doc.text(`Total Volunteers: ${volunteers.length}`, 14, 54);
+    doc.setFontSize(14);
+    doc.text("Event Schedule", 14, 66);
+    const eventData = events
+        .sort((a, b) => new Date(a.date) - new Date(b.date))
+        .slice(0, 15)
+        .map(e => [
+            e.name || 'N/A',
+            new Date(e.date).toLocaleDateString(),
+            e.venue || 'N/A',
+            e.expectedAttendance?.toString() || 'N/A',
+            e.budget ? `$${parseFloat(e.budget).toFixed(2)}` : 'N/A'
+        ]);
+    if (eventData.length > 0) {
+        doc.autoTable({
+            head: [['Event Name', 'Date', 'Venue', 'Expected', 'Budget']],
+            body: eventData,
+            startY: 70,
+            headStyles: { fillColor: [155, 89, 182] },
+            styles: { fontSize: 9 }
+        });
+    } else {
+        doc.text("No events scheduled", 20, 75);
+    }
+    const finalY = doc.lastAutoTable?.finalY || 75;
+    if (speakers.length > 0) {
+        doc.setFontSize(14);
+        doc.text("Booked Speakers", 14, finalY + 15);
+        const speakerData = speakers.slice(0, 10).map(s => [
+            s.name || 'N/A',
+            s.topic || 'N/A',
+            s.date ? new Date(s.date).toLocaleDateString() : 'TBD'
+        ]);
+        doc.autoTable({
+            head: [['Speaker', 'Topic', 'Date']],
+            body: speakerData,
+            startY: finalY + 19,
+            headStyles: { fillColor: [155, 89, 182] },
+            styles: { fontSize: 9 }
+        });
+    }
+    doc.save('Special_Events_Report.pdf');
+    showToast('Special Events PDF generated!', 'success');
 }
 function renderMinutesArchive() {
     const minutes = storage.getMeetingMinutes().sort((a, b) => new Date(b.date) - new Date(a.date));

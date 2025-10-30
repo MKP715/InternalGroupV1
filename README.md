@@ -17,16 +17,19 @@ A comprehensive single-page web application (SPA) for managing AA group operatio
   - **Appeal Chair's Ruling** - Challenge chair's procedural decisions (requires second, majority vote)
   - **Objection to Consideration** - Block inappropriate topics before discussion (requires 2/3)
   - **Suspend the Rules** - Emergency bypass of procedures (requires 2/3)
-- ✅ **Comprehensive PDF Export System (14+ Functions)** - Professional PDF reports for all key sections:
-  - **Member Directory PDF** - Complete member roster with contact info
-  - **Service Positions PDF** - Current positions with terms and holders
-  - **Literature Inventory PDF** - Complete stock with values and totals
-  - **Service Hours PDF** - Member service hours leaderboard
-  - **Analytics Dashboard PDF** - Group overview and engagement metrics
-  - **Attendance Report PDF** - Meeting attendance trends
+- ✅ **Comprehensive PDF Export System (17 Functions)** - Professional PDF reports for all key sections:
+  - **Member Directory PDF** - Complete member roster with contact info and emergency contacts
+  - **Service Positions PDF** - Current positions with terms, holders, and rotation dates
+  - **Literature Inventory PDF** - Complete stock with values, totals, and reorder alerts
+  - **Service Hours PDF** - Member service hours leaderboard with totals
+  - **Analytics Dashboard PDF** - Group overview, engagement metrics, and trends
+  - **Attendance Report PDF** - Meeting attendance trends and statistics
   - **Budget Report PDF** - Budget vs actual with variance analysis
-  - **District & Area PDF** - Service involvement and facility management
-  - **Financial Analytics PDF** - Comprehensive financial reporting
+  - **District & Area PDF** - Service involvement, facilities, and contacts
+  - **Financial Analytics PDF** - Comprehensive financial reporting by category
+  - **Quarterly Reports PDF** - Quarterly financial summaries with recommendations
+  - **Sponsorship Report PDF** - Sponsorship network relationships and statistics
+  - **Special Events PDF** - Event schedules, speakers, volunteers, and budgets
   - **Plus existing PDFs**: Chairperson Log, GC Decisions, Treasurer Report, Audit Log, Meeting Minutes
 - ✅ **Comprehensive Help Guide** - Step-by-step GC meeting workflow, all features documented, complete parliamentary procedure guide
 - ✅ **Data Export v6.0** - All 104 localStorage keys included in backup/restore
