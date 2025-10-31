@@ -12679,6 +12679,15 @@ function base64ToBlob(base64, contentType = '') {
     return blob;
 }
 
+function blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+}
+
 
 async function migratePhotos() {
     console.log("Checking for photo data that needs migration...");
@@ -17655,15 +17664,33 @@ function exportGroupConscienceLogToPDF() {
     doc.save('Group_Conscience_Log.pdf');
     showToast('PDF export generated!', 'success');
 }
-function exportData(dataType) {
+async function exportData(dataType) {
     let data;
     let filename = 'rowlett_group_data.json';
+
+    // Get photos from IndexedDB
+    let photos = [];
+    try {
+        const photosFromDB = await getPhotosFromDB();
+        // Convert Blobs to base64 for JSON export
+        photos = await Promise.all(photosFromDB.map(async (photo) => {
+            if (photo.src instanceof Blob) {
+                const base64 = await blobToBase64(photo.src);
+                return { ...photo, src: base64 };
+            }
+            return photo;
+        }));
+    } catch (err) {
+        console.error('Error retrieving photos for export:', err);
+        showToast('Warning: Photos could not be exported', 'warning');
+    }
+
     if (dataType === 'all') {
         data = {
             events: storage.getEvents(),
             members: storage.getMembers(),
             announcements: storage.getAnnouncements(),
-            photos: storage.getPhotos(),
+            photos: photos,
             chairpersonLog: storage.getChairpersonLog(),
             groupConscienceLog: storage.getGroupConscienceLog(),
             liveGCItems: storage.getLiveGCItems(),
@@ -17767,12 +17794,16 @@ function exportData(dataType) {
             members: storage.getMembers,
             birthdays: storage.getMembers, // Members contain birthday info
             announcements: storage.getAnnouncements,
-            photos: storage.getPhotos,
+            photos: async () => photos, // Use photos from IndexedDB retrieved above
             chairpersonLog: storage.getChairpersonLog,
             groupConscienceLog: storage.getGroupConscienceLog
         };
         if (dataMap[dataType]) {
-            data = { [dataType]: dataMap[dataType]() };
+            const dataFunction = dataMap[dataType];
+            const dataValue = typeof dataFunction === 'function' ?
+                (dataFunction.constructor.name === 'AsyncFunction' ? await dataFunction() : dataFunction()) :
+                dataFunction;
+            data = { [dataType]: dataValue };
             filename = `rowlett_group_${dataType}.json`;
         } else {
             showToast('Invalid data type for export.', 'error');
@@ -17788,7 +17819,7 @@ function exportData(dataType) {
     URL.revokeObjectURL(url);
     showToast('Data exported successfully!', 'success');
 }
-function importData() {
+async function importData() {
     const fileInput = document.getElementById('import-file');
     const file = fileInput.files[0];
     if (!file) {
@@ -17810,7 +17841,7 @@ function importData() {
     reader.onerror = function() {
         showToast('Failed to read file. Please try again.', 'error');
     };
-    reader.onload = function(event) {
+    reader.onload = async function(event) {
         try {
             const data = JSON.parse(event.target.result);
             if (!data.version || !data.exportDate) {
@@ -17823,7 +17854,31 @@ function importData() {
             if (data.members) { storage.saveMembers(data.members); imported = true; }
             if (data.birthdays) { storage.saveBirthdays(data.birthdays); imported = true; }
             if (data.announcements) { storage.saveAnnouncements(data.announcements); imported = true; }
-            if (data.photos) { storage.savePhotos(data.photos); imported = true; }
+
+            // Import photos to IndexedDB
+            if (data.photos && Array.isArray(data.photos)) {
+                try {
+                    // Clear existing photos from IndexedDB
+                    const existingPhotos = await getPhotosFromDB();
+                    for (const photo of existingPhotos) {
+                        await deletePhotoFromDB(photo.id);
+                    }
+
+                    // Import new photos
+                    for (const photo of data.photos) {
+                        // Convert base64 strings back to Blobs if needed
+                        if (typeof photo.src === 'string' && photo.src.startsWith('data:image')) {
+                            const contentType = photo.src.split(';')[0].split(':')[1];
+                            photo.src = base64ToBlob(photo.src, contentType);
+                        }
+                        await addPhotoToDB(photo);
+                    }
+                    imported = true;
+                } catch (err) {
+                    console.error('Error importing photos:', err);
+                    showToast('Warning: Photos could not be imported', 'warning');
+                }
+            }
             if (data.chairpersonLog) { storage.saveChairpersonLog(data.chairpersonLog); imported = true; }
             if (data.groupConscienceLog) { storage.saveGroupConscienceLog(data.groupConscienceLog); imported = true; }
             if (data.liveGCItems) { storage.saveLiveGCItems(data.liveGCItems); imported = true; }
@@ -20322,7 +20377,22 @@ function exportAuditLog() {
     URL.revokeObjectURL(url);
     showToast('Audit log exported to CSV', 'success');
 }
-function createAutomatedBackup() {
+async function createAutomatedBackup() {
+    // Get photos from IndexedDB and convert to base64
+    let photos = [];
+    try {
+        const photosFromDB = await getPhotosFromDB();
+        photos = await Promise.all(photosFromDB.map(async (photo) => {
+            if (photo.src instanceof Blob) {
+                const base64 = await blobToBase64(photo.src);
+                return { ...photo, src: base64 };
+            }
+            return photo;
+        }));
+    } catch (err) {
+        console.error('Error retrieving photos for backup:', err);
+    }
+
     const backup = {
         id: genId(),
         timestamp: new Date().toISOString(),
@@ -20336,7 +20406,7 @@ function createAutomatedBackup() {
             expenses: storage.getExpenses(),
             chairpersonLog: storage.getChairpersonLog(),
             announcements: storage.getAnnouncements(),
-            photos: storage.getPhotos(),
+            photos: photos,
             messages: storage.getMessages(),
             nominations: storage.getNominations(),
             notifications: JSON.parse(localStorage.getItem('notifications') || '[]'),
@@ -20362,8 +20432,8 @@ function createAutomatedBackup() {
     localStorage.setItem(`backup_${backup.id}`, JSON.stringify(backup));
     return backup;
 }
-function exportBackupToFile() {
-    const backup = createAutomatedBackup();
+async function exportBackupToFile() {
+    const backup = await createAutomatedBackup();
     const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -20407,7 +20477,7 @@ function importBackupFromFile() {
     };
     input.click();
 }
-function restoreFromBackup(backup) {
+async function restoreFromBackup(backup) {
     try {
         const data = backup.data;
         if (data.members) storage.saveMembers(data.members);
@@ -20418,7 +20488,29 @@ function restoreFromBackup(backup) {
         if (data.expenses) storage.saveExpenses(data.expenses);
         if (data.chairpersonLog) storage.saveChairpersonLog(data.chairpersonLog);
         if (data.announcements) storage.saveAnnouncements(data.announcements);
-        if (data.photos) storage.savePhotos(data.photos);
+
+        // Restore photos to IndexedDB
+        if (data.photos && Array.isArray(data.photos)) {
+            try {
+                // Clear existing photos
+                const existingPhotos = await getPhotosFromDB();
+                for (const photo of existingPhotos) {
+                    await deletePhotoFromDB(photo.id);
+                }
+
+                // Import photos
+                for (const photo of data.photos) {
+                    if (typeof photo.src === 'string' && photo.src.startsWith('data:image')) {
+                        const contentType = photo.src.split(';')[0].split(':')[1];
+                        photo.src = base64ToBlob(photo.src, contentType);
+                    }
+                    await addPhotoToDB(photo);
+                }
+            } catch (err) {
+                console.error('Error restoring photos:', err);
+            }
+        }
+
         if (data.messages) storage.saveMessages(data.messages);
         if (data.nominations) storage.saveNominations(data.nominations);
         if (data.notifications) localStorage.setItem('notifications', JSON.stringify(data.notifications));
