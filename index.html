@@ -15137,7 +15137,14 @@ function updateModalContent() {
     if (!photo) { closeModal(); return; }
     const modalImg = document.getElementById('modal-image');
     const caption = document.getElementById('modal-caption');
-    modalImg.src = photo.src;
+
+    // Handle Blob objects by creating object URLs
+    if (photo.src instanceof Blob) {
+        modalImg.src = URL.createObjectURL(photo.src);
+    } else {
+        modalImg.src = photo.src;
+    }
+
     caption.textContent = photo.tags && photo.tags.length > 0 ? `Tags: ${photo.tags.join(', ')}` : '';
 }
 function showNextPhoto() {
@@ -18006,70 +18013,90 @@ function resetApplication() {
         console.error('Reset error:', e);
     }
 }
-function updateGallery() {
+async function updateGallery() {
     const grid = document.getElementById('gallery-grid');
     const filterInput = document.getElementById('tag-filter');
     const filterValue = filterInput.value.toLowerCase().trim();
     grid.innerHTML = '';
-    const photos = storage.getPhotos();
-    const filteredPhotos = filterValue ? photos.filter(p => p.tags.some(tag => tag.toLowerCase().includes(filterValue))) : photos;
-    filteredPhotos.forEach((photo, idx) => {
-        const originalIndex = photos.findIndex(p => p.src === photo.src); // Find original index for deletion
-        const wrapper = document.createElement('div');
-        wrapper.style.position = 'relative';
-        const img = document.createElement('img');
-        img.src = photo.src;
-        img.onclick = () => openModal(idx, filteredPhotos);
-        wrapper.appendChild(img);
-        const delBtn = document.createElement('button');
-        delBtn.innerHTML = '<i class="fas fa-trash"></i>';
-        delBtn.style.position = 'absolute';
-        delBtn.style.top = '5px';
-        delBtn.style.right = '5px';
-        delBtn.style.background = 'rgba(0,0,0,0.7)';
-        delBtn.style.color = 'white';
-        delBtn.style.border = 'none';
-        delBtn.style.borderRadius = '50%';
-        delBtn.style.width = '30px';
-        delBtn.style.height = '30px';
-        delBtn.style.lineHeight = '30px';
-        delBtn.style.textAlign = 'center';
-        delBtn.style.cursor = 'pointer';
-        delBtn.style.fontSize = '14px';
-        delBtn.onclick = (e) => {
-            e.stopPropagation(); // Prevent modal from opening
-            deletePhoto(originalIndex);
-        };
-        wrapper.appendChild(delBtn);
-        grid.appendChild(wrapper);
-    });
-    if (filteredPhotos.length === 0) {
-        grid.innerHTML = '<p>No photos match the filter.</p>';
+
+    try {
+        const photos = await getPhotosFromDB();
+        const filteredPhotos = filterValue ? photos.filter(p => p.tags.some(tag => tag.toLowerCase().includes(filterValue))) : photos;
+
+        filteredPhotos.forEach((photo, idx) => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            const img = document.createElement('img');
+
+            // Handle Blob objects by creating object URLs
+            if (photo.src instanceof Blob) {
+                img.src = URL.createObjectURL(photo.src);
+            } else {
+                img.src = photo.src;
+            }
+
+            img.onclick = () => openModal(idx, filteredPhotos);
+            wrapper.appendChild(img);
+
+            const delBtn = document.createElement('button');
+            delBtn.innerHTML = '<i class="fas fa-trash"></i>';
+            delBtn.style.position = 'absolute';
+            delBtn.style.top = '5px';
+            delBtn.style.right = '5px';
+            delBtn.style.background = 'rgba(0,0,0,0.7)';
+            delBtn.style.color = 'white';
+            delBtn.style.border = 'none';
+            delBtn.style.borderRadius = '50%';
+            delBtn.style.width = '30px';
+            delBtn.style.height = '30px';
+            delBtn.style.lineHeight = '30px';
+            delBtn.style.textAlign = 'center';
+            delBtn.style.cursor = 'pointer';
+            delBtn.style.fontSize = '14px';
+            delBtn.onclick = (e) => {
+                e.stopPropagation(); // Prevent modal from opening
+                deletePhoto(photo.id); // Use photo ID instead of index
+            };
+            wrapper.appendChild(delBtn);
+            grid.appendChild(wrapper);
+        });
+
+        if (filteredPhotos.length === 0) {
+            grid.innerHTML = '<p>No photos match the filter.</p>';
+        }
+
+        await renderTagList();
+    } catch (error) {
+        console.error('Error updating gallery:', error);
+        grid.innerHTML = '<p>Error loading photos. Please refresh the page.</p>';
     }
-    renderTagList();
 }
-function renderTagList() {
+async function renderTagList() {
     const tagList = document.getElementById('tag-list');
-    const photos = storage.getPhotos();
-    const allTags = [...new Set(photos.flatMap(p => p.tags))]; // Get unique tags
-    tagList.innerHTML = '';
-    allTags.forEach(tag => {
-        const tagEl = document.createElement('span');
-        tagEl.className = 'btn secondary';
-        tagEl.textContent = tag;
-        tagEl.style.marginRight = '0.5rem';
-        tagEl.style.marginBottom = '0.5rem';
-        tagEl.style.cursor = 'pointer';
-        tagEl.onclick = () => setTagFilter(tag);
-        tagList.appendChild(tagEl);
-    });
+    try {
+        const photos = await getPhotosFromDB();
+        const allTags = [...new Set(photos.flatMap(p => p.tags))]; // Get unique tags
+        tagList.innerHTML = '';
+        allTags.forEach(tag => {
+            const tagEl = document.createElement('span');
+            tagEl.className = 'btn secondary';
+            tagEl.textContent = tag;
+            tagEl.style.marginRight = '0.5rem';
+            tagEl.style.marginBottom = '0.5rem';
+            tagEl.style.cursor = 'pointer';
+            tagEl.onclick = () => setTagFilter(tag);
+            tagList.appendChild(tagEl);
+        });
+    } catch (error) {
+        console.error('Error rendering tag list:', error);
+    }
 }
 function setTagFilter(tag) {
     const filterInput = document.getElementById('tag-filter');
     filterInput.value = tag;
     updateGallery();
 }
-function updateHome() {
+async function updateHome() {
     const homeEvents = document.getElementById('home-upcoming-events');
     homeEvents.innerHTML = '';
     const occ = computeUpcomingOccurrences(30);
@@ -18116,21 +18143,33 @@ function updateHome() {
     }
     const homePhotos = document.getElementById('home-latest-photos');
     homePhotos.innerHTML = '';
-    const allPhotos = storage.getPhotos();
-    const recentPhotos = allPhotos.slice(-Math.min(3, allPhotos.length)).reverse();
-    recentPhotos.forEach(photo => {
-        const img = document.createElement('img');
-        img.src = photo.src;
-        img.style.height = '60px';
-        img.style.width = 'auto';
-        img.style.borderRadius = '4px';
-        img.style.cursor = 'pointer';
-        const originalIndex = allPhotos.findIndex(p => p.src === photo.src);
-        img.onclick = () => openModal(originalIndex, allPhotos);
-        homePhotos.appendChild(img);
-    });
-    if (allPhotos.length === 0) {
-        homePhotos.innerHTML = '<span>No photos yet</span>';
+    try {
+        const allPhotos = await getPhotosFromDB();
+        const recentPhotos = allPhotos.slice(-Math.min(3, allPhotos.length)).reverse();
+        recentPhotos.forEach((photo, idx) => {
+            const img = document.createElement('img');
+
+            // Handle Blob objects by creating object URLs
+            if (photo.src instanceof Blob) {
+                img.src = URL.createObjectURL(photo.src);
+            } else {
+                img.src = photo.src;
+            }
+
+            img.style.height = '60px';
+            img.style.width = 'auto';
+            img.style.borderRadius = '4px';
+            img.style.cursor = 'pointer';
+            const originalIndex = allPhotos.length - recentPhotos.length + idx;
+            img.onclick = () => openModal(originalIndex, allPhotos);
+            homePhotos.appendChild(img);
+        });
+        if (allPhotos.length === 0) {
+            homePhotos.innerHTML = '<span>No photos yet</span>';
+        }
+    } catch (error) {
+        console.error('Error loading photos for home:', error);
+        homePhotos.innerHTML = '<span>Error loading photos</span>';
     }
     updateUnifiedDashboard();
 }
@@ -23451,6 +23490,11 @@ function initializeNewAAFeatures() {
 }
 
 function init() {
+    initDB().then(() => {
+        console.log('IndexedDB initialized successfully');
+    }).catch(err => {
+        console.error('Failed to initialize IndexedDB:', err);
+    });
     initDefaults();
     initNav();
     initDictionary();
