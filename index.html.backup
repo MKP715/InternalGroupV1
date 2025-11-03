@@ -13161,28 +13161,8 @@ const storage = {
         catch(e) { console.error('Error parsing announcementReadReceipts:', e); return {}; }
     },
     saveAnnouncementReadReceipts(receipts) { safeStorageSave('announcementReadReceipts', receipts); },
-    getCurrentUser() {
-        try {
-            const userData = localStorage.getItem('currentUser');
-            if (!userData || userData === 'Anonymous') {
-                return { name: 'Anonymous', id: null };
-            }
-            // Handle legacy string format
-            if (typeof userData === 'string' && !userData.startsWith('{')) {
-                return { name: userData, id: genId() };
-            }
-            // Handle object format
-            const parsed = JSON.parse(userData);
-            return parsed.name ? parsed : { name: parsed, id: null };
-        } catch (e) {
-            console.error('Error parsing currentUser:', e);
-            return { name: 'Anonymous', id: null };
-        }
-    },
-    saveCurrentUser(user) {
-        const userData = typeof user === 'string' ? { name: user, id: genId() } : user;
-        safeLocalStorageSet('currentUser', JSON.stringify(userData));
-    },
+    getCurrentUser() { return localStorage.getItem('currentUser') || 'Anonymous'; },
+    saveCurrentUser(user) { safeLocalStorageSet('currentUser', user); },
     getLiteratureInventory() {
         try { return JSON.parse(localStorage.getItem('literatureInventory') || '[]'); }
         catch(e) { console.error('Error parsing literatureInventory:', e); return []; }
@@ -19422,8 +19402,8 @@ function markAnnouncementAsRead(announcementId) {
     if (announcement) {
         const currentUser = storage.getCurrentUser();
         if (!announcement.readBy) announcement.readBy = [];
-        if (!announcement.readBy.includes(currentUser.name)) {
-            announcement.readBy.push(currentUser.name);
+        if (!announcement.readBy.includes(currentUser)) {
+            announcement.readBy.push(currentUser);
             storage.saveAnnouncements(ann);
             updateAnnouncementsList();
             showToast('Marked as read', 'success');
@@ -19442,7 +19422,7 @@ function sendMessage() {
     const messages = storage.getMessages();
     messages.push({
         id: genId(),
-        from: currentUser.name,
+        from: currentUser,
         to: recipientId,
         subject: subject,
         message: text,
@@ -19695,7 +19675,7 @@ function addNomination() {
         positionId: positionId,
         positionName: position.name,
         nominee: nominee,
-        nominatedBy: storage.getCurrentUser().name,
+        nominatedBy: storage.getCurrentUser(),
         date: new Date().toISOString()
     });
     storage.saveNominations(nominations);
@@ -23301,10 +23281,10 @@ function saveCurrentUser() {
     showToast('Name saved!', 'success');
 }
 function loadCurrentUser() {
-    const user = storage.getCurrentUser();
+    const name = storage.getCurrentUser();
     const input = document.getElementById('current-user-name');
     if (input) {
-        input.value = user.name;
+        input.value = name;
     }
 }
 function checkStorageUsage() {
@@ -26464,7 +26444,7 @@ function saveMinorityReport() {
         return;
     }
     showToast('Minority report saved and will be included in meeting minutes', 'success');
-    logAuditEntry('create', 'minority-report', storage.getCurrentUser().name, { concerns }, 'Minority opinion recorded');
+    logAuditEntry('create', 'minority-report', storage.getCurrentUser(), { concerns }, 'Minority opinion recorded');
     document.getElementById('minority-concerns').value = '';
     document.getElementById('minority-report-section').style.display = 'none';
     document.getElementById('minority-not-needed').style.display = 'block';
@@ -26606,13 +26586,13 @@ function startLiveMeeting() {
         actionItems: []
     };
     showToast('Live GC session started! All actions will be recorded automatically.', 'success');
-    logAuditEntry('create', 'live-meeting', storage.getCurrentUser().name, liveMeetingData, 'Started live GC session');
+    logAuditEntry('create', 'live-meeting', storage.getCurrentUser(), liveMeetingData, 'Started live GC session');
 }
 function endLiveMeeting() {
     if (!liveMeetingData) return;
     liveMeetingData.endTime = new Date().toISOString();
     showToast('Meeting ended! Review and save meeting minutes.', 'success');
-    logAuditEntry('create', 'meeting-end', storage.getCurrentUser().name, liveMeetingData, 'Ended live GC session');
+    logAuditEntry('create', 'meeting-end', storage.getCurrentUser(), liveMeetingData, 'Ended live GC session');
     liveMeetingData = null;
 }
 let currentElection = null;
