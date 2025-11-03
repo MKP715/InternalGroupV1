@@ -12281,6 +12281,204 @@
                 </div>
             </div>
         </section>
+
+        <section id="inter-group-section" style="border-left: 4px solid #3498db;">
+            <h2><i class="fas fa-network-wired"></i> Inter-Group Connections</h2>
+            <p class="mb-4">Track members who attend other AA groups to understand fellowship connections and encourage group unity across the wider AA community.</p>
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3><i class="fas fa-plus-circle"></i> Record Attendance</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Track when members attend other groups to support their recovery journey.</p>
+                        <div class="form-group">
+                            <label for="inter-member">Member</label>
+                            <select id="inter-member">
+                                <option value="">-- Select Member --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inter-group-name">Other Group Name</label>
+                            <input type="text" id="inter-group-name" placeholder="e.g., Serenity Group, Big Book Study" />
+                        </div>
+                        <button class="btn" onclick="addInterGroupAttendance()"><i class="fas fa-plus"></i> Record Attendance</button>
+                    </div>
+                </div>
+                <div>
+                    <div class="box">
+                        <h3><i class="fas fa-list-ul"></i> Recent Connections</h3>
+                        <div id="inter-group-list" style="min-height: 150px;"></div>
+                    </div>
+                    <div class="box mt-4" style="background: #34495e; border-left: 4px solid #3498db;">
+                        <h4><i class="fas fa-info-circle"></i> Why Track Inter-Group?</h4>
+                        <ul style="font-size: 0.9rem; line-height: 1.6;">
+                            <li>Strengthens wider AA fellowship</li>
+                            <li>Helps members find additional support</li>
+                            <li>Identifies popular meetings to recommend to newcomers</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="hg-transfer-section" style="border-left: 4px solid #3498db;">
+            <h2><i class="fas fa-exchange-alt"></i> Home Group Transfer Management</h2>
+            <p class="mb-4">Process incoming and outgoing home group transfers. A home group is where a member commits to service and voting privileges.</p>
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3><i class="fas fa-user-check"></i> Process Transfer</h3>
+                        <div class="form-group">
+                            <label for="transfer-member">Member</label>
+                            <select id="transfer-member">
+                                <option value="">-- Select Member --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="transfer-type">Transfer Type</label>
+                            <select id="transfer-type">
+                                <option value="incoming">Incoming (Joining Our Group)</option>
+                                <option value="outgoing">Outgoing (Leaving Our Group)</option>
+                            </select>
+                        </div>
+                        <div style="background: #34495e; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+                            <p style="font-size: 0.85rem;"><strong><i class="fas fa-lightbulb"></i> Home Group Commitment:</strong></p>
+                            <p style="font-size: 0.85rem; opacity: 0.8;">A home group member typically attends regularly, takes service positions, and has voting rights in group conscience.</p>
+                        </div>
+                        <button class="btn" onclick="processTransfer()"><i class="fas fa-check"></i> Process Transfer</button>
+                    </div>
+                </div>
+                <div>
+                    <div class="box">
+                        <h3><i class="fas fa-history"></i> Transfer History</h3>
+                        <div id="transfer-history" style="min-height: 200px;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="hg-benefits-section" style="border-left: 4px solid #3498db;">
+            <h2><i class="fas fa-award"></i> Home Group Benefits & Privileges</h2>
+            <p class="mb-4">View which members have earned home group benefits through regular attendance and service commitment.</p>
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="box">
+                        <h3><i class="fas fa-vote-yea"></i> Voting Eligibility</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Members with home group status have voting privileges:</p>
+                        <div id="voting-eligible-list" style="min-height: 150px;"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="box" style="background: #34495e; border-left: 4px solid #8e44ad;">
+                        <h3><i class="fas fa-info-circle"></i> Home Group Benefits</h3>
+                        <ul style="line-height: 1.8;">
+                            <li><strong>Voting Rights:</strong> Participate in group conscience decisions</li>
+                            <li><strong>Service Positions:</strong> Eligible to hold trusted servant positions</li>
+                            <li><strong>Group Voice:</strong> Help shape the group's future direction</li>
+                            <li><strong>Accountability:</strong> Deeper commitment to group unity</li>
+                        </ul>
+                    </div>
+                    <div class="box mt-4" style="background: #2c3e50; border-left: 4px solid #3498db;">
+                        <h4><i class="fas fa-question-circle"></i> How to Become Home Group?</h4>
+                        <p style="font-size: 0.9rem; opacity: 0.8;">Requirements vary by group, but typically include:</p>
+                        <ul style="font-size: 0.9rem; line-height: 1.6;">
+                            <li>Regular attendance (often 90 days)</li>
+                            <li>Financial contribution when able</li>
+                            <li>Willingness to serve</li>
+                            <li>Agreement with group conscience</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="hg-commitment-section" style="border-left: 4px solid #3498db;">
+            <h2><i class="fas fa-handshake"></i> Home Group Commitment Levels</h2>
+            <p class="mb-4">Overview of member commitment levels and home group participation statistics.</p>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                <div class="box" style="text-align: center; background: linear-gradient(135deg, #d35400 0%, #e67e22 100%);">
+                    <i class="fas fa-users" style="font-size: 3rem; opacity: 0.3; margin-bottom: 0.5rem;"></i>
+                    <div id="commitment-levels"></div>
+                </div>
+                <div class="box" style="background: #34495e; border-left: 4px solid #d35400;">
+                    <h3><i class="fas fa-chart-pie"></i> Commitment Breakdown</h3>
+                    <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Understanding member involvement:</p>
+                    <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem;">
+                        <span><i class="fas fa-circle" style="color: #d35400;"></i> Home Group</span>
+                        <span style="opacity: 0.8;">Full commitment</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem;">
+                        <span><i class="fas fa-circle" style="color: #3498db;"></i> Regular</span>
+                        <span style="opacity: 0.8;">Frequent attendance</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem;">
+                        <span><i class="fas fa-circle" style="color: #2ecc71;"></i> Newcomer</span>
+                        <span style="opacity: 0.8;">Getting started</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: #2c3e50; border-radius: 4px;">
+                        <span><i class="fas fa-circle" style="color: #95a5a6;"></i> Visitor</span>
+                        <span style="opacity: 0.8;">Occasional</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="hg-census-section" style="border-left: 4px solid #3498db;">
+            <h2><i class="fas fa-users"></i> Home Group Census</h2>
+            <p class="mb-4">Detailed membership statistics by commitment level and attendance patterns.</p>
+            <div class="box mb-4" style="background: linear-gradient(135deg, #2980b9 0%, #3498db 100%); text-align: center; padding: 2rem;">
+                <h3 style="margin-bottom: 1.5rem;">Current Membership Breakdown</h3>
+                <div id="census-stats"></div>
+            </div>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div class="box" style="text-align: center; background: #34495e; border-top: 4px solid #d35400;">
+                    <i class="fas fa-home" style="font-size: 2rem; color: #d35400; margin-bottom: 0.5rem;"></i>
+                    <h4>Home Group Members</h4>
+                    <p style="font-size: 0.85rem; opacity: 0.8;">Full commitment & voting rights</p>
+                </div>
+                <div class="box" style="text-align: center; background: #34495e; border-top: 4px solid #3498db;">
+                    <i class="fas fa-user-check" style="font-size: 2rem; color: #3498db; margin-bottom: 0.5rem;"></i>
+                    <h4>Regular Attendees</h4>
+                    <p style="font-size: 0.85rem; opacity: 0.8;">Frequent participation</p>
+                </div>
+                <div class="box" style="text-align: center; background: #34495e; border-top: 4px solid #2ecc71;">
+                    <i class="fas fa-seedling" style="font-size: 2rem; color: #2ecc71; margin-bottom: 0.5rem;"></i>
+                    <h4>Newcomers</h4>
+                    <p style="font-size: 0.85rem; opacity: 0.8;">Building foundation</p>
+                </div>
+                <div class="box" style="text-align: center; background: #34495e; border-top: 4px solid #95a5a6;">
+                    <i class="fas fa-user" style="font-size: 2rem; color: #95a5a6; margin-bottom: 0.5rem;"></i>
+                    <h4>Visitors</h4>
+                    <p style="font-size: 0.85rem; opacity: 0.8;">Occasional attendance</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="hg-growth-section" style="border-left: 4px solid #3498db;">
+            <h2><i class="fas fa-chart-line"></i> Home Group Growth Metrics</h2>
+            <p class="mb-4">Track membership growth trends over time to understand group health and attraction.</p>
+            <div class="box mb-4">
+                <h3><i class="fas fa-chart-area"></i> Membership Growth Chart</h3>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Visualize how your group is growing and attracting new members.</p>
+                <canvas id="growth-chart" style="max-height: 300px;"></canvas>
+            </div>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div class="box" style="text-align: center; background: #34495e; border-left: 4px solid #2ecc71;">
+                    <i class="fas fa-arrow-up" style="font-size: 2rem; color: #2ecc71;"></i>
+                    <h4 style="margin-top: 0.5rem;">Growth Rate</h4>
+                    <p style="font-size: 0.85rem; opacity: 0.8;">Month-over-month change</p>
+                </div>
+                <div class="box" style="text-align: center; background: #34495e; border-left: 4px solid #3498db;">
+                    <i class="fas fa-user-plus" style="font-size: 2rem; color: #3498db;"></i>
+                    <h4 style="margin-top: 0.5rem;">New Members</h4>
+                    <p style="font-size: 0.85rem; opacity: 0.8;">Joined this month</p>
+                </div>
+                <div class="box" style="text-align: center; background: #34495e; border-left: 4px solid #f39c12;">
+                    <i class="fas fa-chart-bar" style="font-size: 2rem; color: #f39c12;"></i>
+                    <h4 style="margin-top: 0.5rem;">Retention Rate</h4>
+                    <p style="font-size: 0.85rem; opacity: 0.8;">Members staying active</p>
+                </div>
+            </div>
+        </section>
     </main>
     <div id="gc-details-modal" class="modal">
         <div class="box" style="width: 90%; max-width: 900px; max-height: 90vh; overflow-y: auto; background: #2c3e50; color: #ecf0f1; border: 1px solid #3498db;">
@@ -12341,204 +12539,6 @@
             </div>
         </div>
     </div>
-
-    <section id="inter-group-section" style="border-left: 4px solid #3498db;">
-        <h2><i class="fas fa-network-wired"></i> Inter-Group Connections</h2>
-        <p class="mb-4">Track members who attend other AA groups to understand fellowship connections and encourage group unity across the wider AA community.</p>
-        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
-            <div>
-                <div class="box">
-                    <h3><i class="fas fa-plus-circle"></i> Record Attendance</h3>
-                    <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Track when members attend other groups to support their recovery journey.</p>
-                    <div class="form-group">
-                        <label for="inter-member">Member</label>
-                        <select id="inter-member">
-                            <option value="">-- Select Member --</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="inter-group-name">Other Group Name</label>
-                        <input type="text" id="inter-group-name" placeholder="e.g., Serenity Group, Big Book Study" />
-                    </div>
-                    <button class="btn" onclick="addInterGroupAttendance()"><i class="fas fa-plus"></i> Record Attendance</button>
-                </div>
-            </div>
-            <div>
-                <div class="box">
-                    <h3><i class="fas fa-list-ul"></i> Recent Connections</h3>
-                    <div id="inter-group-list" style="min-height: 150px;"></div>
-                </div>
-                <div class="box mt-4" style="background: #34495e; border-left: 4px solid #3498db;">
-                    <h4><i class="fas fa-info-circle"></i> Why Track Inter-Group?</h4>
-                    <ul style="font-size: 0.9rem; line-height: 1.6;">
-                        <li>Strengthens wider AA fellowship</li>
-                        <li>Helps members find additional support</li>
-                        <li>Identifies popular meetings to recommend to newcomers</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="hg-transfer-section" style="border-left: 4px solid #3498db;">
-        <h2><i class="fas fa-exchange-alt"></i> Home Group Transfer Management</h2>
-        <p class="mb-4">Process incoming and outgoing home group transfers. A home group is where a member commits to service and voting privileges.</p>
-        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
-            <div>
-                <div class="box">
-                    <h3><i class="fas fa-user-check"></i> Process Transfer</h3>
-                    <div class="form-group">
-                        <label for="transfer-member">Member</label>
-                        <select id="transfer-member">
-                            <option value="">-- Select Member --</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="transfer-type">Transfer Type</label>
-                        <select id="transfer-type">
-                            <option value="incoming">Incoming (Joining Our Group)</option>
-                            <option value="outgoing">Outgoing (Leaving Our Group)</option>
-                        </select>
-                    </div>
-                    <div style="background: #34495e; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
-                        <p style="font-size: 0.85rem;"><strong><i class="fas fa-lightbulb"></i> Home Group Commitment:</strong></p>
-                        <p style="font-size: 0.85rem; opacity: 0.8;">A home group member typically attends regularly, takes service positions, and has voting rights in group conscience.</p>
-                    </div>
-                    <button class="btn" onclick="processTransfer()"><i class="fas fa-check"></i> Process Transfer</button>
-                </div>
-            </div>
-            <div>
-                <div class="box">
-                    <h3><i class="fas fa-history"></i> Transfer History</h3>
-                    <div id="transfer-history" style="min-height: 200px;"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="hg-benefits-section" style="border-left: 4px solid #3498db;">
-        <h2><i class="fas fa-award"></i> Home Group Benefits & Privileges</h2>
-        <p class="mb-4">View which members have earned home group benefits through regular attendance and service commitment.</p>
-        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
-            <div>
-                <div class="box">
-                    <h3><i class="fas fa-vote-yea"></i> Voting Eligibility</h3>
-                    <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Members with home group status have voting privileges:</p>
-                    <div id="voting-eligible-list" style="min-height: 150px;"></div>
-                </div>
-            </div>
-            <div>
-                <div class="box" style="background: #34495e; border-left: 4px solid #8e44ad;">
-                    <h3><i class="fas fa-info-circle"></i> Home Group Benefits</h3>
-                    <ul style="line-height: 1.8;">
-                        <li><strong>Voting Rights:</strong> Participate in group conscience decisions</li>
-                        <li><strong>Service Positions:</strong> Eligible to hold trusted servant positions</li>
-                        <li><strong>Group Voice:</strong> Help shape the group's future direction</li>
-                        <li><strong>Accountability:</strong> Deeper commitment to group unity</li>
-                    </ul>
-                </div>
-                <div class="box mt-4" style="background: #2c3e50; border-left: 4px solid #3498db;">
-                    <h4><i class="fas fa-question-circle"></i> How to Become Home Group?</h4>
-                    <p style="font-size: 0.9rem; opacity: 0.8;">Requirements vary by group, but typically include:</p>
-                    <ul style="font-size: 0.9rem; line-height: 1.6;">
-                        <li>Regular attendance (often 90 days)</li>
-                        <li>Financial contribution when able</li>
-                        <li>Willingness to serve</li>
-                        <li>Agreement with group conscience</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="hg-commitment-section" style="border-left: 4px solid #3498db;">
-        <h2><i class="fas fa-handshake"></i> Home Group Commitment Levels</h2>
-        <p class="mb-4">Overview of member commitment levels and home group participation statistics.</p>
-        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
-            <div class="box" style="text-align: center; background: linear-gradient(135deg, #d35400 0%, #e67e22 100%);">
-                <i class="fas fa-users" style="font-size: 3rem; opacity: 0.3; margin-bottom: 0.5rem;"></i>
-                <div id="commitment-levels"></div>
-            </div>
-            <div class="box" style="background: #34495e; border-left: 4px solid #d35400;">
-                <h3><i class="fas fa-chart-pie"></i> Commitment Breakdown</h3>
-                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Understanding member involvement:</p>
-                <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem;">
-                    <span><i class="fas fa-circle" style="color: #d35400;"></i> Home Group</span>
-                    <span style="opacity: 0.8;">Full commitment</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem;">
-                    <span><i class="fas fa-circle" style="color: #3498db;"></i> Regular</span>
-                    <span style="opacity: 0.8;">Frequent attendance</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: #2c3e50; border-radius: 4px; margin-bottom: 0.5rem;">
-                    <span><i class="fas fa-circle" style="color: #2ecc71;"></i> Newcomer</span>
-                    <span style="opacity: 0.8;">Getting started</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: #2c3e50; border-radius: 4px;">
-                    <span><i class="fas fa-circle" style="color: #95a5a6;"></i> Visitor</span>
-                    <span style="opacity: 0.8;">Occasional</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="hg-census-section" style="border-left: 4px solid #3498db;">
-        <h2><i class="fas fa-users"></i> Home Group Census</h2>
-        <p class="mb-4">Detailed membership statistics by commitment level and attendance patterns.</p>
-        <div class="box mb-4" style="background: linear-gradient(135deg, #2980b9 0%, #3498db 100%); text-align: center; padding: 2rem;">
-            <h3 style="margin-bottom: 1.5rem;">Current Membership Breakdown</h3>
-            <div id="census-stats"></div>
-        </div>
-        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-            <div class="box" style="text-align: center; background: #34495e; border-top: 4px solid #d35400;">
-                <i class="fas fa-home" style="font-size: 2rem; color: #d35400; margin-bottom: 0.5rem;"></i>
-                <h4>Home Group Members</h4>
-                <p style="font-size: 0.85rem; opacity: 0.8;">Full commitment & voting rights</p>
-            </div>
-            <div class="box" style="text-align: center; background: #34495e; border-top: 4px solid #3498db;">
-                <i class="fas fa-user-check" style="font-size: 2rem; color: #3498db; margin-bottom: 0.5rem;"></i>
-                <h4>Regular Attendees</h4>
-                <p style="font-size: 0.85rem; opacity: 0.8;">Frequent participation</p>
-            </div>
-            <div class="box" style="text-align: center; background: #34495e; border-top: 4px solid #2ecc71;">
-                <i class="fas fa-seedling" style="font-size: 2rem; color: #2ecc71; margin-bottom: 0.5rem;"></i>
-                <h4>Newcomers</h4>
-                <p style="font-size: 0.85rem; opacity: 0.8;">Building foundation</p>
-            </div>
-            <div class="box" style="text-align: center; background: #34495e; border-top: 4px solid #95a5a6;">
-                <i class="fas fa-user" style="font-size: 2rem; color: #95a5a6; margin-bottom: 0.5rem;"></i>
-                <h4>Visitors</h4>
-                <p style="font-size: 0.85rem; opacity: 0.8;">Occasional attendance</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="hg-growth-section" style="border-left: 4px solid #3498db;">
-        <h2><i class="fas fa-chart-line"></i> Home Group Growth Metrics</h2>
-        <p class="mb-4">Track membership growth trends over time to understand group health and attraction.</p>
-        <div class="box mb-4">
-            <h3><i class="fas fa-chart-area"></i> Membership Growth Chart</h3>
-            <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Visualize how your group is growing and attracting new members.</p>
-            <canvas id="growth-chart" style="max-height: 300px;"></canvas>
-        </div>
-        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-            <div class="box" style="text-align: center; background: #34495e; border-left: 4px solid #2ecc71;">
-                <i class="fas fa-arrow-up" style="font-size: 2rem; color: #2ecc71;"></i>
-                <h4 style="margin-top: 0.5rem;">Growth Rate</h4>
-                <p style="font-size: 0.85rem; opacity: 0.8;">Month-over-month change</p>
-            </div>
-            <div class="box" style="text-align: center; background: #34495e; border-left: 4px solid #3498db;">
-                <i class="fas fa-user-plus" style="font-size: 2rem; color: #3498db;"></i>
-                <h4 style="margin-top: 0.5rem;">New Members</h4>
-                <p style="font-size: 0.85rem; opacity: 0.8;">Joined this month</p>
-            </div>
-            <div class="box" style="text-align: center; background: #34495e; border-left: 4px solid #f39c12;">
-                <i class="fas fa-chart-bar" style="font-size: 2rem; color: #f39c12;"></i>
-                <h4 style="margin-top: 0.5rem;">Retention Rate</h4>
-                <p style="font-size: 0.85rem; opacity: 0.8;">Members staying active</p>
-            </div>
-        </div>
-    </section>
 
     <section id="calendar-integration-section" style="border-left: 4px solid #95a5a6;">
         <h2><i class="fab fa-google"></i> Google Calendar Integration</h2>
