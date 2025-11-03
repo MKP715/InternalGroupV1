@@ -32537,7 +32537,7 @@ function populateInterGroupMembers() {
     const members = storage.getMembers();
     const select = document.getElementById('inter-member');
     if (!select) return;
-    select.innerHTML = members.map(m => `<option value="${m.id}">${escapeHtml(m.name)}</option>`).join('');
+    select.innerHTML = '<option value="">-- Select Member --</option>' + members.map(m => `<option value="${m.id}">${escapeHtml(m.name)}</option>`).join('');
 }
 function addInterGroupAttendance() {
     const memberId = document.getElementById('inter-member').value;
@@ -32547,21 +32547,29 @@ function addInterGroupAttendance() {
     attendance.push({id: genId(), memberId, groupName, recordedAt: new Date().toISOString()});
     localStorage.setItem('interGroupAttendance', JSON.stringify(attendance));
     showToast('Attendance recorded!', 'success');
+    document.getElementById('inter-member').value = '';
+    document.getElementById('inter-group-name').value = '';
     updateInterGroupList();
 }
 function updateInterGroupList() {
     const attendance = JSON.parse(localStorage.getItem('interGroupAttendance') || '[]');
+    const members = storage.getMembers();
     const container = document.getElementById('inter-group-list');
     if (!container) return;
     container.innerHTML = attendance.length === 0 ? '<p style="color: #95a5a6;">No inter-group attendance recorded.</p>' :
-        attendance.slice(-10).map(a => `<div class="box mb-2">${escapeHtml(a.groupName)}</div>`).join('');
+        attendance.slice(-10).reverse().map(a => {
+            const member = members.find(m => m.id === a.memberId);
+            const memberName = member ? escapeHtml(member.name) : 'Unknown';
+            const date = new Date(a.recordedAt).toLocaleDateString();
+            return `<div class="box mb-2"><strong>${memberName}</strong> attended ${escapeHtml(a.groupName)} <span style="opacity: 0.7; font-size: 0.85rem;">(${date})</span></div>`;
+        }).join('');
 }
 
 function populateTransferMembers() {
     const members = storage.getMembers();
     const select = document.getElementById('transfer-member');
     if (!select) return;
-    select.innerHTML = members.map(m => `<option value="${m.id}">${escapeHtml(m.name)}</option>`).join('');
+    select.innerHTML = '<option value="">-- Select Member --</option>' + members.map(m => `<option value="${m.id}">${escapeHtml(m.name)}</option>`).join('');
 }
 function processTransfer() {
     const memberId = document.getElementById('transfer-member').value;
@@ -32571,14 +32579,24 @@ function processTransfer() {
     transfers.push({id: genId(), memberId, type, processedAt: new Date().toISOString()});
     localStorage.setItem('homeGroupTransfers', JSON.stringify(transfers));
     showToast('Transfer processed!', 'success');
+    document.getElementById('transfer-member').value = '';
+    document.getElementById('transfer-type').value = 'incoming';
     updateTransferHistory();
 }
 function updateTransferHistory() {
     const transfers = JSON.parse(localStorage.getItem('homeGroupTransfers') || '[]');
+    const members = storage.getMembers();
     const container = document.getElementById('transfer-history');
     if (!container) return;
     container.innerHTML = transfers.length === 0 ? '<p style="color: #95a5a6;">No transfers recorded.</p>' :
-        transfers.slice(-10).map(t => `<div class="box mb-2">${t.type === 'incoming' ? 'Incoming' : 'Outgoing'} transfer</div>`).join('');
+        transfers.slice(-10).reverse().map(t => {
+            const member = members.find(m => m.id === t.memberId);
+            const memberName = member ? escapeHtml(member.name) : 'Unknown';
+            const typeLabel = t.type === 'incoming' ? 'Incoming' : 'Outgoing';
+            const typeColor = t.type === 'incoming' ? '#2ecc71' : '#e67e22';
+            const date = new Date(t.processedAt).toLocaleDateString();
+            return `<div class="box mb-2" style="border-left: 3px solid ${typeColor};"><strong style="color: ${typeColor};">${typeLabel}:</strong> ${memberName} <span style="opacity: 0.7; font-size: 0.85rem;">(${date})</span></div>`;
+        }).join('');
 }
 
 function updateVotingEligibility() {
@@ -32613,9 +32631,88 @@ function updateCensusStats() {
 
 function updateGrowthMetrics() {
     const members = storage.getMembers();
-    const container = document.getElementById('growth-chart');
-    if (!container) return;
-    showToast('Growth chart would display membership trends over time', 'info');
+    const canvas = document.getElementById('growth-chart');
+    if (!canvas) return;
+
+    // Calculate last 12 months of membership data
+    const now = new Date();
+    const monthLabels = [];
+    const memberCounts = [];
+    const homeGroupCounts = [];
+
+    for (let i = 11; i >= 0; i--) {
+        const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const monthEnd = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0);
+        monthLabels.push(monthDate.toLocaleDateString('en-US', { month: 'short', year: '2-digit' }));
+
+        // Count members who joined before this month's end
+        const totalByMonth = members.filter(m => {
+            if (!m.joinedDate) return false;
+            const joinDate = new Date(m.joinedDate);
+            return joinDate <= monthEnd;
+        }).length;
+
+        const homeGroupByMonth = members.filter(m => {
+            if (!m.joinedDate || m.membershipStatus !== 'homegroup') return false;
+            const joinDate = new Date(m.joinedDate);
+            return joinDate <= monthEnd;
+        }).length;
+
+        memberCounts.push(totalByMonth);
+        homeGroupCounts.push(homeGroupByMonth);
+    }
+
+    // Destroy existing chart if it exists
+    if (window.growthChart && typeof window.growthChart.destroy === 'function') {
+        window.growthChart.destroy();
+    }
+
+    // Create new chart
+    const ctx = canvas.getContext('2d');
+    window.growthChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: monthLabels,
+            datasets: [
+                {
+                    label: 'Total Members',
+                    data: memberCounts,
+                    borderColor: '#3498db',
+                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                },
+                {
+                    label: 'Home Group Members',
+                    data: homeGroupCounts,
+                    borderColor: '#2ecc71',
+                    backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: { color: '#ecf0f1' }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: '#ecf0f1', stepSize: 1 },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                x: {
+                    ticks: { color: '#ecf0f1' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                }
+            }
+        }
+    });
 }
 
 function updateGroupsList() {
