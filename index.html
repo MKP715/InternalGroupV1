@@ -1099,6 +1099,13 @@
                     <li data-section="participation-analytics-section">Participation Analytics</li>
                     <li data-section="financial-health-section">Financial Health</li>
                     <li data-section="decision-impact-section">Decision Impact</li>
+                    <li data-section="service-health-report-section" style="border-top: 1px solid #7f8c8d; margin-top: 0.5rem; padding-top: 0.5rem;">Service Position Health</li>
+                    <li data-section="newcomer-retention-report-section">Newcomer Retention</li>
+                    <li data-section="committee-activity-report-section">Committee Activity</li>
+                    <li data-section="action-item-completion-report-section">Action Item Completion</li>
+                    <li data-section="group-growth-report-section">Group Growth Trajectory</li>
+                    <li data-section="traditions-compliance-report-section">12 Traditions Compliance</li>
+                    <li data-section="member-milestone-report-section">Member Milestones</li>
                     <li onclick="displayExecutiveDashboard()" style="border-top: 1px solid #7f8c8d; margin-top: 0.5rem; padding-top: 0.5rem;"><i class="fas fa-tachometer-alt"></i> Executive Dashboard</li>
                     <li onclick="openGSRDashboard()"><i class="fas fa-handshake"></i> GSR Dashboard</li>
                 </ul>
@@ -11506,6 +11513,312 @@
                     <h3>Spending vs Income</h3>
                     <canvas id="spending-income-chart" style="max-height: 300px;"></canvas>
                 </div>
+            </div>
+        </section>
+        <section id="service-health-report-section" style="border-left: 4px solid #1abc9c;">
+            <h2><i class="fas fa-users-cog"></i> Service Position Health Report</h2>
+            <p class="mb-4">Monitor the health of your service structure - vacancies, turnover, and upcoming rotations.</p>
+            <button class="btn mb-3" onclick="exportServiceHealthPDF()" style="background: #1abc9c;">
+                <i class="fas fa-file-pdf"></i> Export Report to PDF
+            </button>
+            <div class="grid" style="grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                <div style="padding: 1.5rem; background: #2ecc71; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="filled-positions">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Filled Positions</div>
+                </div>
+                <div style="padding: 1.5rem; background: #e74c3c; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="vacant-positions">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Vacant Positions</div>
+                </div>
+                <div style="padding: 1.5rem; background: #f39c12; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="expiring-soon">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Expiring <90 Days</div>
+                </div>
+                <div style="padding: 1.5rem; background: #9b59b6; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="avg-tenure">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Avg Tenure (mo)</div>
+                </div>
+            </div>
+            <div class="box mb-4">
+                <h3><i class="fas fa-exclamation-triangle"></i> Action Required</h3>
+                <div id="service-action-required" style="min-height: 100px;"></div>
+            </div>
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div class="box">
+                    <h3>Position Fill Rate by Category</h3>
+                    <canvas id="position-fill-chart" style="max-height: 300px;"></canvas>
+                </div>
+                <div class="box">
+                    <h3>Service Position Turnover (Last 12 Months)</h3>
+                    <canvas id="turnover-chart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+            <div class="box mt-4">
+                <h3>All Service Positions Status</h3>
+                <div id="all-positions-list" style="max-height: 500px; overflow-y: auto;"></div>
+            </div>
+        </section>
+        <section id="newcomer-retention-report-section" style="border-left: 4px solid #1abc9c;">
+            <h2><i class="fas fa-user-plus"></i> Newcomer Retention Report</h2>
+            <p class="mb-4">Track how effectively your group welcomes and retains newcomers.</p>
+            <button class="btn mb-3" onclick="exportNewcomerRetentionPDF()" style="background: #1abc9c;">
+                <i class="fas fa-file-pdf"></i> Export Report to PDF
+            </button>
+            <div class="grid" style="grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                <div style="padding: 1.5rem; background: #3498db; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="total-newcomers">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Total Newcomers</div>
+                    <div style="font-size: 0.75rem; margin-top: 0.25rem; color: #ecf0f1; opacity: 0.8;">Last 12 months</div>
+                </div>
+                <div style="padding: 1.5rem; background: #2ecc71; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="still-active">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Still Active</div>
+                    <div style="font-size: 0.75rem; margin-top: 0.25rem; color: #ecf0f1; opacity: 0.8;">30+ day attendance</div>
+                </div>
+                <div style="padding: 1.5rem; background: #f39c12; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="retention-rate">0%</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Retention Rate</div>
+                    <div style="font-size: 0.75rem; margin-top: 0.25rem; color: #ecf0f1; opacity: 0.8;">90-day metric</div>
+                </div>
+                <div style="padding: 1.5rem; background: #9b59b6; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="avg-days-retained">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Avg Days Retained</div>
+                    <div style="font-size: 0.75rem; margin-top: 0.25rem; color: #ecf0f1; opacity: 0.8;">Before drop-off</div>
+                </div>
+            </div>
+            <div class="box mb-4">
+                <h3>Retention Success Factors</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div>
+                        <h4 style="color: #2ecc71; margin-bottom: 1rem;"><i class="fas fa-check-circle"></i> What's Working</h4>
+                        <ul id="retention-working" style="line-height: 1.8;"></ul>
+                    </div>
+                    <div>
+                        <h4 style="color: #e74c3c; margin-bottom: 1rem;"><i class="fas fa-times-circle"></i> Areas for Improvement</h4>
+                        <ul id="retention-improvement" style="line-height: 1.8;"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div class="box">
+                    <h3>Newcomer Flow (Last 6 Months)</h3>
+                    <canvas id="newcomer-flow-chart" style="max-height: 300px;"></canvas>
+                </div>
+                <div class="box">
+                    <h3>Sponsor Assignment Impact</h3>
+                    <div id="sponsor-impact-stats" style="min-height: 250px;"></div>
+                </div>
+            </div>
+            <div class="box mt-4">
+                <h3>Newcomer Welcome Checklist Completion</h3>
+                <div id="welcome-checklist-stats"></div>
+            </div>
+        </section>
+        <section id="committee-activity-report-section" style="border-left: 4px solid #1abc9c;">
+            <h2><i class="fas fa-users"></i> Committee Activity Report</h2>
+            <p class="mb-4">Monitor which committees are thriving and which need attention.</p>
+            <button class="btn mb-3" onclick="exportCommitteeActivityPDF()" style="background: #1abc9c;">
+                <i class="fas fa-file-pdf"></i> Export Report to PDF
+            </button>
+            <div class="grid" style="grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                <div style="padding: 1.5rem; background: #2ecc71; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="active-committees">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Active Committees</div>
+                </div>
+                <div style="padding: 1.5rem; background: #f39c12; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="inactive-committees">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Inactive Committees</div>
+                </div>
+                <div style="padding: 1.5rem; background: #3498db; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="total-committee-members">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Committee Members</div>
+                </div>
+                <div style="padding: 1.5rem; background: #9b59b6; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="committee-events">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Events (90 days)</div>
+                </div>
+            </div>
+            <div class="box mb-4">
+                <h3>Committee Performance Dashboard</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Committee</th>
+                            <th>Status</th>
+                            <th>Members</th>
+                            <th>Last Activity</th>
+                            <th>Events/Year</th>
+                            <th>Health Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="committee-performance-table"></tbody>
+                </table>
+            </div>
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div class="box">
+                    <h3>Committee Activity Timeline</h3>
+                    <canvas id="committee-activity-chart" style="max-height: 300px;"></canvas>
+                </div>
+                <div class="box">
+                    <h3>Member Participation by Committee</h3>
+                    <canvas id="committee-participation-chart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </section>
+        <section id="action-item-completion-report-section" style="border-left: 4px solid #1abc9c;">
+            <h2><i class="fas fa-tasks"></i> Action Item Completion Report</h2>
+            <p class="mb-4">Track follow-through on action items and identify accountability patterns.</p>
+            <button class="btn mb-3" onclick="exportActionItemPDF()" style="background: #1abc9c;">
+                <i class="fas fa-file-pdf"></i> Export Report to PDF
+            </button>
+            <div class="grid" style="grid-template-columns: repeat(5, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                <div style="padding: 1.5rem; background: #3498db; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="total-action-items">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Total Items</div>
+                </div>
+                <div style="padding: 1.5rem; background: #2ecc71; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="completed-items">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Completed</div>
+                </div>
+                <div style="padding: 1.5rem; background: #f39c12; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="overdue-items">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Overdue</div>
+                </div>
+                <div style="padding: 1.5rem; background: #9b59b6; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="completion-rate">0%</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Completion Rate</div>
+                </div>
+                <div style="padding: 1.5rem; background: #1abc9c; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="avg-completion-days">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Avg Days</div>
+                </div>
+            </div>
+            <div class="box mb-4">
+                <h3><i class="fas fa-exclamation-circle"></i> Overdue Action Items</h3>
+                <div id="overdue-action-list" style="min-height: 100px;"></div>
+            </div>
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div class="box">
+                    <h3>Completion Trends (Last 6 Months)</h3>
+                    <canvas id="action-completion-trend-chart" style="max-height: 300px;"></canvas>
+                </div>
+                <div class="box">
+                    <h3>Top Performers</h3>
+                    <div id="top-performers-list" style="min-height: 250px;"></div>
+                </div>
+            </div>
+            <div class="box mt-4">
+                <h3>Action Items by Category</h3>
+                <canvas id="action-category-chart" style="max-height: 300px;"></canvas>
+            </div>
+        </section>
+        <section id="group-growth-report-section" style="border-left: 4px solid #1abc9c;">
+            <h2><i class="fas fa-chart-line"></i> Group Growth Trajectory Report</h2>
+            <p class="mb-4">Understand whether your group is growing, stable, or declining over time.</p>
+            <button class="btn mb-3" onclick="exportGroupGrowthPDF()" style="background: #1abc9c;">
+                <i class="fas fa-file-pdf"></i> Export Report to PDF
+            </button>
+            <div class="grid" style="grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                <div style="padding: 1.5rem; background: #3498db; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="current-members">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Current Members</div>
+                </div>
+                <div style="padding: 1.5rem; background: #2ecc71; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="growth-rate">0%</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Growth Rate</div>
+                    <div style="font-size: 0.75rem; margin-top: 0.25rem; color: #ecf0f1; opacity: 0.8;">vs. last year</div>
+                </div>
+                <div style="padding: 1.5rem; background: #f39c12; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="avg-meeting-attendance">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Avg Attendance</div>
+                    <div style="font-size: 0.75rem; margin-top: 0.25rem; color: #ecf0f1; opacity: 0.8;">Last 30 days</div>
+                </div>
+                <div style="padding: 1.5rem; background: #9b59b6; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="projected-12mo">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Projected (12mo)</div>
+                    <div style="font-size: 0.75rem; margin-top: 0.25rem; color: #ecf0f1; opacity: 0.8;">if trends continue</div>
+                </div>
+            </div>
+            <div class="box mb-4">
+                <h3>Growth Insights</h3>
+                <div id="growth-insights" style="line-height: 1.8;"></div>
+            </div>
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div class="box">
+                    <h3>Member Count Over Time</h3>
+                    <canvas id="member-growth-chart" style="max-height: 300px;"></canvas>
+                </div>
+                <div class="box">
+                    <h3>Attendance Trends</h3>
+                    <canvas id="attendance-growth-chart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+            <div class="box mt-4">
+                <h3>Member Retention vs. Attrition</h3>
+                <canvas id="retention-attrition-chart" style="max-height: 250px;"></canvas>
+            </div>
+        </section>
+        <section id="traditions-compliance-report-section" style="border-left: 4px solid #1abc9c;">
+            <h2><i class="fas fa-book"></i> 12 Traditions Compliance Dashboard</h2>
+            <p class="mb-4">Ensure your group is staying aligned with AA's 12 Traditions.</p>
+            <button class="btn mb-3" onclick="exportTraditionsCompliancePDF()" style="background: #1abc9c;">
+                <i class="fas fa-file-pdf"></i> Export Report to PDF
+            </button>
+            <div class="box mb-4" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); padding: 2rem; text-align: center;">
+                <div style="font-size: 3rem; color: #fff; font-weight: bold;" id="compliance-score">0%</div>
+                <div style="font-size: 1.2rem; margin-top: 0.5rem; color: #ecf0f1;">Overall Compliance Score</div>
+                <div style="font-size: 0.85rem; margin-top: 0.5rem; color: #ecf0f1; opacity: 0.8;">Based on recent GC decisions and group practices</div>
+            </div>
+            <div class="box mb-4">
+                <h3>Tradition-by-Tradition Assessment</h3>
+                <div id="tradition-assessments"></div>
+            </div>
+            <div class="box mb-4">
+                <h3><i class="fas fa-exclamation-triangle"></i> Potential Concerns</h3>
+                <div id="tradition-concerns" style="min-height: 100px;"></div>
+            </div>
+            <div class="box">
+                <h3>Recent GC Decisions - Tradition Alignment</h3>
+                <div id="gc-tradition-alignment"></div>
+            </div>
+        </section>
+        <section id="member-milestone-report-section" style="border-left: 4px solid #1abc9c;">
+            <h2><i class="fas fa-birthday-cake"></i> Member Milestone Report</h2>
+            <p class="mb-4">Celebrate and track member sobriety milestones and group participation.</p>
+            <button class="btn mb-3" onclick="exportMilestonePDF()" style="background: #1abc9c;">
+                <i class="fas fa-file-pdf"></i> Export Report to PDF
+            </button>
+            <div class="grid" style="grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                <div style="padding: 1.5rem; background: #f39c12; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="upcoming-anniversaries">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Anniversaries (30d)</div>
+                </div>
+                <div style="padding: 1.5rem; background: #2ecc71; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="total-years-sober">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Total Years (Group)</div>
+                </div>
+                <div style="padding: 1.5rem; background: #9b59b6; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="avg-sobriety">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Avg Years Sober</div>
+                </div>
+                <div style="padding: 1.5rem; background: #3498db; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: #fff; font-weight: bold;" id="milestone-celebrations">0</div>
+                    <div style="margin-top: 0.5rem; color: #ecf0f1;">Celebrations (YTD)</div>
+                </div>
+            </div>
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div class="box">
+                    <h3>Upcoming Anniversaries (Next 60 Days)</h3>
+                    <div id="upcoming-anniversary-list" style="max-height: 400px; overflow-y: auto;"></div>
+                </div>
+                <div class="box">
+                    <h3>Anniversary Distribution</h3>
+                    <canvas id="anniversary-distribution-chart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+            <div class="box mt-4">
+                <h3>Milestone Tracker by Month</h3>
+                <canvas id="milestone-timeline-chart" style="max-height: 300px;"></canvas>
             </div>
         </section>
         <section id="inventory-scheduler-section" style="border-left: 4px solid #95a5a6;">
@@ -34759,6 +35072,127 @@ function saveCaptionSetup() {
     const setup = {platform, service, enabled, notes, updatedAt: new Date().toISOString()};
     storage.saveCaptionSetup(setup);
     showToast('Caption setup saved!', 'success');
+}
+
+// ========== NEW ANALYTICS REPORT PDF EXPORT FUNCTIONS ==========
+
+function exportServiceHealthPDF() {
+    const { jsPDF } = window.jspdf;
+    if (!jsPDF) return showToast('PDF library not loaded', 'error');
+    const doc = new jsPDF();
+    const positions = storage.getServicePositions() || [];
+    const now = new Date();
+    doc.setFontSize(22);
+    doc.setTextColor(26, 188, 156);
+    doc.text("Service Position Health Report", 14, 22);
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.text(`Generated: ${now.toLocaleDateString()}`, 14, 30);
+    const filled = positions.filter(p => p.holder && p.holder.trim() !== '').length;
+    const vacant = positions.length - filled;
+    doc.setFontSize(14);
+    doc.text("Summary Statistics", 14, 42);
+    doc.setFontSize(10);
+    doc.text(`Total Positions: ${positions.length}`, 20, 50);
+    doc.text(`Filled Positions: ${filled}`, 20, 56);
+    doc.text(`Vacant Positions: ${vacant}`, 20, 62);
+    doc.save('Service_Position_Health_Report.pdf');
+    showToast('Service Position Health Report PDF generated!', 'success');
+}
+
+function exportNewcomerRetentionPDF() {
+    const { jsPDF } = window.jspdf;
+    if (!jsPDF) return showToast('PDF library not loaded', 'error');
+    const doc = new jsPDF();
+    const newcomers = storage.getNewcomers() || [];
+    const now = new Date();
+    doc.setFontSize(22);
+    doc.setTextColor(26, 188, 156);
+    doc.text("Newcomer Retention Report", 14, 22);
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.text(`Generated: ${now.toLocaleDateString()}`, 14, 30);
+    doc.text(`Total Newcomers: ${newcomers.length}`, 20, 50);
+    doc.save('Newcomer_Retention_Report.pdf');
+    showToast('Newcomer Retention Report PDF generated!', 'success');
+}
+
+function exportCommitteeActivityPDF() {
+    const { jsPDF } = window.jspdf;
+    if (!jsPDF) return showToast('PDF library not loaded', 'error');
+    const doc = new jsPDF();
+    doc.setFontSize(22);
+    doc.setTextColor(26, 188, 156);
+    doc.text("Committee Activity Report", 14, 22);
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
+    doc.save('Committee_Activity_Report.pdf');
+    showToast('Committee Activity Report PDF generated!', 'success');
+}
+
+function exportActionItemPDF() {
+    const { jsPDF } = window.jspdf;
+    if (!jsPDF) return showToast('PDF library not loaded', 'error');
+    const doc = new jsPDF();
+    const actionItems = storage.getActionItems() || [];
+    doc.setFontSize(22);
+    doc.setTextColor(26, 188, 156);
+    doc.text("Action Item Completion Report", 14, 22);
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
+    doc.text(`Total Action Items: ${actionItems.length}`, 20, 50);
+    doc.save('Action_Item_Completion_Report.pdf');
+    showToast('Action Item Completion Report PDF generated!', 'success');
+}
+
+function exportGroupGrowthPDF() {
+    const { jsPDF } = window.jspdf;
+    if (!jsPDF) return showToast('PDF library not loaded', 'error');
+    const doc = new jsPDF();
+    const members = storage.getMembers() || [];
+    doc.setFontSize(22);
+    doc.setTextColor(26, 188, 156);
+    doc.text("Group Growth Trajectory Report", 14, 22);
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
+    doc.text(`Current Members: ${members.length}`, 20, 50);
+    doc.save('Group_Growth_Report.pdf');
+    showToast('Group Growth Trajectory Report PDF generated!', 'success');
+}
+
+function exportTraditionsCompliancePDF() {
+    const { jsPDF } = window.jspdf;
+    if (!jsPDF) return showToast('PDF library not loaded', 'error');
+    const doc = new jsPDF();
+    const gcLog = storage.getGroupConscienceLog() || [];
+    doc.setFontSize(22);
+    doc.setTextColor(155, 89, 182);
+    doc.text("12 Traditions Compliance Report", 14, 22);
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
+    doc.text(`Total GC Decisions Reviewed: ${gcLog.length}`, 20, 50);
+    doc.save('Traditions_Compliance_Report.pdf');
+    showToast('12 Traditions Compliance Report PDF generated!', 'success');
+}
+
+function exportMilestonePDF() {
+    const { jsPDF } = window.jspdf;
+    if (!jsPDF) return showToast('PDF library not loaded', 'error');
+    const doc = new jsPDF();
+    const birthdays = storage.getBirthdays() || [];
+    doc.setFontSize(22);
+    doc.setTextColor(243, 156, 18);
+    doc.text("Member Milestone Report", 14, 22);
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
+    doc.text(`Total Members with Birthdays: ${birthdays.length}`, 20, 50);
+    doc.save('Member_Milestone_Report.pdf');
+    showToast('Member Milestone Report PDF generated!', 'success');
 }
 
 if (document.readyState === 'loading') {
