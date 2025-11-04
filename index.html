@@ -1387,7 +1387,6 @@
                 <i class="fas fa-bell" aria-hidden="true"></i>
                 <span id="notification-badge" style="display: none; position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; font-weight: bold;" aria-label="unread notifications">0</span>
             </li>
-            <li data-section="universal-search-section" style="color: #e74c3c;"><i class="fas fa-search"></i> Universal Search</li>
             <li class="has-dropdown">
                 <i class="fas fa-cog"></i>
                 <ul class="dropdown-menu">
@@ -6596,20 +6595,6 @@
                     <input type="text" id="current-user-name" placeholder="Enter your name..." />
                 </div>
                 <button class="btn" onclick="saveCurrentUser()">Save Name</button>
-            </div>
-            <div class="box mb-4" style="border-left: 4px solid #9b59b6;">
-                <h3><i class="fas fa-palette"></i> Theme & Appearance</h3>
-                <p class="mb-2">Customize the look and feel of the application.</p>
-                <div class="form-group">
-                    <label for="theme-selector">Select Theme</label>
-                    <select id="theme-selector" onchange="ThemeManager.setTheme(this.value)">
-                        <option value="default">Default (Dark Slate)</option>
-                        <option value="dark">Dark Mode</option>
-                        <option value="light">Light Mode</option>
-                        <option value="high-contrast">High Contrast</option>
-                    </select>
-                    <small style="font-size: 0.75rem; opacity: 0.8; display: block; margin-top: 0.5rem;">Choose a theme that works best for your eyes and device. High contrast mode is recommended for accessibility.</small>
-                </div>
             </div>
             <div class="box mb-4" style="border-left: 4px solid #3498db;">
                 <h3><i class="fas fa-database"></i> Backup & Restore System</h3>
@@ -13455,46 +13440,7 @@
          ENHANCED FEATURES - NEW SECTIONS
          ======================================== -->
 
-    <section id="universal-search-section" style="border-left: 4px solid #e74c3c;">
-        <h2><i class="fas fa-search"></i> Universal Search</h2>
-        <p class="mb-4">Search across all data in the system - members, events, GC items, finances, literature, and service positions.</p>
-
-        <div class="box">
-            <h3>Search Everything</h3>
-            <div class="form-group">
-                <label for="universal-search-input">Search Query</label>
-                <input type="text" id="universal-search-input" placeholder="Search members, events, GC items, finances..." onkeypress="if(event.key==='Enter'){performUniversalSearch()}" />
-            </div>
-            <div class="form-group">
-                <label>Search In:</label>
-                <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem;">
-                    <label style="display: flex; align-items: center; gap: 0.5rem;">
-                        <input type="checkbox" checked data-search-type="members" style="width: auto;"> Members
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 0.5rem;">
-                        <input type="checkbox" checked data-search-type="events" style="width: auto;"> Events
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 0.5rem;">
-                        <input type="checkbox" checked data-search-type="gc" style="width: auto;"> Group Conscience
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 0.5rem;">
-                        <input type="checkbox" checked data-search-type="finances" style="width: auto;"> Finances
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 0.5rem;">
-                        <input type="checkbox" checked data-search-type="literature" style="width: auto;"> Literature
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 0.5rem;">
-                        <input type="checkbox" checked data-search-type="service" style="width: auto;"> Service Positions
-                    </label>
-                </div>
-            </div>
-            <button class="btn" onclick="performUniversalSearch()"><i class="fas fa-search"></i> Search</button>
-        </div>
-
-        <div id="universal-search-results" class="mt-4"></div>
-    </section>
-
-    <section id="custom-fields-section" style="border-left: 4px solid #9b59b6;">
+<section id="custom-fields-section" style="border-left: 4px solid #9b59b6;">
         <h2><i class="fas fa-sliders-h"></i> Custom Fields Manager</h2>
         <p class="mb-4">Add custom fields to any data type to track information specific to your group's needs.</p>
 
@@ -36043,261 +35989,6 @@ function exportDecisionImpactPDF() {
 // ENHANCED FEATURES - JAVASCRIPT IMPLEMENTATIONS
 // ============================================================
 
-// THEME MANAGER
-const ThemeManager = {
-    themes: ['default', 'dark', 'light', 'high-contrast'],
-
-    init() {
-        const savedTheme = localStorage.getItem('theme') || 'default';
-        this.setTheme(savedTheme);
-    },
-
-    setTheme(themeName) {
-        document.documentElement.setAttribute('data-theme', themeName);
-        localStorage.setItem('theme', themeName);
-        this.updateThemeUI();
-        showToast(`Theme changed to: ${themeName}`, 'success');
-    },
-
-    toggleTheme() {
-        const currentIndex = this.themes.indexOf(this.getCurrentTheme());
-        const nextIndex = (currentIndex + 1) % this.themes.length;
-        this.setTheme(this.themes[nextIndex]);
-    },
-
-    getCurrentTheme() {
-        return document.documentElement.getAttribute('data-theme') || 'default';
-    },
-
-    updateThemeUI() {
-        const selector = document.getElementById('theme-selector');
-        if (selector) {
-            selector.value = this.getCurrentTheme();
-        }
-    }
-};
-
-// LOADING MANAGER
-const LoadingManager = {
-    show(message = 'Loading...') {
-        const overlay = document.getElementById('global-loading');
-        if (overlay) {
-            overlay.querySelector('p').textContent = message;
-            overlay.classList.add('active');
-        }
-    },
-
-    hide() {
-        const overlay = document.getElementById('global-loading');
-        if (overlay) {
-            overlay.classList.remove('active');
-        }
-    },
-
-    setProgress(percent) {
-        const bar = document.getElementById('progress-bar');
-        if (bar) {
-            bar.style.transform = `scaleX(${percent / 100})`;
-            if (percent >= 100) {
-                setTimeout(() => bar.style.transform = 'scaleX(0)', 300);
-            }
-        }
-    }
-};
-
-// TOOLTIP MANAGER
-const TooltipManager = {
-    init() {
-        document.querySelectorAll('[title]').forEach(el => {
-            if (!el.classList.contains('tooltip-trigger')) {
-                const title = el.getAttribute('title');
-                if (title) {
-                    this.addTooltip(el, title);
-                    el.removeAttribute('title');
-                }
-            }
-        });
-    },
-
-    addTooltip(element, text) {
-        element.classList.add('tooltip-trigger');
-        const tooltip = document.createElement('span');
-        tooltip.className = 'tooltip-content';
-        tooltip.textContent = text;
-        element.appendChild(tooltip);
-    }
-};
-
-// UNIVERSAL SEARCH
-const UniversalSearch = {
-    search(query, types) {
-        const results = [];
-        query = query.toLowerCase();
-
-        if (types.includes('members')) {
-            const members = storage.getMembers();
-            members.forEach(m => {
-                if (m.name.toLowerCase().includes(query) ||
-                    (m.email && m.email.toLowerCase().includes(query)) ||
-                    (m.phone && m.phone.includes(query))) {
-                    results.push({
-                        type: 'Member',
-                        title: m.name,
-                        subtitle: m.email || m.phone || 'No contact info',
-                        data: m,
-                        section: 'roster-section'
-                    });
-                }
-            });
-        }
-
-        if (types.includes('events')) {
-            const events = storage.getEvents();
-            events.forEach(e => {
-                if (e.title.toLowerCase().includes(query) ||
-                    (e.location && e.location.toLowerCase().includes(query))) {
-                    results.push({
-                        type: 'Event',
-                        title: e.title,
-                        subtitle: e.date || e.dayOfWeek || 'No date',
-                        data: e,
-                        section: 'schedule-section'
-                    });
-                }
-            });
-        }
-
-        if (types.includes('gc')) {
-            const gcItems = storage.getGroupConscienceLog();
-            gcItems.forEach(item => {
-                if (item.title.toLowerCase().includes(query) ||
-                    (item.description && item.description.toLowerCase().includes(query))) {
-                    results.push({
-                        type: 'GC Item',
-                        title: item.title,
-                        subtitle: item.date + ' - ' + item.status,
-                        data: item,
-                        section: 'gc-history-section'
-                    });
-                }
-            });
-        }
-
-        if (types.includes('finances')) {
-            const expenses = storage.getExpenses();
-            expenses.forEach(exp => {
-                if (exp.description.toLowerCase().includes(query) ||
-                    exp.category.toLowerCase().includes(query)) {
-                    results.push({
-                        type: 'Expense',
-                        title: exp.description,
-                        subtitle: '$' + exp.amount + ' - ' + exp.category,
-                        data: exp,
-                        section: 'finance-section'
-                    });
-                }
-            });
-        }
-
-        if (types.includes('literature')) {
-            const lit = storage.getLiteratureInventory();
-            lit.forEach(item => {
-                if (item.title.toLowerCase().includes(query)) {
-                    results.push({
-                        type: 'Literature',
-                        title: item.title,
-                        subtitle: 'Stock: ' + item.quantity,
-                        data: item,
-                        section: 'literature-section'
-                    });
-                }
-            });
-        }
-
-        if (types.includes('service')) {
-            const positions = storage.getServicePositions();
-            positions.forEach(pos => {
-                if (pos.position.toLowerCase().includes(query) ||
-                    (pos.member && pos.member.toLowerCase().includes(query))) {
-                    results.push({
-                        type: 'Service Position',
-                        title: pos.position,
-                        subtitle: pos.member || 'Vacant',
-                        data: pos,
-                        section: 'service-positions-section'
-                    });
-                }
-            });
-        }
-
-        return results;
-    },
-
-    displayResults(results) {
-        const container = document.getElementById('universal-search-results');
-        if (!container) return;
-
-        if (results.length === 0) {
-            container.innerHTML = '<div class="box"><p>No results found</p></div>';
-            return;
-        }
-
-        let html = `<h3>Found ${results.length} results</h3>`;
-
-        const grouped = {};
-        results.forEach(r => {
-            if (!grouped[r.type]) grouped[r.type] = [];
-            grouped[r.type].push(r);
-        });
-
-        Object.keys(grouped).forEach(type => {
-            html += `<div class="box mt-4">
-                <h4>${type} (${grouped[type].length})</h4>
-                <div style="display: flex; flex-direction: column; gap: 0.5rem;">`;
-
-            grouped[type].forEach(item => {
-                html += `
-                    <div style="padding: 0.75rem; background: var(--bg-tertiary); border-radius: 4px; cursor: pointer;" onclick="goToSection('${item.section}')">
-                        <div style="font-weight: bold;">${sanitizeInput(item.title)}</div>
-                        <div style="font-size: 0.85rem; opacity: 0.8;">${sanitizeInput(item.subtitle)}</div>
-                    </div>
-                `;
-            });
-
-            html += `</div></div>`;
-        });
-
-        container.innerHTML = html;
-    }
-};
-
-function performUniversalSearch() {
-    const query = document.getElementById('universal-search-input').value.trim();
-    if (!query) {
-        showToast('Please enter a search term', 'error');
-        return;
-    }
-
-    const types = [];
-    document.querySelectorAll('[data-search-type]:checked').forEach(cb => {
-        types.push(cb.getAttribute('data-search-type'));
-    });
-
-    if (types.length === 0) {
-        showToast('Please select at least one data type to search', 'error');
-        return;
-    }
-
-    LoadingManager.show('Searching...');
-
-    setTimeout(() => {
-        const results = UniversalSearch.search(query, types);
-        UniversalSearch.displayResults(results);
-        LoadingManager.hide();
-        showToast(`Found ${results.length} results`, 'success');
-    }, 300);
-}
-
 // CUSTOM FIELDS
 const CustomFields = {
     add(entity, field) {
@@ -36547,32 +36238,27 @@ const GroupHealthScore = {
 };
 
 function calculateGroupHealth() {
-    LoadingManager.show('Calculating health score...');
+    const health = GroupHealthScore.calculate();
 
-    setTimeout(() => {
-        const health = GroupHealthScore.calculate();
+    document.getElementById('health-score-overall').textContent = health.overall;
+    document.getElementById('health-score-grade').textContent = `Grade: ${health.grade}`;
+    document.getElementById('health-financial').textContent = health.metrics.financial;
+    document.getElementById('health-attendance').textContent = health.metrics.attendance;
+    document.getElementById('health-service').textContent = health.metrics.service;
+    document.getElementById('health-newcomer').textContent = health.metrics.newcomer;
+    document.getElementById('health-participation').textContent = health.metrics.participation;
 
-        document.getElementById('health-score-overall').textContent = health.overall;
-        document.getElementById('health-score-grade').textContent = `Grade: ${health.grade}`;
-        document.getElementById('health-financial').textContent = health.metrics.financial;
-        document.getElementById('health-attendance').textContent = health.metrics.attendance;
-        document.getElementById('health-service').textContent = health.metrics.service;
-        document.getElementById('health-newcomer').textContent = health.metrics.newcomer;
-        document.getElementById('health-participation').textContent = health.metrics.participation;
+    document.getElementById('health-score-metrics').style.display = 'grid';
+    document.getElementById('health-recommendations').style.display = 'block';
 
-        document.getElementById('health-score-metrics').style.display = 'grid';
-        document.getElementById('health-recommendations').style.display = 'block';
+    let recsHTML = '<ul style="line-height: 1.8;">';
+    health.recommendations.forEach(rec => {
+        recsHTML += `<li>${sanitizeInput(rec)}</li>`;
+    });
+    recsHTML += '</ul>';
+    document.getElementById('health-recommendations-list').innerHTML = recsHTML;
 
-        let recsHTML = '<ul style="line-height: 1.8;">';
-        health.recommendations.forEach(rec => {
-            recsHTML += `<li>${sanitizeInput(rec)}</li>`;
-        });
-        recsHTML += '</ul>';
-        document.getElementById('health-recommendations-list').innerHTML = recsHTML;
-
-        LoadingManager.hide();
-        showToast('Health score calculated!', 'success');
-    }, 500);
+    showToast('Health score calculated!', 'success');
 }
 
 // CUSTOM REPORT BUILDER
@@ -36784,12 +36470,8 @@ function generateCustomReport() {
         return;
     }
 
-    LoadingManager.show('Generating PDF...');
-    setTimeout(() => {
-        CustomReportBuilder.exportToPDF(config);
-        LoadingManager.hide();
-        showToast('Report generated successfully', 'success');
-    }, 500);
+    CustomReportBuilder.exportToPDF(config);
+    showToast('Report generated successfully', 'success');
 }
 
 function previewCustomReport() {
@@ -36827,7 +36509,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Initialize managers
-    ThemeManager.init();
     CustomFields.refresh();
     NotificationManager.init();
     GamificationSystem.init();
