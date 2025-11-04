@@ -1249,8 +1249,6 @@
                     <li data-section="cancellation-alerts-section">Meeting Cancellation Alerts</li>
                     <li data-section="welcome-packet-section">Welcome Packet Generator</li>
                     <li data-section="gallery-section">Photo Gallery</li>
-                    <li data-section="temperature-check-section" style="border-top: 1px solid #7f8c8d; margin-top: 0.5rem; padding-top: 0.5rem;">Group Temperature Check</li>
-                    <li data-section="satisfaction-survey-section">Satisfaction Survey</li>
                 </ul>
             </li>
             <li class="has-dropdown" style="color: #3498db;">
@@ -1349,6 +1347,8 @@
                     <li data-section="group-growth-report-section">Group Growth Trajectory</li>
                     <li data-section="traditions-compliance-report-section">12 Traditions Compliance</li>
                     <li data-section="member-milestone-report-section">Member Milestones</li>
+                    <li data-section="temperature-check-section">Group Temperature Check</li>
+                    <li data-section="satisfaction-survey-section">Member Satisfaction Survey</li>
                     <li onclick="displayExecutiveDashboard()" style="border-top: 1px solid #7f8c8d; margin-top: 0.5rem; padding-top: 0.5rem;"><i class="fas fa-tachometer-alt"></i> Executive Dashboard</li>
                     <li onclick="openGSRDashboard()"><i class="fas fa-handshake"></i> GSR Dashboard</li>
                 </ul>
@@ -1368,7 +1368,7 @@
                     <li data-section="history-section">Group History</li>
                     <li data-section="templates-section">Document Templates</li>
                     <li data-section="enhanced-tools-section" style="border-top: 1px solid #7f8c8d; margin-top: 0.5rem; padding-top: 0.5rem;"><i class="fas fa-tools"></i> Enhanced Tools</li>
-                    <li data-section="digital-archive-section" style="border-top: 1px solid #7f8c8d; margin-top: 0.5rem; padding-top: 0.5rem;">Group Archives</li>
+                    <li data-section="archives-section" style="border-top: 1px solid #7f8c8d; margin-top: 0.5rem; padding-top: 0.5rem;">Archives Management</li>
                     <li data-section="oral-history-section">Oral History Collection</li>
                     <li data-section="milestones-section">Group Milestones</li>
                     <li data-section="member-legacy-section">Member Legacy</li>
@@ -6606,10 +6606,10 @@
                         <strong>Size:</strong> Smallest file size, optimized for storage
                     </p>
                     <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                        <button class="btn" onclick="exportFullBackupJSON()" style="background: #2ecc71;">
+                        <button class="btn" onclick="exportBackupToFile()" style="background: #2ecc71;">
                             <i class="fas fa-download"></i> Export JSON Backup
                         </button>
-                        <button class="btn" onclick="importFullBackupJSON()" style="background: #3498db;">
+                        <button class="btn" onclick="importBackupFromFile()" style="background: #3498db;">
                             <i class="fas fa-upload"></i> Import JSON Backup
                         </button>
                     </div>
@@ -8115,31 +8115,6 @@
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
                 <div>
                     <div class="box">
-                        <h3>Search Decisions</h3>
-                        <div class="form-group">
-                            <label for="gc-search">Search by keyword, topic, or date</label>
-                            <input type="text" id="gc-search" placeholder="Search decisions...">
-                        </div>
-                        <div class="form-group">
-                            <label for="gc-filter-status">Filter by Status</label>
-                            <select id="gc-filter-status">
-                                <option value="all">All Decisions</option>
-                                <option value="passed">Passed</option>
-                                <option value="failed">Failed</option>
-                                <option value="tabled">Tabled</option>
-                                <option value="amended">Amended</option>
-                                <option value="superseded">Superseded</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="gc-filter-year">Filter by Year</label>
-                            <select id="gc-filter-year">
-                                <option value="all">All Years</option>
-                            </select>
-                        </div>
-                        <button class="btn" onclick="searchGCDecisions()">Search</button>
-                    </div>
-                    <div class="box mt-4">
                         <h3>Link Related Motions</h3>
                         <div class="form-group">
                             <label for="gc-link-primary">Primary Motion</label>
@@ -23918,62 +23893,6 @@ function getAllApplicationData() {
         featureCount: 160
     };
 }
-function exportFullBackupJSON() {
-    try {
-        const data = getAllApplicationData();
-        const dateStr = new Date().toISOString().split('T')[0];
-        const timeStr = new Date().toISOString().split('T')[1].split('.')[0].replace(/:/g, '-');
-        const filename = `aa-group-backup-${dateStr}_${timeStr}.json`;
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        showToast('✅ JSON backup exported successfully!', 'success');
-        logAuditEntry('export', 'full-backup-json', 'system', { filename, size: blob.size }, 'Full JSON backup exported');
-    } catch (error) {
-        showToast('❌ Error exporting JSON backup: ' + error.message, 'error');
-        console.error('JSON export error:', error);
-    }
-}
-function importFullBackupJSON() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    input.onchange = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        if (!confirm('⚠️ IMPORTANT WARNING ⚠️\n\nThis will COMPLETELY REPLACE all current data with the backup data.\n\n✓ Current data will be lost\n✓ This action cannot be undone\n✓ It is recommended to export current data first\n\nDo you want to continue?')) {
-            return;
-        }
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            try {
-                const data = JSON.parse(event.target.result);
-                if (!data.version || !data.exportDate) {
-                    if (!confirm('⚠️ This file may be from an older version or corrupted.\n\nAttempt to import anyway?')) {
-                        return;
-                    }
-                }
-                restoreAllApplicationData(data);
-                showToast('✅ JSON backup restored successfully! Refreshing page...', 'success');
-                logAuditEntry('import', 'full-backup-json', 'system', { filename: file.name, size: file.size }, 'Full JSON backup restored');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
-            } catch (error) {
-                showToast('❌ Error importing JSON backup: ' + error.message, 'error');
-                console.error('JSON import error:', error);
-            }
-        };
-        reader.readAsText(file);
-    };
-    input.click();
-}
 function arrayToCSV(data, fields) {
     if (!data || data.length === 0) return '';
     let csv = fields.join('|') + '\n';
@@ -25970,25 +25889,6 @@ function updateAttendanceStats() {
     document.getElementById('regular-members').textContent = uniqueMembers;
     document.getElementById('monthly-visitors').textContent = monthlyVisitors;
 }
-function searchGCDecisions() {
-    const searchTerm = document.getElementById('gc-search').value.toLowerCase();
-    const status = document.getElementById('gc-filter-status').value;
-    const year = document.getElementById('gc-filter-year').value;
-    let decisions = JSON.parse(localStorage.getItem('gcLog') || '[]');
-    if (searchTerm) {
-        decisions = decisions.filter(d =>
-            d.item.toLowerCase().includes(searchTerm) ||
-            d.submittedBy.toLowerCase().includes(searchTerm)
-        );
-    }
-    if (status !== 'all') {
-        decisions = decisions.filter(d => d.status === status);
-    }
-    if (year !== 'all') {
-        decisions = decisions.filter(d => new Date(d.date).getFullYear().toString() === year);
-    }
-    displayGCDecisions(decisions);
-}
 function displayGCDecisions(decisions) {
     const container = document.getElementById('gc-decisions-list');
     if (decisions.length === 0) {
@@ -26023,7 +25923,7 @@ function linkGCMotions() {
     showToast('Motions linked successfully', 'success');
 }
 function viewMotionChain(motionId) {
-    const decisions = JSON.parse(localStorage.getItem('gcLog') || '[]');
+    const decisions = storage.getGroupConscienceLog();
     const links = JSON.parse(localStorage.getItem('gcMotionLinks') || '[]');
     const motion = decisions.find(d => d.id === motionId);
     if (!motion) return;
@@ -27026,18 +26926,8 @@ function initNewSections() {
         updateAttendanceStats();
     }
     if (document.getElementById('gc-decisions-section')) {
-        const gcLog = JSON.parse(localStorage.getItem('gcLog') || '[]');
+        const gcLog = storage.getGroupConscienceLog();
         displayGCDecisions(gcLog);
-        const years = [...new Set(gcLog.map(d => new Date(d.date).getFullYear()))];
-        const yearSelect = document.getElementById('gc-filter-year');
-        if (yearSelect) {
-            years.forEach(year => {
-                const option = document.createElement('option');
-                option.value = year;
-                option.textContent = year;
-                yearSelect.appendChild(option);
-            });
-        }
         const linkSelects = ['gc-link-primary', 'gc-link-related'];
         linkSelects.forEach(selectId => {
             const select = document.getElementById(selectId);
