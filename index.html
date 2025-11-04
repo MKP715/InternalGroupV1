@@ -1416,7 +1416,6 @@
                     <li data-section="accessibility-section" style="border-top: 1px solid #7f8c8d; margin-top: 0.5rem; padding-top: 0.5rem; opacity: 0.7; font-size: 0.85rem; font-weight: 600; color: #95a5a6; pointer-events: none;"><i class="fas fa-universal-access"></i> ACCESSIBILITY</li>
                     <li data-section="accessibility-section">Accessibility Settings</li>
                     <li data-section="multi-language-section">Multi-Language Support</li>
-                    <li data-section="large-print-section">Large Print Mode</li>
                     <li data-section="screen-reader-section">Screen Reader Optimization</li>
                     <li data-section="captions-section">Closed Captioning</li>
                     <li data-section="accessibility-committee-section">Accessibility Committee</li>
@@ -13134,40 +13133,7 @@
         </div>
     </section>
 
-    <section id="large-print-section" style="border-left: 4px solid #95a5a6;">
-        <h2><i class="fas fa-text-height"></i> Large Print Mode</h2>
-        <p class="mb-4">Increase text size for better readability - helpful for members with vision difficulties.</p>
-        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
-            <div class="box" style="text-align: center; background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%); padding: 3rem;">
-                <i class="fas fa-text-height" style="font-size: 5rem; opacity: 0.5; margin-bottom: 1rem;"></i>
-                <h3>Enable Large Print</h3>
-                <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 8px; margin: 2rem 0;">
-                    <label style="display: flex; align-items: center; justify-content: center; gap: 1rem; cursor: pointer;">
-                        <input type="checkbox" id="large-print-toggle" onchange="toggleLargePrint()" style="width: 30px; height: 30px;" />
-                        <span style="font-size: 1.2rem; font-weight: bold;">Enable Large Print Mode</span>
-                    </label>
-                </div>
-                <p style="opacity: 0.9;">Increases font size by 25% throughout the application</p>
-            </div>
-            <div>
-                <div class="box" style="background: #34495e; border-left: 4px solid #f39c12;">
-                    <h3><i class="fas fa-eye"></i> Visibility Features</h3>
-                    <ul style="line-height: 1.8;">
-                        <li><strong>Larger Text:</strong> 25% increase in font size</li>
-                        <li><strong>Maintained Layout:</strong> Design adapts to larger text</li>
-                        <li><strong>Buttons & Forms:</strong> All elements scale proportionally</li>
-                        <li><strong>Persistent:</strong> Setting remembered across sessions</li>
-                    </ul>
-                </div>
-                <div class="box mt-4" style="background: #2c3e50; border-left: 4px solid #3498db;">
-                    <h4><i class="fas fa-universal-access"></i> Additional Accessibility</h4>
-                    <p style="font-size: 0.9rem; opacity: 0.8;">Combine with browser zoom (Ctrl/Cmd +) for even larger text. Use high contrast mode in your device settings for better visibility.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="screen-reader-section" style="border-left: 4px solid #95a5a6;">
+<section id="screen-reader-section" style="border-left: 4px solid #95a5a6;">
         <h2><i class="fas fa-assistive-listening-systems"></i> Screen Reader Optimization</h2>
         <p class="mb-4">Enhanced support for screen readers to make the application fully accessible to visually impaired users.</p>
         <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -33590,11 +33556,6 @@ function promptPWAInstall() {
 }
 
 function changeLanguage() { showToast('Multi-language support (requires translation files)', 'info'); }
-function toggleLargePrint() {
-    const enabled = document.getElementById('large-print-toggle').checked;
-    document.body.style.fontSize = enabled ? '1.25rem' : '';
-    showToast(enabled ? 'Large print enabled' : 'Large print disabled', 'success');
-}
 function submitAccessibilityConcern() {
     const concern = document.getElementById('accessibility-concern').value.trim();
     if (!concern) return showToast('Enter a concern', 'error');
