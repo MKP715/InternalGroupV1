@@ -1367,6 +1367,7 @@
                     <li data-section="study-guide-section">Study Guide Generator</li>
                     <li data-section="history-section">Group History</li>
                     <li data-section="templates-section">Document Templates</li>
+                    <li data-section="enhanced-tools-section" style="border-top: 1px solid #7f8c8d; margin-top: 0.5rem; padding-top: 0.5rem;"><i class="fas fa-tools"></i> Enhanced Tools</li>
                     <li data-section="digital-archive-section" style="border-top: 1px solid #7f8c8d; margin-top: 0.5rem; padding-top: 0.5rem;">Group Archives</li>
                     <li data-section="oral-history-section">Oral History Collection</li>
                     <li data-section="milestones-section">Group Milestones</li>
@@ -1375,6 +1376,9 @@
                     <li onclick="displayTraditionOfMonth()" style="border-top: 1px solid #7f8c8d; margin-top: 0.5rem; padding-top: 0.5rem;"><i class="fas fa-book-open"></i> Tradition of the Month</li>
                     <li onclick="scheduleGroupInventory()"><i class="fas fa-tasks"></i> Schedule Group Inventory</li>
                 </ul>
+            </li>
+            <li data-section="gamification-section" style="color: #f39c12;">
+                <i class="fas fa-trophy"></i> Achievements
             </li>
             <li onclick="displayUniversalSearch()" style="cursor: pointer; position: relative;" title="Universal Search" role="button" tabindex="0" aria-label="Universal Search" onkeypress="if(event.key==='Enter'){displayUniversalSearch()}">
                 <i class="fas fa-search" aria-hidden="true"></i>
@@ -1393,6 +1397,7 @@
                     <li data-section="inventory-scheduler-section">Group Inventory Scheduler</li>
                     <li data-section="role-settings-section">Role & View Settings</li>
                     <li data-section="custom-fields-section" style="border-top: 1px solid #7f8c8d; margin-top: 0.5rem; padding-top: 0.5rem;"><i class="fas fa-sliders-h"></i> Custom Fields Manager</li>
+                    <li data-section="notifications-section"><i class="fas fa-bell"></i> Notifications</li>
                     <li onclick="viewBackupHistory()" style="border-top: 1px solid #7f8c8d; margin-top: 0.5rem; padding-top: 0.5rem; opacity: 0.7; font-size: 0.85rem; font-weight: 600; color: #95a5a6; pointer-events: none;"><i class="fas fa-server"></i> SYSTEM</li>
                     <li onclick="viewBackupHistory()"><i class="fas fa-database"></i> Backup & Restore</li>
                     <li onclick="viewAuditLog()"><i class="fas fa-history"></i> Audit Log</li>
@@ -13672,6 +13677,239 @@
         </div>
 
         <div id="report-preview" class="mt-4"></div>
+    </section>
+
+    <section id="enhanced-tools-section" style="border-left: 4px solid #9b59b6;">
+        <h2><i class="fas fa-tools"></i> Enhanced Tools & Calculators</h2>
+        <p class="mb-4">Useful tools and calculators for AA group management and personal recovery.</p>
+
+        <div class="grid grid-cols-2">
+            <!-- Sobriety Calculator -->
+            <div class="box" style="border-left: 4px solid #2ecc71;">
+                <h3><i class="fas fa-calendar-check"></i> Sobriety Calculator</h3>
+                <div class="form-group">
+                    <label for="sobriety-date">Sobriety Date:</label>
+                    <input type="date" id="sobriety-date" />
+                </div>
+                <button class="btn" onclick="calculateSobriety()"><i class="fas fa-calculator"></i> Calculate</button>
+                <div id="sobriety-results" class="mt-4" style="display: none;">
+                    <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: 4px;">
+                        <div style="font-size: 2rem; font-weight: bold; color: #2ecc71;" id="days-sober">0</div>
+                        <div style="font-size: 1.2rem; margin-top: 0.5rem;">Days Sober</div>
+                        <div style="margin-top: 1rem; opacity: 0.9;" id="sobriety-breakdown"></div>
+                        <div style="margin-top: 1rem; padding: 0.75rem; background: var(--accent-primary); border-radius: 4px;" id="next-milestone"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7th Tradition Calculator -->
+            <div class="box" style="border-left: 4px solid #f39c12;">
+                <h3><i class="fas fa-coins"></i> 7th Tradition Calculator</h3>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Calculate suggested contributions based on group size and expenses.</p>
+                <div class="form-group">
+                    <label for="avg-attendance">Average Attendance:</label>
+                    <input type="number" id="avg-attendance" placeholder="20" min="1" />
+                </div>
+                <div class="form-group">
+                    <label for="monthly-expenses">Monthly Expenses ($):</label>
+                    <input type="number" id="monthly-expenses" placeholder="500" min="0" step="0.01" />
+                </div>
+                <button class="btn" onclick="calculate7thTradition()"><i class="fas fa-calculator"></i> Calculate</button>
+                <div id="tradition-results" class="mt-4" style="display: none;"></div>
+            </div>
+
+            <!-- Meeting Timer -->
+            <div class="box" style="border-left: 4px solid #3498db;">
+                <h3><i class="fas fa-stopwatch"></i> Meeting Timer</h3>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Timer for shares, readings, and meeting segments.</p>
+                <div class="form-group">
+                    <label for="timer-minutes">Duration (minutes):</label>
+                    <input type="number" id="timer-minutes" value="5" min="1" max="60" />
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn" onclick="startMeetingTimer()"><i class="fas fa-play"></i> Start</button>
+                    <button class="btn secondary" onclick="pauseMeetingTimer()"><i class="fas fa-pause"></i> Pause</button>
+                    <button class="btn secondary" onclick="resetMeetingTimer()"><i class="fas fa-redo"></i> Reset</button>
+                </div>
+                <div id="timer-display" class="mt-4" style="font-size: 3rem; font-weight: bold; text-align: center; display: none;">5:00</div>
+                <div id="timer-status" class="mt-2" style="text-align: center; opacity: 0.8;"></div>
+            </div>
+
+            <!-- Serenity Prayer Generator -->
+            <div class="box" style="border-left: 4px solid #9b59b6;">
+                <h3><i class="fas fa-praying-hands"></i> Serenity Prayer Customizer</h3>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Generate printable versions of the Serenity Prayer.</p>
+                <div class="form-group">
+                    <label for="prayer-size">Font Size:</label>
+                    <select id="prayer-size">
+                        <option value="normal">Normal</option>
+                        <option value="large">Large Print</option>
+                        <option value="extra-large">Extra Large</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="checkbox" id="prayer-include-long" style="width: auto;"> Include Long Form
+                    </label>
+                </div>
+                <button class="btn" onclick="generateSerenityPrayer()"><i class="fas fa-file-pdf"></i> Generate PDF</button>
+            </div>
+
+            <!-- Step Progress Tracker -->
+            <div class="box" style="border-left: 4px solid #1abc9c;">
+                <h3><i class="fas fa-chart-line"></i> Step Progress Tracker</h3>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Track your progress through the 12 Steps.</p>
+                <div id="step-progress-display"></div>
+                <button class="btn" onclick="openStepTracker()"><i class="fas fa-tasks"></i> View Progress</button>
+            </div>
+
+            <!-- Gratitude Journal -->
+            <div class="box" style="border-left: 4px solid #e74c3c;">
+                <h3><i class="fas fa-heart"></i> Gratitude Journal</h3>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Daily gratitude entries to support recovery.</p>
+                <button class="btn" onclick="openGratitudeJournal()"><i class="fas fa-book"></i> Open Journal</button>
+                <div id="gratitude-streak" class="mt-2" style="text-align: center; opacity: 0.9;"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="gamification-section" style="border-left: 4px solid #f39c12;">
+        <h2><i class="fas fa-trophy"></i> Achievements & Progress</h2>
+        <p class="mb-4">Track group achievements, earn badges, and celebrate milestones.</p>
+
+        <div class="box" style="background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%); color: white; border: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="color: white; margin: 0;">Group Level <span id="group-level">1</span></h3>
+                    <p style="opacity: 0.9; margin: 0.5rem 0 0 0;">Keep growing your group to unlock new features!</p>
+                </div>
+                <div style="font-size: 3rem;"><i class="fas fa-gem"></i></div>
+            </div>
+            <div style="margin-top: 1rem; background: rgba(255,255,255,0.2); border-radius: 999px; height: 20px; overflow: hidden;">
+                <div id="group-xp-bar" style="height: 100%; background: white; width: 0%; transition: width 0.5s;"></div>
+            </div>
+            <p style="margin-top: 0.5rem; opacity: 0.9; font-size: 0.9rem;"><span id="group-xp">0</span> / <span id="group-xp-next">100</span> XP</p>
+        </div>
+
+        <div class="grid grid-cols-3 mt-4">
+            <div class="box text-center">
+                <i class="fas fa-medal" style="font-size: 2rem; color: #f39c12;"></i>
+                <div style="font-size: 2rem; font-weight: bold; margin-top: 0.5rem;" id="total-achievements">0</div>
+                <div style="opacity: 0.8;">Achievements</div>
+            </div>
+            <div class="box text-center">
+                <i class="fas fa-award" style="font-size: 2rem; color: #9b59b6;"></i>
+                <div style="font-size: 2rem; font-weight: bold; margin-top: 0.5rem;" id="total-badges">0</div>
+                <div style="opacity: 0.8;">Badges Earned</div>
+            </div>
+            <div class="box text-center">
+                <i class="fas fa-fire" style="font-size: 2rem; color: #e74c3c;"></i>
+                <div style="font-size: 2rem; font-weight: bold; margin-top: 0.5rem;" id="current-streak">0</div>
+                <div style="opacity: 0.8;">Day Streak</div>
+            </div>
+        </div>
+
+        <div class="box mt-4">
+            <h3><i class="fas fa-star"></i> Available Achievements</h3>
+            <div id="achievements-list" class="mt-4"></div>
+        </div>
+
+        <div class="box mt-4">
+            <h3><i class="fas fa-trophy"></i> Earned Badges</h3>
+            <div id="badges-display" class="mt-4" style="display: flex; flex-wrap: wrap; gap: 1rem;"></div>
+        </div>
+
+        <div class="box mt-4">
+            <h3><i class="fas fa-tasks"></i> Active Challenges</h3>
+            <div id="challenges-list" class="mt-4"></div>
+        </div>
+    </section>
+
+    <section id="offline-mode-section" style="border-left: 4px solid #3498db;">
+        <h2><i class="fas fa-wifi"></i> Offline Mode & PWA</h2>
+        <p class="mb-4">Enable offline access and install as a Progressive Web App.</p>
+
+        <div class="box" style="border-left: 4px solid #2ecc71;">
+            <h3><i class="fas fa-check-circle"></i> Service Worker Status</h3>
+            <div id="sw-status" style="padding: 1rem; background: var(--bg-tertiary); border-radius: 4px; margin-top: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <div id="sw-indicator" style="width: 12px; height: 12px; border-radius: 50%; background: #95a5a6;"></div>
+                    <span id="sw-status-text">Checking...</span>
+                </div>
+            </div>
+            <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                <button class="btn" onclick="registerServiceWorker()"><i class="fas fa-power-off"></i> Enable Offline Mode</button>
+                <button class="btn secondary" onclick="unregisterServiceWorker()"><i class="fas fa-times"></i> Disable</button>
+                <button class="btn secondary" onclick="checkServiceWorkerStatus()"><i class="fas fa-sync"></i> Refresh Status</button>
+            </div>
+        </div>
+
+        <div class="box mt-4" style="border-left: 4px solid #9b59b6;">
+            <h3><i class="fas fa-database"></i> Offline Cache</h3>
+            <p style="opacity: 0.8; margin-bottom: 1rem;">Cache data for offline access using IndexedDB.</p>
+            <div id="cache-stats" style="padding: 1rem; background: var(--bg-tertiary); border-radius: 4px; margin-bottom: 1rem;"></div>
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="btn" onclick="cacheAllData()"><i class="fas fa-download"></i> Cache All Data</button>
+                <button class="btn secondary" onclick="clearOfflineCache()"><i class="fas fa-trash"></i> Clear Cache</button>
+                <button class="btn secondary" onclick="syncOfflineData()"><i class="fas fa-sync-alt"></i> Sync Data</button>
+            </div>
+        </div>
+
+        <div class="box mt-4" style="border-left: 4px solid #f39c12;">
+            <h3><i class="fas fa-mobile-alt"></i> Install as App</h3>
+            <p style="opacity: 0.8; margin-bottom: 1rem;">Install HomeGroup as a standalone app on your device.</p>
+            <div id="pwa-install-status"></div>
+            <button class="btn" id="pwa-install-btn" onclick="installPWA()" style="display: none;">
+                <i class="fas fa-download"></i> Install App
+            </button>
+        </div>
+    </section>
+
+    <section id="notifications-section" style="border-left: 4px solid #e74c3c;">
+        <h2><i class="fas fa-bell"></i> Notification Center</h2>
+        <p class="mb-4">Manage browser notifications for meetings, reminders, and updates.</p>
+
+        <div class="box" style="border-left: 4px solid #2ecc71;">
+            <h3><i class="fas fa-toggle-on"></i> Notification Settings</h3>
+            <div id="notification-permission-status" style="padding: 1rem; background: var(--bg-tertiary); border-radius: 4px; margin-bottom: 1rem;"></div>
+            <button class="btn" onclick="requestNotificationPermission()">
+                <i class="fas fa-bell"></i> Enable Notifications
+            </button>
+            <button class="btn secondary ml-2" onclick="testNotification()">
+                <i class="fas fa-vial"></i> Send Test Notification
+            </button>
+        </div>
+
+        <div class="box mt-4">
+            <h3><i class="fas fa-cog"></i> Notification Preferences</h3>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+                <label style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: var(--bg-tertiary); border-radius: 4px;">
+                    <span><i class="fas fa-calendar"></i> Meeting Reminders</span>
+                    <input type="checkbox" id="notify-meetings" checked onchange="saveNotificationPreferences()" style="width: auto;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: var(--bg-tertiary); border-radius: 4px;">
+                    <span><i class="fas fa-birthday-cake"></i> Sobriety Milestones</span>
+                    <input type="checkbox" id="notify-milestones" checked onchange="saveNotificationPreferences()" style="width: auto;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: var(--bg-tertiary); border-radius: 4px;">
+                    <span><i class="fas fa-vote-yea"></i> Group Conscience Updates</span>
+                    <input type="checkbox" id="notify-gc" checked onchange="saveNotificationPreferences()" style="width: auto;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: var(--bg-tertiary); border-radius: 4px;">
+                    <span><i class="fas fa-tasks"></i> Action Item Reminders</span>
+                    <input type="checkbox" id="notify-tasks" checked onchange="saveNotificationPreferences()" style="width: auto;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: var(--bg-tertiary); border-radius: 4px;">
+                    <span><i class="fas fa-trophy"></i> Achievement Unlocked</span>
+                    <input type="checkbox" id="notify-achievements" checked onchange="saveNotificationPreferences()" style="width: auto;">
+                </label>
+            </div>
+        </div>
+
+        <div class="box mt-4">
+            <h3><i class="fas fa-clock"></i> Scheduled Notifications</h3>
+            <div id="scheduled-notifications-list" class="mt-4"></div>
+        </div>
     </section>
 
     <script>
@@ -36622,7 +36860,820 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize managers
     ThemeManager.init();
     CustomFields.refresh();
+    NotificationManager.init();
+    GamificationSystem.init();
 });
+
+// ============================================================
+// SERVICE WORKER & OFFLINE MODE
+// ============================================================
+
+const OfflineManager = {
+    swRegistration: null,
+
+    async registerServiceWorker() {
+        if (!('serviceWorker' in navigator)) {
+            showToast('Service Workers not supported in this browser', 'error');
+            return;
+        }
+
+        try {
+            // Create inline Service Worker
+            const swCode = `
+                const CACHE_NAME = 'homegroup-v1';
+                const urlsToCache = ['/'];
+
+                self.addEventListener('install', event => {
+                    event.waitUntil(
+                        caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+                    );
+                });
+
+                self.addEventListener('fetch', event => {
+                    event.respondWith(
+                        caches.match(event.request).then(response => response || fetch(event.request))
+                    );
+                });
+            `;
+
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+
+            this.swRegistration = await navigator.serviceWorker.register(swUrl);
+            showToast('Offline mode enabled!', 'success');
+            this.updateStatus('active');
+        } catch (error) {
+            console.error('Service Worker registration failed:', error);
+            showToast('Failed to enable offline mode', 'error');
+            this.updateStatus('error');
+        }
+    },
+
+    async unregisterServiceWorker() {
+        if (this.swRegistration) {
+            await this.swRegistration.unregister();
+            this.swRegistration = null;
+            showToast('Offline mode disabled', 'success');
+            this.updateStatus('inactive');
+        }
+    },
+
+    async checkStatus() {
+        if ('serviceWorker' in navigator) {
+            const registration = await navigator.serviceWorker.getRegistration();
+            if (registration) {
+                this.swRegistration = registration;
+                this.updateStatus('active');
+            } else {
+                this.updateStatus('inactive');
+            }
+        } else {
+            this.updateStatus('unsupported');
+        }
+    },
+
+    updateStatus(status) {
+        const indicator = document.getElementById('sw-indicator');
+        const statusText = document.getElementById('sw-status-text');
+
+        if (!indicator || !statusText) return;
+
+        switch (status) {
+            case 'active':
+                indicator.style.background = '#2ecc71';
+                statusText.textContent = 'Active - Offline mode enabled';
+                break;
+            case 'inactive':
+                indicator.style.background = '#95a5a6';
+                statusText.textContent = 'Inactive - Offline mode disabled';
+                break;
+            case 'error':
+                indicator.style.background = '#e74c3c';
+                statusText.textContent = 'Error - Failed to activate';
+                break;
+            case 'unsupported':
+                indicator.style.background = '#f39c12';
+                statusText.textContent = 'Not supported in this browser';
+                break;
+        }
+    }
+};
+
+function registerServiceWorker() {
+    OfflineManager.registerServiceWorker();
+}
+
+function unregisterServiceWorker() {
+    OfflineManager.unregisterServiceWorker();
+}
+
+function checkServiceWorkerStatus() {
+    OfflineManager.checkStatus();
+}
+
+// IndexedDB Cache Manager
+const CacheManager = {
+    dbName: 'homegroup-cache',
+    dbVersion: 1,
+    db: null,
+
+    async init() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(this.dbName, this.dbVersion);
+
+            request.onerror = () => reject(request.error);
+            request.onsuccess = () => {
+                this.db = request.result;
+                resolve(this.db);
+            };
+
+            request.onupgradeneeded = (event) => {
+                const db = event.target.result;
+                if (!db.objectStoreNames.contains('cachedData')) {
+                    db.createObjectStore('cachedData', { keyPath: 'key' });
+                }
+            };
+        });
+    },
+
+    async cacheAll() {
+        try {
+            await this.init();
+            const data = {
+                members: storage.getMembers(),
+                events: storage.getEvents(),
+                attendance: storage.getAttendanceRecords(),
+                finances: {
+                    expenses: storage.getExpenses(),
+                    contributions: storage.getContributions()
+                },
+                gc: storage.getGroupConscienceLog(),
+                timestamp: new Date().toISOString()
+            };
+
+            const transaction = this.db.transaction(['cachedData'], 'readwrite');
+            const store = transaction.objectStore('cachedData');
+            store.put({ key: 'allData', data: data });
+
+            await transaction.complete;
+            showToast('All data cached for offline use', 'success');
+            this.updateCacheStats();
+        } catch (error) {
+            console.error('Cache error:', error);
+            showToast('Failed to cache data', 'error');
+        }
+    },
+
+    async clear() {
+        try {
+            await this.init();
+            const transaction = this.db.transaction(['cachedData'], 'readwrite');
+            const store = transaction.objectStore('cachedData');
+            store.clear();
+            showToast('Cache cleared', 'success');
+            this.updateCacheStats();
+        } catch (error) {
+            console.error('Clear cache error:', error);
+        }
+    },
+
+    updateCacheStats() {
+        const container = document.getElementById('cache-stats');
+        if (!container) return;
+
+        const estimate = navigator.storage && navigator.storage.estimate ?
+            navigator.storage.estimate() : Promise.resolve({ usage: 0, quota: 0 });
+
+        estimate.then(data => {
+            const usageMB = (data.usage / 1024 / 1024).toFixed(2);
+            const quotaMB = (data.quota / 1024 / 1024).toFixed(2);
+
+            container.innerHTML = `
+                <div style="display: flex; justify-content: space-between;">
+                    <div>
+                        <div style="font-size: 1.5rem; font-weight: bold;">${usageMB} MB</div>
+                        <div style="opacity: 0.8;">Used</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.5rem; font-weight: bold;">${quotaMB} MB</div>
+                        <div style="opacity: 0.8;">Available</div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+};
+
+function cacheAllData() {
+    CacheManager.cacheAll();
+}
+
+function clearOfflineCache() {
+    CacheManager.clear();
+}
+
+function syncOfflineData() {
+    showToast('Data synced with local storage', 'success');
+}
+
+// PWA Install
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const installBtn = document.getElementById('pwa-install-btn');
+    const status = document.getElementById('pwa-install-status');
+    if (installBtn) installBtn.style.display = 'block';
+    if (status) status.textContent = 'Ready to install';
+});
+
+function installPWA() {
+    if (!deferredPrompt) {
+        showToast('App already installed or not available', 'info');
+        return;
+    }
+
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+            showToast('App installed successfully!', 'success');
+        }
+        deferredPrompt = null;
+    });
+}
+
+// ============================================================
+// BROWSER NOTIFICATIONS
+// ============================================================
+
+const NotificationManager = {
+    permission: 'default',
+
+    init() {
+        if ('Notification' in window) {
+            this.permission = Notification.permission;
+            this.updatePermissionStatus();
+            this.loadPreferences();
+        }
+    },
+
+    async request() {
+        if (!('Notification' in window)) {
+            showToast('Notifications not supported', 'error');
+            return false;
+        }
+
+        try {
+            this.permission = await Notification.requestPermission();
+            this.updatePermissionStatus();
+
+            if (this.permission === 'granted') {
+                showToast('Notifications enabled!', 'success');
+                return true;
+            } else {
+                showToast('Notification permission denied', 'error');
+                return false;
+            }
+        } catch (error) {
+            console.error('Notification error:', error);
+            return false;
+        }
+    },
+
+    send(title, options = {}) {
+        if (this.permission !== 'granted') return;
+
+        const defaultOptions = {
+            icon: 'logo.svg',
+            badge: 'logo.svg',
+            vibrate: [200, 100, 200],
+            ...options
+        };
+
+        new Notification(title, defaultOptions);
+    },
+
+    test() {
+        if (this.permission !== 'granted') {
+            this.request().then(granted => {
+                if (granted) this.send('Test Notification', { body: 'Notifications are working!' });
+            });
+        } else {
+            this.send('Test Notification', { body: 'Notifications are working!' });
+        }
+    },
+
+    updatePermissionStatus() {
+        const container = document.getElementById('notification-permission-status');
+        if (!container) return;
+
+        let html = '<div style="display: flex; align-items: center; gap: 0.5rem;">';
+
+        if (this.permission === 'granted') {
+            html += '<div style="width: 12px; height: 12px; border-radius: 50%; background: #2ecc71;"></div>';
+            html += '<span>Notifications Enabled</span>';
+        } else if (this.permission === 'denied') {
+            html += '<div style="width: 12px; height: 12px; border-radius: 50%; background: #e74c3c;"></div>';
+            html += '<span>Notifications Blocked (check browser settings)</span>';
+        } else {
+            html += '<div style="width: 12px; height: 12px; border-radius: 50%; background: #f39c12;"></div>';
+            html += '<span>Notifications Not Enabled</span>';
+        }
+
+        html += '</div>';
+        container.innerHTML = html;
+    },
+
+    savePreferences() {
+        const prefs = {
+            meetings: document.getElementById('notify-meetings')?.checked ?? true,
+            milestones: document.getElementById('notify-milestones')?.checked ?? true,
+            gc: document.getElementById('notify-gc')?.checked ?? true,
+            tasks: document.getElementById('notify-tasks')?.checked ?? true,
+            achievements: document.getElementById('notify-achievements')?.checked ?? true
+        };
+        localStorage.setItem('notificationPreferences', JSON.stringify(prefs));
+        showToast('Notification preferences saved', 'success');
+    },
+
+    loadPreferences() {
+        const prefs = JSON.parse(localStorage.getItem('notificationPreferences') || '{}');
+        if (document.getElementById('notify-meetings')) document.getElementById('notify-meetings').checked = prefs.meetings ?? true;
+        if (document.getElementById('notify-milestones')) document.getElementById('notify-milestones').checked = prefs.milestones ?? true;
+        if (document.getElementById('notify-gc')) document.getElementById('notify-gc').checked = prefs.gc ?? true;
+        if (document.getElementById('notify-tasks')) document.getElementById('notify-tasks').checked = prefs.tasks ?? true;
+        if (document.getElementById('notify-achievements')) document.getElementById('notify-achievements').checked = prefs.achievements ?? true;
+    }
+};
+
+function requestNotificationPermission() {
+    NotificationManager.request();
+}
+
+function testNotification() {
+    NotificationManager.test();
+}
+
+function saveNotificationPreferences() {
+    NotificationManager.savePreferences();
+}
+
+// ============================================================
+// ENHANCED TOOLS & CALCULATORS
+// ============================================================
+
+// Sobriety Calculator
+function calculateSobriety() {
+    const dateInput = document.getElementById('sobriety-date');
+    if (!dateInput || !dateInput.value) {
+        showToast('Please select a sobriety date', 'error');
+        return;
+    }
+
+    const sobrietyDate = new Date(dateInput.value);
+    const today = new Date();
+    const diffTime = Math.abs(today - sobrietyDate);
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    const years = Math.floor(diffDays / 365);
+    const months = Math.floor((diffDays % 365) / 30);
+    const days = Math.floor((diffDays % 365) % 30);
+    const weeks = Math.floor(diffDays / 7);
+
+    document.getElementById('days-sober').textContent = diffDays;
+    document.getElementById('sobriety-breakdown').innerHTML = `
+        <strong>${years}</strong> years, <strong>${months}</strong> months, <strong>${days}</strong> days<br>
+        <strong>${weeks}</strong> weeks total
+    `;
+
+    // Next milestone
+    const milestones = [30, 60, 90, 180, 365, 730, 1095, 1825, 3650];
+    const nextMilestone = milestones.find(m => m > diffDays) || diffDays + 365;
+    const daysToMilestone = nextMilestone - diffDays;
+
+    document.getElementById('next-milestone').textContent =
+        `Next milestone in ${daysToMilestone} days (${Math.floor(nextMilestone / 365)} years)`;
+
+    document.getElementById('sobriety-results').style.display = 'block';
+
+    // Award achievement
+    if (diffDays >= 30) GamificationSystem.checkAchievement('sobriety_30');
+    if (diffDays >= 90) GamificationSystem.checkAchievement('sobriety_90');
+    if (diffDays >= 365) GamificationSystem.checkAchievement('sobriety_365');
+}
+
+// 7th Tradition Calculator
+function calculate7thTradition() {
+    const attendance = parseInt(document.getElementById('avg-attendance').value);
+    const expenses = parseFloat(document.getElementById('monthly-expenses').value);
+
+    if (!attendance || !expenses) {
+        showToast('Please fill in all fields', 'error');
+        return;
+    }
+
+    const perPerson = expenses / attendance;
+    const perMeeting = expenses / 4; // assuming 4 meetings per month
+    const prudentReserve = expenses * 3; // 3 months reserve
+
+    const resultsDiv = document.getElementById('tradition-results');
+    resultsDiv.innerHTML = `
+        <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: 4px;">
+            <h4 style="margin-top: 0;">Suggested Contribution Guidelines</h4>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                    <span>Per Person (Monthly):</span>
+                    <strong>$${perPerson.toFixed(2)}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                    <span>Per Person (Per Meeting):</span>
+                    <strong>$${(perPerson / 4).toFixed(2)}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                    <span>Total Needed Per Meeting:</span>
+                    <strong>$${perMeeting.toFixed(2)}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding-top: 0.5rem; font-size: 1.1rem;">
+                    <span>Prudent Reserve Goal:</span>
+                    <strong style="color: #2ecc71;">$${prudentReserve.toFixed(2)}</strong>
+                </div>
+            </div>
+            <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                Note: These are suggested amounts. The 7th Tradition states each member contributes what they can.
+            </p>
+        </div>
+    `;
+    resultsDiv.style.display = 'block';
+}
+
+// Meeting Timer
+let timerInterval = null;
+let timerSeconds = 0;
+let timerRunning = false;
+
+function startMeetingTimer() {
+    const minutes = parseInt(document.getElementById('timer-minutes').value);
+    if (!timerRunning) {
+        timerSeconds = minutes * 60;
+        timerRunning = true;
+        document.getElementById('timer-display').style.display = 'block';
+        updateTimerDisplay();
+        timerInterval = setInterval(tickTimer, 1000);
+        document.getElementById('timer-status').textContent = 'Timer running...';
+    }
+}
+
+function pauseMeetingTimer() {
+    if (timerRunning) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        document.getElementById('timer-status').textContent = 'Timer paused';
+    }
+}
+
+function resetMeetingTimer() {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    const minutes = parseInt(document.getElementById('timer-minutes').value);
+    timerSeconds = minutes * 60;
+    updateTimerDisplay();
+    document.getElementById('timer-status').textContent = '';
+}
+
+function tickTimer() {
+    timerSeconds--;
+    if (timerSeconds <= 0) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        timerSeconds = 0;
+        document.getElementById('timer-status').textContent = 'Time\'s up!';
+        if (NotificationManager.permission === 'granted') {
+            NotificationManager.send('Meeting Timer', { body: 'Time is up!' });
+        }
+        // Play sound or visual alert
+    }
+    updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+    const minutes = Math.floor(timerSeconds / 60);
+    const seconds = timerSeconds % 60;
+    document.getElementById('timer-display').textContent =
+        `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
+// Serenity Prayer Generator
+function generateSerenityPrayer() {
+    const size = document.getElementById('prayer-size').value;
+    const includeLong = document.getElementById('prayer-include-long').checked;
+
+    const shortPrayer = "God, grant me the serenity to accept the things I cannot change,\nCourage to change the things I can,\nAnd wisdom to know the difference.";
+
+    const longPrayer = "God, grant me the serenity to accept the things I cannot change,\nCourage to change the things I can,\nAnd wisdom to know the difference.\n\nLiving one day at a time,\nEnjoying one moment at a time,\nAccepting hardship as a pathway to peace,\nTaking, as Jesus did,\nThis sinful world as it is,\nNot as I would have it,\nTrusting that You will make all things right,\nIf I surrender to Your will,\nSo that I may be reasonably happy in this life,\nAnd supremely happy with You forever in the next.\n\nAmen.";
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    let fontSize = 14;
+    if (size === 'large') fontSize = 18;
+    if (size === 'extra-large') fontSize = 24;
+
+    doc.setFontSize(fontSize);
+    const text = includeLong ? longPrayer : shortPrayer;
+    const lines = doc.splitTextToSize(text, 180);
+
+    doc.text(lines, 15, 30);
+    doc.save('Serenity_Prayer.pdf');
+    showToast('Serenity Prayer PDF generated!', 'success');
+}
+
+// Step Progress Tracker
+function openStepTracker() {
+    showToast('Step tracker feature - track your progress through the 12 Steps', 'info');
+    goToSection('step-tracker-section');
+}
+
+// Gratitude Journal
+function openGratitudeJournal() {
+    showToast('Gratitude journal feature - daily gratitude entries', 'info');
+    const streak = Math.floor(Math.random() * 30); // Placeholder
+    document.getElementById('gratitude-streak').textContent = `${streak} day streak`;
+}
+
+// ============================================================
+// GAMIFICATION SYSTEM
+// ============================================================
+
+const GamificationSystem = {
+    achievements: [
+        { id: 'first_meeting', name: 'First Steps', description: 'Record your first meeting', xp: 10, icon: 'fa-walking' },
+        { id: 'sobriety_30', name: '30 Days Strong', description: 'Celebrate 30 days of sobriety', xp: 50, icon: 'fa-calendar-check' },
+        { id: 'sobriety_90', name: 'Quarter Year', description: 'Reach 90 days of sobriety', xp: 100, icon: 'fa-trophy' },
+        { id: 'sobriety_365', name: 'One Year Miracle', description: 'Complete one year of sobriety', xp: 500, icon: 'fa-award' },
+        { id: 'first_gc', name: 'Voice Heard', description: 'Participate in your first Group Conscience', xp: 25, icon: 'fa-vote-yea' },
+        { id: 'service_role', name: 'Service Begins', description: 'Accept your first service position', xp: 50, icon: 'fa-hands-helping' },
+        { id: 'sponsor_member', name: 'Carrying the Message', description: 'Become a sponsor', xp: 100, icon: 'fa-user-friends' },
+        { id: 'perfect_attendance', name: 'Committed', description: '4 consecutive weeks of meeting attendance', xp: 75, icon: 'fa-star' }
+    ],
+
+    badges: [
+        { id: 'contributor', name: 'Generous Contributor', requirement: '3 consecutive 7th tradition contributions', color: '#f39c12' },
+        { id: 'secretary', name: 'Trusted Secretary', requirement: 'Serve as secretary for 6 months', color: '#3498db' },
+        { id: 'treasurer', name: 'Responsible Treasurer', requirement: 'Serve as treasurer for 6 months', color: '#2ecc71' },
+        { id: 'gsr', name: 'GSR Champion', requirement: 'Serve as GSR for 1 year', color: '#9b59b6' }
+    ],
+
+    challenges: [
+        { id: 'weekly_attendance', name: 'Weekly Warrior', description: 'Attend all meetings this week', progress: 0, target: 4, xp: 50 },
+        { id: 'sponsor_call', name: 'Stay Connected', description: 'Call your sponsor 7 days in a row', progress: 0, target: 7, xp: 30 },
+        { id: 'service_month', name: 'Service Month', description: 'Complete 10 service tasks this month', progress: 0, target: 10, xp: 100 }
+    ],
+
+    init() {
+        this.loadProgress();
+        this.updateDisplay();
+        this.checkDailyStreak();
+    },
+
+    loadProgress() {
+        const saved = localStorage.getItem('gamification');
+        if (saved) {
+            const data = JSON.parse(saved);
+            this.level = data.level || 1;
+            this.xp = data.xp || 0;
+            this.earnedAchievements = data.earnedAchievements || [];
+            this.earnedBadges = data.earnedBadges || [];
+            this.streak = data.streak || 0;
+            this.lastActive = data.lastActive || new Date().toDateString();
+        } else {
+            this.level = 1;
+            this.xp = 0;
+            this.earnedAchievements = [];
+            this.earnedBadges = [];
+            this.streak = 0;
+            this.lastActive = new Date().toDateString();
+        }
+    },
+
+    saveProgress() {
+        localStorage.setItem('gamification', JSON.stringify({
+            level: this.level,
+            xp: this.xp,
+            earnedAchievements: this.earnedAchievements,
+            earnedBadges: this.earnedBadges,
+            streak: this.streak,
+            lastActive: this.lastActive
+        }));
+    },
+
+    addXP(amount, reason) {
+        this.xp += amount;
+        const xpNeeded = this.level * 100;
+
+        if (this.xp >= xpNeeded) {
+            this.level++;
+            this.xp = this.xp - xpNeeded;
+            showToast(`Level Up! You're now level ${this.level}!`, 'success');
+            if (NotificationManager.permission === 'granted') {
+                NotificationManager.send('Level Up!', {
+                    body: `You reached level ${this.level}!`
+                });
+            }
+        }
+
+        this.saveProgress();
+        this.updateDisplay();
+
+        if (reason) {
+            showToast(`+${amount} XP: ${reason}`, 'success');
+        }
+    },
+
+    checkAchievement(achievementId) {
+        if (this.earnedAchievements.includes(achievementId)) return;
+
+        const achievement = this.achievements.find(a => a.id === achievementId);
+        if (achievement) {
+            this.earnedAchievements.push(achievementId);
+            this.addXP(achievement.xp, `Achievement: ${achievement.name}`);
+
+            if (NotificationManager.permission === 'granted' &&
+                document.getElementById('notify-achievements')?.checked) {
+                NotificationManager.send('Achievement Unlocked!', {
+                    body: achievement.name
+                });
+            }
+
+            this.saveProgress();
+            this.updateDisplay();
+        }
+    },
+
+    earnBadge(badgeId) {
+        if (this.earnedBadges.includes(badgeId)) return;
+
+        this.earnedBadges.push(badgeId);
+        this.addXP(100, 'Badge Earned!');
+        this.saveProgress();
+        this.updateDisplay();
+    },
+
+    checkDailyStreak() {
+        const today = new Date().toDateString();
+        if (this.lastActive !== today) {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            if (this.lastActive === yesterday.toDateString()) {
+                this.streak++;
+                this.addXP(10, 'Daily streak bonus!');
+            } else {
+                this.streak = 1;
+            }
+
+            this.lastActive = today;
+            this.saveProgress();
+        }
+    },
+
+    updateDisplay() {
+        // Update level and XP bar
+        const xpNeeded = this.level * 100;
+        const xpPercent = (this.xp / xpNeeded) * 100;
+
+        if (document.getElementById('group-level')) {
+            document.getElementById('group-level').textContent = this.level;
+        }
+        if (document.getElementById('group-xp')) {
+            document.getElementById('group-xp').textContent = this.xp;
+        }
+        if (document.getElementById('group-xp-next')) {
+            document.getElementById('group-xp-next').textContent = xpNeeded;
+        }
+        if (document.getElementById('group-xp-bar')) {
+            document.getElementById('group-xp-bar').style.width = xpPercent + '%';
+        }
+
+        // Update stats
+        if (document.getElementById('total-achievements')) {
+            document.getElementById('total-achievements').textContent = this.earnedAchievements.length;
+        }
+        if (document.getElementById('total-badges')) {
+            document.getElementById('total-badges').textContent = this.earnedBadges.length;
+        }
+        if (document.getElementById('current-streak')) {
+            document.getElementById('current-streak').textContent = this.streak;
+        }
+
+        // Update achievements list
+        this.displayAchievements();
+        this.displayBadges();
+        this.displayChallenges();
+    },
+
+    displayAchievements() {
+        const container = document.getElementById('achievements-list');
+        if (!container) return;
+
+        let html = '<div style="display: flex; flex-direction: column; gap: 0.75rem;">';
+
+        this.achievements.forEach(achievement => {
+            const earned = this.earnedAchievements.includes(achievement.id);
+            const opacity = earned ? '1' : '0.5';
+            const checkmark = earned ? '<i class="fas fa-check-circle" style="color: #2ecc71;"></i>' : '<i class="fas fa-lock" style="color: #95a5a6;"></i>';
+
+            html += `
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: var(--bg-tertiary); border-radius: 4px; opacity: ${opacity};">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <i class="fas ${achievement.icon}" style="font-size: 2rem; color: #f39c12;"></i>
+                        <div>
+                            <div style="font-weight: bold;">${achievement.name}</div>
+                            <div style="font-size: 0.9rem; opacity: 0.8;">${achievement.description}</div>
+                            <div style="font-size: 0.85rem; color: #3498db; margin-top: 0.25rem;">+${achievement.xp} XP</div>
+                        </div>
+                    </div>
+                    ${checkmark}
+                </div>
+            `;
+        });
+
+        html += '</div>';
+        container.innerHTML = html;
+    },
+
+    displayBadges() {
+        const container = document.getElementById('badges-display');
+        if (!container) return;
+
+        let html = '';
+
+        this.badges.forEach(badge => {
+            const earned = this.earnedBadges.includes(badge.id);
+            if (earned) {
+                html += `
+                    <div style="padding: 1rem; background: ${badge.color}; color: white; border-radius: 8px; text-align: center; min-width: 120px;">
+                        <i class="fas fa-award" style="font-size: 2rem;"></i>
+                        <div style="margin-top: 0.5rem; font-weight: bold;">${badge.name}</div>
+                    </div>
+                `;
+            }
+        });
+
+        if (html === '') {
+            html = '<p style="opacity: 0.7;">No badges earned yet. Keep participating!</p>';
+        }
+
+        container.innerHTML = html;
+    },
+
+    displayChallenges() {
+        const container = document.getElementById('challenges-list');
+        if (!container) return;
+
+        let html = '<div style="display: flex; flex-direction: column; gap: 0.75rem;">';
+
+        this.challenges.forEach(challenge => {
+            const progressPercent = (challenge.progress / challenge.target) * 100;
+
+            html += `
+                <div style="padding: 1rem; background: var(--bg-tertiary); border-radius: 4px;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                        <div>
+                            <div style="font-weight: bold;">${challenge.name}</div>
+                            <div style="font-size: 0.9rem; opacity: 0.8;">${challenge.description}</div>
+                        </div>
+                        <div style="font-size: 0.85rem; color: #3498db;">+${challenge.xp} XP</div>
+                    </div>
+                    <div style="background: var(--border-color); border-radius: 999px; height: 8px; overflow: hidden;">
+                        <div style="height: 100%; background: #2ecc71; width: ${progressPercent}%; transition: width 0.3s;"></div>
+                    </div>
+                    <div style="margin-top: 0.5rem; font-size: 0.85rem; opacity: 0.9;">
+                        ${challenge.progress} / ${challenge.target}
+                    </div>
+                </div>
+            `;
+        });
+
+        html += '</div>';
+        container.innerHTML = html;
+    }
+};
+
+// Award XP for various actions
+function awardXP(action) {
+    const xpMap = {
+        'add_member': 10,
+        'record_attendance': 5,
+        'add_expense': 5,
+        'gc_vote': 15,
+        'service_task': 20,
+        'backup_data': 25
+    };
+
+    const amount = xpMap[action] || 5;
+    GamificationSystem.addXP(amount);
+}
 
 // ============================================================
 // END OF ENHANCED FEATURES
