@@ -13233,6 +13233,37 @@ function sanitizeInput(input) {
 }
 
 let db;
+// Memory leak prevention: Global interval and resource management
+const appIntervals = {
+    autoSave: null,
+    maintenance: null,
+    notifications: null,
+    workflow: null
+};
+let currentMediaStream = null;
+let currentAudioBlobURL = null;
+function cleanupIntervals() {
+    Object.keys(appIntervals).forEach(key => {
+        if (appIntervals[key]) {
+            clearInterval(appIntervals[key]);
+            appIntervals[key] = null;
+        }
+    });
+}
+function cleanupMediaResources() {
+    if (currentMediaStream) {
+        currentMediaStream.getTracks().forEach(track => track.stop());
+        currentMediaStream = null;
+    }
+    if (currentAudioBlobURL) {
+        window.URL.revokeObjectURL(currentAudioBlobURL);
+        currentAudioBlobURL = null;
+    }
+}
+window.addEventListener('beforeunload', () => {
+    cleanupIntervals();
+    cleanupMediaResources();
+});
 function initDB() {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open('photo_gallery', 1);
@@ -13439,16 +13470,7 @@ async function migratePhotos() {
     }
 }
 
-function sanitizeHTML(html) {
-    if (typeof html !== 'string') return html;
-    if (typeof DOMPurify !== 'undefined') {
-        return DOMPurify.sanitize(html, {
-            ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'br', 'p', 'ul', 'ol', 'li'],
-            ALLOWED_ATTR: []
-        });
-    }
-    return sanitizeInput(html);
-}
+// Removed duplicate sanitizeHTML function - use sanitizeHtml() instead
 function goToSection(sectionId) {
     document.querySelectorAll('main section').forEach(sec => sec.classList.remove('active'));
     document.querySelectorAll('nav li').forEach(li => li.classList.remove('active'));
@@ -20054,22 +20076,35 @@ function setupAudioRecorder() {
     let chunks = [];
     async function startRecording() {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorder = new MediaRecorder(stream);
+            // Cleanup any existing stream first
+            if (currentMediaStream) {
+                currentMediaStream.getTracks().forEach(track => track.stop());
+                currentMediaStream = null;
+            }
+            currentMediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(currentMediaStream);
             mediaRecorder.ondataavailable = e => {
                 chunks.push(e.data);
             };
             mediaRecorder.onstop = () => {
                 const blob = new Blob(chunks, { type: 'audio/webm' });
                 chunks = [];
-                const audioURL = window.URL.createObjectURL(blob);
-                audioPlayer.src = audioURL;
-                downloadLink.href = audioURL;
+                // Revoke old blob URL to prevent memory leak
+                if (currentAudioBlobURL) {
+                    window.URL.revokeObjectURL(currentAudioBlobURL);
+                }
+                currentAudioBlobURL = window.URL.createObjectURL(blob);
+                audioPlayer.src = currentAudioBlobURL;
+                downloadLink.href = currentAudioBlobURL;
                 const timestamp = new Date().toISOString().slice(0, 19).replace(/[-:T]/g, '').replace(/ /g, '_');
                 downloadLink.download = `meeting-audio-${timestamp}.webm`;
                 playerContainer.style.display = 'block';
                 downloadLink.style.display = 'inline-block';
-                stream.getTracks().forEach(track => track.stop());
+                // Cleanup stream after recording
+                if (currentMediaStream) {
+                    currentMediaStream.getTracks().forEach(track => track.stop());
+                    currentMediaStream = null;
+                }
             };
             mediaRecorder.start();
             recordBtn.disabled = true;
@@ -20079,6 +20114,11 @@ function setupAudioRecorder() {
             showToast('Recording started...', 'info');
         } catch (err) {
             console.error("Error starting recording:", err);
+            // Cleanup on error
+            if (currentMediaStream) {
+                currentMediaStream.getTracks().forEach(track => track.stop());
+                currentMediaStream = null;
+            }
             if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
                 showToast('Microphone permission denied. Please allow access in your browser settings.', 'error');
             } else {
@@ -20952,7 +20992,11 @@ function initSmartNotificationSystem() {
     autoDismissOldNotifications();
     deduplicateNotifications();
     processRecurringNotifications();
-    setInterval(() => {
+    // Clear existing interval to prevent duplicates
+    if (appIntervals.notifications) {
+        clearInterval(appIntervals.notifications);
+    }
+    appIntervals.notifications = setInterval(() => {
         processSnoozedNotifications();
         autoDismissOldNotifications();
         deduplicateNotifications();
@@ -24350,7 +24394,11 @@ function init() {
     filterTemplates('all');
     checkCrashRecovery();
     setTimeout(() => checkAndPromptBackup(), 3000); // Check backup after 3 seconds
-    setInterval(autoSaveToSession, 5 * 60 * 1000);
+    // Clear existing interval to prevent duplicates
+    if (appIntervals.autoSave) {
+        clearInterval(appIntervals.autoSave);
+    }
+    appIntervals.autoSave = setInterval(autoSaveToSession, 5 * 60 * 1000);
     autoSaveToSession();
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('expense-date').value = today;
@@ -24380,7 +24428,11 @@ function init() {
             }
         });
     }
-    setInterval(() => {
+    // Clear existing interval to prevent duplicates
+    if (appIntervals.maintenance) {
+        clearInterval(appIntervals.maintenance);
+    }
+    appIntervals.maintenance = setInterval(() => {
         checkUpcomingTermExpirations();
         checkMemberEngagement();
         scheduleAutomatedBackups();
@@ -32937,8 +32989,7 @@ function loadConceptCurriculum() {
         `<div class="box mb-2"><strong>Month ${i + 1}:</strong> ${c}</div>`).join('');
 }
 
-function exportToGoogleCal() { showToast('Google Calendar export (requires API setup)', 'info'); }
-function setupCloudBackup() { showToast('Cloud backup setup', 'info'); }
+// Removed stub functions - use full implementations: exportToGoogleCalendar() for calendar, cloud backup via Settings > Cloud Backup
 function addGroup() {
     const name = document.getElementById('group-name-input').value.trim();
     if (!name) return showToast('Enter group name', 'error');
