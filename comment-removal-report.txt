@@ -1,0 +1,75 @@
+=============================================================================
+SINGLE-LINE COMMENT REMOVAL REPORT
+=============================================================================
+
+Date: $(date)
+File: index.html
+Backup: index.html.backup-before-comment-removal
+
+=============================================================================
+SUMMARY
+=============================================================================
+Original file size:    2.0 MB (35,419 lines)
+Cleaned file size:     1.9 MB (35,383 lines)
+Lines removed:         36 lines
+Type removed:          Full-line comments only (// at start of line)
+
+=============================================================================
+VERIFICATION RESULTS
+=============================================================================
+✅ All critical functions intact
+✅ All URLs preserved (https:// not affected)
+✅ All HTML structure preserved
+✅ All JavaScript code intact
+✅ Backup created successfully
+
+=============================================================================
+REMOVED COMMENTS (All 36 lines)
+=============================================================================
+13236:// Memory leak prevention: Global interval and resource management
+13286:            // Check for old photos in localStorage
+13336:            // Convert base64 to Blob if necessary
+13473:// Removed duplicate sanitizeHTML function - use sanitizeHtml() instead
+13873:            // Handle legacy string format
+13877:            // Handle object format
+15786:    // In production, use: https://github.com/davidshimjs/qrcodejs or similar
+15927:    // Handle Blob objects by creating object URLs
+15990:        // No need for FileReader, we can store the File object (which is a Blob) directly
+18817:            // Handle Blob objects by creating object URLs
+18938:            // Handle Blob objects by creating object URLs
+20079:            // Cleanup any existing stream first
+20092:                // Revoke old blob URL to prevent memory leak
+20103:                // Cleanup stream after recording
+20117:            // Cleanup on error
+20995:    // Clear existing interval to prevent duplicates
+24397:    // Clear existing interval to prevent duplicates
+24431:    // Clear existing interval to prevent duplicates
+24538:    // Make all dropdown menu items keyboard accessible
+24542:        // Make toggle keyboard accessible
+24550:        // Handle keyboard events on toggle
+24556:                // Focus first menu item after opening
+24567:        // Update aria-expanded when dropdown opens/closes
+24577:    // Make all dropdown menu items keyboard accessible
+24585:            // Make focusable
+24591:            // Handle keyboard navigation within menu
+24625:                        // Allow natural tab behavior but close menu
+24635:    // Close dropdown when clicking outside
+30508:    // Populate form fields
+30520:    // Scroll to form
+32653:    // Calculate last 12 months of membership data
+32664:        // Count members who joined before this month's end
+32681:    // Destroy existing chart if it exists
+32686:    // Create new chart
+32992:// Removed stub functions - use full implementations: exportToGoogleCalendar() for calendar, cloud backup via Settings > Cloud Backup
+35189:// ========== NEW ANALYTICS REPORT PDF EXPORT FUNCTIONS ==========
+
+=============================================================================
+NOTES
+=============================================================================
+- Inline comments (after code) were PRESERVED for documentation value
+- Only standalone comment lines were removed
+- All functional code remains unchanged
+- Backup can be restored if needed: 
+  cp index.html.backup-before-comment-removal index.html
+
+=============================================================================
