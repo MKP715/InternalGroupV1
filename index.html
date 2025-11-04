@@ -11263,6 +11263,7 @@
         </section>
         <section id="participation-analytics-section" style="border-left: 4px solid #1abc9c;">
             <h2><i class="fas fa-chart-line"></i> Participation Analytics</h2>
+            <button class="btn mb-3" onclick="exportParticipationAnalyticsPDF()" style="background: #1abc9c;"><i class="fas fa-file-pdf"></i> Export to PDF</button>
             <p class="mb-4">Privacy-conscious analytics on meeting attendance and voting participation.</p>
             <div class="grid" style="grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
                 <div style="padding: 1.5rem; background: #34495e; border-radius: 8px; text-align: center;">
@@ -11299,6 +11300,7 @@
         </section>
         <section id="decision-impact-section" style="border-left: 4px solid #1abc9c;">
             <h2><i class="fas fa-chart-line"></i> Decision Impact Tracking</h2>
+            <button class="btn mb-3" onclick="exportDecisionImpactPDF()" style="background: #1abc9c;"><i class="fas fa-file-pdf"></i> Export to PDF</button>
             <p class="mb-4">Follow up on past decisions to see if they achieved their intended goals.</p>
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
                 <div>
@@ -21068,28 +21070,8 @@ function createAutomatedBackup() {
     const backup = {
         id: genId(),
         timestamp: new Date().toISOString(),
-        version: '1.0',
-        data: {
-            members: storage.getMembers(),
-            events: storage.getEvents(),
-            groupConscienceLog: storage.getGroupConscienceLog(),
-            servicePositions: storage.getServicePositions(),
-            budgetCategories: storage.getBudgetCategories(),
-            expenses: storage.getExpenses(),
-            chairpersonLog: storage.getChairpersonLog(),
-            announcements: storage.getAnnouncements(),
-            photos: storage.getPhotos(),
-            messages: storage.getMessages(),
-            nominations: storage.getNominations(),
-            notifications: JSON.parse(localStorage.getItem('notifications') || '[]'),
-            auditLog: JSON.parse(localStorage.getItem('auditLog') || '[]'),
-            settings: {
-                gcSettings: JSON.parse(localStorage.getItem('gcSettings') || '{}'),
-                votingSettings: JSON.parse(localStorage.getItem('votingSettings') || '{}'),
-                currentUser: localStorage.getItem('currentUser'),
-                treasurerBalance: localStorage.getItem('treasurerBalance')
-            }
-        }
+        version: '8.0',
+        data: getAllApplicationData()
     };
     const backups = JSON.parse(localStorage.getItem('backupHistory') || '[]');
     backups.push({
@@ -21152,25 +21134,7 @@ function importBackupFromFile() {
 function restoreFromBackup(backup) {
     try {
         const data = backup.data;
-        if (data.members) storage.saveMembers(data.members);
-        if (data.events) storage.saveEvents(data.events);
-        if (data.groupConscienceLog) storage.saveGroupConscienceLog(data.groupConscienceLog);
-        if (data.servicePositions) storage.saveServicePositions(data.servicePositions);
-        if (data.budgetCategories) storage.saveBudgetCategories(data.budgetCategories);
-        if (data.expenses) storage.saveExpenses(data.expenses);
-        if (data.chairpersonLog) storage.saveChairpersonLog(data.chairpersonLog);
-        if (data.announcements) storage.saveAnnouncements(data.announcements);
-        if (data.photos) storage.savePhotos(data.photos);
-        if (data.messages) storage.saveMessages(data.messages);
-        if (data.nominations) storage.saveNominations(data.nominations);
-        if (data.notifications) safeStorageSave('notifications', data.notifications);
-        if (data.auditLog) localStorage.setItem('auditLog', JSON.stringify(data.auditLog));
-        if (data.settings) {
-            if (data.settings.gcSettings) localStorage.setItem('gcSettings', JSON.stringify(data.settings.gcSettings));
-            if (data.settings.votingSettings) localStorage.setItem('votingSettings', JSON.stringify(data.settings.votingSettings));
-            if (data.settings.currentUser) localStorage.setItem('currentUser', data.settings.currentUser);
-            if (data.settings.treasurerBalance) localStorage.setItem('treasurerBalance', data.settings.treasurerBalance);
-        }
+        restoreAllApplicationData(data);
         logAuditEntry('import', 'full-backup', backup.id, null, 'Restored from backup file');
         showToast('Backup restored successfully! Refreshing page...', 'success');
         setTimeout(() => {
@@ -35290,6 +35254,105 @@ function exportMilestonePDF() {
     doc.text(`Total Members with Birthdays: ${birthdays.length}`, 20, 50);
     doc.save('Member_Milestone_Report.pdf');
     showToast('Member Milestone Report PDF generated!', 'success');
+}
+function exportParticipationAnalyticsPDF() {
+    const { jsPDF } = window.jspdf;
+    if (!jsPDF) return showToast('PDF library not loaded', 'error');
+    const doc = new jsPDF();
+    const gcLogs = storage.getGroupConscienceLog();
+    const recentGC = gcLogs.slice(-6);
+    const avgAttendance = recentGC.length > 0 ?
+        Math.round(recentGC.reduce((sum, gc) => sum + (gc.attendees || 0), 0) / recentGC.length) : 0;
+    const votingParticipation = recentGC.length > 0 ?
+        Math.round(recentGC.reduce((sum, gc) => {
+            const totalVotes = (gc.votesFor || 0) + (gc.votesAgainst || 0) + (gc.votesAbstain || 0);
+            const attendees = gc.attendees || 1;
+            return sum + (totalVotes / attendees * 100);
+        }, 0) / recentGC.length) : 0;
+    const engagementScore = Math.round((votingParticipation + (avgAttendance > 0 ? 50 : 0)) / 2);
+    doc.setFontSize(22);
+    doc.setTextColor(52, 152, 219);
+    doc.text("Participation Analytics Report", 14, 22);
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
+    doc.setFontSize(12);
+    doc.text("Key Metrics:", 14, 45);
+    doc.setFontSize(10);
+    doc.text(`Average GC Attendance: ${avgAttendance} members`, 20, 55);
+    doc.text(`Voting Participation: ${votingParticipation}%`, 20, 65);
+    doc.text(`Overall Engagement Score: ${engagementScore}/100`, 20, 75);
+    doc.text(`Recent GC Meetings Analyzed: ${recentGC.length}`, 20, 85);
+    let yPos = 100;
+    doc.setFontSize(12);
+    doc.text("Recent GC Meeting Attendance:", 14, yPos);
+    yPos += 10;
+    doc.setFontSize(10);
+    recentGC.forEach((gc, idx) => {
+        if (yPos > 270) {
+            doc.addPage();
+            yPos = 20;
+        }
+        const date = new Date(gc.date).toLocaleDateString();
+        const attendees = gc.attendees || 0;
+        const votes = (gc.votesFor || 0) + (gc.votesAgainst || 0) + (gc.votesAbstain || 0);
+        doc.text(`${date}: ${attendees} attendees, ${votes} votes cast`, 20, yPos);
+        yPos += 8;
+    });
+    doc.save('Participation_Analytics_Report.pdf');
+    showToast('Participation Analytics PDF generated!', 'success');
+}
+function exportDecisionImpactPDF() {
+    const { jsPDF } = window.jspdf;
+    if (!jsPDF) return showToast('PDF library not loaded', 'error');
+    const doc = new jsPDF();
+    const impacts = storage.getDecisionImpacts() || [];
+    const avgRating = impacts.length > 0 ?
+        (impacts.reduce((sum, imp) => sum + (imp.rating || 0), 0) / impacts.length).toFixed(1) : 0;
+    const goalsMet = impacts.filter(imp => imp.goalAchieved === 'yes').length;
+    const achievementRate = impacts.length > 0 ? Math.round((goalsMet / impacts.length) * 100) : 0;
+    doc.setFontSize(22);
+    doc.setTextColor(155, 89, 182);
+    doc.text("Decision Impact Report", 14, 22);
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
+    doc.setFontSize(12);
+    doc.text("Summary:", 14, 45);
+    doc.setFontSize(10);
+    doc.text(`Total Decisions Tracked: ${impacts.length}`, 20, 55);
+    doc.text(`Average Effectiveness Rating: ${avgRating}/5 stars`, 20, 65);
+    doc.text(`Goals Achieved: ${goalsMet} (${achievementRate}%)`, 20, 75);
+    let yPos = 90;
+    doc.setFontSize(12);
+    doc.text("Decision Impact Details:", 14, yPos);
+    yPos += 10;
+    doc.setFontSize(9);
+    impacts.slice(0, 20).forEach((impact, idx) => {
+        if (yPos > 270) {
+            doc.addPage();
+            yPos = 20;
+        }
+        const gcLog = storage.getGroupConscienceLog().find(gc => gc.id === impact.gcId);
+        const motionText = gcLog ? gcLog.item : 'Unknown Motion';
+        const monthsAgo = impact.monthsSince || 0;
+        const rating = impact.rating || 0;
+        const goalStatus = impact.goalAchieved || 'unknown';
+        doc.text(`${idx + 1}. ${motionText.substring(0, 60)}${motionText.length > 60 ? '...' : ''}`, 20, yPos);
+        yPos += 6;
+        doc.text(`   ${monthsAgo} months ago | Rating: ${rating}/5 | Goal: ${goalStatus}`, 20, yPos);
+        yPos += 6;
+        if (impact.lessonsLearned) {
+            doc.text(`   Lessons: ${impact.lessonsLearned.substring(0, 70)}${impact.lessonsLearned.length > 70 ? '...' : ''}`, 20, yPos);
+            yPos += 6;
+        }
+        yPos += 3;
+    });
+    if (impacts.length > 20) {
+        doc.text(`... and ${impacts.length - 20} more decisions`, 20, yPos);
+    }
+    doc.save('Decision_Impact_Report.pdf');
+    showToast('Decision Impact PDF generated!', 'success');
 }
 
 if (document.readyState === 'loading') {
